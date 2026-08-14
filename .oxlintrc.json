@@ -23,7 +23,7 @@
 		"sort-imports": "off",
 		"sort-keys": "off",
 		"func-style": "off",
-		"unicorn/text-encoding-identifier-case": "off",
+		"unicorn/text-encoding-identifier-case": "off"
 	},
   "settings": {
     "jsx-a11y": {
