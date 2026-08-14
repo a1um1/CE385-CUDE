@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 
 const app = express(),
+  // oxlint-disable-next-line no-magic-numbers
   PORT = process.env.PORT || 3000;
 
 app.use(cors());
