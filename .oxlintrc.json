@@ -1,0 +1,65 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": [
+    "unicorn",
+    "typescript",
+    "oxc"
+  ],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn",
+    "pedantic": "off",
+		"perf": "warn",
+		"style": "warn",
+		"restriction": "off"
+  },
+	"rules": {
+		"unicorn/filename-case": [
+			"error",
+			{
+				"ignore": ["routeTree.gen.ts"]
+			}
+		],
+		"sort-imports": "off",
+		"sort-keys": "off",
+		"func-style": "off",
+		"unicorn/text-encoding-identifier-case": "off"
+	},
+  "settings": {
+    "jsx-a11y": {
+      "polymorphicPropName": null,
+      "components": {},
+      "attributes": {}
+    },
+    "next": {
+      "rootDir": []
+    },
+    "react": {
+      "formComponents": [],
+      "linkComponents": [],
+      "version": null
+    },
+    "jsdoc": {
+      "ignorePrivate": false,
+      "ignoreInternal": false,
+      "ignoreReplacesDocs": true,
+      "overrideReplacesDocs": true,
+      "augmentsExtendsReplacesDocs": false,
+      "implementsReplacesDocs": false,
+      "exemptDestructuredRootsFromChecks": false,
+      "tagNamePreference": {}
+    },
+    "vitest": {
+      "typecheck": false
+    }
+  },
+  "env": {
+    "builtin": true
+  },
+	"options": {
+		"denyWarnings": true,
+		"reportUnusedDisableDirectives": "warn",
+	},
+  "globals": {},
+  "ignorePatterns": []
+}

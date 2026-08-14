@@ -1,0 +1,25 @@
+{
+  "name": "ce385-cude",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "concurrently --prefix name --names \"client,server\" \"npm run dev --prefix client\" \"npm run dev --prefix server\"",
+    "lint": "oxlint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/a1um1/CE385-CUDE.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/a1um1/CE385-CUDE/issues"
+  },
+  "homepage": "https://github.com/a1um1/CE385-CUDE#readme",
+  "devDependencies": {
+    "concurrently": "^10.0.4",
+    "oxfmt": "^0.63.0",
+    "oxlint": "^1.78.0",
+    "typescript": "^7.0.2"
+  }
+}
