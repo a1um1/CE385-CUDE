@@ -4,7 +4,8 @@
   "description": "",
   "scripts": {
     "dev": "concurrently --prefix name --names \"client,server\" \"npm run dev --prefix client\" \"npm run dev --prefix server\"",
-    "lint": "oxlint"
+    "lint": "oxlint",
+		"openapi:generate": "npx openapi-typescript http://localhost:3000/openapi.json --output ./client/src/data/base/openapi.ts"
   },
   "repository": {
     "type": "git",
@@ -17,9 +18,13 @@
   },
   "homepage": "https://github.com/a1um1/CE385-CUDE#readme",
   "devDependencies": {
+    "@types/react": "^19.2.18",
     "concurrently": "^10.0.4",
     "oxfmt": "^0.63.0",
     "oxlint": "^1.78.0",
     "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "react": "^19.2.8"
   }
 }
