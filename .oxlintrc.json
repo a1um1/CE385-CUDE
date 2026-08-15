@@ -3,7 +3,8 @@
   "plugins": [
     "unicorn",
     "typescript",
-    "oxc"
+    "oxc",
+		"react"
   ],
   "categories": {
     "correctness": "error",
@@ -11,19 +12,23 @@
     "pedantic": "off",
 		"perf": "warn",
 		"style": "warn",
-		"restriction": "off"
+		"restriction": "off",
+		
   },
 	"rules": {
-		"unicorn/filename-case": [
-			"error",
-			{
-				"ignore": ["routeTree.gen.ts"]
-			}
-		],
+		"unicorn/filename-case": "off",
 		"sort-imports": "off",
 		"sort-keys": "off",
 		"func-style": "off",
-		"unicorn/text-encoding-identifier-case": "off"
+		"unicorn/text-encoding-identifier-case": "off",
+		"new-cap": "off",
+		"no-ternary": "off",
+		"no-magic-numbers": "off",
+		"id-length": "off",
+		"unicorn/prefer-export-from": "off",
+		"no-duplicate-imports": "off",
+		"react/react-in-jsx-scope": "off",
+    "react/jsx-max-depth": "off"
 	},
   "settings": {
     "jsx-a11y": {
@@ -58,7 +63,7 @@
   },
 	"options": {
 		"denyWarnings": true,
-		"reportUnusedDisableDirectives": "warn",
+		"reportUnusedDisableDirectives": "warn"
 	},
   "globals": {},
   "ignorePatterns": []

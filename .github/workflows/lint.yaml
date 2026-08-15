@@ -2,7 +2,7 @@ name: Lint Check
 
 on:
   push:
-    branches: [ feat/*, develop ]
+    branches: [ feat/*, bug/* develop ]
   pull_request:
     branches: [ develop ]
     
