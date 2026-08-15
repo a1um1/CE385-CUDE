@@ -1,14 +1,15 @@
 {
   "name": "server",
   "version": "1.0.0",
+  "type": "module",
   "imports": {
     "#/*": "./src/*.ts"
   },
   "scripts": {
     "dev": "node --watch src/server.ts",
-    "lint": "oxlint"
+    "lint": "oxlint",
+    "format:check": "oxfmt --check"
   },
-  "type": "module",
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "^9.1.0",
     "cors": "^2.8.6",

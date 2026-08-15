@@ -2,16 +2,18 @@ name: Lint Check
 
 on:
   push:
-    branches: [ feat/*, bug/* develop ]
-  pull_request:
-    branches: [ develop ]
+    branches: [ feat/*, bug/*, develop ]
     
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  lint:
+  client:
+    name: Client - Lint & Format
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: client
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -20,10 +22,40 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: 'npm' # Automates dependency caching
+          cache: 'npm'
+          cache-dependency-path: client/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci && npm i -d oxlint oxfmt
 
-      - name: Run ESLint
+      - name: Run Linter
         run: npm run lint
+
+      - name: Run Format Check
+        run: npm run format:check
+
+  backend:
+    name: Backend - Lint & Format
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'npm'
+          cache-dependency-path: server/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci && npm i -d oxlint oxfmt
+
+      - name: Run Linter
+        run: npm run lint
+
+      - name: Run Format Check
+        run: npm run format:check
