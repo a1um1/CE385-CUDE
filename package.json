@@ -4,7 +4,8 @@
   "description": "",
   "scripts": {
     "dev": "concurrently --prefix name --names \"client,server\" \"npm run dev --prefix client\" \"npm run dev --prefix server\"",
-    "lint": "oxlint"
+    "lint": "oxlint",
+		"openapi:generate": "npx openapi-typescript http://localhost:3000/openapi.json --output ./client/src/data/base/openapi.ts"
   },
   "repository": {
     "type": "git",

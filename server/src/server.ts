@@ -2,5 +2,5 @@ import app from "#/app";
 
 app.listen(3000, () => {
   console.log("Server running on http://localhost:3000");
-  console.log("Docs at http://localhost:3000/docs");
+  console.log("Docs at http://localhost:3000/openapi.json");
 });
