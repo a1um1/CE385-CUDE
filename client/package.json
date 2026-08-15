@@ -11,7 +11,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "oxlint",
-		"format:check": "oxfmt:check"
+		"format:check": "oxfmt --check"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",

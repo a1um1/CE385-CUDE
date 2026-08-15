@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "node --watch src/server.ts",
     "lint": "oxlint",
-		"format:check": "oxfmt:check"
+		"format:check": "oxfmt --check"
   },
   "type": "module",
   "dependencies": {
