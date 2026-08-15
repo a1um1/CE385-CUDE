@@ -5,6 +5,7 @@
 2. [Getting Start](#getting-start)
 3. [Architecture](#architecture)
 4. [How to submit PRs](#how-to-submit-prs)
+5. [Figma Design Reference](https://www.figma.com/design/SeZZgPfyv1DJ35CLAxOD9A/CE385?node-id=0-1&t=SPkkQCpZsbZwqrcs-1)
 
 ### Requirements
 - [Node.js v24](https://nodejs.org/en)
@@ -19,6 +20,7 @@
 npm run dev # สำหรับรัน Project ในโหมด Development
 npm run lint # สำหรับตรวจสอบ Code
 ```
+
 
 ### Architecture
 - Frontend: [Vite + React](https://vite.dev/)
