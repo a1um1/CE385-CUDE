@@ -16,6 +16,7 @@
   หรือเครื่องมือ Debug API อะไรก็ได้ที่รองรับ OpenAPI
 - [Visual Studio Code](https://code.visualstudio.com/)
   และติดตั้ง Extension ที่แนะนำใน Project นี้
+- [Storybook](https://storybook.js.org/)
 
 ### Getting Start
 
