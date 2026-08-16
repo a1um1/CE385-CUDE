@@ -1,0 +1,17 @@
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  email     String   @unique
+  name      String
+  epithet   String?
+  password  String
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  courses Course[]
+}

@@ -1,0 +1,16 @@
+services:
+  database:
+    container_name: db_backend
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5434:5432"
+    volumes:
+      - db_data:/var/lib/postgresql
+    restart: unless-stopped
+
+volumes:
+  db_data:

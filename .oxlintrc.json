@@ -1,37 +1,32 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": [
-    "unicorn",
-    "typescript",
-    "oxc",
-		"react"
-  ],
+  "plugins": ["unicorn", "typescript", "oxc", "react"],
   "categories": {
     "correctness": "error",
     "suspicious": "warn",
     "pedantic": "off",
-		"perf": "warn",
-		"style": "warn",
-		"restriction": "off",
-		
+    "perf": "warn",
+    "style": "warn",
+    "restriction": "off"
   },
-	"rules": {
-		"unicorn/filename-case": "off",
-		"sort-imports": "off",
-		"sort-keys": "off",
-		"func-style": "off",
-		"unicorn/text-encoding-identifier-case": "off",
-		"new-cap": "off",
-		"no-ternary": "off",
-		"no-magic-numbers": "off",
-		"id-length": "off",
-		"unicorn/prefer-export-from": "off",
-		"no-duplicate-imports": "off",
-		"react/react-in-jsx-scope": "off",
+  "rules": {
+    "unicorn/filename-case": "off",
+    "sort-imports": "off",
+    "sort-keys": "off",
+    "func-style": "off",
+    "unicorn/text-encoding-identifier-case": "off",
+    "new-cap": "off",
+    "no-ternary": "off",
+    "no-magic-numbers": "off",
+    "id-length": "off",
+    "unicorn/prefer-export-from": "off",
+    "no-duplicate-imports": "off",
+    "react/react-in-jsx-scope": "off",
     "react/jsx-max-depth": "off",
-		"no-nested-ternary": "off",
-		"unicorn/no-nested-ternary": "off",
-	},
+    "no-nested-ternary": "off",
+    "unicorn/no-nested-ternary": "off",
+    "capitalized-comments": "off"
+  },
   "settings": {
     "jsx-a11y": {
       "polymorphicPropName": null,
@@ -57,12 +52,10 @@
   "env": {
     "builtin": true
   },
-	"options": {
-		"denyWarnings": true,
-		"reportUnusedDisableDirectives": "warn"
-	},
+  "options": {
+    "denyWarnings": true,
+    "reportUnusedDisableDirectives": "warn"
+  },
   "globals": {},
-  "ignorePatterns": [
-		"openapi.ts"
-	]
+  "ignorePatterns": ["openapi.ts"]
 }

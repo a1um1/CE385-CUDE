@@ -16,7 +16,8 @@
     "dev": "concurrently --prefix name --names \"client,server\" \"npm run dev --prefix client\" \"npm run dev --prefix server\"",
     "lint": "npm run dev --prefix client && npm run dev --prefix server",
     "format:check": "npm run format:check --prefix client && npm run format:check --prefix server",
-    "openapi:generate": "npx openapi-typescript http://localhost:3000/openapi.json --output ./client/src/data/base/openapi.ts"
+    "openapi:generate": "npx openapi-typescript http://localhost:3000/openapi.json --output ./client/src/data/base/openapi.ts",
+    "docker:up": "docker-compose -f scripts/docker-compose.yml --env-file scripts/.env.local up -d"
   },
   "dependencies": {
     "react": "^19.2.8"
