@@ -22,6 +22,19 @@ defineRoute(
 defineRoute(
   testRouter,
   {
+    method: "post",
+    path: "/test/2",
+    tags: ["Test"],
+    summary: "Test route for testing 2 the API",
+    body: TestSendSchema,
+    response: TestSendSchema,
+  },
+  async ({ body }) => ({ randomNumber: body.randomNumber }),
+);
+
+defineRoute(
+  testRouter,
+  {
     method: "get",
     path: "/test/users",
     tags: ["Test"],
