@@ -21,8 +21,11 @@
 ### Getting Start
 
 ```
-npm run dev # สำหรับรัน Project ในโหมด Development
-npm run lint # สำหรับตรวจสอบ Code
+npm run dev 							# สำหรับรัน Project ในโหมด Development
+npm run lint 							# สำหรับตรวจสอบ Code
+npm run format:check			# สำหรับตรวจสอบ Fomat Code
+npm run openapi:generate		# สำหรับสร้างไฟล์ API สำหรับ Client (ต้องรัน API ด้วย)
+npm run docker:up 					# สำหรับรัน Service ฐานข้อมูล บน Docker
 ```
 
 ### Architecture
