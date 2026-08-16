@@ -1,3 +1,5 @@
+import Button from "#/components/button";
+import ButtonLink from "#/components/buttonLink";
 import { useTestData } from "#/data/test.data";
 import { createFileRoute } from "@tanstack/react-router";
 
@@ -15,6 +17,12 @@ function Home() {
             ? `Error: ${error}`
             : `Random Number: ${data?.randomNumber}`}
       </p>
+      <ButtonLink to="/" variant="primary" size="md" radius="none" block>
+        Button Link
+      </ButtonLink>
+      <Button variant="primary" size="md" radius="none" block>
+        Button
+      </Button>
     </div>
   );
 }
