@@ -25,7 +25,8 @@
     "react/jsx-max-depth": "off",
     "no-nested-ternary": "off",
     "unicorn/no-nested-ternary": "off",
-    "capitalized-comments": "off"
+    "capitalized-comments": "off",
+    "one-var": "off"
   },
   "settings": {
     "jsx-a11y": {

@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { defineRoute } from "#/lib/openApi";
 import { TestSendSchema } from "#/schema/test.schema";
+import { z } from "#/lib/extendZod";
+import { db } from "#/lib/prisma";
 
 export const testRouter = Router();
 
@@ -15,4 +17,19 @@ defineRoute(
     response: TestSendSchema,
   },
   async ({ body }) => ({ randomNumber: body.randomNumber }),
+);
+
+defineRoute(
+  testRouter,
+  {
+    method: "get",
+    path: "/test/users",
+    tags: ["Test"],
+    summary: "Get all users",
+    response: z.any(),
+  },
+  async () => {
+    const users = await db.user.findMany();
+    return users;
+  },
 );

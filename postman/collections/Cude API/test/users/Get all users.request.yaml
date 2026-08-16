@@ -1,0 +1,8 @@
+$kind: http-request
+url: "{{baseUrl}}/test/users"
+method: GET
+headers:
+  Accept: application/json
+settings: {}
+examples: ./.resources/Get all users.resources/examples
+order: 1000

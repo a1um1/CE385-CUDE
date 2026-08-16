@@ -1,0 +1,16 @@
+$kind: http-request
+name: Test route for testing the API
+url: "{{baseUrl}}/test"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: application/json
+body:
+  type: json
+  content: |-
+    {
+      "randomNumber": "sdfsdfsf"
+    }
+settings: {}
+examples: ./.resources/Test route for testing the API.resources/examples
+order: 2000
