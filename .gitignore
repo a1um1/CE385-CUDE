@@ -17,3 +17,5 @@ __unconfig*
 todos.json
 
 server/src/generated/prisma/
+*storybook.log
+storybook-static

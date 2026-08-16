@@ -17,6 +17,12 @@
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
   },
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
   "editor.guides.indentation": true,
-  "editor.rulers": [120]
+  "editor.rulers": [120],
+  "workbench.browser.openLocalhostLinks": false,
+  "editor.colorDecorators": true,
+  "tailwindCSS.colorDecorators": true
 }

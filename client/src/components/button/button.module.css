@@ -1,0 +1,85 @@
+@reference "../../styles.css";
+
+.button {
+  --btn-sizing: var(--size-md);
+  --btn-font-size: var(--size-md-font-size);
+  --btn-color: var(--color-primary);
+  --btn-text-color: var(--color-primary-text);
+  --btn-hover-color: var(--color-primary-hover);
+  --btn-radius: var(--radius);
+
+  background-color: var(--btn-color);
+  color: var(--btn-text-color);
+  padding: var(--btn-sizing);
+  font-size: var(--btn-font-size);
+  border-radius: var(--btn-radius);
+
+  transition:
+    background-color 0.1s ease-in-out,
+    color 0.1s ease-in-out;
+
+  &:hover,
+  &:focus {
+    background-color: var(--btn-hover-color);
+  }
+
+  &:focus {
+    outline: 2px solid color-mix(in oklch, var(--btn-hover-color) 50%, transparent);
+    outline-offset: 2px;
+  }
+
+  &.primary {
+    --btn-color: var(--color-primary);
+    --btn-text-color: var(--color-primary-text);
+    --btn-hover-color: var(--color-primary-hover);
+  }
+
+  &.secondary {
+    --btn-color: var(--color-secondary);
+    --btn-text-color: var(--color-secondary-text);
+    --btn-hover-color: var(--color-secondary-hover);
+  }
+
+  &.ghost {
+    --btn-color: transparent;
+    --btn-text-color: var(--color-background-text);
+    --btn-hover-color: transparent;
+  }
+
+  &.size-xs {
+    --btn-sizing: var(--size-xs-padding);
+    --btn-font-size: var(--size-xs-font-size);
+  }
+
+  &.size-sm {
+    --btn-sizing: var(--size-sm-padding);
+    --btn-font-size: var(--size-sm-font-size);
+  }
+
+  &.size-md {
+    --btn-sizing: var(--size-md-padding);
+    --btn-font-size: var(--size-md-font-size);
+  }
+
+  &.size-lg {
+    --btn-sizing: var(--size-lg-padding);
+    --btn-font-size: var(--size-lg-font-size);
+  }
+
+  &.block {
+    width: 100%;
+  }
+
+  &.pilled {
+    --btn-radius: 20rem;
+  }
+
+  &.square {
+    --btn-radius: 0;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
