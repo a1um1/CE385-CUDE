@@ -1,6 +1,8 @@
 model Course {
   id          String   @id @default(uuid(7)) @db.Uuid
   name        String
+  color       String
+  icon        String
   createdByID String   @db.Uuid
   createdBy   User     @relation(fields: [createdByID], references: [id])
   createdAt   DateTime @default(now())
