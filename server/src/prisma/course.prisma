@@ -1,0 +1,59 @@
+model Course {
+  id          String   @id @default(uuid(7)) @db.Uuid
+  name        String
+  color       String
+  icon        String
+  createdByID String   @db.Uuid
+  createdBy   User     @relation(fields: [createdByID], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  units Unit[]
+}
+
+model Unit {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  name      String
+  courseID  String   @db.Uuid
+  course    Course   @relation(fields: [courseID], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  lessons Lesson[]
+}
+
+model Lesson {
+  id           String   @id @default(uuid(7)) @db.Uuid
+  name         String
+  unitID       String   @db.Uuid
+  unit         Unit     @relation(fields: [unitID], references: [id])
+  passTheshold Float
+  XPgiven      Int
+  gemsGiven    Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  exercises Exercise[]
+}
+
+model Exercise {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  name      String
+  lessonID  String   @db.Uuid
+  lesson    Lesson   @relation(fields: [lessonID], references: [id])
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  testCases TestCase[]
+}
+
+model TestCase {
+  id         String   @id @default(uuid(7)) @db.Uuid
+  exerciseID String   @db.Uuid
+  exercise   Exercise @relation(fields: [exerciseID], references: [id])
+  input      String
+  output     String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
