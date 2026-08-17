@@ -1,0 +1,59 @@
+@reference "../../styles.css";
+
+.input {
+  --input-sizing: var(--size-md-padding);
+  --input-font-size: var(--size-md-font-size);
+  --input-color: var(--color-input);
+  --input-text-color: var(--color-input-text);
+  --input-radius: var(--radius);
+  --input-border-color: var(--color-border);
+
+  background-color: var(--input-color);
+  color: var(--input-text-color);
+  padding: var(--input-sizing);
+  font-size: var(--input-font-size);
+  border-radius: var(--input-radius);
+  border: 2px solid var(--input-border-color);
+  transition:
+    outline-color 0.2s ease-in-out,
+    outline-offset 0.2s ease-in-out;
+  width: 100%;
+
+  &:focus {
+    outline: 2px solid color-mix(in oklch, var(--input-border-color) 50%, transparent);
+    outline-offset: 0px;
+  }
+
+  &input::placeholder {
+    color: var(--color-placeholder);
+  }
+
+  &:disabled,
+  &:readonly {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &.no-border {
+    border: none;
+  }
+
+  &.size-xs {
+    --input-sizing: var(--size-xs-padding);
+    --input-font-size: var(--size-xs-font-size);
+  }
+
+  &.size-sm {
+    --input-sizing: var(--size-sm-padding);
+    --input-font-size: var(--size-sm-font-size);
+  }
+
+  &.size-md {
+    --input-sizing: var(--size-md-padding);
+    --input-font-size: var(--size-md-font-size);
+  }
+
+  &.radius-none {
+    --input-radius: 0;
+  }
+}
