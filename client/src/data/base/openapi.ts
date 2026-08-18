@@ -98,7 +98,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/user/validate": {
+    "/user": {
         parameters: {
             query?: never;
             header?: never;
@@ -151,8 +151,8 @@ export interface paths {
         /** Test route for testing the API */
         get: {
             parameters: {
-                query: {
-                    randomNumber: number;
+                query?: {
+                    randomNumber?: number | null;
                 };
                 header?: never;
                 path?: never;
@@ -244,7 +244,7 @@ export interface components {
         };
         Test: {
             /** @example 123456 */
-            randomNumber: number;
+            randomNumber: number | null;
         };
     };
     responses: never;

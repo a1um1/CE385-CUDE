@@ -16,6 +16,8 @@
   transition:
     background-color 0.1s ease-in-out,
     color 0.1s ease-in-out;
+  display: inline-flex;
+  cursor: pointer;
 
   &:hover,
   &:focus {

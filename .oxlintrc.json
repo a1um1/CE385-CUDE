@@ -31,7 +31,8 @@
     "react/function-component-definition": "off",
     "curly": ["error", "multi-line"],
     "oxc/no-async-endpoint-handlers": "off",
-    "max-statements": ["error", 30]
+    "max-statements": ["error", 30],
+    "react/exhaustive-deps": "off"
   },
   "settings": {
     "jsx-a11y": {
