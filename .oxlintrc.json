@@ -30,7 +30,8 @@
     "react/jsx-props-no-spreading": "off",
     "react/function-component-definition": "off",
     "curly": ["error", "multi-line"],
-    "oxc/no-async-endpoint-handlers": "off"
+    "oxc/no-async-endpoint-handlers": "off",
+    "max-statements": ["error", 30]
   },
   "settings": {
     "jsx-a11y": {

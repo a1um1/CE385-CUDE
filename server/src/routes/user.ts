@@ -40,13 +40,9 @@ userRoute.get(
     tags: ["User"],
     summary: "User token validation route",
     response: UserSafeSchema,
+    authentication: true,
   },
-  async ({ headers }) => {
-    const token = headers.authorization?.split(" ")[1];
-    if (!token) throw new Error("Token not provided");
-    const user = await authController.validateToken(token);
-    return user.json;
-  },
+  async ({ user }) => user.json,
 );
 
 export const userRouter = userRoute.route;

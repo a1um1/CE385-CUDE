@@ -3,7 +3,7 @@ import CustomRouter from "#/lib/customRouter";
 
 export const TestSchema = z
   .object({
-    randomNumber: z.number().openapi({ example: "123456" }),
+    randomNumber: z.coerce.number().openapi({ example: "123456" }),
   })
   .openapi("Test");
 
