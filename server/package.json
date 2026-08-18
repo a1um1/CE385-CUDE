@@ -12,7 +12,7 @@
     "db:migrate": "prisma migrate dev --name auto && prisma generate",
     "db:generate": "prisma generate",
     "db:deploy": "prisma migrate deploy",
-    "ts:check": "tsc --noEmit"
+    "ts:check": "prisma generate && tsc --noEmit"
   },
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "^9.1.0",
