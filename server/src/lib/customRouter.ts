@@ -201,6 +201,7 @@ export default class CustomRouter {
       config,
       handler,
     });
+    return this;
   }
 
   post<
@@ -220,6 +221,7 @@ export default class CustomRouter {
       config,
       handler,
     });
+    return this;
   }
 
   put<
@@ -239,6 +241,7 @@ export default class CustomRouter {
       config,
       handler,
     });
+    return this;
   }
 
   delete<
@@ -257,6 +260,7 @@ export default class CustomRouter {
       config,
       handler,
     });
+    return this;
   }
 
   patch<
@@ -276,5 +280,6 @@ export default class CustomRouter {
       config,
       handler,
     });
+    return this;
   }
 }
