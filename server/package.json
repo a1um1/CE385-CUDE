@@ -11,15 +11,19 @@
     "format:check": "oxfmt --check",
     "db:migrate": "prisma migrate dev --name auto && prisma generate",
     "db:generate": "prisma generate",
-    "db:deploy": "prisma migrate deploy"
+    "db:deploy": "prisma migrate deploy",
+    "ts:check": "prisma generate && tsc --noEmit"
   },
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "^9.1.0",
     "@prisma/adapter-pg": "^7.9.1",
     "@prisma/client": "^7.9.1",
+    "@types/bcrypt": "^6.0.0",
+    "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
     "pg": "^8.23.0",
     "typescript": "^7.0.2",
     "zod": "^4.4.3"
@@ -27,6 +31,7 @@
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^26.2.0",
     "@types/pg": "^8.21.0",
     "openapi-typescript": "^7.13.0",

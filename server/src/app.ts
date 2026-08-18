@@ -1,6 +1,8 @@
 import express from "express";
 import { generateOpenApiDocument } from "#/openapi";
+import { userRouter } from "#/routes/user";
 import { testRouter } from "#/routes/test";
+
 import cors from "cors";
 
 const app = express();
@@ -11,6 +13,7 @@ app.use(
   }),
 );
 app.use(testRouter);
+app.use(userRouter);
 
 // Docs endpoint — regenerated from the registry above
 app.get("/openapi.json", (_req, res) => {

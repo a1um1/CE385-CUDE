@@ -17,7 +17,9 @@
     "lint": "npm run lint --prefix client && npm run lint --prefix server",
     "format:check": "npm run format:check --prefix client && npm run format:check --prefix server",
     "openapi:generate": "npx openapi-typescript http://localhost:3000/openapi.json --output ./client/src/data/base/openapi.ts",
-    "docker:up": "docker-compose -f scripts/docker-compose.yml --env-file scripts/.env.local up -d"
+    "docker:up": "docker-compose -f scripts/docker-compose.yml --env-file scripts/.env.local up -d",
+    "storybook": "npm run storybook --prefix client",
+    "ts:check": "npm run ts:check --prefix client && npm run ts:check --prefix server"
   },
   "dependencies": {
     "react": "^19.2.8"
