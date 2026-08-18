@@ -1,48 +1,27 @@
-import { Router } from "express";
-import { defineRoute } from "#/lib/openApi";
-import { TestSendSchema } from "#/schema/test.schema";
 import { z } from "#/lib/extendZod";
-import { db } from "#/lib/prisma";
+import CustomRouter from "#/lib/customRouter";
 
-export const testRouter = Router();
+export const TestSchema = z
+  .object({
+    randomNumber: z.number().openapi({ example: "123456" }),
+  })
+  .openapi("Test");
 
-defineRoute(
-  testRouter,
+export const TestSendSchema = TestSchema;
+
+const testRoute = new CustomRouter();
+
+testRoute.get(
+  "/test",
   {
-    method: "post",
-    path: "/test",
     tags: ["Test"],
     summary: "Test route for testing the API",
-    body: TestSendSchema,
-    response: TestSendSchema,
+    query: TestSchema,
+    response: TestSchema,
   },
-  async ({ body }) => ({ randomNumber: body.randomNumber }),
+  async ({ query }) => ({
+    randomNumber: query.randomNumber,
+  }),
 );
 
-defineRoute(
-  testRouter,
-  {
-    method: "post",
-    path: "/test/2",
-    tags: ["Test"],
-    summary: "Test route for testing 2 the API",
-    body: TestSendSchema,
-    response: TestSendSchema,
-  },
-  async ({ body }) => ({ randomNumber: body.randomNumber }),
-);
-
-defineRoute(
-  testRouter,
-  {
-    method: "get",
-    path: "/test/users",
-    tags: ["Test"],
-    summary: "Get all users",
-    response: z.any(),
-  },
-  async () => {
-    const users = await db.user.findMany();
-    return users;
-  },
-);
+export const testRouter = testRoute.route;
