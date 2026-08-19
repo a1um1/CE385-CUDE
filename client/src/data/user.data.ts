@@ -1,5 +1,5 @@
 import { APIclient, type ExtractRequestBody } from "#/data/base/baseAPI";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useUser = () =>
   useQuery({
@@ -23,8 +23,10 @@ export const useSignUp = () =>
     },
   });
 
-export const useSignIn = () =>
-  useMutation({
+export const useSignIn = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
     mutationKey: ["signin"],
     mutationFn: async (body: ExtractRequestBody<"/user/signin", "post">) => {
       const { data, error } = await APIclient.POST("/user/signin", {
@@ -32,15 +34,20 @@ export const useSignIn = () =>
       });
       if (error || !data) throw error;
       if (data.token) localStorage.setItem("token", data.token);
+      await queryClient.resetQueries({ queryKey: ["user"] });
       return data;
     },
   });
+};
 
-export const useSignOut = () =>
-  useMutation({
+export const useSignOut = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
     mutationKey: ["signout"],
     mutationFn: async () => {
       localStorage.removeItem("token");
+      await queryClient.resetQueries({ queryKey: ["user"] });
       return true;
     },
   });
+};

@@ -30,7 +30,7 @@ function RouteComponent() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       <h1>Sign Up</h1>
-      <form onSubmit={handleFormSubmit}>
+      <form onSubmit={handleFormSubmit} className="flex flex-col gap-4">
         <div>
           <label htmlFor="name">Name</label>
           <Input type="text" id="name" name="name" required disabled={signUpMutation.isPending} />
@@ -55,7 +55,7 @@ function RouteComponent() {
             disabled={signUpMutation.isPending}
           />
         </div>
-        <Button type="submit" disabled={signUpMutation.isPending}>
+        <Button type="submit" disabled={signUpMutation.isPending} block>
           Sign Up
         </Button>
       </form>

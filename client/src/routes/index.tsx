@@ -28,14 +28,14 @@ function Home() {
         {user.isLoading ? (
           "Loading user..."
         ) : user.error ? (
-          <>
+          <div className="flex gap-4">
             <ButtonLink to="/auth/signin" variant="primary" size="md">
               Sign In
             </ButtonLink>
             <ButtonLink to="/auth/signup" variant="secondary" size="md">
               Sign Up
             </ButtonLink>
-          </>
+          </div>
         ) : user.data ? (
           <>
             <p>
