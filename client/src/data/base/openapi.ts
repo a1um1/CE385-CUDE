@@ -13,7 +13,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** User signup route */
+        /** User signup */
         post: {
             parameters: {
                 query?: never;
@@ -43,6 +43,13 @@ export interface paths {
                     };
                     content?: never;
                 };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
             };
         };
         delete?: never;
@@ -60,7 +67,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** User signin route */
+        /** User signin */
         post: {
             parameters: {
                 query?: never;
@@ -90,6 +97,13 @@ export interface paths {
                     };
                     content?: never;
                 };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
             };
         };
         delete?: never;
@@ -105,7 +119,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** User token validation route */
+        /** User information */
         get: {
             parameters: {
                 query?: never;
@@ -131,6 +145,13 @@ export interface paths {
                     };
                     content?: never;
                 };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
             };
         };
         put?: never;
@@ -148,7 +169,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Test route for testing the API */
+        /** Random Number */
         get: {
             parameters: {
                 query?: {
@@ -171,6 +192,113 @@ export interface paths {
                 };
                 /** @description Validation error */
                 400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/test/error": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Handled Error */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": unknown;
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/test/unhandled-error": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Handled Error */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": unknown;
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal server error */
+                500: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -231,6 +359,10 @@ export interface components {
              * @enum {string}
              */
             role: "USER" | "ADMIN";
+            /** @example https://example.com/profile.jpg */
+            profileImage: string | null;
+            /** @example true */
+            isActive: boolean;
             /**
              * Format: date-time
              * @example 2023-01-01T00:00:00.000Z

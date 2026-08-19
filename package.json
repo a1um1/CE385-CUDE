@@ -22,7 +22,8 @@
     "ts:check": "npm run ts:check --prefix client && npm run ts:check --prefix server"
   },
   "dependencies": {
-    "react": "^19.2.8"
+    "react": "^19.2.8",
+    "vite-css-modules": "^1.16.0"
   },
   "devDependencies": {
     "@types/react": "^19.2.18",

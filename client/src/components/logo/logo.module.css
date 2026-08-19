@@ -1,0 +1,13 @@
+@reference "../../styles.css";
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--color-primary);
+  font-size: 2rem;
+  font-weight: bold;
+  user-select: none;
+  letter-spacing: 0.2rem;
+}

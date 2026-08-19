@@ -3,6 +3,7 @@ import { db } from "#/lib/prisma";
 import bcrypt from "bcrypt";
 import { z } from "#/lib/extendZod";
 import type zod from "zod";
+import UserError from "#/lib/userError";
 
 export const UserSchema = z
   .object({
@@ -12,6 +13,9 @@ export const UserSchema = z
     password: z.string().openapi({ example: "password123" }),
     epithet: z.string().nullable().openapi({ example: "The Brave" }),
     role: z.enum(["USER", "ADMIN"]).openapi({ example: "USER" }),
+    profileImage: z.string().nullable().openapi({ example: "https://example.com/profile.jpg" }),
+    isActive: z.boolean().openapi({ example: true }),
+    reactivatedAt: z.date().nullable().openapi({ example: "2023-01-01T00:00:00.000Z" }),
     createdAt: z.date().openapi({ example: "2023-01-01T00:00:00.000Z" }),
     updatedAt: z.date().openapi({ example: "2023-01-01T00:00:00.000Z" }),
   })
@@ -19,6 +23,7 @@ export const UserSchema = z
 
 export const UserSafeSchema = UserSchema.omit({
   password: true,
+  reactivatedAt: true,
 }).openapi("UserSafeData");
 
 export const UserCreationSchema = UserSchema.pick({
@@ -56,9 +61,10 @@ export default class UserController {
   }
 
   static async validateUserCredentials(credentials: userValidationSchema): Promise<UserController> {
-    const user = await db.user.findUniqueOrThrow({ where: { email: credentials.email } });
+    const user = await db.user.findUnique({ where: { email: credentials.email } });
+    if (!user) throw new UserError(400, "Email or Password is incorrect");
     const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
-    if (!isPasswordValid) throw new Error("Invalid credentials");
+    if (!isPasswordValid) throw new UserError(400, "Email or Password is incorrect");
 
     return new UserController(user);
   }
