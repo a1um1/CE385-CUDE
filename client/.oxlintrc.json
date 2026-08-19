@@ -1,4 +1,5 @@
 {
+  "ignorePatterns": ["**/openapi.ts"],
   "extends": ["../.oxlintrc.json"],
   "env": { "browser": true }
 }

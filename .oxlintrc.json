@@ -64,5 +64,5 @@
     "reportUnusedDisableDirectives": "warn"
   },
   "globals": {},
-  "ignorePatterns": ["openapi.ts"]
+  "ignorePatterns": ["**/openapi.ts"]
 }

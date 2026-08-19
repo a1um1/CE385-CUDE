@@ -1,4 +1,5 @@
 {
   "extends": ["../.oxlintrc.json"],
+  "ignorePatterns": ["**/openapi.ts"],
   "env": { "node": true }
 }
