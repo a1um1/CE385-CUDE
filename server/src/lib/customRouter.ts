@@ -134,6 +134,7 @@ export default class CustomRouter {
           body: { content: { "application/json": { schema: config.body } } },
         }),
       },
+      security: config.authentication ? [{ Bearer: [] }] : undefined,
       responses: {
         200: {
           description: config.responseDescription ?? "Successful response",
