@@ -9,6 +9,7 @@ export const Route = createFileRoute("/auth")({
 function RouteComponent() {
   const navigate = Route.useNavigate();
   const { data: user, isLoading } = useUser();
+
   useEffect(() => {
     if (user) navigate({ to: "/" });
   }, [user]);
