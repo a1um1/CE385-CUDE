@@ -29,8 +29,11 @@ function Home() {
           "Loading user..."
         ) : user.error ? (
           <>
-            <ButtonLink to="/auth/signin" variant="primary" size="md" radius="none" block>
-              Sign In{" "}
+            <ButtonLink to="/auth/signin" variant="primary" size="md">
+              Sign In
+            </ButtonLink>
+            <ButtonLink to="/auth/signup" variant="secondary" size="md">
+              Sign Up
             </ButtonLink>
           </>
         ) : user.data ? (

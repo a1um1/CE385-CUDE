@@ -1,34 +1,40 @@
 import Button from "#/components/button";
 import Input from "#/components/input";
-import { useSignIn } from "#/data/user.data";
+import { useSignUp } from "#/data/user.data";
 import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/auth/signin")({
+export const Route = createFileRoute("/auth/signup")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const signInMutation = useSignIn();
-
+  const signUpMutation = useSignUp();
+  const navigate = Route.useNavigate();
   const handleFormSubmit = async (event: React.SubmitEvent) => {
     event.preventDefault();
     const formData = new FormData(event.target);
+    const name = formData.get("name") as string;
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
     try {
-      await signInMutation.mutateAsync({ email, password });
-      alert("Sign-in successful!");
+      await signUpMutation.mutateAsync({ name, email, password });
+      alert("Sign-up successful!");
+      navigate({ to: "/auth/signin" });
     } catch (error) {
-      console.error("Sign-in failed:", error);
-      alert("Sign-in failed. Please check your credentials.");
+      console.error("Sign-up failed:", error);
+      alert("Sign-up failed. Please check your credentials.");
     }
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
-      <h1>Sign In</h1>
+      <h1>Sign Up</h1>
       <form onSubmit={handleFormSubmit}>
+        <div>
+          <label htmlFor="name">Name</label>
+          <Input type="text" id="name" name="name" required disabled={signUpMutation.isPending} />
+        </div>
         <div>
           <label htmlFor="email">Email</label>
           <Input
@@ -36,7 +42,7 @@ function RouteComponent() {
             id="email"
             name="email"
             required
-            disabled={signInMutation.isPending}
+            disabled={signUpMutation.isPending}
           />
         </div>
         <div>
@@ -46,11 +52,11 @@ function RouteComponent() {
             id="password"
             name="password"
             required
-            disabled={signInMutation.isPending}
+            disabled={signUpMutation.isPending}
           />
         </div>
-        <Button type="submit" disabled={signInMutation.isPending}>
-          Sign In
+        <Button type="submit" disabled={signUpMutation.isPending}>
+          Sign Up
         </Button>
       </form>
     </div>
