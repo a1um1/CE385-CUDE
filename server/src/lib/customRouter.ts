@@ -1,11 +1,13 @@
 import type { Role } from "#/generated/prisma/enums";
 import { Router } from "express";
 import type { RequestHandler } from "express-serve-static-core";
-import { type ZodObject, type ZodType, type z } from "zod";
+import { z, type ZodObject, type ZodType } from "zod";
 import { registry } from "#/openapi";
 import type { IncomingHttpHeaders } from "http";
 import AuthenticationController from "#/controller/authentication";
 import type UserController from "#/controller/user";
+import { HTTPstatus } from "#/lib/httpStatus";
+import UserError from "#/lib/userError";
 
 type RequestObject = ZodObject<any, any> | undefined;
 type AuthenticationObject = true | Role[] | undefined;
@@ -31,6 +33,7 @@ type RouteHandler<
   query: InferOrAny<TQuery>;
   headers: IncomingHttpHeaders;
   user: TAuth extends undefined ? undefined : UserController;
+  status: HTTPstatus;
 }) => Promise<InferOrAny<TResponse>> | InferOrAny<TResponse>;
 
 type RouteHandlerWithoutBody<
@@ -43,6 +46,7 @@ type RouteHandlerWithoutBody<
   query: InferOrAny<TQuery>;
   headers: IncomingHttpHeaders;
   user: TAuth extends undefined ? undefined : UserController;
+  status: HTTPstatus;
 }) => Promise<InferOrAny<TResponse>> | InferOrAny<TResponse>;
 
 interface RouteConfig<
@@ -77,20 +81,33 @@ export default class CustomRouter {
     TResponse extends ZodType<any> | undefined,
     TAuth extends AuthenticationObject,
   >(config: RouteConfig<TParams, TQuery, TBody, TResponse, TAuth>): RequestHandler {
-    return (req, _res, next) => {
-      const params = (
-        config.params ? config.params.parse(req.params) : req.params
-      ) as InferOrAny<TParams>;
-      const query = (
-        config.query ? config.query.parse(req.query) : req.query
-      ) as InferOrAny<TQuery>;
-      const body = (config.body ? config.body.parse(req.body) : req.body) as InferOrAny<TBody>;
-      req.ctx = {
-        params,
-        query,
-        body,
-      };
-      next();
+    return (req, res, next) => {
+      try {
+        const params = (
+          config.params ? config.params.parse(req.params) : req.params
+        ) as InferOrAny<TParams>;
+        const query = (
+          config.query ? config.query.parse(req.query) : req.query
+        ) as InferOrAny<TQuery>;
+        const body = (config.body ? config.body.parse(req.body) : req.body) as InferOrAny<TBody>;
+        req.ctx = {
+          params,
+          query,
+          body,
+        };
+        next();
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          const errorString = z.treeifyError(error);
+          return res.status(400).json({
+            message: "Invalid request parameters",
+            details: errorString,
+          });
+        }
+        return res.status(400).json({
+          message: error instanceof Error ? error.message : "Invalid request parameters",
+        });
+      }
     };
   }
 
@@ -141,6 +158,7 @@ export default class CustomRouter {
           content: { "application/json": { schema: config.response } },
         },
         400: { description: "Validation error" },
+        500: { description: "Internal server error" },
       },
     });
   }
@@ -164,6 +182,7 @@ export default class CustomRouter {
       this.parseRouteParameters(options.config),
       this.validateAuthentication(options.config),
       async (req, res) => {
+        const status = new HTTPstatus();
         try {
           let handlersResult = await options.handler({
             params: req.ctx?.params as InferOrAny<TParams>,
@@ -171,16 +190,24 @@ export default class CustomRouter {
             body: req.ctx?.body as InferOrAny<TBody>,
             headers: req.headers,
             user: req.ctx?.user as any,
+            status,
           });
           if (options.config.response) {
             handlersResult = options.config.response.parse(handlersResult);
           }
-          return res.json(handlersResult);
+          return res.status(status.value).json(handlersResult);
         } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : "Internal Server Error";
-          return res.status(500).json({
-            error_message: errorMessage,
-          });
+          if (error instanceof UserError) {
+            return res.status(error.status).json({
+              message: error.message,
+            });
+          } else {
+            console.error("Unhandled error in route handler:", error);
+            const errorMessage = error instanceof Error ? error.message : "Internal Server Error";
+            return res.status(500).json({
+              message: errorMessage,
+            });
+          }
         }
       },
     );
