@@ -1,0 +1,4 @@
+{
+  "ignorePatterns": ["**/openapi.ts"],
+  "extends": ["../.oxfmtrc.json"]
+}
