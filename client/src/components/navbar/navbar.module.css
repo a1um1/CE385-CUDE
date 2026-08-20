@@ -47,38 +47,3 @@
     }
   }
 }
-
-.dropdown-header {
-  display: flex;
-  flex-direction: column;
-
-  .background {
-    width: 100%;
-    height: 120px;
-    object-fit: cover;
-  }
-
-  .header-info {
-    display: flex;
-    align-items: end;
-    gap: 8px;
-    padding: 8px;
-    margin-top: -2.5rem;
-    z-index: 2;
-
-    .username {
-      font-size: 1rem;
-      font-weight: 500;
-      color: var(--color-background-text);
-      margin: 0;
-    }
-  }
-}
-
-.signout-item {
-  color: #ef4444;
-
-  &:hover {
-    color: white;
-  }
-}

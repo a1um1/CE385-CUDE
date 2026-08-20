@@ -10,8 +10,10 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as baseRouteRouteImport } from './routes/(base)/route'
+import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as AuthRouteRouteImport } from './routes/auth/route'
 import { Route as baseIndexRouteImport } from './routes/(base)/index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AuthIndexRouteImport } from './routes/auth/index'
 import { Route as AuthSigninRouteImport } from './routes/auth/signin'
 import { Route as AuthSignupRouteImport } from './routes/auth/signup'
@@ -19,6 +21,11 @@ import { Route as baseAccountIndexRouteImport } from './routes/(base)/account/in
 
 const baseRouteRoute = baseRouteRouteImport.update({
   id: '/(base)',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRouteRoute = AdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRouteRoute = AuthRouteRouteImport.update({
@@ -30,6 +37,11 @@ const baseIndexRoute = baseIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => baseRouteRoute,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const AuthIndexRoute = AuthIndexRouteImport.update({
   id: '/',
@@ -53,10 +65,12 @@ const baseAccountIndexRoute = baseAccountIndexRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/admin': typeof AdminRouteRouteWithChildren
   '/auth': typeof AuthRouteRouteWithChildren
   '/auth/signin': typeof AuthSigninRoute
   '/auth/signup': typeof AuthSignupRoute
   '/': typeof baseIndexRoute
+  '/admin/': typeof AdminIndexRoute
   '/auth/': typeof AuthIndexRoute
   '/account/': typeof baseAccountIndexRoute
 }
@@ -64,38 +78,51 @@ export interface FileRoutesByTo {
   '/auth/signin': typeof AuthSigninRoute
   '/auth/signup': typeof AuthSignupRoute
   '/': typeof baseIndexRoute
+  '/admin': typeof AdminIndexRoute
   '/auth': typeof AuthIndexRoute
   '/account': typeof baseAccountIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/(base)': typeof baseRouteRouteWithChildren
+  '/admin': typeof AdminRouteRouteWithChildren
   '/auth': typeof AuthRouteRouteWithChildren
   '/auth/signin': typeof AuthSigninRoute
   '/auth/signup': typeof AuthSignupRoute
   '/(base)/': typeof baseIndexRoute
+  '/admin/': typeof AdminIndexRoute
   '/auth/': typeof AuthIndexRoute
   '/(base)/account/': typeof baseAccountIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/auth' | '/auth/signin' | '/auth/signup' | '/' | '/auth/' | '/account/'
+    | '/admin'
+    | '/auth'
+    | '/auth/signin'
+    | '/auth/signup'
+    | '/'
+    | '/admin/'
+    | '/auth/'
+    | '/account/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/auth/signin' | '/auth/signup' | '/' | '/auth' | '/account'
+  to: '/auth/signin' | '/auth/signup' | '/' | '/admin' | '/auth' | '/account'
   id:
     | '__root__'
     | '/(base)'
+    | '/admin'
     | '/auth'
     | '/auth/signin'
     | '/auth/signup'
     | '/(base)/'
+    | '/admin/'
     | '/auth/'
     | '/(base)/account/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   baseRouteRoute: typeof baseRouteRouteWithChildren
+  AdminRouteRoute: typeof AdminRouteRouteWithChildren
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
 }
 
@@ -106,6 +133,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: ''
       preLoaderRoute: typeof baseRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -121,6 +155,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof baseIndexRouteImport
       parentRoute: typeof baseRouteRoute
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/auth/': {
       id: '/auth/'
@@ -167,6 +208,18 @@ const baseRouteRouteWithChildren = baseRouteRoute._addFileChildren(
   baseRouteRouteChildren,
 )
 
+interface AdminRouteRouteChildren {
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
+  AdminRouteRouteChildren,
+)
+
 interface AuthRouteRouteChildren {
   AuthSigninRoute: typeof AuthSigninRoute
   AuthSignupRoute: typeof AuthSignupRoute
@@ -185,6 +238,7 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   baseRouteRoute: baseRouteRouteWithChildren,
+  AdminRouteRoute: AdminRouteRouteWithChildren,
   AuthRouteRoute: AuthRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
