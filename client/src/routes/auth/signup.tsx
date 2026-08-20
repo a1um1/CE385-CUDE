@@ -1,5 +1,4 @@
-import Button from "#/components/button";
-import Input from "#/components/input";
+import { useAppForm, handleFormMutationError } from "#/components/form";
 import { useSignUp } from "#/data/user.data";
 import { createFileRoute } from "@tanstack/react-router";
 
@@ -10,54 +9,91 @@ export const Route = createFileRoute("/auth/signup")({
 function RouteComponent() {
   const signUpMutation = useSignUp();
   const navigate = Route.useNavigate();
-  const handleFormSubmit = async (event: React.SubmitEvent) => {
-    event.preventDefault();
-    const formData = new FormData(event.target);
-    const name = formData.get("name") as string;
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
 
-    try {
-      await signUpMutation.mutateAsync({ name, email, password });
-      alert("Sign-up successful!");
-      navigate({ to: "/auth/signin" });
-    } catch (error) {
-      console.error("Sign-up failed:", error);
-      alert("Sign-up failed. Please check your credentials.");
-    }
-  };
+  const form = useAppForm({
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+    },
+    onSubmit: async ({ value }) => {
+      try {
+        await signUpMutation.mutateAsync(value);
+        alert("Sign-up successful!");
+        navigate({ to: "/auth/signin" });
+      } catch (error) {
+        console.error("Sign-up failed:", error);
+        handleFormMutationError(form, error);
+      }
+    },
+  });
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
-      <h1>Sign Up</h1>
-      <form onSubmit={handleFormSubmit} className="flex flex-col gap-4">
-        <div>
-          <label htmlFor="name">Name</label>
-          <Input type="text" id="name" name="name" required disabled={signUpMutation.isPending} />
-        </div>
-        <div>
-          <label htmlFor="email">Email</label>
-          <Input
-            type="email"
-            id="email"
+      <h1 className="text-3xl font-semibold mb-6">Sign Up</h1>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          form.handleSubmit();
+        }}
+        className="flex flex-col gap-4 w-full max-w-sm px-4"
+      >
+        <form.AppForm>
+          <form.FormError />
+          <form.AppField
+            name="name"
+            validators={{
+              onChange: ({ value }) => (!value ? "Name is required" : undefined),
+            }}
+          >
+            {(field) => (
+              <field.TextField label="Name" type="text" disabled={signUpMutation.isPending} />
+            )}
+          </form.AppField>
+
+          <form.AppField
             name="email"
-            required
-            disabled={signUpMutation.isPending}
-          />
-        </div>
-        <div>
-          <label htmlFor="password">Password</label>
-          <Input
-            type="password"
-            id="password"
+            validators={{
+              onChange: ({ value }) => {
+                if (!value) return "Email is required";
+                if (!value.includes("@")) return "Invalid email address";
+                return undefined;
+              },
+            }}
+          >
+            {(field) => (
+              <field.TextField label="Email" type="email" disabled={signUpMutation.isPending} />
+            )}
+          </form.AppField>
+
+          <form.AppField
             name="password"
-            required
-            disabled={signUpMutation.isPending}
+            validators={{
+              onChange: ({ value }) => {
+                if (!value) return "Password is required";
+                if (value.length < 6) return "Password must be at least 6 characters";
+                return undefined;
+              },
+            }}
+          >
+            {(field) => (
+              <field.TextField
+                label="Password"
+                type="password"
+                disabled={signUpMutation.isPending}
+              />
+            )}
+          </form.AppField>
+
+          <form.SubmitButton
+            label="Sign Up"
+            loadingLabel="Signing Up..."
+            isPending={signUpMutation.isPending}
+            block
+            className="mt-2"
           />
-        </div>
-        <Button type="submit" disabled={signUpMutation.isPending} block>
-          Sign Up
-        </Button>
+        </form.AppForm>
       </form>
     </div>
   );

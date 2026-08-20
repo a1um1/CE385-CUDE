@@ -1,5 +1,4 @@
-import Button from "#/components/button";
-import Input from "#/components/input";
+import { useAppForm, handleFormMutationError } from "#/components/form";
 import { useSignIn } from "#/data/user.data";
 import { createFileRoute } from "@tanstack/react-router";
 
@@ -10,48 +9,73 @@ export const Route = createFileRoute("/auth/signin")({
 function RouteComponent() {
   const signInMutation = useSignIn();
 
-  const handleFormSubmit = async (event: React.SubmitEvent) => {
-    event.preventDefault();
-    const formData = new FormData(event.target);
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-
-    try {
-      await signInMutation.mutateAsync({ email, password });
-      alert("Sign-in successful!");
-    } catch (error) {
-      console.error("Sign-in failed:", error);
-      alert("Sign-in failed. Please check your credentials.");
-    }
-  };
+  const form = useAppForm({
+    defaultValues: {
+      email: "",
+      password: "",
+    } as Parameters<typeof signInMutation.mutateAsync>[0],
+    onSubmit: async ({ value }) => {
+      try {
+        await signInMutation.mutateAsync(value);
+        alert("Sign-in successful!");
+      } catch (error) {
+        console.error("Sign-in failed:", error);
+        handleFormMutationError(form, error);
+      }
+    },
+  });
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
-      <h1 className="text-3xl font-semibold">Sign In</h1>
-      <form onSubmit={handleFormSubmit} className="flex flex-col gap-4">
-        <div>
-          <label htmlFor="email">Email</label>
-          <Input
-            type="email"
-            id="email"
+      <h1 className="text-3xl font-semibold mb-6">Sign In</h1>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          form.handleSubmit();
+        }}
+        className="flex flex-col gap-4 w-full max-w-sm px-4"
+      >
+        <form.AppForm>
+          <form.FormError />
+          <form.AppField
             name="email"
-            required
-            disabled={signInMutation.isPending}
-          />
-        </div>
-        <div>
-          <label htmlFor="password">Password</label>
-          <Input
-            type="password"
-            id="password"
+            validators={{
+              onChange: ({ value }) => {
+                if (!value) return "Email is required";
+                if (!value.includes("@")) return "Invalid email address";
+                return undefined;
+              },
+            }}
+          >
+            {(field) => (
+              <field.TextField label="Email" type="email" disabled={signInMutation.isPending} />
+            )}
+          </form.AppField>
+
+          <form.AppField
             name="password"
-            required
-            disabled={signInMutation.isPending}
+            validators={{
+              onChange: ({ value }) => (!value ? "Password is required" : undefined),
+            }}
+          >
+            {(field) => (
+              <field.TextField
+                label="Password"
+                type="password"
+                disabled={signInMutation.isPending}
+              />
+            )}
+          </form.AppField>
+
+          <form.SubmitButton
+            label="Sign In"
+            loadingLabel="Signing In..."
+            isPending={signInMutation.isPending}
+            block
+            className="mt-2"
           />
-        </div>
-        <Button type="submit" disabled={signInMutation.isPending} block>
-          Sign In
-        </Button>
+        </form.AppForm>
       </form>
     </div>
   );
