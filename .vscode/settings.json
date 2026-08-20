@@ -24,5 +24,6 @@
   "editor.rulers": [120],
   "workbench.browser.openLocalhostLinks": false,
   "editor.colorDecorators": true,
-  "tailwindCSS.colorDecorators": true
+  "tailwindCSS.colorDecorators": true,
+  "git.autofetch": true
 }

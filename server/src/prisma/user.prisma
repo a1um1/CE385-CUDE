@@ -4,16 +4,17 @@ enum Role {
 }
 
 model User {
-  id            String    @id @default(uuid(7)) @db.Uuid
-  name          String
-  email         String    @unique
-  profileImage  String?
-  epithet       String?
-  password      String
-  isActive      Boolean   @default(true)
-  reactivatedAt DateTime?
-  role          Role      @default(USER)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  courses       Course[]
+  id              String    @id @default(uuid(7)) @db.Uuid
+  name            String
+  email           String    @unique
+  profileImage    String?
+  backgroundImage String?
+  epithet         String?
+  password        String
+  isActive        Boolean   @default(true)
+  reactivatedAt   DateTime?
+  role            Role      @default(USER)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  courses         Course[]
 }

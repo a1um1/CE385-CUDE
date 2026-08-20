@@ -20,6 +20,7 @@ const BasicLinkComponent = forwardRef<HTMLAnchorElement, BasicLinkProps>(
       radius={radius}
       block={block}
       render={<a />}
+      nativeButton={false}
     />
   ),
 );

@@ -1,0 +1,38 @@
+@reference "../../styles.css";
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  width: 100%;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-background-text);
+  text-align: left;
+}
+
+.control {
+  position: relative;
+  width: 100%;
+}
+
+.error {
+  font-size: 0.75rem;
+  color: oklch(63.7% 0.237 25.33);
+  margin-top: 0.125rem;
+  text-align: left;
+}
+
+.global-error {
+  font-size: 0.875rem;
+  color: var(--color-danger-text);
+  background-color: color-mix(in oklch, var(--color-danger) 15%, transparent);
+  border: 1px solid var(--color-danger);
+  border-radius: var(--radius);
+  padding: var(--spacing-md) var(--spacing-md);
+  margin-bottom: 1rem;
+  text-align: left;
+}

@@ -1,5 +1,4 @@
 import Avatar from "#/components/avatar/avatar";
-import Button from "#/components/button";
 import Enegry from "#/components/icon/energy";
 import Logo from "#/components/logo";
 import { useSignOut, useUser } from "#/data/user.data";
@@ -9,7 +8,9 @@ import Gem from "#/components/icon/gem";
 import { clsx } from "clsx";
 import ButtonLink from "#/components/buttonLink";
 import Dropdown from "#/components/dropdown/dropdown";
-import { LogOut } from "lucide-react";
+import { LogOut, Settings } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import UserBackground from "#/components/userBackground";
 
 export default function Navbar() {
   const { data: user, isLoading } = useUser();
@@ -21,10 +22,14 @@ export default function Navbar() {
     <nav className={navbarStyles.navbar}>
       <div className={navbarStyles.container}>
         <div className={navbarStyles["navigation-content"]}>
-          <Logo />
+          <Link to="/">
+            <Logo />
+          </Link>
           <div className={navbarStyles["navigation-items"]}>
-            <Button>Learn</Button>
-            <Button variant="ghost">Ranking</Button>
+            <ButtonLink to="/">Learn</ButtonLink>
+            <ButtonLink to="/" variant="ghost">
+              Ranking
+            </ButtonLink>
           </div>
         </div>
         <div className={navbarStyles["user-profile"]}>
@@ -46,16 +51,28 @@ export default function Navbar() {
                 <Dropdown.Trigger>
                   <Avatar name={user?.name || ""} avatarUrl={user?.profileImage} />
                 </Dropdown.Trigger>
-                <Dropdown.Content align="end" sideOffset={8}>
+                <Dropdown.Content align="end" sideOffset={8} className="p-0!">
                   <div className={navbarStyles["dropdown-header"]}>
-                    <p className={navbarStyles["dropdown-username"]}>{user?.name}</p>
-                    <p className={navbarStyles["dropdown-email"]}>{user?.email}</p>
+                    <UserBackground
+                      backgroundUrl={user?.backgroundImage || null}
+                      name={user?.name || ""}
+                      className="max-w-xs"
+                    />
+                    <div className={navbarStyles["header-info"]}>
+                      <Avatar name={user?.name || ""} avatarUrl={user?.profileImage} size="4rem" />
+                      <p className={navbarStyles["username"]}>{user?.name}</p>
+                    </div>
                   </div>
-                  <Dropdown.Separator />
-                  <Dropdown.Item onClick={handleSignOut} className={navbarStyles["signout-item"]}>
-                    <LogOut size={16} />
-                    Sign Out
-                  </Dropdown.Item>
+                  <div className="p-2">
+                    <Dropdown.Item nativeButton={false} render={<Link to="/account" />}>
+                      <Settings size={16} />
+                      Settings
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={handleSignOut} className={navbarStyles["signout-item"]}>
+                      <LogOut size={16} />
+                      Sign Out
+                    </Dropdown.Item>
+                  </div>
                 </Dropdown.Content>
               </Dropdown.Root>
             </>

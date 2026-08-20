@@ -1,3 +1,4 @@
+import Navbar from "#/components/navbar";
 import { useUser } from "#/data/user.data";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { useEffect } from "react";
@@ -16,5 +17,12 @@ function RouteComponent() {
   }, [user, isLoading]);
 
   if (isLoading || !user) return <div>Loading...</div>;
-  return <Outlet />;
+  return (
+    <>
+      <Navbar />
+      <div className="container p-4 flex flex-col gap-6">
+        <Outlet />
+      </div>
+    </>
+  );
 }

@@ -39,4 +39,5 @@
   object-fit: cover;
   display: block;
   user-select: none;
+  pointer-events: none;
 }

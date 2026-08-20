@@ -31,6 +31,8 @@ export const Playground: Story = {
         epithet: null,
         role: "USER",
         profileImage: "https://github.com/a1um1.png",
+        backgroundImage:
+          "https://github.com/vyrx-dev/Wallpapers/blob/master/gruvbox/ign-waifu.png?raw=true",
         isActive: true,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),

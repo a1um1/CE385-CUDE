@@ -51,3 +51,47 @@ export const useSignOut = () => {
     },
   });
 };
+
+export const useUpdateAvatar = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["updateAvatar"],
+    mutationFn: async (body: ExtractRequestBody<"/user/avatar", "post">) => {
+      const { data, error } = await APIclient.POST("/user/avatar", {
+        body,
+      });
+      if (error || !data) throw error;
+      await queryClient.invalidateQueries({ queryKey: ["user"] });
+      return data;
+    },
+  });
+};
+
+export const useUpdateBackground = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["updateBackground"],
+    mutationFn: async (body: ExtractRequestBody<"/user/background", "post">) => {
+      const { data, error } = await APIclient.POST("/user/background", {
+        body,
+      });
+      if (error || !data) throw error;
+      await queryClient.invalidateQueries({ queryKey: ["user"] });
+      return data;
+    },
+  });
+};
+
+export const useUpdatePassword = () =>
+  useMutation({
+    mutationKey: ["updatePassword"],
+    mutationFn: async (body: ExtractRequestBody<"/user/password", "post">) => {
+      const { data, error } = await APIclient.POST("/user/password", {
+        body,
+      });
+      if (error || !data) throw error;
+      return data;
+    },
+  });

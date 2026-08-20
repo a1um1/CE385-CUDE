@@ -18,9 +18,14 @@
   --color-background: oklch(22.383% 0.03083 267.192);
   --color-background-text: oklch(100% 0.00011 271.152);
 
+  --color-user-background: oklch(83.809% 0.13908 181.642);
+
   --color-secondary: oklch(88.531% 0.0001 271.152);
   --color-secondary-text: oklch(0% 0 0);
   --color-secondary-hover: oklch(78.531% 0.0001 271.152);
+
+  --color-danger: oklch(57.793% 0.20906 26.801);
+  --color-danger-text: oklch(100% 0 0);
 
   --color-input: oklch(22.383% 0.03083 267.192);
   --color-input-text: oklch(100% 0.00011 271.152);
