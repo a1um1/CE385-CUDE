@@ -1,4 +1,10 @@
-import { UserCreationSchema, UserSafeSchema, UserValidationSchema } from "#/controller/user";
+import {
+  UserCreationSchema,
+  UserSafeSchema,
+  UserUpdateAvatarSchema,
+  UserUpdateBackgroundSchema,
+  UserValidationSchema,
+} from "#/controller/user";
 import AuthenticationController, { authenticationSchema } from "#/controller/authentication";
 import CustomRouter from "#/lib/customRouter";
 
@@ -42,6 +48,34 @@ userRoute
       authentication: true,
     },
     async ({ user }) => user.json,
+  )
+  .post(
+    "/user/avatar",
+    {
+      tags: ["User"],
+      summary: "Update user avatar",
+      body: UserUpdateAvatarSchema,
+      response: UserSafeSchema,
+      authentication: true,
+    },
+    async ({ user, body }) => {
+      await user.updateAvatar(body);
+      return user.json;
+    },
+  )
+  .post(
+    "/user/background",
+    {
+      tags: ["User"],
+      summary: "Update user background",
+      body: UserUpdateBackgroundSchema,
+      response: UserSafeSchema,
+      authentication: true,
+    },
+    async ({ user, body }) => {
+      await user.updateBackground(body);
+      return user.json;
+    },
   );
 
 export const userRouter = userRoute.route;

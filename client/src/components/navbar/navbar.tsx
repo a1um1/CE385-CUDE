@@ -9,7 +9,8 @@ import Gem from "#/components/icon/gem";
 import { clsx } from "clsx";
 import ButtonLink from "#/components/buttonLink";
 import Dropdown from "#/components/dropdown/dropdown";
-import { LogOut } from "lucide-react";
+import { LogOut, Settings } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 
 export default function Navbar() {
   const { data: user, isLoading } = useUser();
@@ -52,6 +53,10 @@ export default function Navbar() {
                     <p className={navbarStyles["dropdown-email"]}>{user?.email}</p>
                   </div>
                   <Dropdown.Separator />
+                  <Dropdown.Item nativeButton={false} render={<Link to="/account" />}>
+                    <Settings size={16} />
+                    Settings
+                  </Dropdown.Item>
                   <Dropdown.Item onClick={handleSignOut} className={navbarStyles["signout-item"]}>
                     <LogOut size={16} />
                     Sign Out

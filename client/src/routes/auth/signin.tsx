@@ -38,16 +38,7 @@ function RouteComponent() {
       >
         <form.AppForm>
           <form.FormError />
-          <form.AppField
-            name="email"
-            validators={{
-              onChange: ({ value }) => {
-                if (!value) return "Email is required";
-                if (!value.includes("@")) return "Invalid email address";
-                return undefined;
-              },
-            }}
-          >
+          <form.AppField name="email">
             {(field) => (
               <field.TextField label="Email" type="email" disabled={signInMutation.isPending} />
             )}

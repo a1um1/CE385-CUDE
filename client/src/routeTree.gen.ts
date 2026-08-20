@@ -15,6 +15,7 @@ import { Route as baseIndexRouteImport } from './routes/(base)/index'
 import { Route as AuthIndexRouteImport } from './routes/auth/index'
 import { Route as AuthSigninRouteImport } from './routes/auth/signin'
 import { Route as AuthSignupRouteImport } from './routes/auth/signup'
+import { Route as baseAccountIndexRouteImport } from './routes/(base)/account/index'
 
 const baseRouteRoute = baseRouteRouteImport.update({
   id: '/(base)',
@@ -45,6 +46,11 @@ const AuthSignupRoute = AuthSignupRouteImport.update({
   path: '/signup',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const baseAccountIndexRoute = baseAccountIndexRouteImport.update({
+  id: '/account/',
+  path: '/account/',
+  getParentRoute: () => baseRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/auth': typeof AuthRouteRouteWithChildren
@@ -52,12 +58,14 @@ export interface FileRoutesByFullPath {
   '/auth/signup': typeof AuthSignupRoute
   '/': typeof baseIndexRoute
   '/auth/': typeof AuthIndexRoute
+  '/account/': typeof baseAccountIndexRoute
 }
 export interface FileRoutesByTo {
   '/auth/signin': typeof AuthSigninRoute
   '/auth/signup': typeof AuthSignupRoute
   '/': typeof baseIndexRoute
   '/auth': typeof AuthIndexRoute
+  '/account': typeof baseAccountIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -67,12 +75,14 @@ export interface FileRoutesById {
   '/auth/signup': typeof AuthSignupRoute
   '/(base)/': typeof baseIndexRoute
   '/auth/': typeof AuthIndexRoute
+  '/(base)/account/': typeof baseAccountIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/auth' | '/auth/signin' | '/auth/signup' | '/' | '/auth/'
+  fullPaths:
+    '/auth' | '/auth/signin' | '/auth/signup' | '/' | '/auth/' | '/account/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/auth/signin' | '/auth/signup' | '/' | '/auth'
+  to: '/auth/signin' | '/auth/signup' | '/' | '/auth' | '/account'
   id:
     | '__root__'
     | '/(base)'
@@ -81,6 +91,7 @@ export interface FileRouteTypes {
     | '/auth/signup'
     | '/(base)/'
     | '/auth/'
+    | '/(base)/account/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -132,15 +143,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignupRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/(base)/account/': {
+      id: '/(base)/account/'
+      path: '/account'
+      fullPath: '/account/'
+      preLoaderRoute: typeof baseAccountIndexRouteImport
+      parentRoute: typeof baseRouteRoute
+    }
   }
 }
 
 interface baseRouteRouteChildren {
   baseIndexRoute: typeof baseIndexRoute
+  baseAccountIndexRoute: typeof baseAccountIndexRoute
 }
 
 const baseRouteRouteChildren: baseRouteRouteChildren = {
   baseIndexRoute: baseIndexRoute,
+  baseAccountIndexRoute: baseAccountIndexRoute,
 }
 
 const baseRouteRouteWithChildren = baseRouteRoute._addFileChildren(
