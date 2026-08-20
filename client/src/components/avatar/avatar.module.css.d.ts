@@ -9,14 +9,11 @@
 declare const avatar: string;
 declare const error: string;
 
-export {
-	avatar,
-	error
-};
+export { avatar, error };
 
 declare const __default_export__: {
-	avatar: typeof avatar;
-	error: typeof error;
+  avatar: typeof avatar;
+  error: typeof error;
 };
 export default __default_export__;
 //# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiYXZhdGFyLm1vZHVsZS5jc3MuZC50cyIsInNvdXJjZXMiOlsiYXZhdGFyLm1vZHVsZS5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Y0FFQTtjQWdDSzs7O0NBaENMO0NBZ0NLOzs7O0NBaENMO0NBZ0NLOzsifQ==
