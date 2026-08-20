@@ -26,7 +26,7 @@ function RouteComponent() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-background border-2">
+    <div className="flex flex-col items-center justify-center min-h-screen">
       <h1 className="text-3xl font-semibold">Sign In</h1>
       <form onSubmit={handleFormSubmit} className="flex flex-col gap-4">
         <div>
