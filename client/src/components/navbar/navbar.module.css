@@ -55,7 +55,9 @@
   border: none;
   background: none;
   display: inline-flex;
-  transition: transform 150ms ease, box-shadow 150ms ease;
+  transition:
+    transform 150ms ease,
+    box-shadow 150ms ease;
   outline: none;
 }
 
@@ -86,4 +88,3 @@
 .signout-item {
   color: #ef4444 !important;
 }
-

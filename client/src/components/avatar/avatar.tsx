@@ -9,17 +9,10 @@ export interface AvatarProps {
 export default function Avatar({ name, avatarUrl }: AvatarProps) {
   return (
     <BaseAvatar.Root className={avatarStyle.avatar}>
-      {avatarUrl && (
-        <BaseAvatar.Image
-          src={avatarUrl}
-          alt={name}
-          className={avatarStyle.image}
-        />
-      )}
+      {avatarUrl && <BaseAvatar.Image src={avatarUrl} alt={name} className={avatarStyle.image} />}
       <BaseAvatar.Fallback className={avatarStyle.fallback}>
         {name?.[0]?.toUpperCase()}
       </BaseAvatar.Fallback>
     </BaseAvatar.Root>
   );
 }
-
