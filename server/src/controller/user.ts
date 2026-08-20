@@ -18,8 +18,11 @@ export const UserPasswordDefinition = z
   .refine((password) => /[0-9]/.test(password), {
     message: "Password must contain at least one number (0-9).",
   })
-  .refine((password) => /[!@#$%^&*?]/.test(password), {
+  .refine((password) => /[!@#$%^&*?-_]/.test(password), {
     message: "Password must contain at least one special character (!@#$%^&*?).",
+  })
+  .openapi({
+    example: "Password123!",
   });
 
 export const UserSchema = z

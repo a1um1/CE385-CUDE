@@ -10,6 +10,7 @@ import ButtonLink from "#/components/buttonLink";
 import Dropdown from "#/components/dropdown/dropdown";
 import { LogOut, Settings } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import UserBackground from "#/components/userBackground";
 
 export default function Navbar() {
   const { data: user, isLoading } = useUser();
@@ -52,18 +53,10 @@ export default function Navbar() {
                 </Dropdown.Trigger>
                 <Dropdown.Content align="end" sideOffset={8} className="p-0!">
                   <div className={navbarStyles["dropdown-header"]}>
-                    <img
-                      src={
-                        user?.backgroundImage ||
-                        "data:image/gif;base64,R0lGODdhAQABAIABAAAAABTRySwAAAAAAQABAAACAkwBADs="
-                      }
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src =
-                          "data:image/gif;base64,R0lGODdhAQABAIABAAAAABTRySwAAAAAAQABAAACAkwBADs=";
-                      }}
-                      alt="Background"
-                      className={navbarStyles["background"]}
+                    <UserBackground
+                      backgroundUrl={user?.backgroundImage || null}
+                      name={user?.name || ""}
+                      className="max-w-xs"
                     />
                     <div className={navbarStyles["header-info"]}>
                       <Avatar name={user?.name || ""} avatarUrl={user?.profileImage} size="4rem" />

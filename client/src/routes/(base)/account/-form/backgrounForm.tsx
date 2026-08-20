@@ -1,4 +1,5 @@
 import { handleFormMutationError, useAppForm } from "#/components/form";
+import UserBackground from "#/components/userBackground";
 import { useUpdateBackground, useUser } from "#/data/user.data";
 
 export default function BackgroundForm() {
@@ -23,10 +24,10 @@ export default function BackgroundForm() {
     <>
       <div className="flex gap-6 flex-wrap">
         <div>
-          <img
-            src={form.getFieldValue("backgroundImageURL")}
-            alt="Background Preview"
-            className="max-w-xs aspect-video rounded-lg object-cover bg-teal-400"
+          <UserBackground
+            backgroundUrl={form.getFieldValue("backgroundImageURL")}
+            name={user?.name || ""}
+            className="max-w-xs"
           />
         </div>
         <form
@@ -49,11 +50,7 @@ export default function BackgroundForm() {
               )}
             </form.AppField>
 
-            <form.SubmitButton
-              label="Update Background"
-              loadingLabel="Updating Background..."
-              isPending={updateMutation.isPending}
-            />
+            <form.SubmitButton label="Update Background" isPending={updateMutation.isPending} />
           </form.AppForm>
         </form>
       </div>
