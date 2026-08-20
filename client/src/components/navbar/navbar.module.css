@@ -47,3 +47,43 @@
     }
   }
 }
+
+.avatar-trigger {
+  cursor: pointer;
+  border-radius: 50%;
+  padding: 0;
+  border: none;
+  background: none;
+  display: inline-flex;
+  transition: transform 150ms ease, box-shadow 150ms ease;
+  outline: none;
+}
+
+.avatar-trigger:hover {
+  transform: scale(1.05);
+}
+
+.dropdown-header {
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dropdown-username {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-background-text);
+  margin: 0;
+}
+
+.dropdown-email {
+  font-size: 0.75rem;
+  color: var(--color-placeholder);
+  margin: 0;
+}
+
+.signout-item {
+  color: #ef4444 !important;
+}
+

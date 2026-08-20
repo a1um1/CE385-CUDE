@@ -12,13 +12,15 @@ declare const navigationContent: string;
 declare const navigationItems: string;
 declare const userProfile: string;
 declare const badge: string;
+declare const avatarTrigger: string;
+declare const dropdownHeader: string;
+declare const dropdownUsername: string;
+declare const dropdownEmail: string;
+declare const signoutItem: string;
 
 export {
 	navbar,
 	container,
-	navigationContent as "navigation-content",
-	navigationItems as "navigation-items",
-	userProfile as "user-profile",
 	badge
 };
 
@@ -29,6 +31,11 @@ declare const __default_export__: {
 	"navigation-items": typeof navigationItems;
 	"user-profile": typeof userProfile;
 	badge: typeof badge;
+	"avatar-trigger": typeof avatarTrigger;
+	"dropdown-header": typeof dropdownHeader;
+	"dropdown-username": typeof dropdownUsername;
+	"dropdown-email": typeof dropdownEmail;
+	"signout-item": typeof signoutItem;
 };
 export default __default_export__;
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoibmF2YmFyLm1vZHVsZS5jc3MuZC50cyIsInNvdXJjZXMiOlsibmF2YmFyLm1vZHVsZS5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Y0FFQTtjQUdFO2NBV0U7Y0FLRTtjQVVGO2NBS0U7OztDQWxDTjtDQUdFO0NBV0U7Q0FLRTtDQVVGO0NBS0U7Ozs7Q0FsQ047Q0FHRTs7OztDQStCSTs7In0=
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoibmF2YmFyLm1vZHVsZS5jc3MuZC50cyIsInNvdXJjZXMiOlsibmF2YmFyLm1vZHVsZS5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Y0FFQTtjQUdFO2NBV0U7Y0FLRTtjQVVGO2NBS0U7Y0FjTjtjQWVBO2NBT0E7Y0FPQTtjQU1BOzs7Q0FuRkE7Q0FHRTtDQStCSTs7OztDQWxDTjtDQUdFOzs7O0NBK0JJOzs7Ozs7OyJ9

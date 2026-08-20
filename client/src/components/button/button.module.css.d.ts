@@ -23,10 +23,6 @@ export {
 	primary,
 	secondary,
 	ghost,
-	sizeXs as "size-xs",
-	sizeSm as "size-sm",
-	sizeMd as "size-md",
-	sizeLg as "size-lg",
 	block,
 	pilled,
 	square
@@ -46,4 +42,4 @@ declare const __default_export__: {
 	square: typeof square;
 };
 export default __default_export__;
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiYnV0dG9uLm1vZHVsZS5jc3MuZC50cyIsInNvdXJjZXMiOlsiYnV0dG9uLm1vZHVsZS5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Y0FFQTtjQStCRztjQU1BO2NBTUE7Y0FNQTtjQUtBO2NBS0E7Y0FLQTtjQUtBO2NBSUE7Y0FJQTs7O0NBN0VIO0NBK0JHO0NBTUE7Q0FNQTtDQU1BO0NBS0E7Q0FLQTtDQUtBO0NBS0E7Q0FJQTtDQUlBOzs7O0NBN0VIO0NBK0JHO0NBTUE7Q0FNQTs7Ozs7Q0EwQkE7Q0FJQTtDQUlBOzsifQ==
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiYnV0dG9uLm1vZHVsZS5jc3MuZC50cyIsInNvdXJjZXMiOlsiYnV0dG9uLm1vZHVsZS5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Y0FFQTtjQStCRztjQU1BO2NBTUE7Y0FNQTtjQUtBO2NBS0E7Y0FLQTtjQUtBO2NBSUE7Y0FJQTs7O0NBN0VIO0NBK0JHO0NBTUE7Q0FNQTtDQTBCQTtDQUlBO0NBSUE7Ozs7Q0E3RUg7Q0ErQkc7Q0FNQTtDQU1BOzs7OztDQTBCQTtDQUlBO0NBSUE7OyJ9

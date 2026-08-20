@@ -14,12 +14,7 @@ declare const sizeMd: string;
 declare const radiusNone: string;
 
 export {
-	input,
-	noBorder as "no-border",
-	sizeXs as "size-xs",
-	sizeSm as "size-sm",
-	sizeMd as "size-md",
-	radiusNone as "radius-none"
+	input
 };
 
 declare const __default_export__: {
@@ -31,4 +26,4 @@ declare const __default_export__: {
 	"radius-none": typeof radiusNone;
 };
 export default __default_export__;
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5wdXQubW9kdWxlLmNzcy5kLnRzIiwic291cmNlcyI6WyJpbnB1dC5tb2R1bGUuY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7Ozs7O2NBRUE7Y0FrQ0c7Y0FJQTtjQUtBO2NBS0E7Y0FLQTs7O0NBckRIO0NBa0NHO0NBSUE7Q0FLQTtDQUtBO0NBS0E7Ozs7Q0FyREg7Ozs7Ozs7In0=
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5wdXQubW9kdWxlLmNzcy5kLnRzIiwic291cmNlcyI6WyJpbnB1dC5tb2R1bGUuY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7Ozs7O2NBRUE7Y0FrQ0c7Y0FJQTtjQUtBO2NBS0E7Y0FLQTs7O0NBckRIOzs7O0NBQUE7Ozs7Ozs7In0=
