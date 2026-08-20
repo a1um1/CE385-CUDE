@@ -15,7 +15,15 @@ type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {
   render: () => (
-    <div style={{ minHeight: "250px", display: "flex", justifyContent: "center", alignItems: "flex-start", paddingTop: "20px" }}>
+    <div
+      style={{
+        minHeight: "250px",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "flex-start",
+        paddingTop: "20px",
+      }}
+    >
       <Dropdown.Root>
         <Dropdown.Trigger render={<Button variant="primary">Click Me</Button>} />
         <Dropdown.Content align="center" side="bottom" sideOffset={8}>
@@ -31,17 +39,17 @@ export const Playground: Story = {
             <Heart size={16} />
             Favorites
           </Dropdown.Item>
-          
+
           <Dropdown.Separator />
-          
+
           <Dropdown.Item onClick={() => alert("Admin clicked")}>
             <Shield size={16} />
             Admin Panel
           </Dropdown.Item>
-          
+
           <Dropdown.Separator />
-          
-          <Dropdown.Item onClick={() => alert("Logout clicked")} style={{ color: "#ef4444" }}>
+
+          <Dropdown.Item onClick={() => alert("Logout clicked")}>
             <LogOut size={16} />
             Sign Out
           </Dropdown.Item>
@@ -53,7 +61,15 @@ export const Playground: Story = {
 
 export const AlignEnd: Story = {
   render: () => (
-    <div style={{ minHeight: "250px", display: "flex", justifyContent: "center", alignItems: "flex-start", paddingTop: "20px" }}>
+    <div
+      style={{
+        minHeight: "250px",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "flex-start",
+        paddingTop: "20px",
+      }}
+    >
       <Dropdown.Root>
         <Dropdown.Trigger render={<Button variant="secondary">Align End</Button>} />
         <Dropdown.Content align="end">
