@@ -8,6 +8,8 @@ import Streak from "#/components/icon/streak";
 import Gem from "#/components/icon/gem";
 import { clsx } from "clsx";
 import ButtonLink from "#/components/buttonLink";
+import Dropdown from "#/components/dropdown/dropdown";
+import { LogOut } from "lucide-react";
 
 export default function Navbar() {
   const { data: user, isLoading } = useUser();
@@ -33,7 +35,6 @@ export default function Navbar() {
               <span className={clsx(navbarStyles["badge"], "text-gem")}>
                 <Gem /> 500
               </span>
-
               <span className={clsx(navbarStyles["badge"], "text-streak")}>
                 <Streak />2
               </span>
@@ -41,10 +42,22 @@ export default function Navbar() {
                 <Enegry />
                 5x
               </span>
-              <Avatar name={user?.name || ""} avatarUrl={user?.profileImage} />
-              <Button variant="secondary" onClick={handleSignOut}>
-                Sign Out
-              </Button>
+              <Dropdown.Root>
+                <Dropdown.Trigger>
+                  <Avatar name={user?.name || ""} avatarUrl={user?.profileImage} />
+                </Dropdown.Trigger>
+                <Dropdown.Content align="end" sideOffset={8}>
+                  <div className={navbarStyles["dropdown-header"]}>
+                    <p className={navbarStyles["dropdown-username"]}>{user?.name}</p>
+                    <p className={navbarStyles["dropdown-email"]}>{user?.email}</p>
+                  </div>
+                  <Dropdown.Separator />
+                  <Dropdown.Item onClick={handleSignOut} className={navbarStyles["signout-item"]}>
+                    <LogOut size={16} />
+                    Sign Out
+                  </Dropdown.Item>
+                </Dropdown.Content>
+              </Dropdown.Root>
             </>
           ) : (
             <ButtonLink to="/auth/signin">Sign In</ButtonLink>

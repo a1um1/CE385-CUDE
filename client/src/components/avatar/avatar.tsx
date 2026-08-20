@@ -1,3 +1,4 @@
+import { Avatar as BaseAvatar } from "@base-ui/react/avatar";
 import avatarStyle from "./avatar.module.css";
 
 export interface AvatarProps {
@@ -7,18 +8,11 @@ export interface AvatarProps {
 
 export default function Avatar({ name, avatarUrl }: AvatarProps) {
   return (
-    <div className={avatarStyle.avatar} data-initial={name?.[0]?.toUpperCase()}>
-      {avatarUrl && (
-        <img
-          src={avatarUrl}
-          alt={name}
-          onError={(e) => {
-            const target = e.target as HTMLImageElement;
-            target.className = avatarStyle.error || "";
-          }}
-          loading="lazy"
-        />
-      )}
-    </div>
+    <BaseAvatar.Root className={avatarStyle.avatar}>
+      {avatarUrl && <BaseAvatar.Image src={avatarUrl} alt={name} className={avatarStyle.image} />}
+      <BaseAvatar.Fallback className={avatarStyle.fallback}>
+        {name?.[0]?.toUpperCase()}
+      </BaseAvatar.Fallback>
+    </BaseAvatar.Root>
   );
 }

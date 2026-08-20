@@ -1,4 +1,6 @@
-import type { ComponentPropsWithoutRef } from "react";
+import { forwardRef } from "react";
+import { Input as BaseInput } from "@base-ui/react/input";
+import type { InputProps as BaseInputProps } from "@base-ui/react/input";
 import inputStyles from "./input.module.css";
 import { clsx } from "clsx";
 
@@ -13,15 +15,17 @@ export const InputRadius = {
   none: inputStyles["radius-none"],
 };
 
-export interface InputProps extends Omit<ComponentPropsWithoutRef<"input">, "size"> {
+export interface InputProps extends Omit<BaseInputProps, "size"> {
   size?: keyof typeof InputSizes;
   radius?: keyof typeof InputRadius;
   noBorder?: boolean;
 }
 
-export default function Input({ className, size, radius, noBorder, ...props }: InputProps) {
-  return (
-    <input
+const Input = forwardRef<HTMLInputElement, InputProps>(
+  ({ className, size, radius, noBorder, ...props }, ref) => (
+    <BaseInput
+      {...props}
+      ref={ref}
       className={clsx(
         inputStyles.input,
         size && InputSizes[size],
@@ -29,7 +33,10 @@ export default function Input({ className, size, radius, noBorder, ...props }: I
         noBorder && inputStyles["no-border"],
         className,
       )}
-      {...props}
     />
-  );
-}
+  ),
+);
+
+Input.displayName = "Input";
+
+export default Input;

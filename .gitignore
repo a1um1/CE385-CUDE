@@ -19,3 +19,4 @@ todos.json
 server/src/generated/prisma/
 *storybook.log
 storybook-static
+*.module.css.d.ts
