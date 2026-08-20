@@ -21,7 +21,15 @@ declare const signoutItem: string;
 export {
 	navbar,
 	container,
-	badge
+	navigationContent as "navigation-content",
+	navigationItems as "navigation-items",
+	userProfile as "user-profile",
+	badge,
+	avatarTrigger as "avatar-trigger",
+	dropdownHeader as "dropdown-header",
+	dropdownUsername as "dropdown-username",
+	dropdownEmail as "dropdown-email",
+	signoutItem as "signout-item"
 };
 
 declare const __default_export__: {
@@ -38,4 +46,4 @@ declare const __default_export__: {
 	"signout-item": typeof signoutItem;
 };
 export default __default_export__;
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoibmF2YmFyLm1vZHVsZS5jc3MuZC50cyIsInNvdXJjZXMiOlsibmF2YmFyLm1vZHVsZS5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Y0FFQTtjQUdFO2NBV0U7Y0FLRTtjQVVGO2NBS0U7Y0FjTjtjQWVBO2NBT0E7Y0FPQTtjQU1BOzs7Q0FuRkE7Q0FHRTtDQStCSTs7OztDQWxDTjtDQUdFOzs7O0NBK0JJOzs7Ozs7OyJ9
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoibmF2YmFyLm1vZHVsZS5jc3MuZC50cyIsInNvdXJjZXMiOlsibmF2YmFyLm1vZHVsZS5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Y0FFQTtjQUdFO2NBV0U7Y0FLRTtjQVVGO2NBS0U7Y0FjTjtjQWVBO2NBT0E7Y0FPQTtjQU1BOzs7Q0FuRkE7Q0FHRTtDQVdFO0NBS0U7Q0FVRjtDQUtFO0NBY047Q0FlQTtDQU9BO0NBT0E7Q0FNQTs7OztDQW5GQTtDQUdFOzs7O0NBK0JJOzs7Ozs7OyJ9

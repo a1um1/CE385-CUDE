@@ -1,8 +1,7 @@
 import { forwardRef } from "react";
-import ButtonStyles from "../button/button.module.css";
-import { clsx } from "clsx";
 import { createLink } from "@tanstack/react-router";
-import { ButtonRadius, ButtonSizes, ButtonVariants } from "#/components/button/button";
+import Button from "#/components/button/button";
+import type { ButtonRadius, ButtonSizes, ButtonVariants } from "#/components/button/button";
 
 interface BasicLinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   variant?: keyof typeof ButtonVariants;
@@ -13,20 +12,15 @@ interface BasicLinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
 
 const BasicLinkComponent = forwardRef<HTMLAnchorElement, BasicLinkProps>(
   ({ variant = "primary", size = "md", radius = "none", block, ...props }, ref) => (
-    <a
-      {...props}
+    <Button
+      {...(props as any)}
       ref={ref}
-      className={clsx(
-        ButtonStyles.button,
-        ButtonVariants[variant] || ButtonStyles.primary,
-        ButtonSizes[size] || ButtonStyles["size-md"],
-        ButtonRadius[radius] || undefined,
-        block && ButtonStyles.block,
-        props.className,
-      )}
-    >
-      {props.children}
-    </a>
+      variant={variant}
+      size={size}
+      radius={radius}
+      block={block}
+      render={<a />}
+    />
   ),
 );
 

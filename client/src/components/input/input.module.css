@@ -28,8 +28,8 @@
     color: var(--color-placeholder);
   }
 
-  &:disabled,
-  &:readonly {
+  &[data-disabled],
+  &[data-readonly] {
     opacity: 0.5;
     cursor: not-allowed;
   }

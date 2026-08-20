@@ -7,16 +7,19 @@
  */
 
 declare const avatar: string;
-declare const error: string;
+declare const fallback: string;
+declare const image: string;
 
 export {
 	avatar,
-	error
+	fallback,
+	image
 };
 
 declare const __default_export__: {
 	avatar: typeof avatar;
-	error: typeof error;
+	fallback: typeof fallback;
+	image: typeof image;
 };
 export default __default_export__;
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiYXZhdGFyLm1vZHVsZS5jc3MuZC50cyIsInNvdXJjZXMiOlsiYXZhdGFyLm1vZHVsZS5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Y0FFQTtjQWdDSzs7O0NBaENMO0NBZ0NLOzs7O0NBaENMO0NBZ0NLOzsifQ==
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiYXZhdGFyLm1vZHVsZS5jc3MuZC50cyIsInNvdXJjZXMiOlsiYXZhdGFyLm1vZHVsZS5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Y0FFQTtjQWlCQTtjQWNBOzs7Q0EvQkE7Q0FpQkE7Q0FjQTs7OztDQS9CQTtDQWlCQTtDQWNBOzsifQ==

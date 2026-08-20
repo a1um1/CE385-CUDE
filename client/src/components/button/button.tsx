@@ -1,4 +1,6 @@
-import type { ComponentPropsWithoutRef } from "react";
+import { forwardRef } from "react";
+import { Button as BaseButton } from "@base-ui/react/button";
+import type { ButtonProps as BaseButtonProps } from "@base-ui/react/button";
 import ButtonStyles from "./button.module.css";
 import { clsx } from "clsx";
 
@@ -21,33 +23,33 @@ export const ButtonRadius = {
   square: ButtonStyles.square,
 } as const;
 
-export interface ButtonProps extends ComponentPropsWithoutRef<"button"> {
+export interface ButtonProps extends BaseButtonProps {
   variant?: keyof typeof ButtonVariants;
   size?: keyof typeof ButtonSizes;
   radius?: keyof typeof ButtonRadius;
   block?: boolean;
 }
 
-export default function Button({
-  variant = "primary",
-  size = "md",
-  radius = "none",
-  block = false,
-  ...props
-}: ButtonProps) {
-  return (
-    <button
+const Button = forwardRef<HTMLElement, ButtonProps>(
+  (
+    { variant = "primary", size = "md", radius = "none", block = false, className, ...props },
+    ref,
+  ) => (
+    <BaseButton
       {...props}
+      ref={ref}
       className={clsx(
         ButtonStyles.button,
         ButtonVariants[variant] || ButtonStyles.primary,
         ButtonSizes[size] || ButtonStyles["size-md"],
         ButtonRadius[radius] || undefined,
         block && ButtonStyles.block,
-        props.className,
+        className,
       )}
-    >
-      {props.children}
-    </button>
-  );
-}
+    />
+  ),
+);
+
+Button.displayName = "Button";
+
+export default Button;
