@@ -88,7 +88,6 @@ function RouteComponent() {
 
           <form.SubmitButton
             label="Sign Up"
-            loadingLabel="Signing Up..."
             isPending={signUpMutation.isPending}
             block
             className="mt-2"
