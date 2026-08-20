@@ -35,7 +35,6 @@ export default function Navbar() {
               <span className={clsx(navbarStyles["badge"], "text-gem")}>
                 <Gem /> 500
               </span>
-
               <span className={clsx(navbarStyles["badge"], "text-streak")}>
                 <Streak />2
               </span>
@@ -44,7 +43,7 @@ export default function Navbar() {
                 5x
               </span>
               <Dropdown.Root>
-                <Dropdown.Trigger className={navbarStyles["avatar-trigger"]}>
+                <Dropdown.Trigger>
                   <Avatar name={user?.name || ""} avatarUrl={user?.profileImage} />
                 </Dropdown.Trigger>
                 <Dropdown.Content align="end" sideOffset={8}>

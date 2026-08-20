@@ -48,23 +48,6 @@
   }
 }
 
-.avatar-trigger {
-  cursor: pointer;
-  border-radius: 50%;
-  padding: 0;
-  border: none;
-  background: none;
-  display: inline-flex;
-  transition:
-    transform 150ms ease,
-    box-shadow 150ms ease;
-  outline: none;
-}
-
-.avatar-trigger:hover {
-  transform: scale(1.05);
-}
-
 .dropdown-header {
   padding: 6px 10px;
   display: flex;
@@ -86,5 +69,9 @@
 }
 
 .signout-item {
-  color: #ef4444 !important;
+  color: #ef4444;
+
+  &:hover {
+    color: white;
+  }
 }
