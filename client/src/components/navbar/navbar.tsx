@@ -7,9 +7,10 @@ import navbarStyles from "./navbar.module.css";
 import Streak from "#/components/icon/streak";
 import Gem from "#/components/icon/gem";
 import { clsx } from "clsx";
+import ButtonLink from "#/components/buttonLink";
 
 export default function Navbar() {
-  const { data: user, isLoading, error } = useUser();
+  const { data: user, isLoading } = useUser();
   const signOut = useSignOut();
   const handleSignOut = () => {
     signOut.mutate();
@@ -46,7 +47,7 @@ export default function Navbar() {
               </Button>
             </>
           ) : (
-            <Button>Sign In</Button>
+            <ButtonLink to="/auth/signin">Sign In</ButtonLink>
           )}
         </div>
       </div>

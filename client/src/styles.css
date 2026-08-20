@@ -43,7 +43,13 @@
   --size-lg-padding: 1rem 3rem;
   --size-lg-font-size: 1.25rem;
 
-  --container-size: 1024px;
+  --container-size: 1280px;
+}
+
+.container {
+  max-width: var(--container-size);
+  margin: 0 auto;
+  width: 100%;
 }
 
 * {
