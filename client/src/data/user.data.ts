@@ -62,7 +62,7 @@ export const useUpdateAvatar = () => {
         body,
       });
       if (error || !data) throw error;
-      await queryClient.resetQueries({ queryKey: ["user"] });
+      await queryClient.invalidateQueries({ queryKey: ["user"] });
       return data;
     },
   });
@@ -78,8 +78,20 @@ export const useUpdateBackground = () => {
         body,
       });
       if (error || !data) throw error;
-      await queryClient.resetQueries({ queryKey: ["user"] });
+      await queryClient.invalidateQueries({ queryKey: ["user"] });
       return data;
     },
   });
 };
+
+export const useUpdatePassword = () =>
+  useMutation({
+    mutationKey: ["updatePassword"],
+    mutationFn: async (body: ExtractRequestBody<"/user/password", "post">) => {
+      const { data, error } = await APIclient.POST("/user/password", {
+        body,
+      });
+      if (error || !data) throw error;
+      return data;
+    },
+  });

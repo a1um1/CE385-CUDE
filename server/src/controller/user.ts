@@ -5,12 +5,29 @@ import { z } from "#/lib/extendZod";
 import type zod from "zod";
 import UserError from "#/lib/userError";
 
+export const UserPasswordDefinition = z
+  .string()
+  .min(8, { message: "Password must be at least 8 characters long." })
+  .max(20, { message: "Password cannot exceed 20 characters." })
+  .refine((password) => /[A-Z]/.test(password), {
+    message: "Password must contain at least one uppercase letter (A-Z).",
+  })
+  .refine((password) => /[a-z]/.test(password), {
+    message: "Password must contain at least one lowercase letter (a-z).",
+  })
+  .refine((password) => /[0-9]/.test(password), {
+    message: "Password must contain at least one number (0-9).",
+  })
+  .refine((password) => /[!@#$%^&*?]/.test(password), {
+    message: "Password must contain at least one special character (!@#$%^&*?).",
+  });
+
 export const UserSchema = z
   .object({
     id: z.string().openapi({ example: "123456" }),
     name: z.string().openapi({ example: "John Doe" }),
     email: z.email().openapi({ example: "email@gmail.com" }),
-    password: z.string().openapi({ example: "password123" }),
+    password: UserPasswordDefinition,
     epithet: z.string().nullable().openapi({ example: "The Brave" }),
     role: z.enum(["USER", "ADMIN"]).openapi({ example: "USER" }),
     profileImage: z.string().nullable().openapi({ example: "https://example.com/profile.jpg" }),
@@ -40,6 +57,13 @@ export const UserUpdateBackgroundSchema = z
   })
   .openapi("UserUpdateBackground");
 
+export const UserUpdatePasswordSchema = z
+  .object({
+    currentPassword: z.string().openapi({ example: "currentPassword123" }),
+    newPassword: UserPasswordDefinition,
+  })
+  .openapi("UserUpdatePassword");
+
 export const UserSafeSchema = UserSchema.omit({
   password: true,
   reactivatedAt: true,
@@ -62,6 +86,7 @@ export type userCreationSchema = zod.infer<typeof UserCreationSchema>;
 export type userValidationSchema = zod.infer<typeof UserValidationSchema>;
 export type userUpdateAvatarSchema = zod.infer<typeof UserUpdateAvatarSchema>;
 export type userUpdateBackgroundSchema = zod.infer<typeof UserUpdateBackgroundSchema>;
+export type userUpdatePasswordSchema = zod.infer<typeof UserUpdatePasswordSchema>;
 
 export default class UserController {
   private user?: userSchema;
@@ -92,6 +117,17 @@ export default class UserController {
       data: { backgroundImage: data.backgroundImageURL },
     });
     this.user.backgroundImage = data.backgroundImageURL;
+  }
+
+  async updatePassword(data: userUpdatePasswordSchema) {
+    if (!this.user) throw new Error("User not found");
+    const isPasswordValid = await bcrypt.compare(data.currentPassword, this.user.password);
+    if (!isPasswordValid) throw new UserError(400, "Current password is incorrect");
+    const hashedPassword = await bcrypt.hash(data.newPassword, 12);
+    await db.user.update({
+      where: { id: this.user.id },
+      data: { password: hashedPassword },
+    });
   }
 
   static async getUserById(userId: string): Promise<UserController> {

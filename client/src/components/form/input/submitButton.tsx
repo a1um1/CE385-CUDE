@@ -1,13 +1,14 @@
 import Button from "#/components/button";
+import type { ButtonProps } from "#/components/button/button";
+import { Loader2 } from "lucide-react";
 import { useFormContext } from "../form";
 
 export interface SubmitButtonProps extends Omit<ButtonProps, "disabled"> {
   label: string;
-  loadingLabel?: string;
   isPending?: boolean;
 }
 
-export function SubmitButton({ label, loadingLabel, isPending, ...props }: SubmitButtonProps) {
+export function SubmitButton({ label, isPending, ...props }: SubmitButtonProps) {
   const form = useFormContext();
 
   return (
@@ -16,7 +17,8 @@ export function SubmitButton({ label, loadingLabel, isPending, ...props }: Submi
         const loading = isSubmitting || isPending;
         return (
           <Button type="submit" {...props} disabled={!canSubmit || loading}>
-            {loading ? (loadingLabel ?? "Submitting...") : label}
+            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {label}
           </Button>
         );
       }}

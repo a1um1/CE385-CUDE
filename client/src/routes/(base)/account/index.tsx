@@ -1,5 +1,6 @@
 import AvatarForm from "#/routes/(base)/account/-form/avatarForm";
 import BackgroundForm from "#/routes/(base)/account/-form/backgrounForm";
+import UpdatePasswordForm from "#/routes/(base)/account/-form/passwordForm";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/(base)/account/")({
@@ -8,10 +9,11 @@ export const Route = createFileRoute("/(base)/account/")({
 
 function RouteComponent() {
   return (
-    <div>
+    <>
       <h1 className="text-4xl font-bold italic">Settings</h1>
       <AvatarForm />
       <BackgroundForm />
-    </div>
+      <UpdatePasswordForm />
+    </>
   );
 }

@@ -22,7 +22,6 @@ export default function AvatarForm() {
 
   return (
     <>
-      <h2 className="text-2xl font-italic mb-4">Change Avatar</h2>
       <div className="flex gap-6 flex-wrap">
         <Avatar avatarUrl={form.getFieldValue("profileImageURL")} name={user?.name} size="12rem" />
         <form
@@ -45,13 +44,7 @@ export default function AvatarForm() {
               )}
             </form.AppField>
 
-            <form.SubmitButton
-              label="Update Avatar"
-              loadingLabel="Updating Avatar..."
-              isPending={updateMutation.isPending}
-              block
-              className="mt-2"
-            />
+            <form.SubmitButton label="Update Avatar" isPending={updateMutation.isPending} />
           </form.AppForm>
         </form>
       </div>

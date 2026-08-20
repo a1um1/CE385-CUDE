@@ -3,10 +3,12 @@ import {
   UserSafeSchema,
   UserUpdateAvatarSchema,
   UserUpdateBackgroundSchema,
+  UserUpdatePasswordSchema,
   UserValidationSchema,
 } from "#/controller/user";
 import AuthenticationController, { authenticationSchema } from "#/controller/authentication";
 import CustomRouter from "#/lib/customRouter";
+import { GenericResponseSchema } from "#/lib/genericResponse";
 
 const authController = new AuthenticationController();
 
@@ -55,12 +57,14 @@ userRoute
       tags: ["User"],
       summary: "Update user avatar",
       body: UserUpdateAvatarSchema,
-      response: UserSafeSchema,
+      response: GenericResponseSchema,
       authentication: true,
     },
     async ({ user, body }) => {
       await user.updateAvatar(body);
-      return user.json;
+      return {
+        message: "Avatar updated successfully",
+      };
     },
   )
   .post(
@@ -69,12 +73,28 @@ userRoute
       tags: ["User"],
       summary: "Update user background",
       body: UserUpdateBackgroundSchema,
-      response: UserSafeSchema,
+      response: GenericResponseSchema,
       authentication: true,
     },
     async ({ user, body }) => {
       await user.updateBackground(body);
-      return user.json;
+      return {
+        message: "Background updated successfully",
+      };
+    },
+  )
+  .post(
+    "/user/password",
+    {
+      tags: ["User"],
+      summary: "Update user password",
+      body: UserUpdatePasswordSchema,
+      response: GenericResponseSchema,
+      authentication: true,
+    },
+    async ({ user, body }) => {
+      await user.updatePassword(body);
+      return { message: "Password updated successfully" };
     },
   );
 

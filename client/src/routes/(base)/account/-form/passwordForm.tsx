@@ -1,17 +1,17 @@
 import { handleFormMutationError, useAppForm } from "#/components/form";
-import { useUpdateBackground, useUser } from "#/data/user.data";
+import { useUpdatePassword } from "#/data/user.data";
 
-export default function BackgroundForm() {
-  const { data: user } = useUser();
-  const updateMutation = useUpdateBackground();
+export default function UpdatePasswordForm() {
+  const updateMutation = useUpdatePassword();
   const form = useAppForm({
     defaultValues: {
-      backgroundImageURL: user?.backgroundImage || "",
+      currentPassword: "",
+      newPassword: "",
     } as Parameters<typeof updateMutation.mutateAsync>[0],
     onSubmit: async ({ value }) => {
       try {
         await updateMutation.mutateAsync(value);
-        alert("Background updated successfully!");
+        alert("Password updated successfully!");
       } catch (error) {
         console.error("Sign-in failed:", error);
         handleFormMutationError(form, error);
@@ -22,13 +22,6 @@ export default function BackgroundForm() {
   return (
     <>
       <div className="flex gap-6 flex-wrap">
-        <div>
-          <img
-            src={form.getFieldValue("backgroundImageURL")}
-            alt="Background Preview"
-            className="max-w-xs aspect-video rounded-lg object-cover bg-teal-400"
-          />
-        </div>
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -39,21 +32,27 @@ export default function BackgroundForm() {
         >
           <form.AppForm>
             <form.FormError />
-            <form.AppField name="backgroundImageURL">
+            <form.AppField name="currentPassword">
               {(field) => (
                 <field.TextField
-                  label="Background Image URL"
-                  type="text"
+                  label="Current Password"
+                  type="password"
                   disabled={updateMutation.isPending}
                 />
               )}
             </form.AppField>
 
-            <form.SubmitButton
-              label="Update Background"
-              loadingLabel="Updating Background..."
-              isPending={updateMutation.isPending}
-            />
+            <form.AppField name="newPassword">
+              {(field) => (
+                <field.TextField
+                  label="New Password"
+                  type="password"
+                  disabled={updateMutation.isPending}
+                />
+              )}
+            </form.AppField>
+
+            <form.SubmitButton label="Update Password" isPending={updateMutation.isPending} />
           </form.AppForm>
         </form>
       </div>

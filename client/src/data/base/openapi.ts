@@ -191,7 +191,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["UserSafeData"];
+                        "application/json": components["schemas"]["GenericResponse"];
                     };
                 };
                 /** @description Validation error */
@@ -245,7 +245,61 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["UserSafeData"];
+                        "application/json": components["schemas"]["GenericResponse"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/user/password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Update user password */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["UserUpdatePassword"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["GenericResponse"];
                     };
                 };
                 /** @description Validation error */
@@ -484,6 +538,10 @@ export interface components {
              */
             updatedAt: string;
         };
+        GenericResponse: {
+            /** @example Operation completed successfully */
+            message: string;
+        };
         UserUpdateAvatar: {
             /** @example https://example.com/profile.jpg */
             profileImageURL: string | null;
@@ -491,6 +549,12 @@ export interface components {
         UserUpdateBackground: {
             /** @example https://example.com/profile.jpg */
             backgroundImageURL: string | null;
+        };
+        UserUpdatePassword: {
+            /** @example currentPassword123 */
+            currentPassword: string;
+            /** @example newPassword123 */
+            newPassword: string;
         };
         Test: {
             /** @example 123456 */
