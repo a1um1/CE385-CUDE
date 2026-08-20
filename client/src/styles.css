@@ -6,6 +6,15 @@
   --color-primary-text: oklch(100% 0.00011 271.152);
   --color-primary-hover: oklch(60.383% 0.21402 7.99);
 
+  --color-energy: #ffd375;
+  --color-energy-outline: #a06f06;
+
+  --color-streak: var(--color-primary);
+  --color-streak-outline: #9f1e42;
+
+  --color-gem: #c77dff;
+  --color-gem-outline: #9d4edd;
+
   --color-background: oklch(22.383% 0.03083 267.192);
   --color-background-text: oklch(100% 0.00011 271.152);
 
@@ -33,6 +42,14 @@
 
   --size-lg-padding: 1rem 3rem;
   --size-lg-font-size: 1.25rem;
+
+  --container-size: 1280px;
+}
+
+.container {
+  max-width: var(--container-size);
+  margin: 0 auto;
+  width: 100%;
 }
 
 * {

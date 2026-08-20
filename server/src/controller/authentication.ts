@@ -50,7 +50,6 @@ export default class AuthenticationController {
       name: user.json.name,
       email: user.json.email,
     });
-
     return { token, user };
   }
 

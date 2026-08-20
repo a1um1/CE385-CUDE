@@ -1,4 +1,4 @@
 {
-  "ignorePatterns": ["**/openapi.ts", "**/routeTree.gen.ts"],
+  "ignorePatterns": ["**/openapi.ts", "**/routeTree.gen.ts", "**/*.module.css.d.ts"],
   "extends": ["../.oxfmtrc.json"]
 }

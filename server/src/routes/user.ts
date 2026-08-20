@@ -11,7 +11,7 @@ userRoute
     "/user/signup",
     {
       tags: ["User"],
-      summary: "User signup route",
+      summary: "User signup",
       body: UserCreationSchema,
       response: authenticationSchema,
     },
@@ -24,7 +24,7 @@ userRoute
     "/user/signin",
     {
       tags: ["User"],
-      summary: "User signin route",
+      summary: "User signin",
       body: UserValidationSchema,
       response: authenticationSchema,
     },
@@ -37,7 +37,7 @@ userRoute
     "/user",
     {
       tags: ["User"],
-      summary: "User token validation route",
+      summary: "User information",
       response: UserSafeSchema,
       authentication: true,
     },

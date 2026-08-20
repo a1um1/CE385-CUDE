@@ -1,0 +1,48 @@
+@reference "../../styles.css";
+
+.avatar {
+  --size: 3rem;
+  --text-size: 1.5rem;
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-primary);
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: none;
+
+  &::before {
+    content: attr(data-initial);
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 600;
+    text-transform: uppercase;
+    user-select: none;
+    inset: 0;
+    font-size: var(--text-size);
+    color: var(--color-primary-text);
+  }
+
+  img.error {
+    display: none;
+  }
+
+  img {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    user-select: none;
+  }
+}

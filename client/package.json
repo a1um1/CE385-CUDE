@@ -14,7 +14,8 @@
     "format:check": "oxfmt --check",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "ts:check": "tsc --noEmit"
+    "ts:check": "tsc --noEmit",
+    "css:generate": "vite-css-modules"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
@@ -26,6 +27,7 @@
     "@tanstack/react-start": "latest",
     "@vitejs/plugin-react": "^6.0.5",
     "clsx": "^2.1.1",
+    "lucide-react": "^1.33.0",
     "openapi-fetch": "^0.17.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
@@ -49,6 +51,11 @@
     "onlyBuiltDependencies": [
       "esbuild",
       "lightningcss"
+    ]
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
     ]
   }
 }

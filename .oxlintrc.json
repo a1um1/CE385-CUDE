@@ -32,7 +32,8 @@
     "curly": ["error", "multi-line"],
     "oxc/no-async-endpoint-handlers": "off",
     "max-statements": ["error", 30],
-    "react/exhaustive-deps": "off"
+    "react/exhaustive-deps": "off",
+    "unicorn/no-null": "off"
   },
   "settings": {
     "jsx-a11y": {

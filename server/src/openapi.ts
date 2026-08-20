@@ -10,3 +10,10 @@ export function generateOpenApiDocument() {
     servers: [{ url: "http://localhost:3000" }],
   });
 }
+
+  registry.registerComponent("securitySchemes", "Bearer", {
+    'type': 'http',
+    scheme: "bearer",
+    bearerFormat: "JWT",
+    in: "header",
+  });
