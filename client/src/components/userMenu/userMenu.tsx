@@ -31,6 +31,12 @@ export default function UserMenu() {
           </div>
         </div>
         <div className="p-2">
+          {user.role === "ADMIN" && (
+            <Dropdown.Item nativeButton={false} render={<Link to="/admin" />}>
+              <Settings size={16} />
+              Admin Panel
+            </Dropdown.Item>
+          )}
           <Dropdown.Item nativeButton={false} render={<Link to="/account" />}>
             <Settings size={16} />
             Settings

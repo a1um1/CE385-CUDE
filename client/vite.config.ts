@@ -16,7 +16,11 @@ const config = defineConfig({
     }),
     devtools(),
     tailwindcss(),
-    tanstackStart(),
+    tanstackStart({
+      router: {
+        routeFileIgnorePattern: "\\.module\\.css\\.d\\.ts$",
+      },
+    }),
     viteReact(),
   ],
   build: {
