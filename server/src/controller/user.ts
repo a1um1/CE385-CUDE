@@ -137,7 +137,22 @@ export default class UserController {
   }
 
   static async getUserById(userId: string): Promise<UserController> {
-    const user = await db.user.findUniqueOrThrow({ where: { id: userId } });
+    const user = await db.user.findUniqueOrThrow({
+      where: { id: userId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        profileImage: true,
+        backgroundImage: true,
+        createdAt: true,
+        updatedAt: true,
+        reactivatedAt: true,
+        epithet: true,
+        isActive: true,
+      },
+    });
     return new UserController(user);
   }
 
