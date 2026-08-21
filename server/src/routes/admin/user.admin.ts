@@ -18,7 +18,7 @@ export const AdminUserListResponseSchema = z
 
 const adminUserRouter = new CustomRouter({
   prefix: "/admin/user",
-  tags: ["Admin", "User"],
+  tags: ["Admin User Management"],
   authentication: ["ADMIN"],
 }).get(
   "/",

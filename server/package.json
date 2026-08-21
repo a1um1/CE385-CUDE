@@ -6,7 +6,7 @@
     "#/*": "./src/*.ts"
   },
   "scripts": {
-    "dev": "node --watch src/server.ts",
+    "dev": "tsx watch src/server.ts",
     "lint": "oxlint",
     "format:check": "oxfmt --check",
     "db:migrate": "prisma migrate dev --name auto && prisma generate",
@@ -36,7 +36,8 @@
     "@types/node": "^26.2.0",
     "@types/pg": "^8.21.0",
     "openapi-typescript": "^7.13.0",
-    "prisma": "^7.9.1"
+    "prisma": "^7.9.1",
+    "tsx": "^4.23.12"
   },
   "overrides": {
     "openapi-typescript": {
