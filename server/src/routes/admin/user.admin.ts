@@ -30,6 +30,19 @@ const adminUserRouter = new CustomRouter({
   async ({ query }) => {
     const users = await db.user.findMany({
       take: query.perPage,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        profileImage: true,
+        backgroundImage: true,
+        createdAt: true,
+        updatedAt: true,
+        reactivatedAt: true,
+        epithet: true,
+        isActive: true,
+      },
       cursor: query.cursor ? { id: query.cursor } : undefined,
     });
     return {
