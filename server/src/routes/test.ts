@@ -10,13 +10,13 @@ export const TestSchema = z
 
 export const TestSendSchema = TestSchema;
 
-const testRoute = new CustomRouter();
-
-testRoute
+const testRoute = new CustomRouter({
+  prefix: "/test",
+  tags: ["Test"],
+})
   .get(
-    "/test",
+    "/",
     {
-      tags: ["Test"],
       summary: "Random Number",
       query: TestSchema,
       response: TestSchema,
@@ -29,7 +29,7 @@ testRoute
     },
   )
   .get(
-    "/test/error",
+    "/error",
     {
       tags: ["Test"],
       summary: "Handled Error",
@@ -39,10 +39,10 @@ testRoute
     },
   )
   .get(
-    "/test/unhandled-error",
+    "/unhandled-error",
     {
       tags: ["Test"],
-      summary: "Handled Error",
+      summary: "Unhandled Error",
     },
     async () => {
       throw new Error("unhandled Error");

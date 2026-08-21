@@ -92,16 +92,15 @@ export type userUpdateBackgroundSchema = zod.infer<typeof UserUpdateBackgroundSc
 export type userUpdatePasswordSchema = zod.infer<typeof UserUpdatePasswordSchema>;
 
 export default class UserController {
-  private user?: userSchema;
+  private user?: userSafeSchema;
 
-  constructor(user: userSchema) {
+  constructor(user: userSafeSchema) {
     this.user = user;
   }
 
   get json(): userSafeSchema {
     if (!this.user) throw new Error("User not found");
-    const { password: _password, ...userSafeData } = this.user;
-    return userSafeData satisfies userSafeSchema;
+    return this.user;
   }
 
   async updateAvatar(data: userUpdateAvatarSchema) {
@@ -124,7 +123,11 @@ export default class UserController {
 
   async updatePassword(data: userUpdatePasswordSchema) {
     if (!this.user) throw new Error("User not found");
-    const isPasswordValid = await bcrypt.compare(data.currentPassword, this.user.password);
+    const userRecord = await db.user.findUniqueOrThrow({
+      where: { id: this.user.id },
+      select: { password: true },
+    });
+    const isPasswordValid = await bcrypt.compare(data.currentPassword, userRecord.password);
     if (!isPasswordValid) throw new UserError(400, "Current password is incorrect");
     const hashedPassword = await bcrypt.hash(data.newPassword, 12);
     await db.user.update({
@@ -134,7 +137,22 @@ export default class UserController {
   }
 
   static async getUserById(userId: string): Promise<UserController> {
-    const user = await db.user.findUniqueOrThrow({ where: { id: userId } });
+    const user = await db.user.findUniqueOrThrow({
+      where: { id: userId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        profileImage: true,
+        backgroundImage: true,
+        createdAt: true,
+        updatedAt: true,
+        reactivatedAt: true,
+        epithet: true,
+        isActive: true,
+      },
+    });
     return new UserController(user);
   }
 

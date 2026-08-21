@@ -10,8 +10,8 @@ import { HTTPstatus } from "#/lib/httpStatus";
 import UserError from "#/lib/userError";
 
 type RequestObject = ZodObject<any, any> | undefined;
-type AuthenticationObject = true | Role[] | undefined;
-type HTTPpath = string | RegExp;
+type AuthenticationObject = boolean | Role[] | undefined;
+type HTTPpath = string;
 
 type InferOrAny<T> = [T] extends [undefined]
   ? any
@@ -32,20 +32,7 @@ type RouteHandler<
   params: InferOrAny<TParams>;
   query: InferOrAny<TQuery>;
   headers: IncomingHttpHeaders;
-  user: TAuth extends undefined ? undefined : UserController;
-  status: HTTPstatus;
-}) => Promise<InferOrAny<TResponse>> | InferOrAny<TResponse>;
-
-type RouteHandlerWithoutBody<
-  TParams extends RequestObject = undefined,
-  TQuery extends RequestObject = undefined,
-  TResponse extends ZodType<any> | undefined = undefined,
-  TAuth extends AuthenticationObject = undefined,
-> = (req: {
-  params: InferOrAny<TParams>;
-  query: InferOrAny<TQuery>;
-  headers: IncomingHttpHeaders;
-  user: TAuth extends undefined ? undefined : UserController;
+  user: TAuth extends true | Role[] ? UserController : undefined;
   status: HTTPstatus;
 }) => Promise<InferOrAny<TResponse>> | InferOrAny<TResponse>;
 
@@ -56,6 +43,7 @@ interface RouteConfig<
   TResponse extends ZodType<any> | undefined = undefined,
   TAuth extends AuthenticationObject = undefined,
 > {
+  prefix?: string;
   tags?: string[];
   summary?: string;
   params?: TParams;
@@ -66,9 +54,24 @@ interface RouteConfig<
   authentication?: TAuth;
 }
 
-export default class CustomRouter {
+export default class CustomRouter<TDefaultAuth extends AuthenticationObject = undefined> {
   private router = Router();
+  private defaultConfig: RouteConfig<any, any, any, any, TDefaultAuth> = {
+    prefix: undefined,
+  };
+
   private authController = new AuthenticationController();
+
+  constructor(defaultConfig?: RouteConfig<any, any, any, any, TDefaultAuth>) {
+    if (defaultConfig) {
+      this.defaultConfig = defaultConfig;
+    }
+  }
+
+  private mergePath(prefix = "", path = ""): HTTPpath {
+    const combined = `${prefix || ""}/${path || ""}`.replace(/\/+/g, "/").replace(/\/$/, "");
+    return combined.startsWith("/") ? combined || "/" : `/${combined}`;
+  }
 
   get route() {
     return this.router;
@@ -115,7 +118,10 @@ export default class CustomRouter {
     config: RouteConfig<any, any, any, any, TAuth>,
   ): RequestHandler {
     return async (req, res, next) => {
-      const auth = config.authentication;
+      const auth =
+        config.authentication !== undefined
+          ? config.authentication
+          : this.defaultConfig.authentication;
       if (!auth) return next();
 
       const roleToCheck = (Array.isArray(auth) ? auth : ["USER", "ADMIN"]) as Role[];
@@ -138,6 +144,11 @@ export default class CustomRouter {
   private registerOpenAPI(
     config: RouteConfig<any, any, any, any, any> & { method: Method; path: HTTPpath },
   ) {
+    const auth =
+      config.authentication !== undefined
+        ? config.authentication
+        : this.defaultConfig.authentication;
+
     registry.registerPath({
       method: config.method,
       //convert express path params to openapi path params
@@ -151,7 +162,7 @@ export default class CustomRouter {
           body: { content: { "application/json": { schema: config.body } } },
         }),
       },
-      security: config.authentication ? [{ Bearer: [] }] : undefined,
+      security: auth ? [{ Bearer: [] }] : undefined,
       responses: {
         200: {
           description: config.responseDescription ?? "Successful response",
@@ -173,14 +184,19 @@ export default class CustomRouter {
     method: Method;
     path: HTTPpath;
     config: RouteConfig<TParams, TQuery, TBody, TResponse, TAuth>;
-    handler: RouteHandler<TParams, TQuery, TBody, TResponse, TAuth>;
+    handler: RouteHandler<any, any, any, any, any>;
   }) {
-    this.registerOpenAPI({ ...options.config, method: options.method, path: options.path });
+    const mergedPath = this.mergePath(
+      options.config.prefix ?? this.defaultConfig.prefix,
+      options.path,
+    );
+    const mergedConfig = { ...this.defaultConfig, ...options.config, path: mergedPath };
+    this.registerOpenAPI({ ...mergedConfig, method: options.method, path: mergedPath });
 
     this.router[options.method]?.(
-      options.path,
-      this.parseRouteParameters(options.config),
-      this.validateAuthentication(options.config),
+      mergedPath,
+      this.parseRouteParameters(mergedConfig),
+      this.validateAuthentication(mergedConfig),
       async (req, res) => {
         const status = new HTTPstatus();
         try {
@@ -213,101 +229,44 @@ export default class CustomRouter {
     );
   }
 
-  get<
-    TParams extends RequestObject = undefined,
-    TQuery extends RequestObject = undefined,
-    TResponse extends ZodType<any> | undefined = undefined,
-    TAuth extends AuthenticationObject = undefined,
-  >(
-    path: HTTPpath,
-    config: RouteConfig<TParams, TQuery, undefined, TResponse, TAuth>,
-    handler: RouteHandlerWithoutBody<TParams, TQuery, TResponse, TAuth>,
-  ) {
-    this.registerRoute<TParams, TQuery, undefined, TResponse, TAuth>({
-      method: "get",
-      path,
-      config,
-      handler,
-    });
-    return this;
+  private createMethod(method: Method) {
+    return <
+      TParams extends RequestObject = undefined,
+      TQuery extends RequestObject = undefined,
+      TBody extends ZodType<any> | undefined = undefined,
+      TResponse extends ZodType<any> | undefined = undefined,
+      TAuth extends AuthenticationObject = undefined,
+    >(
+      path: HTTPpath,
+      config: RouteConfig<TParams, TQuery, TBody, TResponse, TAuth>,
+      handler: RouteHandler<
+        TParams,
+        TQuery,
+        TBody,
+        TResponse,
+        [TAuth] extends [undefined] ? TDefaultAuth : TAuth
+      >,
+    ) => {
+      this.registerRoute({ method, path, config, handler });
+      return this;
+    };
   }
 
-  post<
-    TParams extends RequestObject = undefined,
-    TQuery extends RequestObject = undefined,
-    TBody extends ZodType<any> | undefined = undefined,
-    TResponse extends ZodType<any> | undefined = undefined,
-    TAuth extends AuthenticationObject = undefined,
-  >(
-    path: HTTPpath,
-    config: RouteConfig<TParams, TQuery, TBody, TResponse, TAuth>,
-    handler: RouteHandler<TParams, TQuery, TBody, TResponse, TAuth>,
-  ) {
-    this.registerRoute<TParams, TQuery, TBody, TResponse, TAuth>({
-      method: "post",
-      path,
-      config,
-      handler,
-    });
-    return this;
-  }
+  get = this.createMethod("get");
+  post = this.createMethod("post");
+  put = this.createMethod("put");
+  delete = this.createMethod("delete");
+  patch = this.createMethod("patch");
 
-  put<
-    TParams extends RequestObject = undefined,
-    TQuery extends RequestObject = undefined,
-    TBody extends ZodType<any> | undefined = undefined,
-    TResponse extends ZodType<any> | undefined = undefined,
-    TAuth extends AuthenticationObject = undefined,
-  >(
-    path: HTTPpath,
-    config: RouteConfig<TParams, TQuery, TBody, TResponse, TAuth>,
-    handler: RouteHandler<TParams, TQuery, TBody, TResponse, TAuth>,
-  ) {
-    this.registerRoute<TParams, TQuery, TBody, TResponse, TAuth>({
-      method: "put",
-      path,
-      config,
-      handler,
-    });
-    return this;
-  }
-
-  delete<
-    TParams extends RequestObject = undefined,
-    TQuery extends RequestObject = undefined,
-    TResponse extends ZodType<any> | undefined = undefined,
-    TAuth extends AuthenticationObject = undefined,
-  >(
-    path: HTTPpath,
-    config: RouteConfig<TParams, TQuery, undefined, TResponse, TAuth>,
-    handler: RouteHandlerWithoutBody<TParams, TQuery, TResponse, TAuth>,
-  ) {
-    this.registerRoute<TParams, TQuery, undefined, TResponse, TAuth>({
-      method: "delete",
-      path,
-      config,
-      handler,
-    });
-    return this;
-  }
-
-  patch<
-    TParams extends RequestObject = undefined,
-    TQuery extends RequestObject = undefined,
-    TBody extends ZodType<any> | undefined = undefined,
-    TResponse extends ZodType<any> | undefined = undefined,
-    TAuth extends AuthenticationObject = undefined,
-  >(
-    path: HTTPpath,
-    config: RouteConfig<TParams, TQuery, TBody, TResponse, TAuth>,
-    handler: RouteHandler<TParams, TQuery, TBody, TResponse, TAuth>,
-  ) {
-    this.registerRoute<TParams, TQuery, TBody, TResponse, TAuth>({
-      method: "patch",
-      path,
-      config,
-      handler,
-    });
+  use(handler: RequestHandler): this;
+  use(path: HTTPpath, handler: RequestHandler): this;
+  use(pathOrHandler: HTTPpath | RequestHandler, handler?: RequestHandler): this {
+    if (typeof pathOrHandler === "function") {
+      this.router.use(pathOrHandler);
+    } else if (handler) {
+      const mergedPath = this.mergePath(this.defaultConfig.prefix, pathOrHandler);
+      this.router.use(mergedPath, handler);
+    }
     return this;
   }
 }

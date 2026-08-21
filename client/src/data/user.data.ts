@@ -14,8 +14,8 @@ export const useUser = () =>
 export const useSignUp = () =>
   useMutation({
     mutationKey: ["signup"],
-    mutationFn: async (body: ExtractRequestBody<"/user/signup", "post">) => {
-      const { data, error } = await APIclient.POST("/user/signup", {
+    mutationFn: async (body: ExtractRequestBody<"/auth/signup", "post">) => {
+      const { data, error } = await APIclient.POST("/auth/signup", {
         body,
       });
       if (error || !data) throw error;
@@ -28,8 +28,8 @@ export const useSignIn = () => {
 
   return useMutation({
     mutationKey: ["signin"],
-    mutationFn: async (body: ExtractRequestBody<"/user/signin", "post">) => {
-      const { data, error } = await APIclient.POST("/user/signin", {
+    mutationFn: async (body: ExtractRequestBody<"/auth/signin", "post">) => {
+      const { data, error } = await APIclient.POST("/auth/signin", {
         body,
       });
       if (error || !data) throw error;

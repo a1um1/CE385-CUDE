@@ -23,11 +23,10 @@ export default function BackgroundForm() {
   return (
     <>
       <div className="flex gap-6 flex-wrap">
-        <div>
+        <div className="max-w-xs w-full shrink-0">
           <UserBackground
             backgroundUrl={form.getFieldValue("backgroundImageURL")}
             name={user?.name || ""}
-            className="max-w-xs"
           />
         </div>
         <form
