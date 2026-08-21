@@ -23,4 +23,15 @@ export type ExtractRequestBody<
   ? BodyType
   : never;
 
+export type ExtractRequestQuery<
+  Path extends keyof paths,
+  Method extends keyof paths[Path],
+> = paths[Path][Method] extends {
+  parameters?: {
+    query?: infer QueryType;
+  };
+}
+  ? QueryType
+  : never;
+
 APIclient.use(authMiddleware);

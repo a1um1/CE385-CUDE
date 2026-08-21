@@ -3,12 +3,12 @@ import CustomRouter from "#/lib/customRouter";
 import { z } from "#/lib/extendZod";
 import { db } from "#/lib/prisma";
 
-export const AdminUserListQuerySchema = z
+export const AdminBaseQuerySchema = z
   .object({
     perPage: z.coerce.number().int().min(1).max(100).default(20).openapi({ example: 20 }),
     cursor: z.string().optional().openapi({ example: "cursor" }),
   })
-  .openapi("AdminUserListQuery");
+  .openapi("AdminBaseQuery");
 
 export const AdminUserListResponseSchema = z
   .object({
@@ -24,7 +24,7 @@ const adminUserRouter = new CustomRouter({
   "/",
   {
     summary: "List all users",
-    query: AdminUserListQuerySchema,
+    query: AdminBaseQuerySchema,
     response: AdminUserListResponseSchema,
   },
   async ({ query }) => {

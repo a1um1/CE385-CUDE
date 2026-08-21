@@ -15,9 +15,9 @@ const app = express()
     }),
   )
   .use(authRoute)
-  .use(testRouter)
   .use(userRouter)
-  .use(adminRoute);
+  .use(adminRoute)
+  .use(testRouter);
 
 // Docs endpoint — regenerated from the registry above
 app
