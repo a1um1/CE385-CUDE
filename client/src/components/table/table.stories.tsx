@@ -2,7 +2,6 @@ import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import {
   DataTable,
-  DataTableColumnHeader,
   createTableColumnHelper,
   Table,
   TableHeader,
@@ -20,6 +19,8 @@ interface User {
   email: string;
   role: "Admin" | "Member" | "Viewer";
   status: "Active" | "Pending" | "Inactive";
+  balance: number;
+  isVerified: boolean;
   createdAt: string;
 }
 
@@ -30,7 +31,9 @@ const mockUsers: User[] = [
     email: "alice@example.com",
     role: "Admin",
     status: "Active",
-    createdAt: "2024-01-15",
+    balance: 5400.5,
+    isVerified: true,
+    createdAt: "2024-01-15T09:30:00Z",
   },
   {
     id: "2",
@@ -38,7 +41,9 @@ const mockUsers: User[] = [
     email: "bob@example.com",
     role: "Member",
     status: "Active",
-    createdAt: "2024-02-10",
+    balance: 1250,
+    isVerified: false,
+    createdAt: "2024-02-10T14:15:00Z",
   },
   {
     id: "3",
@@ -46,7 +51,9 @@ const mockUsers: User[] = [
     email: "charlie@example.com",
     role: "Viewer",
     status: "Pending",
-    createdAt: "2024-03-05",
+    balance: 0,
+    isVerified: true,
+    createdAt: "2024-03-05T11:00:00Z",
   },
   {
     id: "4",
@@ -54,7 +61,9 @@ const mockUsers: User[] = [
     email: "diana@example.com",
     role: "Admin",
     status: "Active",
-    createdAt: "2024-03-12",
+    balance: 18_900.25,
+    isVerified: true,
+    createdAt: "2024-03-12T08:45:00Z",
   },
   {
     id: "5",
@@ -62,7 +71,9 @@ const mockUsers: User[] = [
     email: "evan@example.com",
     role: "Member",
     status: "Inactive",
-    createdAt: "2024-04-01",
+    balance: 320,
+    isVerified: false,
+    createdAt: "2024-04-01T16:20:00Z",
   },
   {
     id: "6",
@@ -70,7 +81,9 @@ const mockUsers: User[] = [
     email: "fiona@example.com",
     role: "Member",
     status: "Active",
-    createdAt: "2024-04-18",
+    balance: 4100.75,
+    isVerified: true,
+    createdAt: "2024-04-18T10:10:00Z",
   },
   {
     id: "7",
@@ -78,7 +91,9 @@ const mockUsers: User[] = [
     email: "george@example.com",
     role: "Viewer",
     status: "Inactive",
-    createdAt: "2024-05-09",
+    balance: 50,
+    isVerified: false,
+    createdAt: "2024-05-09T13:50:00Z",
   },
   {
     id: "8",
@@ -86,7 +101,9 @@ const mockUsers: User[] = [
     email: "hannah@example.com",
     role: "Member",
     status: "Active",
-    createdAt: "2024-05-22",
+    balance: 780,
+    isVerified: true,
+    createdAt: "2024-05-22T17:05:00Z",
   },
   {
     id: "9",
@@ -94,7 +111,9 @@ const mockUsers: User[] = [
     email: "ian@example.com",
     role: "Admin",
     status: "Pending",
-    createdAt: "2024-06-11",
+    balance: 9300,
+    isVerified: false,
+    createdAt: "2024-06-11T12:00:00Z",
   },
   {
     id: "10",
@@ -102,7 +121,9 @@ const mockUsers: User[] = [
     email: "julia@example.com",
     role: "Viewer",
     status: "Active",
-    createdAt: "2024-06-30",
+    balance: 2150.8,
+    isVerified: true,
+    createdAt: "2024-06-30T15:40:00Z",
   },
   {
     id: "11",
@@ -110,7 +131,9 @@ const mockUsers: User[] = [
     email: "kevin@example.com",
     role: "Member",
     status: "Active",
-    createdAt: "2024-07-04",
+    balance: 6400,
+    isVerified: true,
+    createdAt: "2024-07-04T09:15:00Z",
   },
   {
     id: "12",
@@ -118,54 +141,44 @@ const mockUsers: User[] = [
     email: "laura@example.com",
     role: "Admin",
     status: "Active",
-    createdAt: "2024-07-19",
+    balance: 14_200,
+    isVerified: true,
+    createdAt: "2024-07-19T18:25:00Z",
   },
 ];
 
 const columnHelper = createTableColumnHelper<User>();
 
-const defaultColumns = columnHelper.columns([
-  columnHelper.accessor("name", {
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
-    cell: (info) => <span style={{ fontWeight: 600 }}>{info.getValue()}</span>,
+// Look how concise and readable column definitions are with typed presets!
+const typedColumns = columnHelper.columns([
+  columnHelper.text("name", {
+    header: "Name",
+    strong: true,
   }),
-  columnHelper.accessor("email", {
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Email" />,
-    cell: (info) => info.getValue(),
+  columnHelper.text("email", {
+    header: "Email",
   }),
-  columnHelper.accessor("role", {
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Role" />,
-    cell: (info) => info.getValue(),
+  columnHelper.badge("role", {
+    header: "Role",
+    defaultVariant: "ghost",
   }),
-  columnHelper.accessor("status", {
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
-    cell: (info) => {
-      const status = info.getValue();
-      const color =
-        status === "Active"
-          ? "var(--color-energy)"
-          : status === "Pending"
-            ? "var(--color-gem)"
-            : "var(--color-danger)";
-      return (
-        <span
-          style={{
-            padding: "0.2rem 0.5rem",
-            borderRadius: "0.25rem",
-            fontSize: "0.75rem",
-            backgroundColor: `color-mix(in oklch, ${color} 20%, transparent)`,
-            color,
-            border: `1px solid ${color}`,
-          }}
-        >
-          {status}
-        </span>
-      );
+  columnHelper.badge("status", {
+    header: "Status",
+    map: {
+      Active: { color: "#10B981" },
+      Pending: { color: "#F59E0B" },
+      Inactive: { color: "#EF4444" },
     },
   }),
-  columnHelper.accessor("createdAt", {
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Created At" />,
-    cell: (info) => info.getValue(),
+  columnHelper.currency("balance", {
+    header: "Balance",
+    currency: "USD",
+  }),
+  columnHelper.boolean("isVerified", {
+    header: "Verified",
+  }),
+  columnHelper.datetime("createdAt", {
+    header: "Created At",
   }),
 ]);
 
@@ -182,7 +195,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     data: mockUsers,
-    columns: defaultColumns as any,
+    columns: typedColumns as any,
     searchable: true,
     searchPlaceholder: "Search users...",
     pageSizeOptions: [5, 10, 20],
@@ -193,7 +206,7 @@ export const Default: Story = {
 export const Loading: Story = {
   args: {
     data: [],
-    columns: defaultColumns as any,
+    columns: typedColumns as any,
     isLoading: true,
     loadingRowCount: 5,
     searchable: true,
@@ -203,7 +216,7 @@ export const Loading: Story = {
 export const Empty: Story = {
   args: {
     data: [],
-    columns: defaultColumns as any,
+    columns: typedColumns as any,
     emptyText: "No users found. Try adjusting your filters.",
     searchable: true,
   },
@@ -212,11 +225,11 @@ export const Empty: Story = {
 export const WithRowActions: Story = {
   args: {
     data: mockUsers,
-    columns: defaultColumns as any,
+    columns: typedColumns as any,
   },
   render: () => {
     const actionColumns = columnHelper.columns([
-      ...defaultColumns,
+      ...typedColumns,
       columnHelper.display({
         id: "actions",
         header: () => <div style={{ textAlign: "right" }}>Actions</div>,
@@ -270,7 +283,7 @@ export const WithRowActions: Story = {
 export const ManualServerSide: Story = {
   args: {
     data: [],
-    columns: defaultColumns as any,
+    columns: typedColumns as any,
   },
   render: () => {
     const [pagination, setPagination] = React.useState<PaginationState>({
@@ -319,7 +332,7 @@ export const ManualServerSide: Story = {
     return (
       <DataTable
         data={pagedData}
-        columns={defaultColumns as any}
+        columns={typedColumns as any}
         isLoading={isLoading}
         manualPagination
         manualSorting

@@ -49,6 +49,10 @@
     --btn-hover-color: transparent;
   }
 
+  &.icon {
+    aspect-ratio: 1 / 1;
+  }
+
   &.size-xs {
     --btn-sizing: var(--size-xs-padding);
     --btn-font-size: var(--size-xs-font-size);

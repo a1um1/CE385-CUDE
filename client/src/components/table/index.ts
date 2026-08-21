@@ -19,7 +19,36 @@ export { DataTableColumnHeader } from "./column-header";
 export type { DataTableColumnHeaderProps } from "./column-header";
 
 export { defaultTableFeatures, createTableColumnHelper } from "./features";
-export type { DefaultTableFeatures } from "./features";
+export type {
+  DefaultTableFeatures,
+  TextFieldOptions,
+  NumberFieldOptions,
+  CurrencyFieldOptions,
+  DateFieldOptions,
+  BadgeFieldOptions,
+  BooleanFieldOptions,
+  GenericFieldOptions,
+  GenericFieldType,
+} from "./features";
+
+export {
+  renderTextCell,
+  renderNumberCell,
+  renderCurrencyCell,
+  renderDateCell,
+  renderBadgeCell,
+  renderBooleanCell,
+} from "./formatters";
+export type {
+  TextFormatOptions,
+  NumberFormatOptions,
+  CurrencyFormatOptions,
+  DateFormatOptions,
+  DateFormatPreset,
+  BadgeFormatOptions,
+  BadgeMapItem,
+  BooleanFormatOptions,
+} from "./formatters";
 
 // Re-export common TanStack Table utilities & types
 export {

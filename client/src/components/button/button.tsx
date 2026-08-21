@@ -28,11 +28,20 @@ export interface ButtonProps extends BaseButtonProps {
   size?: keyof typeof ButtonSizes;
   radius?: keyof typeof ButtonRadius;
   block?: boolean;
+  icon?: boolean;
 }
 
 const Button = forwardRef<HTMLElement, ButtonProps>(
   (
-    { variant = "primary", size = "md", radius = "none", block = false, className, ...props },
+    {
+      variant = "primary",
+      size = "md",
+      radius = "none",
+      block = false,
+      icon = false,
+      className,
+      ...props
+    },
     ref,
   ) => (
     <BaseButton
@@ -44,6 +53,7 @@ const Button = forwardRef<HTMLElement, ButtonProps>(
         ButtonSizes[size] || ButtonStyles["size-md"],
         ButtonRadius[radius] || undefined,
         block && ButtonStyles.block,
+        icon && ButtonStyles.icon,
         className,
       )}
     />

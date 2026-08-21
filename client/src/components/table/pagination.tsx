@@ -27,7 +27,7 @@ export interface DataTablePaginationProps<TData extends RowData = RowData> {
 export function DataTablePagination<TData extends RowData = RowData>({
   table,
   pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
-  showPageSizeSelect = true,
+  showPageSizeSelect = false,
 }: DataTablePaginationProps<TData>) {
   const { pageIndex, pageSize } = table.state.pagination;
   const pageCount = table.getPageCount();
@@ -74,6 +74,7 @@ export function DataTablePagination<TData extends RowData = RowData>({
             onClick={() => table.setPageIndex(0)}
             disabled={!table.getCanPreviousPage()}
             aria-label="Go to first page"
+            icon
           >
             <ChevronsLeft size={16} />
           </Button>
@@ -83,6 +84,7 @@ export function DataTablePagination<TData extends RowData = RowData>({
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
             aria-label="Go to previous page"
+            icon
           >
             <ChevronLeft size={16} />
           </Button>
@@ -92,6 +94,7 @@ export function DataTablePagination<TData extends RowData = RowData>({
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
             aria-label="Go to next page"
+            icon
           >
             <ChevronRight size={16} />
           </Button>
@@ -101,6 +104,7 @@ export function DataTablePagination<TData extends RowData = RowData>({
             onClick={() => table.setPageIndex(pageCount - 1)}
             disabled={!table.getCanNextPage()}
             aria-label="Go to last page"
+            icon
           >
             <ChevronsRight size={16} />
           </Button>

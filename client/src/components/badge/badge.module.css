@@ -1,0 +1,17 @@
+@reference "../../styles.css";
+
+.badge {
+  --badge-color: var(--color-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius);
+  font-size: var(--size-xs-font-size);
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+  width: fit-content;
+  color: var(--badge-color);
+  background-color: color-mix(in oklch, var(--badge-color) 10%, rgba(30, 30, 30, 0.1));
+}
