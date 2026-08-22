@@ -6,8 +6,9 @@ import { registry } from "#/openapi";
 import type { IncomingHttpHeaders } from "http";
 import AuthenticationController from "#/controller/authentication";
 import type UserController from "#/controller/user";
-import { HTTPstatus } from "#/lib/httpStatus";
-import UserError from "#/lib/userError";
+import { HTTPstatus } from "#/lib/router/http/httpStatus";
+import UserError from "#/lib/router/http/userError";
+import { mergePath } from "#/lib/mergePath";
 
 type RequestObject = ZodObject<any, any> | undefined;
 type AuthenticationObject = boolean | Role[] | undefined;
@@ -62,23 +63,11 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
   private authController = new AuthenticationController();
 
   constructor(defaultConfig?: RouteConfig<any, any, any, any, TDefaultAuth>) {
-    if (defaultConfig) {
-      this.defaultConfig = defaultConfig;
-    }
+    if (defaultConfig) this.defaultConfig = defaultConfig;
   }
 
   get route() {
     return this.router;
-  }
-
-  private mergePath(...segments: (string | undefined)[]): HTTPpath {
-    return segments
-      .map((seg, i) => {
-        if (i === 0) return seg?.replace(/\/+$/, "");
-        return seg?.replace(/^\/+|\/+$/g, "");
-      })
-      .filter(Boolean)
-      .join("/");
   }
 
   private parseRouteParameters<
@@ -190,11 +179,9 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
     config: RouteConfig<TParams, TQuery, TBody, TResponse, TAuth>;
     handler: RouteHandler<any, any, any, any, any>;
   }) {
-    const mergedPath = this.mergePath(
-      options.config.prefix ?? this.defaultConfig.prefix,
-      options.path,
-    );
+    const mergedPath = mergePath(options.config.prefix ?? this.defaultConfig.prefix, options.path);
     const mergedConfig = { ...this.defaultConfig, ...options.config, path: mergedPath };
+
     this.registerOpenAPI({ ...mergedConfig, method: options.method, path: mergedPath });
 
     this.router[options.method]?.(
@@ -215,6 +202,7 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
           if (options.config.response) {
             handlersResult = options.config.response.parse(handlersResult);
           }
+
           return res.status(status.value).json(handlersResult);
         } catch (error) {
           if (error instanceof UserError) {

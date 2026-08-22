@@ -1,6 +1,6 @@
 import { UserCreationSchema, UserValidationSchema } from "#/controller/user";
 import AuthenticationController, { authenticationSchema } from "#/controller/authentication";
-import CustomRouter from "#/lib/customRouter";
+import CustomRouter from "#/lib/router/customRouter";
 
 const authController = new AuthenticationController();
 

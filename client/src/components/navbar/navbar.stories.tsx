@@ -34,6 +34,7 @@ export const Playground: Story = {
         backgroundImage:
           "https://github.com/vyrx-dev/Wallpapers/blob/master/gruvbox/ign-waifu.png?raw=true",
         isActive: true,
+        deactivateReason: null,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       } satisfies paths["/user"]["get"]["responses"]["200"]["content"]["application/json"]);

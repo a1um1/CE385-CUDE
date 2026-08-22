@@ -1,4 +1,4 @@
-import CustomRouter from "#/lib/customRouter";
+import CustomRouter from "#/lib/router/customRouter";
 import { adminUserRoute } from "#/routes/admin/user.admin";
 
 const adminRouter = new CustomRouter({

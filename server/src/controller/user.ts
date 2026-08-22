@@ -4,7 +4,7 @@ import { db } from "#/lib/prisma";
 import bcrypt from "bcrypt";
 import { z } from "#/lib/extendZod";
 import type zod from "zod";
-import UserError from "#/lib/userError";
+import UserError from "#/lib/router/http/userError";
 
 export const UserPasswordDefinition = z
   .string()
@@ -40,7 +40,7 @@ export const UserSchema = z
       .nullable()
       .openapi({ example: "https://example.com/background.jpg" }),
     isActive: z.boolean().openapi({ example: true }),
-    reactivatedAt: z.date().nullable().openapi({ example: "2023-01-01T00:00:00.000Z" }),
+    deactivateReason: z.string().nullable().openapi({ example: "User requested deactivation" }),
     createdAt: z.date().openapi({ example: "2023-01-01T00:00:00.000Z" }),
     updatedAt: z.date().openapi({ example: "2023-01-01T00:00:00.000Z" }),
   })
@@ -70,7 +70,6 @@ export const UserUpdatePasswordSchema = z
 
 export const UserSafeSchema = UserSchema.omit({
   password: true,
-  reactivatedAt: true,
 }).openapi("UserSafeData");
 
 export const UserCreationSchema = UserSchema.pick({
@@ -141,8 +140,8 @@ export default class UserController {
   }
 
   static async getUserById(userId: string): Promise<UserController> {
-    const user = await db.user.findUniqueOrThrow({
-      where: { id: userId },
+    const user = await db.user.findUnique({
+      where: { id: userId, isActive: true },
       select: {
         id: true,
         name: true,
@@ -152,11 +151,12 @@ export default class UserController {
         backgroundImage: true,
         createdAt: true,
         updatedAt: true,
-        reactivatedAt: true,
         epithet: true,
         isActive: true,
+        deactivateReason: true,
       },
     });
+    if (!user) throw new UserError(404, "User not found");
     return new UserController(user);
   }
 
@@ -165,7 +165,7 @@ export default class UserController {
     if (!user) throw new UserError(400, "Email or Password is incorrect");
     const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
     if (!isPasswordValid) throw new UserError(400, "Email or Password is incorrect");
-
+    if (!user.isActive) throw new UserError(403, "This account has been deactivated");
     return new UserController(user);
   }
 

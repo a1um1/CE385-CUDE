@@ -4,8 +4,8 @@ import {
   UserUpdateBackgroundSchema,
   UserUpdatePasswordSchema,
 } from "#/controller/user";
-import CustomRouter from "#/lib/customRouter";
-import { GenericResponseSchema } from "#/lib/genericResponse";
+import CustomRouter from "#/lib/router/customRouter";
+import { GenericResponseSchema } from "#/lib/router/http/genericResponse";
 
 const userRoute = new CustomRouter({
   prefix: "/user",

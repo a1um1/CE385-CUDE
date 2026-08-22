@@ -36,6 +36,7 @@ export const Playground: Story = {
         isActive: true,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
+        deactivateReason: null,
       } satisfies paths["/user"]["get"]["responses"]["200"]["content"]["application/json"]);
       return (
         <QueryClientProvider client={queryClient}>
