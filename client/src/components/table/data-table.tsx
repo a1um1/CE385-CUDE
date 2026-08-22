@@ -14,11 +14,11 @@ import clsx from "clsx";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./primitives";
 import { DataTablePagination } from "./pagination";
+import type { CursorPaginationConfig } from "./pagination";
 import { defaultTableFeatures } from "./features";
 import type { DefaultTableFeatures } from "./features";
 import Input from "../input";
 import styles from "./table.module.css";
-import Skeleton from "#/components/skeleton";
 
 const DEFAULT_SORTING: SortingState = [];
 const DEFAULT_PAGINATION: PaginationState = { pageIndex: 0, pageSize: 10 };
@@ -48,7 +48,7 @@ export interface DataTableProps<TData extends RowData = RowData, TValue = unknow
   onSortingChange?: OnChangeFn<SortingState>;
   manualSorting?: boolean;
 
-  // Pagination
+  // Standard Offset Pagination
   showPagination?: boolean;
   pagination?: PaginationState;
   defaultPagination?: PaginationState;
@@ -57,6 +57,9 @@ export interface DataTableProps<TData extends RowData = RowData, TValue = unknow
   pageCount?: number;
   rowCount?: number;
   pageSizeOptions?: number[];
+
+  // Cursor-based Pagination
+  cursorPagination?: CursorPaginationConfig;
 
   // Row callbacks & styling
   onRowClick?: (row: Row<DefaultTableFeatures, TData>) => void;
@@ -101,6 +104,7 @@ export function DataTable<TData extends RowData = RowData, TValue = unknown>({
   pageCount,
   rowCount,
   pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
+  cursorPagination,
   onRowClick,
   getRowId,
   toolbarActions,
@@ -125,6 +129,10 @@ export function DataTable<TData extends RowData = RowData, TValue = unknown>({
     controlledGlobalFilter !== undefined ? controlledGlobalFilter : internalGlobalFilter;
   const onGlobalFilterChange = setControlledGlobalFilter || setInternalGlobalFilter;
 
+  // When cursor pagination is provided, data is externally sliced, so we set manualPagination to true
+  const isCursorMode = Boolean(cursorPagination);
+  const effectiveManualPagination = isCursorMode ? true : manualPagination;
+
   // TanStack Table v9 Instance
   const table = useTable<DefaultTableFeatures, TData>({
     features: defaultTableFeatures,
@@ -139,10 +147,10 @@ export function DataTable<TData extends RowData = RowData, TValue = unknown>({
     onPaginationChange,
     onGlobalFilterChange,
     manualSorting,
-    manualPagination,
+    manualPagination: effectiveManualPagination,
     manualFiltering,
     pageCount,
-    rowCount,
+    rowCount: isCursorMode ? data.length : rowCount,
     getRowId,
     ...customTableOptions,
   });
@@ -206,11 +214,14 @@ export function DataTable<TData extends RowData = RowData, TValue = unknown>({
                 </TableCell>
               </TableRow>
             ) : (
-              skeletonRows.map((rowKey) => (
+              skeletonRows.map((rowKey, rowIndex) => (
                 <TableRow key={rowKey}>
-                  {skeletonCols.map((colKey) => (
+                  {skeletonCols.map((colKey, cellIndex) => (
                     <TableCell key={colKey}>
-                      <Skeleton />
+                      <div
+                        className={styles.skeletonBar}
+                        style={{ width: `${60 + (((rowIndex + 1) * (cellIndex + 1) * 17) % 35)}%` }}
+                      />
                     </TableCell>
                   ))}
                 </TableRow>
@@ -241,7 +252,20 @@ export function DataTable<TData extends RowData = RowData, TValue = unknown>({
         </TableBody>
       </Table>
 
-      {showPagination && <DataTablePagination table={table} pageSizeOptions={pageSizeOptions} />}
+      {showPagination && (
+        <DataTablePagination
+          table={table}
+          pageSizeOptions={pageSizeOptions}
+          cursorPagination={
+            cursorPagination
+              ? {
+                  rowCount: data.length,
+                  ...cursorPagination,
+                }
+              : undefined
+          }
+        />
+      )}
     </div>
   );
 }

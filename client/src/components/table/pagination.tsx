@@ -6,8 +6,19 @@ import type { DefaultTableFeatures } from "./features";
 
 const DEFAULT_PAGE_SIZE_OPTIONS = [10, 20, 30, 50];
 
+export interface CursorPaginationConfig {
+  hasNextPage?: boolean;
+  hasPreviousPage?: boolean;
+  onNextPage?: () => void;
+  onPreviousPage?: () => void;
+  pageSize?: number;
+  onPageSizeChange?: (size: number) => void;
+  pageSizeOptions?: number[];
+  rowCount?: number;
+}
+
 export interface DataTablePaginationProps<TData extends RowData = RowData> {
-  table:
+  table?:
     | ReactTable<DefaultTableFeatures, TData>
     | {
         state: { pagination: PaginationState };
@@ -22,13 +33,89 @@ export interface DataTablePaginationProps<TData extends RowData = RowData> {
       };
   pageSizeOptions?: number[];
   showPageSizeSelect?: boolean;
+  cursorPagination?: CursorPaginationConfig;
 }
 
 export function DataTablePagination<TData extends RowData = RowData>({
   table,
   pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
-  showPageSizeSelect = false,
+  showPageSizeSelect = true,
+  cursorPagination,
 }: DataTablePaginationProps<TData>) {
+  // 1. Cursor-based pagination mode
+  if (cursorPagination) {
+    const {
+      hasNextPage = false,
+      hasPreviousPage = false,
+      onNextPage,
+      onPreviousPage,
+      pageSize,
+      onPageSizeChange,
+      pageSizeOptions: cursorPageSizeOptions = pageSizeOptions,
+      rowCount,
+    } = cursorPagination;
+
+    return (
+      <div className={styles.pagination}>
+        <div className={styles.paginationInfo}>
+          {rowCount !== undefined && (
+            <span>
+              Showing {rowCount} {rowCount === 1 ? "row" : "rows"}
+            </span>
+          )}
+        </div>
+
+        <div className={styles.paginationActions}>
+          {showPageSizeSelect && onPageSizeChange && pageSize !== undefined && (
+            <div className={styles.pageSizeSelectWrapper}>
+              <span>Rows per page:</span>
+              <select
+                aria-label="Rows per page"
+                className={styles.pageSizeSelect}
+                value={pageSize}
+                onChange={(e) => {
+                  onPageSizeChange(Number(e.target.value));
+                }}
+              >
+                {cursorPageSizeOptions.map((size) => (
+                  <option key={size} value={size}>
+                    {size}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          <div style={{ display: "flex", gap: "0.25rem", alignItems: "center" }}>
+            <Button
+              variant="secondary"
+              size="xs"
+              onClick={onPreviousPage}
+              disabled={!hasPreviousPage}
+              aria-label="Go to previous page"
+              icon
+            >
+              <ChevronLeft size={16} />
+            </Button>
+            <Button
+              variant="secondary"
+              size="xs"
+              onClick={onNextPage}
+              disabled={!hasNextPage}
+              aria-label="Go to next page"
+              icon
+            >
+              <ChevronRight size={16} />
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 2. Standard offset-based pagination mode
+  if (!table) return null;
+
   const { pageIndex, pageSize } = table.state.pagination;
   const pageCount = table.getPageCount();
   const totalRows = table.getRowCount();
@@ -74,7 +161,6 @@ export function DataTablePagination<TData extends RowData = RowData>({
             onClick={() => table.setPageIndex(0)}
             disabled={!table.getCanPreviousPage()}
             aria-label="Go to first page"
-            icon
           >
             <ChevronsLeft size={16} />
           </Button>
@@ -84,7 +170,6 @@ export function DataTablePagination<TData extends RowData = RowData>({
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
             aria-label="Go to previous page"
-            icon
           >
             <ChevronLeft size={16} />
           </Button>
@@ -94,7 +179,6 @@ export function DataTablePagination<TData extends RowData = RowData>({
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
             aria-label="Go to next page"
-            icon
           >
             <ChevronRight size={16} />
           </Button>
@@ -104,7 +188,6 @@ export function DataTablePagination<TData extends RowData = RowData>({
             onClick={() => table.setPageIndex(pageCount - 1)}
             disabled={!table.getCanNextPage()}
             aria-label="Go to last page"
-            icon
           >
             <ChevronsRight size={16} />
           </Button>

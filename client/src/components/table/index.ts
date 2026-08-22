@@ -13,7 +13,7 @@ export { DataTable } from "./data-table";
 export type { DataTableProps } from "./data-table";
 
 export { DataTablePagination } from "./pagination";
-export type { DataTablePaginationProps } from "./pagination";
+export type { DataTablePaginationProps, CursorPaginationConfig } from "./pagination";
 
 export { DataTableColumnHeader } from "./column-header";
 export type { DataTableColumnHeaderProps } from "./column-header";
@@ -49,6 +49,9 @@ export type {
   BadgeMapItem,
   BooleanFormatOptions,
 } from "./formatters";
+
+export { Badge } from "../badge";
+export type { BadgeProps } from "../badge";
 
 // Re-export common TanStack Table utilities & types
 export {

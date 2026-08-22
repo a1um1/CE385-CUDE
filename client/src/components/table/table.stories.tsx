@@ -149,7 +149,6 @@ const mockUsers: User[] = [
 
 const columnHelper = createTableColumnHelper<User>();
 
-// Look how concise and readable column definitions are with typed presets!
 const typedColumns = columnHelper.columns([
   columnHelper.text("name", {
     header: "Name",
@@ -160,13 +159,13 @@ const typedColumns = columnHelper.columns([
   }),
   columnHelper.badge("role", {
     header: "Role",
-    defaultVariant: "ghost",
+    defaultColor: "#6B7280",
   }),
   columnHelper.badge("status", {
     header: "Status",
     map: {
       Active: { color: "#10B981" },
-      Pending: { color: "#F59E0B" },
+      Pending: { color: "#8B5CF6" },
       Inactive: { color: "#EF4444" },
     },
   }),
@@ -219,6 +218,86 @@ export const Empty: Story = {
     columns: typedColumns as any,
     emptyText: "No users found. Try adjusting your filters.",
     searchable: true,
+  },
+};
+
+export const CursorPaginationStory: Story = {
+  name: "Cursor-Based Pagination",
+  args: {
+    data: [],
+    columns: typedColumns as any,
+  },
+  render: () => {
+    const [pageSize, setPageSize] = React.useState(3);
+    const [cursor, setCursor] = React.useState<string | undefined>(undefined);
+    const [direction, setDirection] = React.useState<"forward" | "backward">("forward");
+    const [isLoading, setIsLoading] = React.useState(false);
+
+    // Simulate backend query with cursor and direction
+    const { items, nextCursor, prevCursor } = React.useMemo(() => {
+      if (direction === "backward" && cursor) {
+        const cursorIdx = mockUsers.findIndex((u) => u.id === cursor);
+        const end = cursorIdx !== -1 ? cursorIdx : mockUsers.length;
+        const start = Math.max(0, end - pageSize);
+        const slice = mockUsers.slice(start, end);
+        return {
+          items: slice,
+          nextCursor: cursor,
+          prevCursor: start > 0 ? slice[0]?.id : undefined,
+        };
+      }
+
+      // Forward direction
+      const start = cursor ? mockUsers.findIndex((u) => u.id === cursor) + 1 : 0;
+      const slice = mockUsers.slice(start, start + pageSize);
+      const hasNext = start + pageSize < mockUsers.length;
+      return {
+        items: slice,
+        nextCursor: hasNext ? slice[slice.length - 1]?.id : undefined,
+        prevCursor: cursor || undefined,
+      };
+    }, [cursor, direction, pageSize]);
+
+    const handleNext = () => {
+      if (!nextCursor) return;
+      setIsLoading(true);
+      setTimeout(() => {
+        setCursor(nextCursor);
+        setDirection("forward");
+        setIsLoading(false);
+      }, 250);
+    };
+
+    const handlePrev = () => {
+      if (!prevCursor) return;
+      setIsLoading(true);
+      setTimeout(() => {
+        setCursor(prevCursor);
+        setDirection("backward");
+        setIsLoading(false);
+      }, 250);
+    };
+
+    return (
+      <DataTable
+        data={items}
+        columns={typedColumns as any}
+        isLoading={isLoading}
+        cursorPagination={{
+          hasNextPage: Boolean(nextCursor),
+          hasPreviousPage: Boolean(prevCursor),
+          onNextPage: handleNext,
+          onPreviousPage: handlePrev,
+          pageSize,
+          onPageSizeChange: (newSize) => {
+            setCursor(undefined);
+            setDirection("forward");
+            setPageSize(newSize);
+          },
+          pageSizeOptions: [3, 5, 10],
+        }}
+      />
+    );
   },
 };
 

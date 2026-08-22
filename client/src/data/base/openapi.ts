@@ -381,6 +381,7 @@ export interface paths {
                 query?: {
                     perPage?: number;
                     cursor?: string;
+                    direction?: "forward" | "backward";
                 };
                 header?: never;
                 path?: never;
@@ -642,6 +643,10 @@ export interface components {
         AdminUserListResponse: {
             /** @example [] */
             data: components["schemas"]["UserSafeData"][];
+            /** @example next_cursor_id */
+            nextCursor?: string;
+            /** @example prev_cursor_id */
+            prevCursor?: string;
         };
         AuthenticationData: {
             /** @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMjM0NTYiLCJuYW1lIjoiSm9obiBEb2UiLCJlbWFpbCI6ImVtYWlsQGdtYWlsLmNvbSIsImlhdCI6MTY4NzQyNjQwMCwiZXhwIjoxNjg3NDI2NDAwfQ.abc123 */

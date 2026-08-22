@@ -200,7 +200,7 @@ export function renderBadgeCell<T extends string | number = string | number>(
 
   const key = value as T;
   const config = options.map?.[key];
-  const color = config?.color ?? options.defaultColor ?? undefined;
+  const color = config?.color ?? options.defaultColor;
   const label = config?.label ?? String(value);
 
   return <Badge color={color}>{label}</Badge>;
@@ -219,14 +219,18 @@ export function renderBooleanCell(
 
   if (mode === "icon") {
     return bool ? (
-      <Check size={18} stroke="var(--color-energy)" style={{ margin: "0 auto" }} aria-label="Yes" />
+      <Check size={18} style={{ color: "#10B981" }} aria-label="Yes" />
     ) : (
-      <X size={18} stroke="var(--color-danger)" style={{ margin: "0 auto" }} aria-label="No" />
+      <X size={18} style={{ color: "#EF4444" }} aria-label="No" />
     );
   }
 
   if (mode === "badge") {
-    return <Badge>{bool ? (options.trueLabel ?? "Yes") : (options.falseLabel ?? "No")}</Badge>;
+    return (
+      <Badge color={bool ? "#10B981" : "#EF4444"}>
+        {bool ? (options.trueLabel ?? "Yes") : (options.falseLabel ?? "No")}
+      </Badge>
+    );
   }
 
   return bool ? (options.trueLabel ?? "Yes") : (options.falseLabel ?? "No");
