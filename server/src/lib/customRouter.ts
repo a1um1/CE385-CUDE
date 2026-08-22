@@ -71,9 +71,14 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
     return this.router;
   }
 
-  private mergePath(prefix = "", path = ""): HTTPpath {
-    const combined = `${prefix || ""}/${path || ""}`.replace(/\/+/g, "/").replace(/\/$/, "");
-    return combined.startsWith("/") ? combined || "/" : `/${combined}`;
+  private mergePath(...segments: (string | undefined)[]): HTTPpath {
+    return segments
+      .map((seg, i) => {
+        if (i === 0) return seg?.replace(/\/+$/, "");
+        return seg?.replace(/^\/+|\/+$/g, "");
+      })
+      .filter(Boolean)
+      .join("/");
   }
 
   private parseRouteParameters<
