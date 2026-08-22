@@ -79,6 +79,98 @@ export interface DataTableProps<TData extends RowData = RowData, TValue = unknow
   tableOptions?: Partial<TableOptions<DefaultTableFeatures, TData>>;
 }
 
+// ---------------------------------------------------------------------------
+// Internal sub-component: owns the loading / skeleton / empty / rows states
+// ---------------------------------------------------------------------------
+
+interface TableBodyContentProps<TData extends RowData> {
+  isLoading: boolean;
+  loadingComponent: React.ReactNode;
+  skeletonRows: string[];
+  skeletonCols: string[];
+  rows: Row<DefaultTableFeatures, TData>[];
+  onRowClick: ((row: Row<DefaultTableFeatures, TData>) => void) | undefined;
+  columnCount: number;
+  emptyComponent: React.ReactNode;
+  emptyText: string;
+  table: ReturnType<typeof useTable<DefaultTableFeatures, TData>>;
+}
+
+function TableBodyContent<TData extends RowData>({
+  isLoading,
+  loadingComponent,
+  skeletonRows,
+  skeletonCols,
+  rows,
+  onRowClick,
+  columnCount,
+  emptyComponent,
+  emptyText,
+  table,
+}: TableBodyContentProps<TData>) {
+  if (isLoading) {
+    if (loadingComponent) {
+      return (
+        <TableRow>
+          <TableCell colSpan={columnCount} className={styles.cell}>
+            {loadingComponent}
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    return (
+      <>
+        {skeletonRows.map((rowKey, rowIndex) => (
+          <TableRow key={rowKey}>
+            {skeletonCols.map((colKey, cellIndex) => (
+              <TableCell key={colKey}>
+                <div
+                  className={styles.skeletonBar}
+                  style={{ width: `${60 + (((rowIndex + 1) * (cellIndex + 1) * 17) % 35)}%` }}
+                />
+              </TableCell>
+            ))}
+          </TableRow>
+        ))}
+      </>
+    );
+  }
+
+  if (rows.length) {
+    return (
+      <>
+        {rows.map((row) => (
+          <TableRow
+            key={row.id}
+            data-state={row.getIsSelected?.() && "selected"}
+            isClickable={Boolean(onRowClick)}
+            onClick={() => onRowClick?.(row)}
+          >
+            {row.getAllCells().map((cell) => (
+              <TableCell key={cell.id}>
+                <table.FlexRender cell={cell} />
+              </TableCell>
+            ))}
+          </TableRow>
+        ))}
+      </>
+    );
+  }
+
+  return (
+    <TableRow>
+      <TableCell colSpan={columnCount} className={styles.emptyState}>
+        {emptyComponent || emptyText}
+      </TableCell>
+    </TableRow>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Main DataTable component
+// ---------------------------------------------------------------------------
+
 export function DataTable<TData extends RowData = RowData, TValue = unknown>({
   columns,
   data,
@@ -113,7 +205,7 @@ export function DataTable<TData extends RowData = RowData, TValue = unknown>({
   tableClassName,
   tableOptions: customTableOptions,
 }: DataTableProps<TData, TValue>) {
-  // Internal uncontrolled states if not controlled from props
+  // Internal uncontrolled states (used when not controlled from props)
   const [internalSorting, setInternalSorting] = React.useState<SortingState>(defaultSorting);
   const [internalPagination, setInternalPagination] =
     React.useState<PaginationState>(defaultPagination);
@@ -129,20 +221,15 @@ export function DataTable<TData extends RowData = RowData, TValue = unknown>({
     controlledGlobalFilter !== undefined ? controlledGlobalFilter : internalGlobalFilter;
   const onGlobalFilterChange = setControlledGlobalFilter || setInternalGlobalFilter;
 
-  // When cursor pagination is provided, data is externally sliced, so we set manualPagination to true
+  // Cursor pagination forces manualPagination — data is already externally sliced
   const isCursorMode = Boolean(cursorPagination);
   const effectiveManualPagination = isCursorMode ? true : manualPagination;
 
-  // TanStack Table v9 Instance
   const table = useTable<DefaultTableFeatures, TData>({
     features: defaultTableFeatures,
     data,
     columns: columns as unknown as ColumnDef<DefaultTableFeatures, TData, unknown>[],
-    state: {
-      sorting,
-      pagination,
-      globalFilter,
-    },
+    state: { sorting, pagination, globalFilter },
     onSortingChange,
     onPaginationChange,
     onGlobalFilterChange,
@@ -158,7 +245,7 @@ export function DataTable<TData extends RowData = RowData, TValue = unknown>({
   const columnCount = columns.length;
   const showToolbar = searchable || Boolean(toolbarActions);
 
-  // Stable skeleton item IDs for rendering loading placeholders
+  // Stable skeleton keys for loading placeholders
   const skeletonRows = React.useMemo(
     () => Array.from({ length: loadingRowCount }, (_, i) => `row-${i}`),
     [loadingRowCount],
@@ -206,49 +293,18 @@ export function DataTable<TData extends RowData = RowData, TValue = unknown>({
         </TableHeader>
 
         <TableBody>
-          {isLoading ? (
-            loadingComponent ? (
-              <TableRow>
-                <TableCell colSpan={columnCount} className={styles.cell}>
-                  {loadingComponent}
-                </TableCell>
-              </TableRow>
-            ) : (
-              skeletonRows.map((rowKey, rowIndex) => (
-                <TableRow key={rowKey}>
-                  {skeletonCols.map((colKey, cellIndex) => (
-                    <TableCell key={colKey}>
-                      <div
-                        className={styles.skeletonBar}
-                        style={{ width: `${60 + (((rowIndex + 1) * (cellIndex + 1) * 17) % 35)}%` }}
-                      />
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            )
-          ) : table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected?.() && "selected"}
-                isClickable={Boolean(onRowClick)}
-                onClick={() => onRowClick?.(row)}
-              >
-                {row.getAllCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    <table.FlexRender cell={cell} />
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columnCount} className={styles.emptyState}>
-                {emptyComponent || emptyText}
-              </TableCell>
-            </TableRow>
-          )}
+          <TableBodyContent
+            isLoading={isLoading}
+            loadingComponent={loadingComponent}
+            skeletonRows={skeletonRows}
+            skeletonCols={skeletonCols}
+            rows={table.getRowModel().rows ?? []}
+            onRowClick={onRowClick}
+            columnCount={columnCount}
+            emptyComponent={emptyComponent}
+            emptyText={emptyText}
+            table={table}
+          />
         </TableBody>
       </Table>
 
@@ -258,10 +314,7 @@ export function DataTable<TData extends RowData = RowData, TValue = unknown>({
           pageSizeOptions={pageSizeOptions}
           cursorPagination={
             cursorPagination
-              ? {
-                  rowCount: data.length,
-                  ...cursorPagination,
-                }
+              ? { rowCount: data.length, ...cursorPagination }
               : undefined
           }
         />

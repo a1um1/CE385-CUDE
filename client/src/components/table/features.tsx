@@ -1,3 +1,4 @@
+import * as React from "react";
 import {
   createColumnHelper,
   createFilteredRowModel,
@@ -14,6 +15,7 @@ import {
 } from "@tanstack/react-table";
 import type {
   AccessorKeyColumnDef,
+  CellContext,
   ColumnDef,
   ColumnDefTemplate,
   DeepKeys,
@@ -21,22 +23,22 @@ import type {
   RowData,
 } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "./column-header";
-import {
-  renderBadgeCell,
-  renderBooleanCell,
-  renderCurrencyCell,
-  renderDateCell,
-  renderNumberCell,
-  renderTextCell,
-} from "./formatters";
 import type {
-  BadgeFormatOptions,
-  BooleanFormatOptions,
+  TextFormatOptions,
+  NumberFormatOptions,
   CurrencyFormatOptions,
   DateFormatOptions,
-  NumberFormatOptions,
-  TextFormatOptions,
-} from "./formatters";
+  BadgeFormatOptions,
+  BooleanFormatOptions,
+} from "#/components/table/cell";
+import {
+  renderTextCell,
+  renderNumberCell,
+  renderCurrencyCell,
+  renderDateCell,
+  renderBadgeCell,
+  renderBooleanCell,
+} from "#/components/table/cell";
 
 export const defaultTableFeatures = tableFeatures({
   rowSortingFeature,
@@ -113,29 +115,50 @@ function resolveHeader<TData extends RowData, TValue>(
 }
 
 /**
+ * Shared factory: builds a typed accessor column, eliminating the repeated
+ * baseHelper.accessor + resolveHeader + enableSorting + cast pattern.
+ */
+function makeAccessorColumn<TData extends RowData, TKey extends DeepKeys<TData>>(
+  helper: ReturnType<typeof createColumnHelper<DefaultTableFeatures, TData>>,
+  accessorKey: TKey,
+  header:
+    | string
+    | ColumnDefTemplate<HeaderContext<DefaultTableFeatures, TData, unknown>>
+    | undefined,
+  sortable: boolean | undefined,
+  renderCell: (info: CellContext<DefaultTableFeatures, TData, unknown>) => React.ReactNode,
+  rest: Partial<AccessorKeyColumnDef<DefaultTableFeatures, TData, unknown>>,
+): ColumnDef<DefaultTableFeatures, TData, any> {
+  return helper.accessor(accessorKey as any, {
+    header: resolveHeader(header, sortable),
+    cell: renderCell,
+    enableSorting: sortable,
+    ...rest,
+  }) as ColumnDef<DefaultTableFeatures, TData, any>;
+}
+
+/**
  * Creates an enhanced column helper pre-configured with typed field presets.
  */
 export function createTableColumnHelper<TData extends RowData = RowData>() {
-  const baseHelper = createColumnHelper<DefaultTableFeatures, TData>();
+  const helper = createColumnHelper<DefaultTableFeatures, TData>();
 
-  return {
-    ...baseHelper,
+  const helpers = {
+    ...helper,
 
-    /**
-     * Define a string/text column with optional bolding, fallback, and truncation.
-     */
     text: <TKey extends DeepKeys<TData>>(
       accessorKey: TKey,
       options: TextFieldOptions<TData, unknown> = {},
     ) => {
       const { header, sortable, fallback, strong, truncate, prefix, suffix, ...rest } = options;
-      return baseHelper.accessor(accessorKey as any, {
-        header: resolveHeader(header, sortable),
-        cell: (info) =>
-          renderTextCell(info.getValue(), { fallback, strong, truncate, prefix, suffix }),
-        enableSorting: sortable,
-        ...rest,
-      }) as ColumnDef<DefaultTableFeatures, TData, any>;
+      return makeAccessorColumn(
+        helper,
+        accessorKey,
+        header,
+        sortable,
+        (info) => renderTextCell(info.getValue(), { fallback, strong, truncate, prefix, suffix }),
+        rest,
+      );
     },
 
     /**
@@ -145,24 +168,17 @@ export function createTableColumnHelper<TData extends RowData = RowData>() {
       accessorKey: TKey,
       options: NumberFieldOptions<TData, unknown> = {},
     ) => {
-      const {
+      const { header, sortable, locale, decimals, prefix, suffix, fallback, align, ...rest } =
+        options;
+      return makeAccessorColumn(
+        helper,
+        accessorKey,
         header,
         sortable,
-        locale,
-        decimals,
-        prefix,
-        suffix,
-        fallback,
-        align = "right",
-        ...rest
-      } = options;
-      return baseHelper.accessor(accessorKey as any, {
-        header: resolveHeader(header, sortable),
-        cell: (info) =>
+        (info) =>
           renderNumberCell(info.getValue(), { locale, decimals, prefix, suffix, fallback, align }),
-        enableSorting: sortable,
-        ...rest,
-      }) as ColumnDef<DefaultTableFeatures, TData, any>;
+        rest,
+      );
     },
 
     /**
@@ -172,23 +188,16 @@ export function createTableColumnHelper<TData extends RowData = RowData>() {
       accessorKey: TKey,
       options: CurrencyFieldOptions<TData, unknown> = {},
     ) => {
-      const {
+      const { header, sortable, currency, locale, decimals, fallback, align, ...rest } = options;
+      return makeAccessorColumn(
+        helper,
+        accessorKey,
         header,
         sortable,
-        currency = "THB",
-        locale,
-        decimals,
-        fallback,
-        align = "right",
-        ...rest
-      } = options;
-      return baseHelper.accessor(accessorKey as any, {
-        header: resolveHeader(header, sortable),
-        cell: (info) =>
+        (info) =>
           renderCurrencyCell(info.getValue(), { currency, locale, decimals, fallback, align }),
-        enableSorting: sortable,
-        ...rest,
-      }) as ColumnDef<DefaultTableFeatures, TData, any>;
+        rest,
+      );
     },
 
     /**
@@ -199,29 +208,24 @@ export function createTableColumnHelper<TData extends RowData = RowData>() {
       options: DateFieldOptions<TData, unknown> = {},
     ) => {
       const { header, sortable, format = "date", locale, fallback, ...rest } = options;
-      return baseHelper.accessor(accessorKey as any, {
-        header: resolveHeader(header, sortable),
-        cell: (info) => renderDateCell(info.getValue(), { format, locale, fallback }),
-        enableSorting: sortable,
-        ...rest,
-      }) as ColumnDef<DefaultTableFeatures, TData, any>;
+      return makeAccessorColumn(
+        helper,
+        accessorKey,
+        header,
+        sortable,
+        (info) => renderDateCell(info.getValue(), { format, locale, fallback }),
+        rest,
+      );
     },
 
     /**
      * Define a datetime column with date and time formatting.
+     * Alias for date with format defaulting to "datetime".
      */
     datetime: <TKey extends DeepKeys<TData>>(
       accessorKey: TKey,
       options: DateFieldOptions<TData, unknown> = {},
-    ) => {
-      const { header, sortable, format = "datetime", locale, fallback, ...rest } = options;
-      return baseHelper.accessor(accessorKey as any, {
-        header: resolveHeader(header, sortable),
-        cell: (info) => renderDateCell(info.getValue(), { format, locale, fallback }),
-        enableSorting: sortable,
-        ...rest,
-      }) as ColumnDef<DefaultTableFeatures, TData, any>;
-    },
+    ) => helpers.date(accessorKey, { format: "datetime", ...options }),
 
     /**
      * Define a badge/enum tag column mapped to status colors.
@@ -231,122 +235,31 @@ export function createTableColumnHelper<TData extends RowData = RowData>() {
       options: BadgeFieldOptions<TData, TVal> = {},
     ) => {
       const { header, sortable, map, defaultColor, fallback, ...rest } = options;
-      return baseHelper.accessor(accessorKey as any, {
-        header: resolveHeader(header, sortable),
-        cell: (info) =>
-          renderBadgeCell(info.getValue(), { map: map as any, defaultColor, fallback }),
-        enableSorting: sortable,
-        ...rest,
-      }) as ColumnDef<DefaultTableFeatures, TData, any>;
+      return makeAccessorColumn(
+        helper,
+        accessorKey,
+        header as any,
+        sortable,
+        (info) => renderBadgeCell(info.getValue(), { map: map as any, defaultColor, fallback }),
+        rest as any,
+      );
     },
 
-    /**
-     * Alias for `badge` for enums.
-     */
-    enum: <TKey extends DeepKeys<TData>, TVal extends string | number = string | number>(
-      accessorKey: TKey,
-      options: BadgeFieldOptions<TData, TVal> = {},
-    ) => {
-      const { header, sortable, map, defaultColor, fallback, ...rest } = options;
-      return baseHelper.accessor(accessorKey as any, {
-        header: resolveHeader(header, sortable),
-        cell: (info) =>
-          renderBadgeCell(info.getValue(), { map: map as any, defaultColor, fallback }),
-        enableSorting: sortable,
-        ...rest,
-      }) as ColumnDef<DefaultTableFeatures, TData, any>;
-    },
-
-    /**
-     * Define a boolean column rendered with check/cross icons or badges.
-     */
     boolean: <TKey extends DeepKeys<TData>>(
       accessorKey: TKey,
       options: BooleanFieldOptions<TData, unknown> = {},
     ) => {
       const { header, sortable, mode = "icon", trueLabel, falseLabel, fallback, ...rest } = options;
-      return baseHelper.accessor(accessorKey as any, {
-        header: resolveHeader(header, sortable),
-        cell: (info) =>
-          renderBooleanCell(info.getValue(), {
-            mode,
-            trueLabel,
-            falseLabel,
-            fallback,
-          }),
-        enableSorting: sortable,
-        ...rest,
-      }) as ColumnDef<DefaultTableFeatures, TData, any>;
-    },
-
-    /**
-     * Generic field helper accepting dynamic `type`.
-     */
-    field: <TKey extends DeepKeys<TData>>(
-      accessorKey: TKey,
-      options: GenericFieldOptions<TData, unknown> = {},
-    ) => {
-      const { type = "text", ...fieldOptions } = options;
-      switch (type) {
-        case "number": {
-          return baseHelper.accessor(accessorKey as any, {
-            header: resolveHeader(fieldOptions.header, fieldOptions.sortable),
-            cell: (info) => renderNumberCell(info.getValue(), fieldOptions),
-            enableSorting: fieldOptions.sortable,
-            ...fieldOptions,
-          }) as ColumnDef<DefaultTableFeatures, TData, any>;
-        }
-        case "currency": {
-          return baseHelper.accessor(accessorKey as any, {
-            header: resolveHeader(fieldOptions.header, fieldOptions.sortable),
-            cell: (info) => renderCurrencyCell(info.getValue(), fieldOptions),
-            enableSorting: fieldOptions.sortable,
-            ...fieldOptions,
-          }) as ColumnDef<DefaultTableFeatures, TData, any>;
-        }
-        case "date": {
-          return baseHelper.accessor(accessorKey as any, {
-            header: resolveHeader(fieldOptions.header, fieldOptions.sortable),
-            cell: (info) => renderDateCell(info.getValue(), { ...fieldOptions, format: "date" }),
-            enableSorting: fieldOptions.sortable,
-            ...fieldOptions,
-          }) as ColumnDef<DefaultTableFeatures, TData, any>;
-        }
-        case "datetime": {
-          return baseHelper.accessor(accessorKey as any, {
-            header: resolveHeader(fieldOptions.header, fieldOptions.sortable),
-            cell: (info) =>
-              renderDateCell(info.getValue(), { ...fieldOptions, format: "datetime" }),
-            enableSorting: fieldOptions.sortable,
-            ...fieldOptions,
-          }) as ColumnDef<DefaultTableFeatures, TData, any>;
-        }
-        case "badge": {
-          return baseHelper.accessor(accessorKey as any, {
-            header: resolveHeader(fieldOptions.header, fieldOptions.sortable),
-            cell: (info) => renderBadgeCell(info.getValue(), fieldOptions),
-            enableSorting: fieldOptions.sortable,
-            ...fieldOptions,
-          }) as ColumnDef<DefaultTableFeatures, TData, any>;
-        }
-        case "boolean": {
-          return baseHelper.accessor(accessorKey as any, {
-            header: resolveHeader(fieldOptions.header, fieldOptions.sortable),
-            cell: (info) => renderBooleanCell(info.getValue(), fieldOptions),
-            enableSorting: fieldOptions.sortable,
-            ...fieldOptions,
-          }) as ColumnDef<DefaultTableFeatures, TData, any>;
-        }
-        case "text":
-        default: {
-          return baseHelper.accessor(accessorKey as any, {
-            header: resolveHeader(fieldOptions.header, fieldOptions.sortable),
-            cell: (info) => renderTextCell(info.getValue(), fieldOptions),
-            enableSorting: fieldOptions.sortable,
-            ...fieldOptions,
-          }) as ColumnDef<DefaultTableFeatures, TData, any>;
-        }
-      }
+      return makeAccessorColumn(
+        helper,
+        accessorKey,
+        header,
+        sortable,
+        (info) => renderBooleanCell(info.getValue(), { mode, trueLabel, falseLabel, fallback }),
+        rest,
+      );
     },
   };
+
+  return helpers;
 }

@@ -36,6 +36,67 @@ export interface DataTablePaginationProps<TData extends RowData = RowData> {
   cursorPagination?: CursorPaginationConfig;
 }
 
+// ---------------------------------------------------------------------------
+// Shared sub-components
+// ---------------------------------------------------------------------------
+
+interface PageSizeSelectProps {
+  value: number;
+  options: number[];
+  onChange: (size: number) => void;
+}
+
+function PageSizeSelect({ value, options, onChange }: PageSizeSelectProps) {
+  return (
+    <div className={styles.pageSizeSelectWrapper}>
+      <span>Rows per page:</span>
+      <select
+        aria-label="Rows per page"
+        className={styles.pageSizeSelect}
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+      >
+        {options.map((size) => (
+          <option key={size} value={size}>
+            {size}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
+interface NavButton {
+  label: string;
+  icon: React.ReactNode;
+  onClick: () => void;
+  disabled: boolean;
+}
+
+function PageNavButtons({ buttons }: { buttons: NavButton[] }) {
+  return (
+    <div style={{ display: "flex", gap: "0.25rem", alignItems: "center" }}>
+      {buttons.map(({ label, icon, onClick, disabled }) => (
+        <Button
+          key={label}
+          variant="secondary"
+          size="xs"
+          onClick={onClick}
+          disabled={disabled}
+          aria-label={label}
+          icon
+        >
+          {icon}
+        </Button>
+      ))}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Main component
+// ---------------------------------------------------------------------------
+
 export function DataTablePagination<TData extends RowData = RowData>({
   table,
   pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
@@ -55,6 +116,21 @@ export function DataTablePagination<TData extends RowData = RowData>({
       rowCount,
     } = cursorPagination;
 
+    const cursorNavButtons: NavButton[] = [
+      {
+        label: "Go to previous page",
+        icon: <ChevronLeft size={16} />,
+        onClick: onPreviousPage ?? (() => {}),
+        disabled: !hasPreviousPage,
+      },
+      {
+        label: "Go to next page",
+        icon: <ChevronRight size={16} />,
+        onClick: onNextPage ?? (() => {}),
+        disabled: !hasNextPage,
+      },
+    ];
+
     return (
       <div className={styles.pagination}>
         <div className={styles.paginationInfo}>
@@ -67,47 +143,13 @@ export function DataTablePagination<TData extends RowData = RowData>({
 
         <div className={styles.paginationActions}>
           {showPageSizeSelect && onPageSizeChange && pageSize !== undefined && (
-            <div className={styles.pageSizeSelectWrapper}>
-              <span>Rows per page:</span>
-              <select
-                aria-label="Rows per page"
-                className={styles.pageSizeSelect}
-                value={pageSize}
-                onChange={(e) => {
-                  onPageSizeChange(Number(e.target.value));
-                }}
-              >
-                {cursorPageSizeOptions.map((size) => (
-                  <option key={size} value={size}>
-                    {size}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <PageSizeSelect
+              value={pageSize}
+              options={cursorPageSizeOptions}
+              onChange={onPageSizeChange}
+            />
           )}
-
-          <div style={{ display: "flex", gap: "0.25rem", alignItems: "center" }}>
-            <Button
-              variant="secondary"
-              size="xs"
-              onClick={onPreviousPage}
-              disabled={!hasPreviousPage}
-              aria-label="Go to previous page"
-              icon
-            >
-              <ChevronLeft size={16} />
-            </Button>
-            <Button
-              variant="secondary"
-              size="xs"
-              onClick={onNextPage}
-              disabled={!hasNextPage}
-              aria-label="Go to next page"
-              icon
-            >
-              <ChevronRight size={16} />
-            </Button>
-          </div>
+          <PageNavButtons buttons={cursorNavButtons} />
         </div>
       </div>
     );
@@ -119,6 +161,33 @@ export function DataTablePagination<TData extends RowData = RowData>({
   const { pageIndex, pageSize } = table.state.pagination;
   const pageCount = table.getPageCount();
   const totalRows = table.getRowCount();
+
+  const offsetNavButtons: NavButton[] = [
+    {
+      label: "Go to first page",
+      icon: <ChevronsLeft size={16} />,
+      onClick: () => table.setPageIndex(0),
+      disabled: !table.getCanPreviousPage(),
+    },
+    {
+      label: "Go to previous page",
+      icon: <ChevronLeft size={16} />,
+      onClick: () => table.previousPage(),
+      disabled: !table.getCanPreviousPage(),
+    },
+    {
+      label: "Go to next page",
+      icon: <ChevronRight size={16} />,
+      onClick: () => table.nextPage(),
+      disabled: !table.getCanNextPage(),
+    },
+    {
+      label: "Go to last page",
+      icon: <ChevronsRight size={16} />,
+      onClick: () => table.setPageIndex(pageCount - 1),
+      disabled: !table.getCanNextPage(),
+    },
+  ];
 
   return (
     <div className={styles.pagination}>
@@ -135,67 +204,13 @@ export function DataTablePagination<TData extends RowData = RowData>({
 
       <div className={styles.paginationActions}>
         {showPageSizeSelect && (
-          <div className={styles.pageSizeSelectWrapper}>
-            <span>Rows per page:</span>
-            <select
-              aria-label="Rows per page"
-              className={styles.pageSizeSelect}
-              value={pageSize}
-              onChange={(e) => {
-                table.setPageSize(Number(e.target.value));
-              }}
-            >
-              {pageSizeOptions.map((size) => (
-                <option key={size} value={size}>
-                  {size}
-                </option>
-              ))}
-            </select>
-          </div>
+          <PageSizeSelect
+            value={pageSize}
+            options={pageSizeOptions}
+            onChange={(size) => table.setPageSize(size)}
+          />
         )}
-
-        <div style={{ display: "flex", gap: "0.25rem", alignItems: "center" }}>
-          <Button
-            variant="secondary"
-            size="xs"
-            onClick={() => table.setPageIndex(0)}
-            disabled={!table.getCanPreviousPage()}
-            aria-label="Go to first page"
-            icon
-          >
-            <ChevronsLeft size={16} />
-          </Button>
-          <Button
-            variant="secondary"
-            size="xs"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-            aria-label="Go to previous page"
-            icon
-          >
-            <ChevronLeft size={16} />
-          </Button>
-          <Button
-            variant="secondary"
-            size="xs"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-            aria-label="Go to next page"
-            icon
-          >
-            <ChevronRight size={16} />
-          </Button>
-          <Button
-            variant="secondary"
-            size="xs"
-            onClick={() => table.setPageIndex(pageCount - 1)}
-            disabled={!table.getCanNextPage()}
-            aria-label="Go to last page"
-            icon
-          >
-            <ChevronsRight size={16} />
-          </Button>
-        </div>
+        <PageNavButtons buttons={offsetNavButtons} />
       </div>
     </div>
   );
