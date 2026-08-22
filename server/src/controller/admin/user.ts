@@ -7,7 +7,7 @@ import {
 import { UserPasswordDefinition, UserSafeSchema, type userSafeSchema } from "#/controller/user";
 import type zod from "zod";
 import { z } from "#/lib/extendZod";
-import UserError from "#/lib/userError";
+import UserError from "#/lib/router/http/userError";
 
 export const AdminUserListResponseSchema = createCursorPaginationResponseSchema(
   UserSafeSchema,

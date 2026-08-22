@@ -1,6 +1,6 @@
 import { z } from "#/lib/extendZod";
-import CustomRouter from "#/lib/customRouter";
-import UserError from "#/lib/userError";
+import CustomRouter from "#/lib/router/customRouter";
+import UserError from "#/lib/router/http/userError";
 
 export const TestSchema = z
   .object({

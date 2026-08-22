@@ -6,9 +6,9 @@ import { registry } from "#/openapi";
 import type { IncomingHttpHeaders } from "http";
 import AuthenticationController from "#/controller/authentication";
 import type UserController from "#/controller/user";
-import { HTTPstatus } from "#/lib/httpStatus";
-import UserError from "#/lib/userError";
-import { mergePath } from "#/lib/mergePath";
+import { HTTPstatus } from "#/lib/router/http/httpStatus";
+import UserError from "#/lib/router/http/userError";
+import { mergePath } from "#/lib/router/http/mergePath";
 
 type RequestObject = ZodObject<any, any> | undefined;
 type AuthenticationObject = boolean | Role[] | undefined;

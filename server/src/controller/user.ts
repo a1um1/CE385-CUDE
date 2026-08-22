@@ -4,7 +4,7 @@ import { db } from "#/lib/prisma";
 import bcrypt from "bcrypt";
 import { z } from "#/lib/extendZod";
 import type zod from "zod";
-import UserError from "#/lib/userError";
+import UserError from "#/lib/router/http/userError";
 
 export const UserPasswordDefinition = z
   .string()
