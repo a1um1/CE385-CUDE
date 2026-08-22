@@ -175,7 +175,7 @@ export function createTableColumnHelper<TData extends RowData = RowData>() {
       const {
         header,
         sortable,
-        currency = "USD",
+        currency = "THB",
         locale,
         decimals,
         fallback,

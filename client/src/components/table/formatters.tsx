@@ -43,7 +43,6 @@ export interface BadgeMapItem {
 
 export interface BadgeFormatOptions<T extends string | number = string | number> {
   map?: Record<T, BadgeMapItem>;
-  // defaultVariant?: BadgeVariant;
   defaultColor?: string;
   fallback?: React.ReactNode;
 }
@@ -144,7 +143,7 @@ export function renderDateCell(value: unknown, options: DateFormatOptions = {}):
     return options.fallback ?? <span style={{ color: "var(--color-placeholder)" }}>-</span>;
   }
 
-  const locale = options.locale ?? "en-US";
+  const locale = options.locale ?? "th-TH";
   const format = options.format ?? "date";
 
   if (format === "relative") {
@@ -219,10 +218,14 @@ export function renderBooleanCell(
   const mode = options.mode ?? "icon";
 
   if (mode === "icon") {
-    return bool ? (
-      <Check size={18} style={{ color: "var(--color-energy)" }} aria-label="Yes" />
-    ) : (
-      <X size={18} style={{ color: "var(--color-danger)" }} aria-label="No" />
+    return (
+      <span style={{ margin: "0 auto" }}>
+        {bool ? (
+          <Check size={18} stroke="var(--color-energy)" aria-label="Yes" />
+        ) : (
+          <X size={18} stroke="var(--color-danger)" aria-label="No" />
+        )}
+      </span>
     );
   }
 

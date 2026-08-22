@@ -18,6 +18,7 @@ import { defaultTableFeatures } from "./features";
 import type { DefaultTableFeatures } from "./features";
 import Input from "../input";
 import styles from "./table.module.css";
+import Skeleton from "#/components/skeleton";
 
 const DEFAULT_SORTING: SortingState = [];
 const DEFAULT_PAGINATION: PaginationState = { pageIndex: 0, pageSize: 10 };
@@ -205,14 +206,11 @@ export function DataTable<TData extends RowData = RowData, TValue = unknown>({
                 </TableCell>
               </TableRow>
             ) : (
-              skeletonRows.map((rowKey, rowIndex) => (
+              skeletonRows.map((rowKey) => (
                 <TableRow key={rowKey}>
-                  {skeletonCols.map((colKey, cellIndex) => (
+                  {skeletonCols.map((colKey) => (
                     <TableCell key={colKey}>
-                      <div
-                        className={styles.skeletonBar}
-                        style={{ width: `${60 + (((rowIndex + 1) * (cellIndex + 1) * 17) % 35)}%` }}
-                      />
+                      <Skeleton />
                     </TableCell>
                   ))}
                 </TableRow>
