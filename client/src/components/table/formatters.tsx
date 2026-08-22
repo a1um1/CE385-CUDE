@@ -218,14 +218,10 @@ export function renderBooleanCell(
   const mode = options.mode ?? "icon";
 
   if (mode === "icon") {
-    return (
-      <span style={{ margin: "0 auto" }}>
-        {bool ? (
-          <Check size={18} stroke="var(--color-energy)" aria-label="Yes" />
-        ) : (
-          <X size={18} stroke="var(--color-danger)" aria-label="No" />
-        )}
-      </span>
+    return bool ? (
+      <Check size={18} stroke="var(--color-energy)" style={{ margin: "0 auto" }} aria-label="Yes" />
+    ) : (
+      <X size={18} stroke="var(--color-danger)" style={{ margin: "0 auto" }} aria-label="No" />
     );
   }
 
