@@ -40,7 +40,7 @@ export const UserSchema = z
       .nullable()
       .openapi({ example: "https://example.com/background.jpg" }),
     isActive: z.boolean().openapi({ example: true }),
-    reactivatedAt: z.date().nullable().openapi({ example: "2023-01-01T00:00:00.000Z" }),
+    deactivateReason: z.string().nullable().openapi({ example: "User requested deactivation" }),
     createdAt: z.date().openapi({ example: "2023-01-01T00:00:00.000Z" }),
     updatedAt: z.date().openapi({ example: "2023-01-01T00:00:00.000Z" }),
   })
@@ -70,7 +70,6 @@ export const UserUpdatePasswordSchema = z
 
 export const UserSafeSchema = UserSchema.omit({
   password: true,
-  reactivatedAt: true,
 }).openapi("UserSafeData");
 
 export const UserCreationSchema = UserSchema.pick({
@@ -141,7 +140,7 @@ export default class UserController {
   }
 
   static async getUserById(userId: string): Promise<UserController> {
-    const user = await db.user.findUniqueOrThrow({
+    const user = await db.user.findUnique({
       where: { id: userId },
       select: {
         id: true,
@@ -155,8 +154,10 @@ export default class UserController {
         reactivatedAt: true,
         epithet: true,
         isActive: true,
+        deactivateReason: true,
       },
     });
+    if (!user) throw new UserError(404, "User not found");
     return new UserController(user);
   }
 
