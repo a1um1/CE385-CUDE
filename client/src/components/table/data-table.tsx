@@ -313,9 +313,7 @@ export function DataTable<TData extends RowData = RowData, TValue = unknown>({
           table={table}
           pageSizeOptions={pageSizeOptions}
           cursorPagination={
-            cursorPagination
-              ? { rowCount: data.length, ...cursorPagination }
-              : undefined
+            cursorPagination ? { rowCount: data.length, ...cursorPagination } : undefined
           }
         />
       )}

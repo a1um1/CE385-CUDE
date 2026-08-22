@@ -55,9 +55,6 @@ const typedColumns = columnHelper.columns([
         <Button size="xs" variant="secondary">
           Edit
         </Button>
-        <Button size="xs" variant="ghost">
-          Delete
-        </Button>
       </div>
     ),
   }),
@@ -110,7 +107,7 @@ function RouteComponent() {
     <div>
       <DataTable
         data={data?.data ?? []}
-        columns={typedColumns as any}
+        columns={typedColumns}
         isLoading={isLoading}
         cursorPagination={{
           hasNextPage: Boolean(data?.nextCursor),
