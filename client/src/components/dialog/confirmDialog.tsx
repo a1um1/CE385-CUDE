@@ -33,11 +33,7 @@ function ConfirmDialog({
       description={description}
       footer={
         <>
-          <Button
-            variant="secondary"
-            onClick={() => onOpenChange(false)}
-            disabled={isPending}
-          >
+          <Button variant="secondary" onClick={() => onOpenChange(false)} disabled={isPending}>
             {cancelLabel}
           </Button>
           <Button

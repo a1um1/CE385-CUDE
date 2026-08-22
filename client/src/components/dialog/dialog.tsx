@@ -12,14 +12,7 @@ export interface DialogProps {
   footer?: ReactNode;
 }
 
-function Dialog({
-  open,
-  onOpenChange,
-  title,
-  description,
-  children,
-  footer,
-}: DialogProps) {
+function Dialog({ open, onOpenChange, title, description, children, footer }: DialogProps) {
   return (
     <BaseDialog.Root open={open} onOpenChange={onOpenChange}>
       <BaseDialog.Portal>
@@ -27,9 +20,7 @@ function Dialog({
         <BaseDialog.Popup className={styles.popup}>
           <div className={styles.header}>
             <div className={styles.headerText}>
-              <BaseDialog.Title className={styles.title}>
-                {title}
-              </BaseDialog.Title>
+              <BaseDialog.Title className={styles.title}>{title}</BaseDialog.Title>
               {description && (
                 <BaseDialog.Description className={styles.description}>
                   {description}

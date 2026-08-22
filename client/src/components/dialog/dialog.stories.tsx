@@ -37,9 +37,7 @@ function DialogPlayground(args: React.ComponentProps<typeof Dialog>) {
           </>
         }
       >
-        <p style={{ margin: 0 }}>
-          This is the dialog body. You can put any content here.
-        </p>
+        <p style={{ margin: 0 }}>This is the dialog body. You can put any content here.</p>
       </Dialog>
     </div>
   );
