@@ -1,0 +1,11 @@
+enum logStatus {
+  SUCCESS
+  ERROR
+}
+
+model Log {
+  id        String    @id @default(uuid(7)) @db.Uuid
+  content   String
+  status    logStatus
+  createdAt DateTime  @default(now())
+}
