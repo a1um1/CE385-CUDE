@@ -8,6 +8,7 @@ import { UserPasswordDefinition, UserSafeSchema, type userSafeSchema } from "#/c
 import type zod from "zod";
 import { z } from "#/lib/extendZod";
 import UserError from "#/lib/router/http/userError";
+import { Log } from "#/lib/decorators";
 
 export const AdminUserListResponseSchema = createCursorPaginationResponseSchema(
   UserSafeSchema,
@@ -46,6 +47,7 @@ export default class AdminUserController {
     return this.user;
   }
 
+  @Log
   async forceChangePassword(body: zod.infer<typeof AdminUserUpdatePasswordSchema>) {
     if (!this.user) throw new Error("User not found");
     await db.user.update({
@@ -55,6 +57,7 @@ export default class AdminUserController {
     return this;
   }
 
+  @Log
   async deactivate(body: zod.infer<typeof AdminUserDeactivateSchema>) {
     if (!this.user) throw new Error("User not found");
     await db.user.update({
@@ -65,6 +68,7 @@ export default class AdminUserController {
     return this;
   }
 
+  @Log
   async reactivate() {
     if (!this.user) throw new Error("User not found");
     await db.user.update({

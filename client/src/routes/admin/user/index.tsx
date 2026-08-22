@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import DataTable, { createTableColumnHelper } from "#/components/table";
-import Button from "#/components/button";
 import { useAdminUserListQuery } from "#/data/admin/user.data";
+import ButtonLink from "#/components/buttonLink";
 
 const userSearchSchema = z.object({
   cursor: z.string().optional(),
@@ -52,9 +52,14 @@ const typedColumns = columnHelper.columns([
     header: "Actions",
     cell: (_info) => (
       <div style={{ display: "flex", gap: "0.5rem" }}>
-        <Button size="xs" variant="secondary">
+        <ButtonLink
+          size="xs"
+          variant="secondary"
+          to="/admin/user/$id"
+          params={{ id: _info.row.original.id }}
+        >
           Edit
-        </Button>
+        </ButtonLink>
       </div>
     ),
   }),

@@ -1,4 +1,6 @@
 import AdminUserController, {
+  AdminUserActivateSchema,
+  AdminUserDeactivateSchema,
   AdminUserListResponseSchema,
   AdminUserUpdatePasswordSchema,
 } from "#/controller/admin/user";
@@ -55,7 +57,7 @@ const adminUserRouter = new CustomRouter({
     "/deactivate",
     {
       summary: "Deactivate user",
-      body: AdminUserUpdatePasswordSchema,
+      body: AdminUserDeactivateSchema,
       response: GenericResponseSchema,
     },
     async ({ body }) => {
@@ -70,7 +72,7 @@ const adminUserRouter = new CustomRouter({
     "/activate",
     {
       summary: "Activate user",
-      body: AdminUserUpdatePasswordSchema,
+      body: AdminUserActivateSchema,
       response: GenericResponseSchema,
     },
     async ({ body }) => {

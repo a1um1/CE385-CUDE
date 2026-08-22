@@ -141,7 +141,7 @@ export default class UserController {
 
   static async getUserById(userId: string): Promise<UserController> {
     const user = await db.user.findUnique({
-      where: { id: userId },
+      where: { id: userId, isActive: true },
       select: {
         id: true,
         name: true,
@@ -151,7 +151,6 @@ export default class UserController {
         backgroundImage: true,
         createdAt: true,
         updatedAt: true,
-        reactivatedAt: true,
         epithet: true,
         isActive: true,
         deactivateReason: true,
@@ -166,7 +165,7 @@ export default class UserController {
     if (!user) throw new UserError(400, "Email or Password is incorrect");
     const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
     if (!isPasswordValid) throw new UserError(400, "Email or Password is incorrect");
-
+    if (!user.isActive) throw new UserError(403, "This account has been deactivated");
     return new UserController(user);
   }
 
