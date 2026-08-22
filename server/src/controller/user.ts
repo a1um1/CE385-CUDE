@@ -1,4 +1,5 @@
 import type { User } from "#/generated/prisma/client";
+import { Log } from "#/lib/decorators";
 import { db } from "#/lib/prisma";
 import bcrypt from "bcrypt";
 import { z } from "#/lib/extendZod";
@@ -103,6 +104,7 @@ export default class UserController {
     return this.user;
   }
 
+  @Log
   async updateAvatar(data: userUpdateAvatarSchema) {
     if (!this.user) throw new Error("User not found");
     await db.user.update({
@@ -112,6 +114,7 @@ export default class UserController {
     this.user.profileImage = data.profileImageURL;
   }
 
+  @Log
   async updateBackground(data: userUpdateBackgroundSchema) {
     if (!this.user) throw new Error("User not found");
     await db.user.update({
@@ -121,6 +124,7 @@ export default class UserController {
     this.user.backgroundImage = data.backgroundImageURL;
   }
 
+  @Log
   async updatePassword(data: userUpdatePasswordSchema) {
     if (!this.user) throw new Error("User not found");
     const userRecord = await db.user.findUniqueOrThrow({

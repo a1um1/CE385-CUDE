@@ -33,7 +33,8 @@
     "oxc/no-async-endpoint-handlers": "off",
     "max-statements": ["error", 30],
     "react/exhaustive-deps": "off",
-    "unicorn/no-null": "off"
+    "unicorn/no-null": "off",
+    "max-params": ["error", 10]
   },
   "settings": {
     "jsx-a11y": {

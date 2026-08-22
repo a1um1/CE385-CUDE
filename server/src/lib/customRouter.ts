@@ -59,7 +59,6 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
   private defaultConfig: RouteConfig<any, any, any, any, TDefaultAuth> = {
     prefix: undefined,
   };
-
   private authController = new AuthenticationController();
 
   constructor(defaultConfig?: RouteConfig<any, any, any, any, TDefaultAuth>) {
@@ -68,13 +67,18 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
     }
   }
 
-  private mergePath(prefix = "", path = ""): HTTPpath {
-    const combined = `${prefix || ""}/${path || ""}`.replace(/\/+/g, "/").replace(/\/$/, "");
-    return combined.startsWith("/") ? combined || "/" : `/${combined}`;
-  }
-
   get route() {
     return this.router;
+  }
+
+  private mergePath(...segments: (string | undefined)[]): HTTPpath {
+    return segments
+      .map((seg, i) => {
+        if (i === 0) return seg?.replace(/\/+$/, "");
+        return seg?.replace(/^\/+|\/+$/g, "");
+      })
+      .filter(Boolean)
+      .join("/");
   }
 
   private parseRouteParameters<
@@ -259,14 +263,8 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
   patch = this.createMethod("patch");
 
   use(handler: RequestHandler): this;
-  use(path: HTTPpath, handler: RequestHandler): this;
-  use(pathOrHandler: HTTPpath | RequestHandler, handler?: RequestHandler): this {
-    if (typeof pathOrHandler === "function") {
-      this.router.use(pathOrHandler);
-    } else if (handler) {
-      const mergedPath = this.mergePath(this.defaultConfig.prefix, pathOrHandler);
-      this.router.use(mergedPath, handler);
-    }
+  use(handler?: RequestHandler): this {
+    if (typeof handler === "function") this.router.use(handler);
     return this;
   }
 }

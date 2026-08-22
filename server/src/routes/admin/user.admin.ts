@@ -1,24 +1,21 @@
 import { UserSafeSchema } from "#/controller/user";
 import CustomRouter from "#/lib/customRouter";
-import { z } from "#/lib/extendZod";
+import {
+  BaseCursorPaginationQuerySchema,
+  createCursorPaginationResponseSchema,
+} from "#/lib/pagination";
 import { db } from "#/lib/prisma";
 
-export const AdminBaseQuerySchema = z
-  .object({
-    perPage: z.coerce.number().int().min(1).max(100).default(20).openapi({ example: 20 }),
-    cursor: z.string().optional().openapi({ example: "cursor" }),
-  })
-  .openapi("AdminBaseQuery");
+export const AdminBaseQuerySchema = BaseCursorPaginationQuerySchema;
 
-export const AdminUserListResponseSchema = z
-  .object({
-    data: UserSafeSchema.array().openapi({ example: [] }),
-  })
-  .openapi("AdminUserListResponse");
+export const AdminUserListResponseSchema = createCursorPaginationResponseSchema(
+  UserSafeSchema,
+  "AdminUserListResponse",
+);
 
 const adminUserRouter = new CustomRouter({
   prefix: "/admin/user",
-  tags: ["Admin", "User"],
+  tags: ["Admin User Management"],
   authentication: ["ADMIN"],
 }).get(
   "/",
@@ -28,8 +25,13 @@ const adminUserRouter = new CustomRouter({
     response: AdminUserListResponseSchema,
   },
   async ({ query }) => {
+    const isBackward = query.direction === "backward" && Boolean(query.cursor);
+
     const users = await db.user.findMany({
-      take: query.perPage,
+      take: query.perPage + 1,
+      skip: query.cursor ? 1 : 0,
+      cursor: query.cursor ? { id: query.cursor } : undefined,
+      orderBy: { createdAt: isBackward ? "asc" : "desc" },
       select: {
         id: true,
         name: true,
@@ -43,10 +45,32 @@ const adminUserRouter = new CustomRouter({
         epithet: true,
         isActive: true,
       },
-      cursor: query.cursor ? { id: query.cursor } : undefined,
     });
+
+    let nextCursor: string | undefined = undefined;
+    let prevCursor: string | undefined = undefined;
+
+    if (isBackward) {
+      if (users.length > query.perPage) {
+        const extraUser = users.pop();
+        prevCursor = extraUser?.id;
+      }
+      users.reverse();
+      nextCursor = query.cursor;
+    } else {
+      if (users.length > query.perPage) {
+        const nextUser = users.pop();
+        nextCursor = nextUser?.id;
+      }
+      if (query.cursor) {
+        prevCursor = query.cursor;
+      }
+    }
+
     return {
       data: users,
+      nextCursor,
+      prevCursor,
     };
   },
 );

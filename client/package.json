@@ -27,6 +27,7 @@
     "@tanstack/react-router": "latest",
     "@tanstack/react-router-devtools": "latest",
     "@tanstack/react-start": "latest",
+    "@tanstack/react-table": "^9.1.2",
     "@vitejs/plugin-react": "^6.0.5",
     "clsx": "^2.1.1",
     "lucide-react": "^1.33.0",

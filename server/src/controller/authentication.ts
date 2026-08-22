@@ -2,6 +2,7 @@ import UserController, {
   type userCreationSchema,
   type userValidationSchema,
 } from "#/controller/user";
+import { Log } from "#/lib/decorators";
 import { z } from "#/lib/extendZod";
 import jwt from "jsonwebtoken";
 import type zod from "zod";
@@ -40,6 +41,7 @@ export default class AuthenticationController {
     return UserController.getUserById(decoded.userId);
   }
 
+  @Log
   async signIn(credentials: userValidationSchema): Promise<{
     token: ReturnType<AuthenticationController["generateToken"]>;
     user: UserController;
@@ -53,6 +55,7 @@ export default class AuthenticationController {
     return { token, user };
   }
 
+  @Log
   async signUp(userData: userCreationSchema): Promise<{
     token: ReturnType<AuthenticationController["generateToken"]>;
     user: UserController;

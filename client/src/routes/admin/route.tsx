@@ -16,10 +16,9 @@ function RouteComponent() {
   const pageTitle = matches[matches.length - 1]?.staticData?.pageTitle;
 
   useEffect(() => {
-    if (!isLoading && !isAdmin) {
-      navigate({ to: "/" });
-    }
-  }, [user]);
+    if (!isLoading && !isAdmin) navigate({ to: "/" });
+  }, [isLoading, isAdmin]);
+
   if (isLoading || !isAdmin) return <div>Loading...</div>;
 
   return (
