@@ -47,11 +47,10 @@
 
 .editorWrapper {
   display: flex;
+  flex-direction: row;
   flex: 1;
   min-height: 0;
   font-family: var(--font-mono);
-  /* default: side layout */
-  flex-direction: row;
 }
 
 .editorWrapper[data-layout="bottom"] {
@@ -68,36 +67,47 @@
   min-width: 0;
 }
 
-/* ── Sidebar / panel ────────────────────────────────────────── */
+/* ── Resize handle ──────────────────────────────────────────── */
 
-/* Side layout (default) */
-.editorSidebar {
-  /* width is controlled by inline style */
-  min-width: 100px;
-  max-width: 50%;
-  display: flex;
-  flex-direction: column;
-  border-left: 1px solid var(--color-border);
-  background-color: oklch(18% 0.025 267);
-  /* enable horizontal drag-to-resize */
-  resize: horizontal;
-  overflow: auto;
+.resizeHandle {
   flex-shrink: 0;
+  background-color: var(--color-border);
+  transition: background-color 0.15s;
+  z-index: 10;
 }
 
-/* Bottom layout overrides */
+/* Side layout: vertical strip */
+.resizeHandle[data-layout="side"] {
+  width: 4px;
+  cursor: col-resize;
+}
+
+/* Bottom layout: horizontal strip */
+.resizeHandle[data-layout="bottom"] {
+  height: 4px;
+  cursor: row-resize;
+}
+
+.resizeHandle:hover,
+.resizeHandle:active {
+  background-color: var(--color-primary);
+}
+
+/* ── Sidebar / panel ────────────────────────────────────────── */
+
+.editorSidebar {
+  display: flex;
+  flex-direction: column;
+  background-color: oklch(18% 0.025 267);
+  flex-shrink: 0;
+  overflow: hidden;
+  /* width is set by inline style in side mode */
+}
+
 .editorSidebar[data-layout="bottom"] {
-  /* width is 100%, height is controlled by inline style */
-  width: 100% !important;
-  min-width: unset;
-  max-width: unset;
-  min-height: 100px;
-  max-height: 50%;
   flex-direction: row;
-  border-left: none;
-  border-top: 1px solid var(--color-border);
-  /* enable vertical drag-to-resize */
-  resize: vertical;
+  width: 100%;
+  /* height is set by inline style in bottom mode */
 }
 
 /* ── Labels ─────────────────────────────────────────────────── */
@@ -118,6 +128,8 @@
   flex-direction: column;
   flex: 1;
   min-width: 0;
+  min-height: 0;
+  border-right: 1px solid var(--color-border);
 
   textarea {
     flex: 1;
@@ -139,6 +151,7 @@
   flex-direction: column;
   flex: 1;
   min-width: 0;
+  min-height: 0;
 
   pre {
     flex: 1;
@@ -148,7 +161,7 @@
     padding: 0.25rem;
     font-size: var(--size-xs-font-size);
     font-family: var(--font-mono);
-    background-color: color-mix(in oklch, var(--color-input) 80%, black);
+    background-color: var(--color-input);
     color: var(--color-input-text);
   }
 }

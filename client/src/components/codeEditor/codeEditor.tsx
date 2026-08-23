@@ -4,7 +4,7 @@ import styles from "./codeEditor.module.css";
 import Button from "#/components/button";
 import { PanelBottomIcon, PanelRightIcon, PlayIcon } from "lucide-react";
 import type { components } from "#/data/base/openapi";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export type CodeLanguage = keyof components["schemas"]["JudgeLanguagesResponse"]["languages"];
 
@@ -70,6 +70,9 @@ export default function CodeEditor({
   const [panelLayout, setPanelLayout] = useState<PanelLayout>(getInitialLayout);
   const [panelSize, setPanelSize] = useState<number>(() => getInitialSize(getInitialLayout()));
 
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isDragging = useRef(false);
+
   useEffect(() => {
     localStorage.setItem(LS_LAYOUT_KEY, panelLayout);
   }, [panelLayout]);
@@ -90,16 +93,47 @@ export default function CodeEditor({
   function toggleLayout() {
     setPanelLayout((prev) => {
       const next = prev === "side" ? "bottom" : "side";
-      // Reset to a sensible default size for the new layout
       setPanelSize(next === "side" ? DEFAULT_SIDE_SIZE : DEFAULT_BOTTOM_SIZE);
       return next;
     });
   }
 
-  const sideStyle =
-    panelLayout === "side"
-      ? ({ width: `${panelSize}px` } as React.CSSProperties)
-      : ({ height: `${panelSize}px` } as React.CSSProperties);
+  function handleResizeStart(e: React.MouseEvent) {
+    e.preventDefault();
+    isDragging.current = true;
+
+    // Prevent text selection while dragging
+    document.body.style.userSelect = "none";
+    document.body.style.cursor = panelLayout === "side" ? "col-resize" : "row-resize";
+
+    function onMouseMove(ev: MouseEvent) {
+      if (!isDragging.current || !containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      if (panelLayout === "side") {
+        // Sidebar is on the right; new width = right edge - mouse X
+        const newWidth = rect.right - ev.clientX;
+        setPanelSize(Math.max(100, Math.min(newWidth, rect.width * 0.5)));
+      } else {
+        // Panel is on the bottom; new height = bottom edge - mouse Y
+        const newHeight = rect.bottom - ev.clientY;
+        setPanelSize(Math.max(100, Math.min(newHeight, rect.height * 0.5)));
+      }
+    }
+
+    function onMouseUp() {
+      isDragging.current = false;
+      document.body.style.userSelect = "";
+      document.body.style.cursor = "";
+      document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mouseup", onMouseUp);
+    }
+
+    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("mouseup", onMouseUp);
+  }
+
+  const panelStyle: React.CSSProperties =
+    panelLayout === "side" ? { width: panelSize } : { height: panelSize };
 
   return (
     <div className={`${styles.container} ${className ?? ""}`}>
@@ -121,13 +155,13 @@ export default function CodeEditor({
           <Button
             onClick={toggleLayout}
             size="xs"
-            icon
             title={panelLayout === "side" ? "Switch to bottom panel" : "Switch to side panel"}
+            style={{ height: "21px", width: "21", padding: 0, minWidth: "24px" }}
           >
             {panelLayout === "side" ? <PanelBottomIcon size={14} /> : <PanelRightIcon size={14} />}
           </Button>
           {runCode && (
-            <Button onClick={runCode} size="sm">
+            <Button onClick={runCode} size="xs">
               <PlayIcon fill="currentColor" />
               Run
             </Button>
@@ -135,7 +169,7 @@ export default function CodeEditor({
         </div>
       </div>
 
-      <div className={styles.editorWrapper} data-layout={panelLayout}>
+      <div className={styles.editorWrapper} data-layout={panelLayout} ref={containerRef}>
         <div className={styles.editorContainer}>
           <Editor
             language={MONACO_LANGUAGE_MAP[language ?? "c"]}
@@ -153,7 +187,15 @@ export default function CodeEditor({
             }}
           />
         </div>
-        <div className={styles.editorSidebar} data-layout={panelLayout} style={sideStyle}>
+
+        {/* Drag handle — sits between editor and panel */}
+        <div
+          className={styles.resizeHandle}
+          data-layout={panelLayout}
+          onMouseDown={handleResizeStart}
+        />
+
+        <div className={styles.editorSidebar} data-layout={panelLayout} style={panelStyle}>
           <div className={styles.editorStdin}>
             <label className={styles.editorLabel}>Input</label>
             <textarea
