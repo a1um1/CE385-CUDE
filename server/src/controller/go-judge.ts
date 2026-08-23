@@ -243,10 +243,9 @@ export class GoJudge {
       },
       stdin: input,
     });
-    console.log("Request body:", JSON.stringify(requestBody, null, 2));
+
     if (languageConfig.type === CompilerType.Compile && languageConfig.compileArgs) {
       const compiledFileId = await this.compileCode(code, language);
-
       requestBody = this.generateRunConfig({
         args: languageConfig.args,
         cpuLimit,
