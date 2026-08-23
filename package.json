@@ -19,7 +19,8 @@
     "openapi:generate": "npx openapi-typescript http://localhost:3000/openapi.json --output ./client/src/data/base/openapi.ts",
     "docker:up": "docker-compose -f scripts/docker-compose.yml --env-file scripts/.env.local up -d",
     "storybook": "npm run storybook --prefix client",
-    "ts:check": "npm run ts:check --prefix client && npm run ts:check --prefix server"
+    "ts:check": "npm run ts:check --prefix client && npm run ts:check --prefix server",
+    "judge0:up": "DOCKER_DEFAULT_PLATFORM=linux/amd64 docker-compose -f scripts/judge0/docker-compose.yml up -d"
   },
   "dependencies": {
     "react": "^19.2.8",

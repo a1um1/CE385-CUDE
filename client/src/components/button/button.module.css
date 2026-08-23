@@ -20,6 +20,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  gap: 0.25rem;
 
   &:hover,
   &:focus {
@@ -88,5 +89,10 @@
   &[data-disabled] {
     opacity: 0.5;
     pointer-events: none;
+  }
+
+  svg {
+    width: 1em;
+    height: 1em;
   }
 }
