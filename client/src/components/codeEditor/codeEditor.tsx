@@ -2,8 +2,9 @@ import { Editor } from "@monaco-editor/react";
 import Spinner from "#/components/spinner";
 import styles from "./codeEditor.module.css";
 import Button from "#/components/button";
-import { PlayIcon } from "lucide-react";
+import { PanelBottomIcon, PanelRightIcon, PlayIcon } from "lucide-react";
 import type { components } from "#/data/base/openapi";
+import { useEffect, useState } from "react";
 
 export type CodeLanguage = keyof components["schemas"]["JudgeLanguagesResponse"]["languages"];
 
@@ -16,6 +17,28 @@ const MONACO_LANGUAGE_MAP: Record<CodeLanguage, string> = {
   c: "c",
   python: "python",
 };
+
+type PanelLayout = "side" | "bottom";
+
+const LS_LAYOUT_KEY = "codeEditor_panelLayout";
+const LS_SIZE_KEY = "codeEditor_panelSize";
+
+const DEFAULT_SIDE_SIZE = 300;
+const DEFAULT_BOTTOM_SIZE = 200;
+
+function getInitialLayout(): PanelLayout {
+  const stored = localStorage.getItem(LS_LAYOUT_KEY);
+  return stored === "bottom" ? "bottom" : "side";
+}
+
+function getInitialSize(layout: PanelLayout): number {
+  const stored = localStorage.getItem(LS_SIZE_KEY);
+  if (stored) {
+    const parsed = parseInt(stored, 10);
+    if (!isNaN(parsed)) return parsed;
+  }
+  return layout === "side" ? DEFAULT_SIDE_SIZE : DEFAULT_BOTTOM_SIZE;
+}
 
 export interface CodeEditorProps {
   value: string;
@@ -44,6 +67,17 @@ export default function CodeEditor({
   stdout,
   stdin,
 }: CodeEditorProps) {
+  const [panelLayout, setPanelLayout] = useState<PanelLayout>(getInitialLayout);
+  const [panelSize, setPanelSize] = useState<number>(() => getInitialSize(getInitialLayout()));
+
+  useEffect(() => {
+    localStorage.setItem(LS_LAYOUT_KEY, panelLayout);
+  }, [panelLayout]);
+
+  useEffect(() => {
+    localStorage.setItem(LS_SIZE_KEY, String(panelSize));
+  }, [panelSize]);
+
   function handleLanguageChange(event: React.ChangeEvent<HTMLSelectElement>) {
     onChangeLanguage?.(event.target.value as CodeLanguage);
     onChange("");
@@ -52,6 +86,20 @@ export default function CodeEditor({
   function handleEditorChange(newValue: string | undefined) {
     onChange(newValue ?? "");
   }
+
+  function toggleLayout() {
+    setPanelLayout((prev) => {
+      const next = prev === "side" ? "bottom" : "side";
+      // Reset to a sensible default size for the new layout
+      setPanelSize(next === "side" ? DEFAULT_SIDE_SIZE : DEFAULT_BOTTOM_SIZE);
+      return next;
+    });
+  }
+
+  const sideStyle =
+    panelLayout === "side"
+      ? ({ width: `${panelSize}px` } as React.CSSProperties)
+      : ({ height: `${panelSize}px` } as React.CSSProperties);
 
   return (
     <div className={`${styles.container} ${className ?? ""}`}>
@@ -69,15 +117,25 @@ export default function CodeEditor({
             </option>
           ))}
         </select>
-        {runCode && (
-          <Button onClick={runCode} size="xs">
-            <PlayIcon fill="currentColor" />
-            Run
+        <div className={styles.toolbarActions}>
+          <Button
+            onClick={toggleLayout}
+            size="xs"
+            icon
+            title={panelLayout === "side" ? "Switch to bottom panel" : "Switch to side panel"}
+          >
+            {panelLayout === "side" ? <PanelBottomIcon size={14} /> : <PanelRightIcon size={14} />}
           </Button>
-        )}
+          {runCode && (
+            <Button onClick={runCode} size="sm">
+              <PlayIcon fill="currentColor" />
+              Run
+            </Button>
+          )}
+        </div>
       </div>
 
-      <div className={styles.editorWrapper}>
+      <div className={styles.editorWrapper} data-layout={panelLayout}>
         <div className={styles.editorContainer}>
           <Editor
             language={MONACO_LANGUAGE_MAP[language ?? "c"]}
@@ -95,7 +153,7 @@ export default function CodeEditor({
             }}
           />
         </div>
-        <div className={styles.editorSidebar}>
+        <div className={styles.editorSidebar} data-layout={panelLayout} style={sideStyle}>
           <div className={styles.editorStdin}>
             <label className={styles.editorLabel}>Input</label>
             <textarea
