@@ -34,7 +34,8 @@
     "max-statements": ["error", 30],
     "react/exhaustive-deps": "off",
     "unicorn/no-null": "off",
-    "max-params": ["error", 10]
+    "max-params": ["error", 10],
+    "unicorn/max-nested-calls": "off"
   },
   "settings": {
     "jsx-a11y": {

@@ -1,3 +1,4 @@
+import { z } from "#/lib/extendZod";
 import pLimit from "p-limit";
 
 enum RunStatus {
@@ -16,13 +17,28 @@ enum CompilerType {
   Compile,
 }
 
-interface LanguageConfig {
-  compileArgs?: string[];
+interface BaseConfig {
   args: string[];
-  type: CompilerType;
   tempFile: string;
-  outputFile?: string;
+  safeAttribute: {
+    name: string;
+    version: string;
+  };
 }
+
+type CompileConfig = BaseConfig & {
+  type: CompilerType.Compile;
+  compileArgs: string[]; // required when compiling
+  outputFile: string; // required when compiling
+};
+
+type InterpreteConfig = BaseConfig & {
+  type: CompilerType.Interprete;
+  compileArgs?: never; // not allowed when interpreting
+  outputFile?: never; // not allowed when interpreting
+};
+
+type LanguageConfig = CompileConfig | InterpreteConfig;
 
 interface RunResult {
   status: RunStatus;
@@ -38,6 +54,28 @@ interface RunResult {
   fileIds?: Record<string, string>;
 }
 
+interface cleanRunResult {
+  status: RunStatus;
+  exitCode: number;
+  time: number; // ns
+  memory: number; // bytes
+  procPeak: number; // peak number of process
+  stdout: string;
+  stderr: string;
+}
+
+export const cleanResultSchema = z
+  .object({
+    status: z.enum(RunStatus),
+    exitCode: z.number(),
+    time: z.number(),
+    memory: z.number(),
+    procPeak: z.number(),
+    stdout: z.string(),
+    stderr: z.string(),
+  })
+  .openapi("JudgeCleanRunResult");
+
 interface RunConfig {
   input?: string;
   code: string;
@@ -51,20 +89,31 @@ export class GoJudge {
   private limit = pLimit(5); // Limit concurrent requests to 5
   static readonly COMPILE_MEMORY_LIMIT = 256; // mb
   static readonly COMPILE_CPU_LIMIT = 5000; // ms
-  static readonly LANGAUGES: Record<string, LanguageConfig> = {
+  static readonly LANGAUGES = {
     python: {
       args: ["/usr/bin/python3", "$tempFile"],
       type: CompilerType.Interprete,
       tempFile: "temp.py",
+      safeAttribute: {
+        name: "Python",
+        version: "3.11",
+      },
     },
     c: {
+      safeAttribute: {
+        name: "C",
+        version: "11",
+      },
       compileArgs: ["/usr/bin/gcc", "$tempFile", "-o", "$outputFile"],
       tempFile: "temp.c",
       outputFile: "temp.out",
       args: ["./$tempFile"],
       type: CompilerType.Compile,
     },
-  } as const;
+  } as const satisfies Record<string, LanguageConfig>;
+  static readonly LANGUAGES_KEYS = Object.keys(
+    GoJudge.LANGAUGES,
+  ) as (keyof typeof GoJudge.LANGAUGES)[];
 
   private async sendRequest<T>(
     method: string,
@@ -81,12 +130,11 @@ export class GoJudge {
       body: bodyContent,
     });
 
-    if (!response.ok) throw new Error(`Request failed with status ${response.status}`);
-
-    if (expect === "status") {
-      return { status: response.status } as unknown as T;
+    if (!response.ok) {
+      console.error(`Request failed with status ${response.status}: ${await response.text()}`);
+      throw new Error(`Request failed with status ${response.status}`);
     }
-
+    if (expect === "status") return { status: response.status } as unknown as T;
     return response.json() as Promise<T>;
   }
 
@@ -115,7 +163,7 @@ export class GoJudge {
           ),
           env: ["PATH=/usr/bin:/bin"],
           files: [
-            ...(stdin !== undefined || stdin !== null
+            ...(stdin !== undefined && stdin !== null
               ? [
                   {
                     content: stdin,
@@ -179,7 +227,7 @@ export class GoJudge {
     language,
     cpuLimit = 1000, // ms
     memoryLimit = 64, // mb
-  }: RunConfig) {
+  }: RunConfig): Promise<cleanRunResult> {
     const languageConfig = GoJudge.LANGAUGES[language as keyof typeof GoJudge.LANGAUGES];
     if (!languageConfig) throw new Error(`Unsupported language: ${language}`);
 
@@ -193,10 +241,9 @@ export class GoJudge {
           content: code,
         },
       },
-      outputFile: languageConfig.outputFile,
       stdin: input,
     });
-
+    console.log("Request body:", JSON.stringify(requestBody, null, 2));
     if (languageConfig.type === CompilerType.Compile && languageConfig.compileArgs) {
       const compiledFileId = await this.compileCode(code, language);
 
@@ -214,13 +261,23 @@ export class GoJudge {
       });
     }
 
-    const response = await this.sendRequest<RunResult[]>("POST", "/run", requestBody);
+    const [response] = await this.sendRequest<RunResult[]>("POST", "/run", requestBody);
+    if (!response) throw new Error("No response from GoJudge");
+
     const fileToDelete = Object.values(requestBody?.cmd?.[0]?.copyIn || {})
       ?.map((file) => ("fileId" in file ? file.fileId : undefined))
       ?.filter((fileId): fileId is string => fileId !== undefined);
 
     await this.cleanAllFiles(fileToDelete);
-    return response[0];
+    return {
+      status: response.status,
+      exitCode: response.exitStatus,
+      time: response.time,
+      memory: response.memory,
+      procPeak: response.procPeak,
+      stdout: response.files.stdout,
+      stderr: response.files.stderr,
+    } satisfies cleanRunResult;
   }
 
   async cleanAllFiles(fileIdsInput?: string[]) {

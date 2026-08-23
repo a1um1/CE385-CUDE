@@ -1,4 +1,4 @@
-import { GoJudge } from "#/controller/go-judge";
+import { cleanResultSchema, GoJudge } from "#/controller/go-judge";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 import UserError from "#/lib/router/http/userError";
@@ -50,53 +50,57 @@ const testRoute = new CustomRouter({
     },
   )
   .post(
-    "/judge-python",
+    "/judge",
     {
-      summary: "Judge Python Test",
+      summary: "Judge Test",
       body: z.object({
+        language: z.enum(GoJudge.LANGUAGES_KEYS).openapi({ example: "python" }),
         code: z.string().openapi({ example: 'print("Hello world", input())' }),
         input: z.string().optional().openapi({ example: "Hello" }),
       }),
+      response: cleanResultSchema,
     },
     async ({ body }) => {
       const goJudge = new GoJudge();
       const result = await goJudge.runCode({
         input: body.input,
         code: body.code,
-        language: "python",
+        language: body.language,
       });
       return result;
     },
   )
-  .post(
-    "/judge-c",
+  .get(
+    "/judge-languages",
     {
-      summary: "Judge C Test",
-      body: z.object({
-        code: z.string().openapi({ example: "int main() { retusrn 0; }" }),
-        input: z.string().optional().openapi({ example: "Hello" }),
-      }),
+      summary: "Get Judge Languages",
+      response: z
+        .object({
+          languages: z.record(
+            z.enum(GoJudge.LANGUAGES_KEYS).openapi("JudgeAvailableLanguage"),
+            z.object({
+              name: z.string().openapi({ example: "Python" }),
+              version: z.string().openapi({ example: "3.11.4" }),
+            }),
+          ),
+        })
+        .openapi("JudgeLanguagesResponse"),
     },
-    async ({ body }) => {
-      const goJudge = new GoJudge();
-      const result = await goJudge.runCode({
-        input: body.input,
-        code: body.code,
-        language: "c",
-      });
-      return result;
-    },
-  )
-  .post(
-    "/judge-clean",
-    {
-      summary: "Judge Clean Test",
-    },
-    async () => {
-      const goJudge = new GoJudge();
-      await goJudge.cleanAllFiles();
-      return { message: "All files cleaned successfully" };
-    },
+    async () => ({
+      languages: Object.entries(GoJudge.LANGAUGES).reduce(
+        (acc, [key, lang]) => {
+          acc[key as keyof typeof GoJudge.LANGAUGES] = lang.safeAttribute;
+          return acc;
+        },
+        {} as Record<
+          keyof typeof GoJudge.LANGAUGES,
+          {
+            name: string;
+            version: string;
+          }
+        >,
+      ),
+    }),
   );
 
 export const testRouter = testRoute.route;
