@@ -1,3 +1,4 @@
+import { Judgement } from "#/controller/judge0";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 import UserError from "#/lib/router/http/userError";
@@ -46,6 +47,39 @@ const testRoute = new CustomRouter({
     },
     async () => {
       throw new Error("unhandled Error");
+    },
+  )
+  .post(
+    "/judge0",
+    {
+      tags: ["Test"],
+      summary: "Judge0 Test",
+      body: z
+        .object({
+          code: z.string().openapi({ example: "print(input())" }),
+          input: z.string().openapi({ example: "Hello, World!" }),
+        })
+        .openapi("Judge0Test"),
+      response: z.object({
+        output: z.string().openapi({ example: "Hello, World!" }),
+      }),
+    },
+    async ({ body }) => {
+      const judge = new Judgement();
+      const output = await judge.run(body.code, body.input);
+      return { output: output ?? "" };
+    },
+  )
+  .get(
+    "/judge0/languages",
+    {
+      tags: ["Test"],
+      summary: "Judge0 Available Languages",
+    },
+    async () => {
+      const judge = new Judgement();
+      const languages = await judge.listAvailableLanguages();
+      return languages;
     },
   );
 
