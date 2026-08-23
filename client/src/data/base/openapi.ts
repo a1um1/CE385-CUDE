@@ -377,7 +377,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Judge Python Test */
+        /** Judge Test */
         post: {
             parameters: {
                 query?: never;
@@ -407,57 +407,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": unknown;
-                    };
-                };
-                /** @description Validation error */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-                /** @description Internal server error */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-            };
-        };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/test/judge-clean": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Judge Clean Test */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": unknown;
+                        "application/json": components["schemas"]["JudgeCleanRunResult"];
                     };
                 };
                 /** @description Validation error */
@@ -1019,6 +969,16 @@ export interface components {
         Test: {
             /** @example 123456 */
             randomNumber: number | null;
+        };
+        JudgeCleanRunResult: {
+            /** @enum {string} */
+            status: "Accepted" | "Memory Limit Exceeded" | "Time Limit Exceeded" | "Output Limit Exceeded" | "File Error" | "Nonzero Exit Status" | "Signalled" | "Internal Error";
+            exitCode: number;
+            time: number;
+            memory: number;
+            procPeak: number;
+            stdout: string;
+            stderr: string;
         };
         JudgeLanguagesResponse: {
             languages: {

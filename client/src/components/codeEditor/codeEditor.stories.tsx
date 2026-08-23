@@ -36,7 +36,7 @@ export const Playground: Story = {
     layout: "padded",
   },
   args: {
-    language: "cpp",
+    language: "c",
     value:
       '#include <iostream>\n\nint main() {\n    std::cout << "Hello, World!" << std::endl;\n    return 0;\n}\n',
     onChange: () => {},
