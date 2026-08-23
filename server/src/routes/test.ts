@@ -1,4 +1,4 @@
-import { Judgement } from "#/controller/judge0";
+import { GoJudge } from "#/controller/go-judge";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 import UserError from "#/lib/router/http/userError";
@@ -50,36 +50,52 @@ const testRoute = new CustomRouter({
     },
   )
   .post(
-    "/judge0",
+    "/judge-python",
     {
-      tags: ["Test"],
-      summary: "Judge0 Test",
-      body: z
-        .object({
-          code: z.string().openapi({ example: "print(input())" }),
-          input: z.string().openapi({ example: "Hello, World!" }),
-        })
-        .openapi("Judge0Test"),
-      response: z.object({
-        output: z.string().openapi({ example: "Hello, World!" }),
+      summary: "Judge Python Test",
+      body: z.object({
+        code: z.string().openapi({ example: 'print("Hello world", input())' }),
+        input: z.string().optional().openapi({ example: "Hello" }),
       }),
     },
     async ({ body }) => {
-      const judge = new Judgement();
-      const output = await judge.run(body.code, body.input);
-      return { output: output ?? "" };
+      const goJudge = new GoJudge();
+      const result = await goJudge.runCode({
+        input: body.input,
+        code: body.code,
+        language: "python",
+      });
+      return result;
     },
   )
-  .get(
-    "/judge0/languages",
+  .post(
+    "/judge-c",
     {
-      tags: ["Test"],
-      summary: "Judge0 Available Languages",
+      summary: "Judge C Test",
+      body: z.object({
+        code: z.string().openapi({ example: "int main() { retusrn 0; }" }),
+        input: z.string().optional().openapi({ example: "Hello" }),
+      }),
+    },
+    async ({ body }) => {
+      const goJudge = new GoJudge();
+      const result = await goJudge.runCode({
+        input: body.input,
+        code: body.code,
+        language: "c",
+      });
+      return result;
+    },
+  )
+  .post(
+    "/judge-clean",
+    {
+      summary: "Judge Clean Test",
     },
     async () => {
-      const judge = new Judgement();
-      const languages = await judge.listAvailableLanguages();
-      return languages;
+      const goJudge = new GoJudge();
+      await goJudge.cleanAllFiles();
+      return { message: "All files cleaned successfully" };
     },
   );
 

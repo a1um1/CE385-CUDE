@@ -1,0 +1,9 @@
+services:
+  go-judge:
+    image: go-judge:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    privileged: true
+    ports:
+      - "5050:5050"
