@@ -15,7 +15,7 @@ services:
     privileged: true
     <<: *default-logging
     restart: always
-    wait_for:
+    depends_on:
       - db
       - redis
 
@@ -27,7 +27,7 @@ services:
     privileged: true
     <<: *default-logging
     restart: always
-    wait_for:
+    depends_on:
       - db
       - redis
 
