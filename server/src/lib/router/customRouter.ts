@@ -1,59 +1,22 @@
 import type { Role } from "#/generated/prisma/enums";
 import { Router } from "express";
 import type { RequestHandler } from "express-serve-static-core";
-import { z, type ZodObject, type ZodType } from "zod";
 import { registry } from "#/openapi";
-import type { IncomingHttpHeaders } from "http";
 import AuthenticationController from "#/controller/authentication/authentication";
-import type UserController from "#/controller/user/user";
 import { HTTPstatus } from "#/lib/router/http/httpStatus";
 import UserError from "#/lib/router/http/userError";
 import { mergePath } from "#/lib/mergePath";
-
-type RequestObject = ZodObject<any, any> | undefined;
-type AuthenticationObject = boolean | Role[] | undefined;
-type HTTPpath = string;
-
-type InferOrAny<T> = [T] extends [undefined]
-  ? any
-  : Exclude<T, undefined> extends ZodType
-    ? z.infer<Exclude<T, undefined>>
-    : any;
-
-type Method = "get" | "post" | "put" | "delete" | "patch" | "head" | "options" | "trace" | "query";
-
-type RouteHandler<
-  TParams extends RequestObject = undefined,
-  TQuery extends RequestObject = undefined,
-  TBody extends ZodType<any> | undefined = undefined,
-  TResponse extends ZodType<any> | undefined = undefined,
-  TAuth extends AuthenticationObject = undefined,
-> = (req: {
-  body: InferOrAny<TBody>;
-  params: InferOrAny<TParams>;
-  query: InferOrAny<TQuery>;
-  headers: IncomingHttpHeaders;
-  user: TAuth extends true | Role[] ? UserController : undefined;
-  status: HTTPstatus;
-}) => Promise<InferOrAny<TResponse>> | InferOrAny<TResponse>;
-
-interface RouteConfig<
-  TParams extends RequestObject = undefined,
-  TQuery extends RequestObject = undefined,
-  TBody extends ZodType<any> | undefined = undefined,
-  TResponse extends ZodType<any> | undefined = undefined,
-  TAuth extends AuthenticationObject = undefined,
-> {
-  prefix?: string;
-  tags?: string[];
-  summary?: string;
-  params?: TParams;
-  query?: TQuery;
-  body?: TBody;
-  response?: TResponse;
-  responseDescription?: string;
-  authentication?: TAuth;
-}
+import type {
+  AuthenticationObject,
+  RequestObject,
+  InferOrAny,
+  Method,
+  HTTPpath,
+  RouteHandler,
+  RouteConfig,
+} from "#/lib/router/customerRouter.type";
+import type { ZodType } from "zod";
+import { z } from "#/lib/extendZod";
 
 export default class CustomRouter<TDefaultAuth extends AuthenticationObject = undefined> {
   private router = Router();

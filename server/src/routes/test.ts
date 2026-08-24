@@ -1,4 +1,5 @@
-import { cleanResultSchema, GoJudge } from "#/controller/go-judge";
+import GoJudge from "#/controller/go-judge";
+import { cleanResultSchema } from "#/controller/go-judge/go-judge.schema";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 import UserError from "#/lib/router/http/userError";
