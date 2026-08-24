@@ -1,39 +1,14 @@
 import { db } from "#/lib/prisma";
 import bcrypt from "bcrypt";
-import {
-  createCursorPaginationResponseSchema,
-  type BaseCursorPaginationQuery,
-} from "#/lib/pagination";
-import { UserPasswordDefinition, UserSafeSchema, type userSafeSchema } from "#/controller/user";
-import type zod from "zod";
-import { z } from "#/lib/extendZod";
+import { type BaseCursorPaginationQuery } from "#/lib/pagination";
+import { type userSafeSchema } from "#/controller/user/user.schema";
 import UserError from "#/lib/router/http/userError";
 import { Log } from "#/lib/decorators";
-
-export const AdminUserListResponseSchema = createCursorPaginationResponseSchema(
-  UserSafeSchema,
-  "AdminUserListResponse",
-);
-
-export const AdminUserUpdatePasswordSchema = z
-  .object({
-    id: z.string().openapi({ example: "user_id" }),
-    newPassword: UserPasswordDefinition,
-  })
-  .openapi("AdminUserUpdatePassword");
-
-export const AdminUserDeactivateSchema = z
-  .object({
-    id: z.string().openapi({ example: "user_id" }),
-    reason: z.string().optional().openapi({ example: "Violation of terms of service" }),
-  })
-  .openapi("AdminUserDeactivate");
-
-export const AdminUserActivateSchema = z
-  .object({
-    id: z.string().openapi({ example: "user_id" }),
-  })
-  .openapi("AdminUserActivate");
+import type {
+  AdminUserDeactivateSchema,
+  AdminUserListResponseSchema,
+  AdminUserUpdatePasswordSchema,
+} from "#/controller/admin/user/user.schema";
 
 export default class AdminUserController {
   private user?: userSafeSchema;
@@ -48,7 +23,7 @@ export default class AdminUserController {
   }
 
   @Log
-  async forceChangePassword(body: zod.infer<typeof AdminUserUpdatePasswordSchema>) {
+  async forceChangePassword(body: AdminUserUpdatePasswordSchema) {
     if (!this.user) throw new Error("User not found");
     await db.user.update({
       where: { id: this.user.id },
@@ -58,7 +33,7 @@ export default class AdminUserController {
   }
 
   @Log
-  async deactivate(body: zod.infer<typeof AdminUserDeactivateSchema>) {
+  async deactivate(body: AdminUserDeactivateSchema) {
     if (!this.user) throw new Error("User not found");
     await db.user.update({
       where: { id: this.user.id },
@@ -101,9 +76,7 @@ export default class AdminUserController {
     return new AdminUserController(user);
   }
 
-  static async queryUser(
-    query: BaseCursorPaginationQuery,
-  ): Promise<zod.infer<typeof AdminUserListResponseSchema>> {
+  static async queryUser(query: BaseCursorPaginationQuery): Promise<AdminUserListResponseSchema> {
     const isBackward = query.direction === "backward" && Boolean(query.cursor);
 
     const users = await db.user.findMany({

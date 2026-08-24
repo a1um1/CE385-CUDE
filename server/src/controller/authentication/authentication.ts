@@ -1,28 +1,11 @@
-import UserController, {
-  type userCreationSchema,
-  type userValidationSchema,
-} from "#/controller/user";
+import type {
+  AuthenticationBody,
+  authenticationSchema,
+} from "#/controller/authentication/authentication.schema";
+import UserController from "#/controller/user/user";
+import type { userCreationSchema, userValidationSchema } from "#/controller/user/user.schema";
 import { Log } from "#/lib/decorators";
-import { z } from "#/lib/extendZod";
 import jwt from "jsonwebtoken";
-import type zod from "zod";
-
-interface AuthenticationBody {
-  userId: string;
-  name: string;
-  email: string;
-}
-
-export const authenticationSchema = z
-  .object({
-    token: z.string().openapi({
-      example:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMjM0NTYiLCJuYW1lIjoiSm9obiBEb2UiLCJlbWFpbCI6ImVtYWlsQGdtYWlsLmNvbSIsImlhdCI6MTY4NzQyNjQwMCwiZXhwIjoxNjg3NDI2NDAwfQ.abc123",
-    }),
-  })
-  .openapi("AuthenticationData");
-
-export type authenticationSchema = zod.infer<typeof authenticationSchema>;
 
 export default class AuthenticationController {
   private secret?: string = process.env.JWT_SECRET;
