@@ -34,7 +34,7 @@ npm run docker:up 					# สำหรับรัน Service ฐานข้อ�
 - Backend: [Express.JS](https://expressjs.com/)
 - Database: [Postgres 18](https://www.postgresql.org/)
 - Storage: S3 Storage Compatible Service (Undecide)
-- Judgement Platform: [Judge0](https://github.com/judge0/judge0)
+- Judgement Platform: ~~[Judge0](https://github.com/judge0/judge0)~~ [GoJudge](https://github.com/criyle/go-judge)
 - Linter & Formatter: [OXC](https://oxc.rs/)
 
 ### How to submit PRs
