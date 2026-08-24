@@ -7,7 +7,7 @@ import {
 import CustomRouter from "#/lib/router/customRouter";
 import { z } from "#/lib/extendZod";
 import { GenericResponseSchema } from "#/lib/router/http/genericResponse";
-import { BaseCursorPaginationQuerySchema } from "#/lib/pagination";
+import { BaseCursorPaginationQuerySchema } from "#/lib/pagination.schema";
 import AdminUserController from "#/controller/admin/user";
 import { UserSafeSchema } from "#/controller/user/user.schema";
 

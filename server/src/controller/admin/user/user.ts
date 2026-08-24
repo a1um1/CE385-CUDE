@@ -1,6 +1,6 @@
 import { db } from "#/lib/prisma";
 import bcrypt from "bcrypt";
-import { type BaseCursorPaginationQuery } from "#/lib/pagination";
+import { type BaseCursorPaginationQuery } from "#/lib/pagination.schema";
 import { type userSafeSchema } from "#/controller/user/user.schema";
 import UserError from "#/lib/router/http/userError";
 import { Log } from "#/lib/decorators";
