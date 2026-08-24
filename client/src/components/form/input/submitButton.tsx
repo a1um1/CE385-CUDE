@@ -17,7 +17,7 @@ export function SubmitButton({ label, isPending, ...props }: SubmitButtonProps) 
         const loading = isSubmitting || isPending;
         return (
           <Button type="submit" {...props} disabled={!canSubmit || loading}>
-            {loading && <Spinner className="mr-2" size="1rem" />}
+            {loading && <Spinner size="1rem" />}
             {label}
           </Button>
         );

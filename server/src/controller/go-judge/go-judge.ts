@@ -1,116 +1,14 @@
-import { z } from "#/lib/extendZod";
+import type { RunResult, RunConfig, cleanRunResult } from "#/controller/go-judge/go-judge.schema";
+import { CompilerType } from "#/controller/go-judge/go-judge.schema";
+import { GoJudgeLanguagesConfig } from "#/controller/go-judge/languages.config";
 import pLimit from "p-limit";
 
-enum RunStatus {
-  Accepted = "Accepted", // normal
-  MemoryLimitExceeded = "Memory Limit Exceeded", // mle
-  TimeLimitExceeded = "Time Limit Exceeded", // tle
-  OutputLimitExceeded = "Output Limit Exceeded", // ole
-  FileError = "File Error", // fe
-  NonzeroExitStatus = "Nonzero Exit Status",
-  Signalled = "Signalled",
-  InternalError = "Internal Error", // system error
-}
-
-enum CompilerType {
-  Interprete,
-  Compile,
-}
-
-interface BaseConfig {
-  args: string[];
-  tempFile: string;
-  safeAttribute: {
-    name: string;
-    version: string;
-  };
-}
-
-type CompileConfig = BaseConfig & {
-  type: CompilerType.Compile;
-  compileArgs: string[]; // required when compiling
-  outputFile: string; // required when compiling
-};
-
-type InterpreteConfig = BaseConfig & {
-  type: CompilerType.Interprete;
-  compileArgs?: never; // not allowed when interpreting
-  outputFile?: never; // not allowed when interpreting
-};
-
-type LanguageConfig = CompileConfig | InterpreteConfig;
-
-interface RunResult {
-  status: RunStatus;
-  exitStatus: number;
-  time: number; // ns
-  memory: number; // bytes
-  runTime: number; // ns
-  procPeak: number; // peak number of process
-  files: {
-    stderr: string;
-    stdout: string;
-  };
-  fileIds?: Record<string, string>;
-}
-
-interface cleanRunResult {
-  status: RunStatus;
-  exitCode: number;
-  time: number; // ns
-  memory: number; // bytes
-  procPeak: number; // peak number of process
-  stdout: string;
-  stderr: string;
-}
-
-export const cleanResultSchema = z
-  .object({
-    status: z.enum(RunStatus),
-    exitCode: z.number(),
-    time: z.number(),
-    memory: z.number(),
-    procPeak: z.number(),
-    stdout: z.string(),
-    stderr: z.string(),
-  })
-  .openapi("JudgeCleanRunResult");
-
-interface RunConfig {
-  input?: string;
-  code: string;
-  language: keyof typeof GoJudge.LANGAUGES;
-  cpuLimit?: number; // ms
-  memoryLimit?: number; // mb
-}
-
-export class GoJudge {
+export default class GoJudge {
   private hostUrl = "http://localhost:5050";
   private limit = pLimit(5); // Limit concurrent requests to 5
   static readonly COMPILE_MEMORY_LIMIT = 256; // mb
   static readonly COMPILE_CPU_LIMIT = 5000; // ms
-  static readonly LANGAUGES = {
-    python: {
-      args: ["/usr/bin/python3", "$tempFile"],
-      type: CompilerType.Interprete,
-      tempFile: "temp.py",
-      safeAttribute: {
-        name: "Python",
-        version: "3.11",
-      },
-    },
-    c: {
-      safeAttribute: {
-        name: "C",
-        version: "11",
-      },
-      compileArgs: ["/usr/bin/gcc", "$tempFile", "-o", "$outputFile"],
-      tempFile: "temp.c",
-      outputFile: "temp.out",
-      args: ["./$tempFile"],
-      type: CompilerType.Compile,
-    },
-  } as const satisfies Record<string, LanguageConfig>;
+  static readonly LANGAUGES = GoJudgeLanguagesConfig;
   static readonly LANGUAGES_KEYS = Object.keys(
     GoJudge.LANGAUGES,
   ) as (keyof typeof GoJudge.LANGAUGES)[];
