@@ -1,8 +1,7 @@
-import { UserCreationSchema, UserValidationSchema } from "#/controller/user/user";
-import AuthenticationController, {
-  authenticationSchema,
-} from "#/controller/authentication/authentication";
+import { UserCreationSchema, UserValidationSchema } from "#/controller/user/user.schema";
+import AuthenticationController from "#/controller/authentication/authentication";
 import CustomRouter from "#/lib/router/customRouter";
+import { authenticationSchema } from "#/controller/authentication/authentication.schema";
 
 const authController = new AuthenticationController();
 

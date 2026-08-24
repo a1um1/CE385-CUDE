@@ -3,7 +3,7 @@ import {
   UserUpdateAvatarSchema,
   UserUpdateBackgroundSchema,
   UserUpdatePasswordSchema,
-} from "#/controller/user/user";
+} from "#/controller/user/user.schema";
 import CustomRouter from "#/lib/router/customRouter";
 import { GenericResponseSchema } from "#/lib/router/http/genericResponse";
 
