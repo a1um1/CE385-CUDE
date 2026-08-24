@@ -1,4 +1,4 @@
-import { UserPasswordDefinition, UserSafeSchema } from "#/controller/user/user";
+import { UserPasswordDefinition, UserSafeSchema } from "#/controller/user/user.schema";
 import { z } from "#/lib/extendZod";
 import { createCursorPaginationResponseSchema } from "#/lib/pagination.schema";
 import type Zod from "zod";
