@@ -26,6 +26,20 @@ class TestClass {
 }
 
 describe("Logger Decorators", () => {
+  it("shouldn't allow @Log to decorate non-methods", () => {
+    expect(
+      () =>
+        new Promise((resolve) => {
+          class InvalidClass {
+            // @ts-ignore
+            @Log()
+            property = "Invalid";
+          }
+          resolve(new InvalidClass());
+        }),
+    ).rejects.toThrow("@Log can only decorate methods");
+  });
+
   it("should log method calls with default label", () => {
     mockedDb.log.create.mockResolvedValueOnce(mockSuccessLog);
     const testInstance = new TestClass();

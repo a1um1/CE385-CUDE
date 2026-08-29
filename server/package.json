@@ -41,12 +41,9 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^26.2.0",
     "@types/pg": "^8.21.0",
-    "@vitest/coverage-v8": "^4.1.11",
     "openapi-typescript": "^7.13.0",
     "prisma": "^7.9.1",
-    "tsx": "^4.23.12",
-    "vitest": "^4.1.11",
-    "vitest-mock-extended": "^5.1.1"
+    "tsx": "^4.23.12"
   },
   "overrides": {
     "openapi-typescript": {

@@ -5,7 +5,7 @@ import { registry } from "#/openapi";
 import AuthenticationController from "#/controller/authentication/authentication";
 import { HTTPstatus } from "#/lib/router/http/httpStatus";
 import UserError from "#/lib/router/http/userError";
-import { mergePath } from "#/lib/mergePath";
+import { mergePath } from "#/lib/mergePath/mergePath";
 import type {
   AuthenticationObject,
   RequestObject,

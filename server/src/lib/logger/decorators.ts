@@ -3,11 +3,11 @@ import { saveLog } from "#/lib/logger/saveLog";
 
 export function Log(label?: string) {
   return (
-    target: object,
+    _target: object,
     propertyKey: string | symbol,
     descriptor: PropertyDescriptor,
   ): PropertyDescriptor => {
-    const original = descriptor.value;
+    const original = descriptor?.value;
 
     if (typeof original !== "function") {
       throw new Error(`@Log can only decorate methods. "${String(propertyKey)}" is not a method.`);
