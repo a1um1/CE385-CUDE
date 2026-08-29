@@ -16,7 +16,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "test:github": "prisma generate && vitest run --reporter=github-actions"
+    "test:github": "prisma generate && vitest run --reporter=github-actions --reporter=default"
   },
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "^9.1.0",
