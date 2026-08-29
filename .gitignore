@@ -20,4 +20,5 @@ server/src/generated/prisma/
 *storybook.log
 storybook-static
 *.module.css.d.ts
-judge0.conf
+
+*/coverage/*
