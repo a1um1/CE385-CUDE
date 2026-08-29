@@ -6,30 +6,63 @@ on:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  NODE_VERSION: 24
 
 jobs:
-  check:
-    name: Lint, Format & Type Check
+  setup:
+    name: Install dependencies
     runs-on: ubuntu-latest
+    outputs:
+      cache-key: ${{ steps.cache-key.outputs.key }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 24
-          cache: "npm"
-          cache-dependency-path: package-lock.json
+          node-version: ${{ env.NODE_VERSION }}
 
-      - name: Install root dependencies
+      - name: Compute cache key
+        id: cache-key
+        run: echo "key=node_modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}" >> "$GITHUB_OUTPUT"
+
+      - name: Cache node_modules
+        id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ steps.cache-key.outputs.key }}
+
+      - name: Install dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: npm ci
 
-      - name: Run Type Check
-        run: npm run ts:check
+  check:
+    name: ${{ matrix.workspace }} / ${{ matrix.task.label }}
+    runs-on: ubuntu-latest
+    needs: setup
+    strategy:
+      fail-fast: false
+      matrix:
+        workspace: [client, server]
+        task:
+          - label: Type Check
+            script: ts:check
+          - label: Lint
+            script: lint
+          - label: Format Check
+            script: format:check
+    steps:
+      - uses: actions/checkout@v4
 
-      - name: Run Linter
-        run: npm run lint
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
 
-      - name: Run Format Check
-        run: npm run format:check
+      - name: Restore node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ needs.setup.outputs.cache-key }}
+
+      - name: Run ${{ matrix.task.label }}
+        run: npm run ${{ matrix.task.script }} -w ${{ matrix.workspace }}
