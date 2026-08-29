@@ -1,4 +1,4 @@
-import UserController from "#/controller/user";
+import UserController from "#/controller/user/user";
 import fakeUser from "#/controller/user/tests/user.mock";
 import type { User } from "#/generated/prisma/client";
 import { describe, expect, it } from "vitest";

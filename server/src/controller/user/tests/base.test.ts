@@ -1,4 +1,4 @@
-import UserController from "#/controller/user";
+import UserController from "#/controller/user/user";
 import fakeUser from "#/controller/user/tests/user.mock";
 import { userQueryPayload } from "#/controller/user/user.schema";
 import type { User } from "#/generated/prisma/client";

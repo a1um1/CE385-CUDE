@@ -4,7 +4,7 @@ import type {
 } from "#/controller/authentication/authentication.schema";
 import UserController from "#/controller/user/user";
 import type { userCreationSchema, userValidationSchema } from "#/controller/user/user.schema";
-import { Log } from "#/lib/decorators";
+import { Log } from "#/lib/logger/decorators";
 import jwt from "jsonwebtoken";
 
 export default class AuthenticationController {

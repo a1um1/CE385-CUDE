@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import { type BaseCursorPaginationQuery } from "#/lib/pagination.schema";
 import { userQueryPayload, type userSafeSchema } from "#/controller/user/user.schema";
 import UserError from "#/lib/router/http/userError";
-import { Log } from "#/lib/decorators";
+import { Log } from "#/lib/logger/decorators";
 import type {
   AdminUserDeactivateSchema,
   AdminUserListResponseSchema,

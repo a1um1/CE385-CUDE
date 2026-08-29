@@ -1,4 +1,4 @@
-import { Log } from "#/lib/decorators";
+import { Log } from "#/lib/logger/decorators";
 import { db } from "#/lib/prisma";
 import bcrypt from "bcrypt";
 import UserError from "#/lib/router/http/userError";
@@ -23,7 +23,7 @@ export default class UserController {
     return this.user;
   }
 
-  @Log
+  @Log()
   async updateAvatar(data: userUpdateAvatarSchema) {
     if (!this.user) throw new Error("User not found");
     await db.user.update({
@@ -31,9 +31,10 @@ export default class UserController {
       data: { profileImage: data.profileImageURL },
     });
     this.user.profileImage = data.profileImageURL;
+    return this;
   }
 
-  @Log
+  @Log()
   async updateBackground(data: userUpdateBackgroundSchema) {
     if (!this.user) throw new Error("User not found");
     await db.user.update({
@@ -41,9 +42,10 @@ export default class UserController {
       data: { backgroundImage: data.backgroundImageURL },
     });
     this.user.backgroundImage = data.backgroundImageURL;
+    return this;
   }
 
-  @Log
+  @Log()
   async updatePassword(data: userUpdatePasswordSchema) {
     if (!this.user) throw new Error("User not found");
     const userRecord = await db.user.findUniqueOrThrow({
