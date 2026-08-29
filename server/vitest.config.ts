@@ -7,8 +7,11 @@ export default defineConfig({
       "#": path.resolve(import.meta.dirname, "./src"),
     },
   },
-  esbuild: {
-    target: "esnext",
+  oxc: {
+    target: "es2022",
+    decorator: {
+      legacy: true,
+    },
   },
   test: {
     globals: true,

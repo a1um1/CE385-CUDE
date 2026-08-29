@@ -4,7 +4,7 @@ import { db } from "#/lib/prisma";
 export function Log<This, Args extends unknown[], Return>(
   target: (this: This, ...args: Args) => Return,
   context: ClassMethodDecoratorContext<This, (this: This, ...args: Args) => Return>,
-): void | ((this: This, ...args: Args) => Return);
+): (this: This, ...args: Args) => Return;
 
 export function Log(
   label?: string,

@@ -1,8 +1,8 @@
 import UserController from "#/controller/user";
 import { UserPasswordDefinition, userQueryPayload } from "#/controller/user/user.schema";
 import type { User } from "#/generated/prisma/client";
-import { db } from "#/lib/prisma";
 import UserError from "#/lib/router/http/userError";
+import { mockedDb } from "#/test/setup";
 import { describe, expect, it } from "vitest";
 
 const fakeUser = {
@@ -77,13 +77,13 @@ const passwordSchemaTests = [
 
 describe("User Controller", () => {
   it("should return error when user is not found", async () => {
-    db.user.findUnique.mockResolvedValue(null);
+    mockedDb.user.findUnique.mockResolvedValue(null);
     await expect(UserController.getUserById("nonexistent-user-id")).rejects.toThrow(UserError);
   });
 
   it("should have the correct error message", async () => {
     try {
-      db.user.findUnique.mockResolvedValue(null);
+      mockedDb.user.findUnique.mockResolvedValue(null);
       await UserController.getUserById("nonexistent-user-id");
       expect.unreachable("Expected getUserById to throw");
     } catch (error) {
@@ -96,17 +96,17 @@ describe("User Controller", () => {
   });
 
   it("should return user", async () => {
-    db.user.findUnique.mockResolvedValue(fakeUser);
+    mockedDb.user.findUnique.mockResolvedValue(fakeUser);
     const user = await UserController.getUserById(fakeUser.id);
     expect(user).toEqual(new UserController(fakeUser));
-    expect(db.user.findUnique).toHaveBeenCalledWith({
+    expect(mockedDb.user.findUnique).toHaveBeenCalledWith({
       select: userQueryPayload,
       where: { id: fakeUser.id },
     });
   });
 
   it.each(passwordSchemaTests)(
-    "should validate password $password => $expected",
+    "should validate password '%password' => %expected",
     ({ password, expected }) => {
       const isValid = UserPasswordDefinition.safeParse(password).success;
       expect(isValid).toBe(expected);

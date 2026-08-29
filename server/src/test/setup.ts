@@ -9,3 +9,5 @@ vi.mock("#/lib/prisma", () => ({
 beforeEach(() => {
   mockReset(db);
 });
+
+export const mockedDb = db as unknown as ReturnType<typeof mockDeep<typeof db>>;
