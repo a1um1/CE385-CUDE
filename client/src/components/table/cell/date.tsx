@@ -5,24 +5,18 @@ export type DateFormatPreset = "date" | "datetime" | "time" | "relative";
 
 export interface DateFormatOptions {
   format?: DateFormatPreset | Intl.DateTimeFormatOptions;
-  locale?: string;
   fallback?: React.ReactNode;
 }
 
 export function renderDateCell(value: unknown, options: DateFormatOptions = {}): React.ReactNode {
-  if (!value) {
-    return options.fallback ?? <EmptyCell />;
-  }
+  if (!value) return options.fallback ?? <EmptyCell />;
 
   const date = value instanceof Date ? value : new Date(value as string | number);
-  if (Number.isNaN(date.getTime())) {
-    return options.fallback ?? <EmptyCell />;
-  }
+  if (Number.isNaN(date.getTime())) return options.fallback ?? <EmptyCell />;
 
-  const locale = options.locale ?? "th-TH";
   const format = options.format ?? "date";
 
-  if (format === "relative") return formatRelativeTime(date, locale);
+  if (format === "relative") return formatRelativeTime(date);
 
   let intlOptions: Intl.DateTimeFormatOptions = {
     year: "numeric",
@@ -48,5 +42,5 @@ export function renderDateCell(value: unknown, options: DateFormatOptions = {}):
     };
   }
 
-  return new Intl.DateTimeFormat(locale, intlOptions).format(date);
+  return new Intl.DateTimeFormat("th-TH", intlOptions).format(date);
 }

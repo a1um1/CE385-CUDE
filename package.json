@@ -12,6 +12,10 @@
     "type": "git",
     "url": "git+https://github.com/a1um1/CE385-CUDE.git"
   },
+  "workspaces": [
+    "client",
+    "server"
+  ],
   "scripts": {
     "dev": "concurrently --prefix name --names \"client,server\" \"npm run dev --prefix client\" \"npm run dev --prefix server\"",
     "lint": "npm run lint --prefix client && npm run lint --prefix server",
@@ -22,15 +26,16 @@
     "ts:check": "npm run ts:check --prefix client && npm run ts:check --prefix server",
     "judge0:up": "DOCKER_DEFAULT_PLATFORM=linux/amd64 docker-compose -f scripts/judge0/docker-compose.yml up -d"
   },
-  "dependencies": {
-    "react": "^19.2.8",
-    "vite-css-modules": "^1.16.0"
-  },
   "devDependencies": {
     "@types/react": "^19.2.18",
     "concurrently": "^10.0.4",
     "oxfmt": "^0.63.0",
     "oxlint": "^1.78.0",
     "typescript": "^7.0.2"
+  },
+  "overrides": {
+    "openapi-typescript": {
+      "typescript": "$typescript"
+    }
   }
 }

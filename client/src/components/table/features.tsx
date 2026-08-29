@@ -207,13 +207,13 @@ export function createTableColumnHelper<TData extends RowData = RowData>() {
       accessorKey: TKey,
       options: DateFieldOptions<TData, unknown> = {},
     ) => {
-      const { header, sortable, format = "date", locale, fallback, ...rest } = options;
+      const { header, sortable, format = "date", fallback, ...rest } = options;
       return makeAccessorColumn(
         helper,
         accessorKey,
         header,
         sortable,
-        (info) => renderDateCell(info.getValue(), { format, locale, fallback }),
+        (info) => renderDateCell(info.getValue(), { format, fallback }),
         rest,
       );
     },
