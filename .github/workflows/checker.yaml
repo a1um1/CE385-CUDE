@@ -51,6 +51,8 @@ jobs:
             script: lint
           - label: Format Check
             script: format:check
+          - label: Vitest
+            script: test:github
     steps:
       - uses: actions/checkout@v4
 

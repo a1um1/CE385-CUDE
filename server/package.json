@@ -15,7 +15,8 @@
     "ts:check": "prisma generate && tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "test:github": "vitest run --reporter=github"
   },
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "^9.1.0",
