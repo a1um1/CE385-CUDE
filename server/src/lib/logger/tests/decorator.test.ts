@@ -15,6 +15,11 @@ class TestClass {
   }
 
   @Log()
+  methodWithError() {
+    throw new Error("Test error");
+  }
+
+  @Log()
   async asyncMethod() {
     // Test async method
   }
@@ -23,11 +28,16 @@ class TestClass {
   async asyncMethodWithError() {
     throw new Error("Test error");
   }
+
+  @Log()
+  async asyncMethodWithCustomError() {
+    throw "I'm a string error";
+  }
 }
 
 describe("Logger Decorators", () => {
-  it("shouldn't allow @Log to decorate non-methods", () => {
-    expect(
+  it("shouldn't allow @Log to decorate non-methods", async () => {
+    await expect(
       () =>
         new Promise((resolve) => {
           class InvalidClass {
@@ -79,6 +89,19 @@ describe("Logger Decorators", () => {
     });
   });
 
+  it("should log method calls with error", async () => {
+    mockedDb.log.create.mockResolvedValueOnce(mockErrorLog);
+    const testInstance = new TestClass();
+    await expect(() => testInstance.methodWithError()).rejects.toThrow("Test error");
+
+    expect(mockedDb.log.create).toHaveBeenCalledWith({
+      data: {
+        content: expect.stringContaining("TestClass.methodWithError failed in"),
+        status: "ERROR",
+      },
+    });
+  });
+
   it("should log async method calls with error", async () => {
     mockedDb.log.create.mockResolvedValueOnce(mockErrorLog);
     const testInstance = new TestClass();
@@ -87,6 +110,19 @@ describe("Logger Decorators", () => {
     expect(mockedDb.log.create).toHaveBeenCalledWith({
       data: {
         content: expect.stringContaining("TestClass.asyncMethodWithError failed in"),
+        status: "ERROR",
+      },
+    });
+  });
+
+  it("should log async method calls with string error", async () => {
+    mockedDb.log.create.mockResolvedValueOnce(mockErrorLog);
+    const testInstance = new TestClass();
+    await expect(testInstance.asyncMethodWithCustomError()).rejects.toThrow("I'm a string error");
+
+    expect(mockedDb.log.create).toHaveBeenCalledWith({
+      data: {
+        content: expect.stringContaining("I'm a string error"),
         status: "ERROR",
       },
     });

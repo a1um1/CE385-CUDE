@@ -32,9 +32,9 @@ export function Log(label?: string) {
 
         if (isPromiseLike(result)) {
           return (result as Promise<unknown>).then(
-            (value) => {
+            (return_value) => {
               logSuccess();
-              return value;
+              return return_value;
             },
             (error: unknown) => {
               logFailure(error);
@@ -55,12 +55,12 @@ export function Log(label?: string) {
   };
 }
 
-function resolveClassName(instance: unknown): string {
+export function resolveClassName(instance: unknown): string {
   const ctorName = (instance as { constructor?: { name?: string } })?.constructor?.name;
   return ctorName || "AnonymousClass";
 }
 
-function isPromiseLike(value: unknown): value is Promise<unknown> {
+export function isPromiseLike(value: unknown): value is Promise<unknown> {
   return (
     value instanceof Promise ||
     (typeof value === "object" && value !== null && typeof (value as any).then === "function")

@@ -22,7 +22,7 @@ export default class AdminUserController {
     return this.user;
   }
 
-  @Log
+  @Log()
   async forceChangePassword(body: AdminUserUpdatePasswordSchema) {
     if (!this.user) throw new Error("User not found");
     await db.user.update({
@@ -32,7 +32,7 @@ export default class AdminUserController {
     return this;
   }
 
-  @Log
+  @Log()
   async deactivate(body: AdminUserDeactivateSchema) {
     if (!this.user) throw new Error("User not found");
     await db.user.update({
@@ -43,7 +43,7 @@ export default class AdminUserController {
     return this;
   }
 
-  @Log
+  @Log()
   async reactivate() {
     if (!this.user) throw new Error("User not found");
     await db.user.update({

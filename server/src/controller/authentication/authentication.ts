@@ -24,7 +24,7 @@ export default class AuthenticationController {
     return UserController.getUserById(decoded.userId);
   }
 
-  @Log
+  @Log()
   async signIn(credentials: userValidationSchema): Promise<{
     token: ReturnType<AuthenticationController["generateToken"]>;
     user: UserController;
@@ -38,7 +38,7 @@ export default class AuthenticationController {
     return { token, user };
   }
 
-  @Log
+  @Log()
   async signUp(userData: userCreationSchema): Promise<{
     token: ReturnType<AuthenticationController["generateToken"]>;
     user: UserController;
