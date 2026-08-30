@@ -93,7 +93,7 @@ jobs:
         if: always()
         with:
           name: vitest-report
-          path: html/
+          path: server/html/
 
       - name: Link Report to Job Summary
         if: always()
