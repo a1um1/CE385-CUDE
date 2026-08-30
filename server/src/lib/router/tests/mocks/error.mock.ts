@@ -8,6 +8,13 @@ const errorRouting = new CustomRouter()
   })
   .get("/unhandled-error", {}, async () => {
     throw new Error("This is an unhandled error");
+  })
+  .get("/unhandled-error-without-message", {}, async () => {
+    // oxlint-disable-next-line unicorn/error-message
+    throw new Error();
+  })
+  .get("/unhandled-error-but-not-error", {}, async () => {
+    throw "This is an unhandled error but not an instance of Error";
   });
 
 const ErrorRoutingApp = express();

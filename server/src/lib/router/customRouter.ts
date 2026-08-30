@@ -173,13 +173,22 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
             return res.status(error.status).json({
               message: error.message,
             });
-          } else {
-            console.error("Unhandled error in route handler:", error);
-            const errorMessage = error instanceof Error ? error.message : "Internal Server Error";
+          }
+
+          if (error instanceof z.ZodError) {
+            const errorString = z.treeifyError(error);
             return res.status(500).json({
-              message: errorMessage,
+              message: "Invalid response format",
+              details: errorString,
             });
           }
+
+          console.error("Unhandled error in route handler:", error);
+          const errorMessage =
+            (error instanceof Error ? error.message : undefined) || "Internal Server Error";
+          return res.status(500).json({
+            message: errorMessage,
+          });
         }
       },
     );
@@ -214,9 +223,8 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
   delete = this.createMethod("delete");
   patch = this.createMethod("patch");
 
-  use(handler: RequestHandler): this;
-  use(handler?: RequestHandler): this {
-    if (typeof handler === "function") this.router.use(handler);
+  use(handler: RequestHandler): this {
+    this.router.use(handler);
     return this;
   }
 }

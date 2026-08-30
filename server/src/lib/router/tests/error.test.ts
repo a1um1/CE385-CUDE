@@ -14,4 +14,16 @@ describe("Error Handling Tests", () => {
     expect(res.status).toBe(500);
     expect(res.body).toHaveProperty("message", "This is an unhandled error");
   });
+
+  it("should handle unhandled errors without messages correctly", async () => {
+    const res = await request(ErrorRoutingApp).get("/unhandled-error-without-message");
+    expect(res.status).toBe(500);
+    expect(res.body).toHaveProperty("message", "Internal Server Error");
+  });
+
+  it("should handle unhandled errors with non-Error objects correctly", async () => {
+    const res = await request(ErrorRoutingApp).get("/unhandled-error-but-not-error");
+    expect(res.status).toBe(500);
+    expect(res.body).toHaveProperty("message", "Internal Server Error");
+  });
 });
