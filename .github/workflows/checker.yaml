@@ -90,13 +90,11 @@ jobs:
       - name: Upload Vitest HTML Report
         uses: actions/upload-artifact@v4
         id: upload-report
-        if: always() # Ensures report is uploaded even if tests fail
+        if: always()
         with:
           name: vitest-report
-          # Use '.vitest' for newer versions, or 'html/' if configured otherwise
-          path: .vitest/
+          path: html/
 
-      # Inject a web-viewable link into the GitHub Workflow summary page
       - name: Link Report to Job Summary
         if: always()
         run: |

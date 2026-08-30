@@ -22,3 +22,4 @@ storybook-static
 *.module.css.d.ts
 
 */coverage/*
+*/html/*
