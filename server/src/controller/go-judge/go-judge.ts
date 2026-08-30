@@ -111,10 +111,20 @@ export default class GoJudge {
       },
       outputFile: languageConfig.outputFile,
     });
-    const response = await this.sendRequest<RunResult[]>("POST", "/run", compileRequestBody);
-    const fileId = response[0]?.fileIds?.[languageConfig.outputFile || ""] || undefined;
+
+    const [response] = await this.sendRequest<RunResult[]>("POST", "/run", compileRequestBody);
+    if (!response) throw new Error("No response from GoJudge during compilation");
+    const fileId = response?.fileIds?.[languageConfig.outputFile || ""] || undefined;
     if (!fileId) {
-      throw new Error(`Compilation failed, no output file generated ${response[0]?.files.stderr}`);
+      return {
+        status: response.status,
+        exitCode: response.exitStatus,
+        time: response.time,
+        memory: response.memory,
+        procPeak: response.procPeak,
+        stdout: response.files.stdout,
+        stderr: response.files.stderr,
+      } satisfies cleanRunResult;
     }
     return fileId;
   }
@@ -144,6 +154,10 @@ export default class GoJudge {
 
     if (languageConfig.type === CompilerType.Compile && languageConfig.compileArgs) {
       const compiledFileId = await this.compileCode(code, language);
+      if (typeof compiledFileId !== "string") {
+        // Compilation failed, return the compilation result
+        return compiledFileId;
+      }
       requestBody = this.generateRunConfig({
         args: languageConfig.args,
         cpuLimit,

@@ -3,28 +3,17 @@ import Spinner from "#/components/spinner";
 import styles from "./codeEditor.module.css";
 import Button from "#/components/button";
 import { PanelBottomIcon, PanelRightIcon, PlayIcon } from "lucide-react";
-import type { components } from "#/data/base/openapi";
 import { useEffect, useRef, useState } from "react";
-
-export type CodeLanguage = keyof components["schemas"]["JudgeLanguagesResponse"]["languages"];
-
-const LANGUAGE_OPTIONS: { label: string; value: CodeLanguage }[] = [
-  { label: "C", value: "c" },
-  { label: "Python", value: "python" },
-];
-
-const MONACO_LANGUAGE_MAP: Record<CodeLanguage, string> = {
-  c: "c",
-  python: "python",
-};
-
-type PanelLayout = "side" | "bottom";
-
-const LS_LAYOUT_KEY = "codeEditor_panelLayout";
-const LS_SIZE_KEY = "codeEditor_panelSize";
-
-const DEFAULT_SIDE_SIZE = 300;
-const DEFAULT_BOTTOM_SIZE = 200;
+import type { CodeEditorProps, CodeLanguage } from "#/components/codeEditor";
+import type { PanelLayout } from "#/components/codeEditor/codeEditor.schema";
+import {
+  LS_LAYOUT_KEY,
+  LS_SIZE_KEY,
+  DEFAULT_SIDE_SIZE,
+  DEFAULT_BOTTOM_SIZE,
+  LANGUAGE_OPTIONS,
+  MONACO_LANGUAGE_MAP,
+} from "#/components/codeEditor/codeEditor.schema";
 
 function getInitialLayout(): PanelLayout {
   const stored = localStorage.getItem(LS_LAYOUT_KEY);
@@ -38,20 +27,6 @@ function getInitialSize(layout: PanelLayout): number {
     if (!isNaN(parsed)) return parsed;
   }
   return layout === "side" ? DEFAULT_SIDE_SIZE : DEFAULT_BOTTOM_SIZE;
-}
-
-export interface CodeEditorProps {
-  value: string;
-  onChange: (value: string) => void;
-  language?: CodeLanguage;
-  onChangeLanguage?: (value: CodeLanguage) => void;
-  disableLanguageSwitch?: boolean;
-  runCode?: () => void;
-  stdin?: string;
-  setStdin?: (value: string) => void;
-  stderr?: string;
-  stdout?: string;
-  className?: string;
 }
 
 export default function CodeEditor({
@@ -181,7 +156,6 @@ export default function CodeEditor({
             options={{
               minimap: { enabled: false },
               fontSize: 14,
-              fontFamily: '"Space Mono", monospace',
               scrollBeyondLastLine: false,
               tabSize: 4,
             }}
