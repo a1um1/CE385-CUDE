@@ -75,4 +75,61 @@ describe("Posting Router Tests", () => {
       body: { name: "John Doe", age: 30 },
     });
   });
+
+  it("should return 400 for POST requests with invalid body types", async () => {
+    const res = await request(PostBodyApp)
+      .post("/posting-with-body")
+      .send({ name: 123, age: "thirty" });
+    expect(res.status).toBe(400);
+    expect(res.body).toHaveProperty("message", "Invalid request parameters");
+    expect(res.body).toHaveProperty("details");
+  });
+
+  it("should return 400 for POST requests with null body fields", async () => {
+    const res = await request(PostBodyApp)
+      .post("/posting-with-body")
+      .send({ name: null, age: null });
+    expect(res.status).toBe(400);
+    expect(res.body).toHaveProperty("message", "Invalid request parameters");
+    expect(res.body).toHaveProperty("details");
+  });
+
+  it("should return 400 for POST requests with undefined body fields", async () => {
+    const res = await request(PostBodyApp)
+      .post("/posting-with-body")
+      .send({ name: undefined, age: undefined });
+    expect(res.status).toBe(400);
+    expect(res.body).toHaveProperty("message", "Invalid request parameters");
+    expect(res.body).toHaveProperty("details");
+  });
+
+  it("should return 400 for POST requests with other type body", async () => {
+    const res = await request(PostBodyApp).post("/posting-with-body").send("invalid body");
+    expect(res.status).toBe(400);
+    expect(res.body).toHaveProperty("message", "Invalid request parameters");
+    expect(res.body).toHaveProperty("details");
+  });
+
+  it("should return 400 for POST requests with array body", async () => {
+    const res = await request(PostBodyApp)
+      .post("/posting-with-body")
+      .send([{ name: "John Doe", age: 30 }]);
+    expect(res.status).toBe(400);
+    expect(res.body).toHaveProperty("message", "Invalid request parameters");
+    expect(res.body).toHaveProperty("details");
+  });
+
+  it("should return 400 for POST requests with empty array body", async () => {
+    const res = await request(PostBodyApp).post("/posting-with-body").send([]);
+    expect(res.status).toBe(400);
+    expect(res.body).toHaveProperty("message", "Invalid request parameters");
+    expect(res.body).toHaveProperty("details");
+  });
+
+  it("should return 400 for POST requests with malformed JSON", async () => {
+    const res = await request(PostBodyApp).post("/posting-with-body").send("{");
+    expect(res.status).toBe(400);
+    expect(res.body).toHaveProperty("message", "Invalid request parameters");
+    expect(res.body).toHaveProperty("details");
+  });
 });

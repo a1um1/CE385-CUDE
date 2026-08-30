@@ -1,7 +1,9 @@
 import CustomRouter from "#/lib/router/customRouter";
 import express from "express";
 
-const basicRouting = new CustomRouter()
+const basicRouting = new CustomRouter({
+  prefix: "/api",
+})
   // Basic test route
   .get(
     "/test",

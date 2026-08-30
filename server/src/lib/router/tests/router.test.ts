@@ -10,7 +10,7 @@ describe("Custom Router Tests", () => {
     { method: "delete", expectedMessage: "Test DELETE route" },
     { method: "patch", expectedMessage: "Test PATCH route" },
   ] as const)("should handle $method requests correctly", async ({ method, expectedMessage }) => {
-    const res = await request(BasicRoutingApp)[method]("/test");
+    const res = await request(BasicRoutingApp)[method]("/api/test");
     expect(res.status).toBe(200);
     expect(res.body).toEqual({ message: expectedMessage });
   });
