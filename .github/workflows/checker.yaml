@@ -84,7 +84,7 @@ jobs:
           path: node_modules
           key: ${{ needs.setup.outputs.cache-key }}
 
-      - name: Run Vitest
+      - name: Run Vitest with coverage
         run: npm run test:github -w server
 
       - name: Upload Vitest HTML Report
@@ -95,8 +95,19 @@ jobs:
           name: vitest-report
           path: server/html/
 
-      - name: Link Report to Job Summary
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v4
+        id: upload-coverage
+        if: always()
+        with:
+          name: coverage-report
+          path: server/coverage/
+
+      - name: Link Reports to Job Summary
         if: always()
         run: |
           echo "### 📊 Vitest Test Results" >> $GITHUB_STEP_SUMMARY
           echo "[View Interactive HTML Report](https://viewer.vitest.dev/?url=${{ steps.upload-report.outputs.artifact-url }})" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📈 Coverage Report" >> $GITHUB_STEP_SUMMARY
+          echo "[Download Coverage Report](${{ steps.upload-coverage.outputs.artifact-url }})" >> $GITHUB_STEP_SUMMARY
