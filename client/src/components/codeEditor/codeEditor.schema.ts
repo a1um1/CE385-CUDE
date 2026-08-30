@@ -15,10 +15,6 @@ export const MONACO_LANGUAGE_MAP: Record<CodeLanguage, string> = {
 export type PanelLayout = "side" | "bottom";
 
 export const LS_LAYOUT_KEY = "codeEditor_panelLayout";
-export const LS_SIZE_KEY = "codeEditor_panelSize";
-
-export const DEFAULT_SIDE_SIZE = 300;
-export const DEFAULT_BOTTOM_SIZE = 200;
 
 export interface CodeEditorProps {
   value: string;
