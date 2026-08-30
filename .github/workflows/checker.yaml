@@ -51,8 +51,6 @@ jobs:
             script: lint
           - label: Format Check
             script: format:check
-          - label: Vitest
-            script: test:github
     steps:
       - uses: actions/checkout@v4
 
@@ -68,3 +66,39 @@ jobs:
 
       - name: Run ${{ matrix.task.label }}
         run: npm run ${{ matrix.task.script }} -w ${{ matrix.workspace }}
+
+  vitest:
+    name: server / Vitest
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Restore node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ needs.setup.outputs.cache-key }}
+
+      - name: Run Vitest
+        run: npm run test:github -w server
+
+      - name: Upload Vitest HTML Report
+        uses: actions/upload-artifact@v4
+        id: upload-report
+        if: always() # Ensures report is uploaded even if tests fail
+        with:
+          name: vitest-report
+          # Use '.vitest' for newer versions, or 'html/' if configured otherwise
+          path: .vitest/
+
+      # Inject a web-viewable link into the GitHub Workflow summary page
+      - name: Link Report to Job Summary
+        if: always()
+        run: |
+          echo "### 📊 Vitest Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "[View Interactive HTML Report](https://viewer.vitest.dev/?url=${{ steps.upload-report.outputs.artifact-url }})" >> $GITHUB_STEP_SUMMARY

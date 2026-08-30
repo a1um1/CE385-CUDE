@@ -16,7 +16,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "test:github": "prisma generate && vitest run --reporter=github-actions --reporter=default"
+    "test:github": "prisma generate && vitest run --reporter=github-actions --reporter=default --reporter=html"
   },
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "^9.1.0",
@@ -42,6 +42,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^26.2.0",
     "@types/pg": "^8.21.0",
+    "@vitest/ui": "^4.1.11",
     "openapi-typescript": "^7.13.0",
     "prisma": "^7.9.1",
     "tsx": "^4.23.12"
