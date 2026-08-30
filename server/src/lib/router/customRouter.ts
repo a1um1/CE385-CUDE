@@ -1,6 +1,12 @@
 import type { Role } from "#/generated/prisma/enums";
 import { Router } from "express";
-import type { NextFunction, RequestHandler, Response, Request } from "express-serve-static-core";
+import type {
+  NextFunction,
+  RequestHandler,
+  Response,
+  Request,
+  ErrorRequestHandler,
+} from "express-serve-static-core";
 import { registry } from "#/openapi";
 import AuthenticationController from "#/controller/authentication/authentication";
 import { HTTPstatus } from "#/lib/router/http/httpStatus";
@@ -33,8 +39,14 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
     return this.router;
   }
 
-  private handleErrorMiddleware() {
-    return (err: Error, req: Request, res: Response, _next: NextFunction) => {
+  private handleErrorMiddleware<
+    TParams extends RequestObject,
+    TQuery extends RequestObject,
+    TBody extends ZodType<any> | undefined,
+    TResponse extends ZodType<any> | undefined,
+    TAuth extends AuthenticationObject,
+  >(_config: RouteConfig<TParams, TQuery, TBody, TResponse, TAuth>): ErrorRequestHandler {
+    return (err: Error, _req: Request, res: Response, _next: NextFunction) => {
       if (err instanceof z.ZodError) {
         const errorString = z.treeifyError(err);
         return res.status(400).json({
@@ -66,7 +78,7 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
     TResponse extends ZodType<any> | undefined,
     TAuth extends AuthenticationObject,
   >(config: RouteConfig<TParams, TQuery, TBody, TResponse, TAuth>): RequestHandler {
-    return (req, res, next) => {
+    return (req, _res, next) => {
       const params = (
         config.params ? config.params.parse(req.params) : req.params
       ) as InferOrAny<TParams>;
@@ -87,7 +99,7 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
   private validateAuthentication<TAuth extends AuthenticationObject>(
     config: RouteConfig<any, any, any, any, TAuth>,
   ): RequestHandler {
-    return async (req, res, next) => {
+    return async (req, _res, next) => {
       const auth =
         config.authentication !== undefined
           ? config.authentication
@@ -175,7 +187,7 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
 
         return res.status(status.value).json(handlersResult);
       },
-      this.handleErrorMiddleware(),
+      this.handleErrorMiddleware(mergedConfig),
     );
   }
 
