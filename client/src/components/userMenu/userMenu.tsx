@@ -18,7 +18,7 @@ export default function UserMenu() {
       <Dropdown.Trigger>
         <Avatar name={user?.name || ""} avatarUrl={user?.profileImage} />
       </Dropdown.Trigger>
-      <Dropdown.Content align="end" sideOffset={8} className="p-0!">
+      <Dropdown.Content align="end" sideOffset={8} className={style["dropdown-content"]}>
         <div className={style["dropdown-header"]}>
           <UserBackground
             backgroundUrl={user?.backgroundImage || null}
@@ -30,7 +30,7 @@ export default function UserMenu() {
             <p className={style["username"]}>{user?.name}</p>
           </div>
         </div>
-        <div className="p-2">
+        <div className={style["dropdown-body"]}>
           {user.role === "ADMIN" && (
             <Dropdown.Item nativeButton={false} render={<Link to="/admin" />}>
               <Settings size={16} />

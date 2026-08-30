@@ -92,7 +92,7 @@
   }
 
   svg {
-    width: 1em;
-    height: 1em;
+    width: var(--btn-font-size);
+    height: var(--btn-font-size);
   }
 }

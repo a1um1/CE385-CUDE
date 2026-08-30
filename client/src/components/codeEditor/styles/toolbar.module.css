@@ -4,7 +4,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.375rem 0.625rem;
+  /* padding: 0.375rem 0.625rem; */
   background-color: oklch(18% 0.025 267);
   border-bottom: 1px solid var(--color-border);
   flex-shrink: 0;
@@ -14,16 +14,14 @@
 .toolbarActions {
   display: flex;
   align-items: center;
-  gap: 0.375rem;
 }
 
 .languageSelect {
   background-color: var(--color-input);
   color: var(--color-input-text);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  padding: var(--size-xs-padding);
-  font-size: var(--size-xs-font-size);
+  border-right: 1px solid var(--color-border);
+  padding: var(--size-sm-padding);
+  font-size: var(--size-sm-font-size);
   font-family: var(--font-web);
   cursor: pointer;
   outline: none;

@@ -38,15 +38,15 @@ export default function EditorToolbar() {
       <div className={styles.toolbarActions}>
         <Button
           onClick={toggleLayout}
-          size="xs"
+          size="sm"
           variant="secondary"
           title={panelLayout === "side" ? "Switch to bottom panel" : "Switch to side panel"}
-          style={{ height: "21px", width: "21px", padding: 0, minWidth: "24px" }}
+          radius="square"
         >
-          {panelLayout === "side" ? <PanelBottomIcon size={14} /> : <PanelRightIcon size={14} />}
+          {panelLayout === "side" ? <PanelBottomIcon /> : <PanelRightIcon />}
         </Button>
         {runCode && (
-          <Button onClick={runCode} size="xs" title="Run (Shift+Enter)">
+          <Button onClick={runCode} size="sm" title="Run (Shift+Enter)" radius="square">
             <PlayIcon fill="currentColor" />
             Run
           </Button>

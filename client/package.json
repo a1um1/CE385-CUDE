@@ -38,6 +38,7 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-resizable-panels": "^4.12.3",
+    "sonner": "^2.0.8",
     "tailwindcss": "^4.1.18",
     "vite-css-modules": "^1.16.0",
     "zustand": "^5.0.15"

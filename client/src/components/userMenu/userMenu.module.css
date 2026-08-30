@@ -3,6 +3,7 @@
 .dropdown-header {
   display: flex;
   flex-direction: column;
+  z-index: 9999;
 
   .background {
     width: 100%;
@@ -25,6 +26,17 @@
       margin: 0;
     }
   }
+}
+
+.dropdown-content {
+  padding: 0 !important;
+}
+
+.dropdown-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
 }
 
 .signout-item {
