@@ -13,7 +13,6 @@ export default function UpdatePasswordForm() {
         await updateMutation.mutateAsync(value);
         alert("Password updated successfully!");
       } catch (error) {
-        console.error("Sign-in failed:", error);
         handleFormMutationError(form, error);
       }
     },

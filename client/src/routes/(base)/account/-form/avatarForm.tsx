@@ -14,7 +14,6 @@ export default function AvatarForm() {
         await updateMutation.mutateAsync(value);
         alert("Avatar updated successfully!");
       } catch (error) {
-        console.error("Sign-in failed:", error);
         handleFormMutationError(form, error);
       }
     },

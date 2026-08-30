@@ -17,6 +17,7 @@
 - [Visual Studio Code](https://code.visualstudio.com/)
   และติดตั้ง Extension ที่แนะนำใน Project นี้
 - [Storybook](https://storybook.js.org/)
+- [Vitest](https://vitest.dev/guide/)
 
 ### Getting Start
 
@@ -52,7 +53,7 @@ npm run docker:up 					# สำหรับรัน Service ฐานข้อ�
 และเมื่อทำเสร็จต้องทำการเปิด Pull Request เพื่อให้ทำการ Peer Review
 โดยจะมี 2 ขั้นตอนหลักๆ คือ
 
-**1. Automated Check**
+**1. Automated Check & Tests **
 
 ใน Project จะมีเครื่องมือที่จะตรวจสอบ Code อัตโนมัติในทุกๆ ครั้งที่เรามีการ Push Code ขึ้นมาจะมีการตรวจสอบ
 ![Passed Check](resources/goodForReview.png)\

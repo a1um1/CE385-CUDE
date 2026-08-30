@@ -1,4 +1,4 @@
-import type { User } from "#/generated/prisma/client";
+import type { Prisma, User } from "#/generated/prisma/client";
 import { z } from "#/lib/extendZod";
 import type Zod from "zod";
 
@@ -15,7 +15,7 @@ export const UserPasswordDefinition = z
   .refine((password) => /[0-9]/.test(password), {
     message: "Password must contain at least one number (0-9).",
   })
-  .refine((password) => /[!@#$%^&*?-_]/.test(password), {
+  .refine((password) => /[!@#$%^&*?\-_]/.test(password), {
     message: "Password must contain at least one special character (!@#$%^&*?).",
   })
   .openapi({
@@ -78,6 +78,22 @@ export const UserValidationSchema = UserSchema.pick({
   email: true,
   password: true,
 }).openapi("UserValidationData");
+
+export const userQueryPayload = {
+  id: true,
+  name: true,
+  email: true,
+  role: true,
+  profileImage: true,
+  backgroundImage: true,
+  createdAt: true,
+  updatedAt: true,
+  epithet: true,
+  isActive: true,
+  deactivateReason: true,
+} satisfies Prisma.UserSelect;
+
+export type userQueryPayload = Prisma.UserGetPayload<{ select: typeof userQueryPayload }>;
 
 export type userSchema = Zod.infer<typeof UserSchema>;
 export type userSafeSchema = Zod.infer<typeof UserSafeSchema>;

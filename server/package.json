@@ -12,7 +12,11 @@
     "db:migrate": "prisma migrate dev --name auto && prisma generate",
     "db:generate": "prisma generate",
     "db:deploy": "prisma migrate deploy",
-    "ts:check": "prisma generate && tsc --noEmit"
+    "ts:check": "prisma generate && tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:github": "prisma generate && vitest run --coverage --reporter=github-actions --reporter=default --reporter=html"
   },
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "^9.1.0",
@@ -28,6 +32,7 @@
     "jsonwebtoken": "^9.0.3",
     "p-limit": "^7.3.1",
     "pg": "^8.23.0",
+    "supertest": "^7.2.2",
     "typescript": "^7.0.2",
     "zod": "^4.4.3"
   },
@@ -37,6 +42,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^26.2.0",
     "@types/pg": "^8.21.0",
+    "@vitest/ui": "^4.1.11",
     "openapi-typescript": "^7.13.0",
     "prisma": "^7.9.1",
     "tsx": "^4.23.12"

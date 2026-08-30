@@ -1,9 +1,9 @@
 import { db } from "#/lib/prisma";
 import bcrypt from "bcrypt";
 import { type BaseCursorPaginationQuery } from "#/lib/pagination.schema";
-import { type userSafeSchema } from "#/controller/user/user.schema";
+import { userQueryPayload, type userSafeSchema } from "#/controller/user/user.schema";
 import UserError from "#/lib/router/http/userError";
-import { Log } from "#/lib/decorators";
+import { Log } from "#/lib/logger/decorators";
 import type {
   AdminUserDeactivateSchema,
   AdminUserListResponseSchema,
@@ -22,7 +22,7 @@ export default class AdminUserController {
     return this.user;
   }
 
-  @Log
+  @Log()
   async forceChangePassword(body: AdminUserUpdatePasswordSchema) {
     if (!this.user) throw new Error("User not found");
     await db.user.update({
@@ -32,7 +32,7 @@ export default class AdminUserController {
     return this;
   }
 
-  @Log
+  @Log()
   async deactivate(body: AdminUserDeactivateSchema) {
     if (!this.user) throw new Error("User not found");
     await db.user.update({
@@ -43,7 +43,7 @@ export default class AdminUserController {
     return this;
   }
 
-  @Log
+  @Log()
   async reactivate() {
     if (!this.user) throw new Error("User not found");
     await db.user.update({
@@ -58,19 +58,7 @@ export default class AdminUserController {
   static async getUserById(userId: string): Promise<AdminUserController> {
     const user = await db.user.findUnique({
       where: { id: userId },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-        profileImage: true,
-        backgroundImage: true,
-        createdAt: true,
-        updatedAt: true,
-        epithet: true,
-        isActive: true,
-        deactivateReason: true,
-      },
+      select: userQueryPayload,
     });
     if (!user) throw new UserError(404, "User not found");
     return new AdminUserController(user);

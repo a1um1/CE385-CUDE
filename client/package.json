@@ -15,7 +15,8 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "ts:check": "tsc --noEmit",
-    "css:generate": "vite-css-modules"
+    "css:generate": "vite-css-modules",
+    "test:github": "echo \"No tests for client\""
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

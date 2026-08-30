@@ -1,4 +1,4 @@
-const HTTPstatusCode = {
+export const HTTPstatusCode = {
   OK: 200,
   CREATED: 201,
   NO_CONTENT: 204,
@@ -10,6 +10,13 @@ const HTTPstatusCode = {
   INTERNAL_SERVER_ERROR: 500,
 };
 
+export type HTTPstatusCode = keyof typeof HTTPstatusCode | number;
+
+export const convertStatusCode = (status: HTTPstatusCode): number => {
+  if (typeof status === "number") return status;
+  return HTTPstatusCode[status] || 500;
+};
+
 export class HTTPstatus {
   currentStatus: number;
 
@@ -17,9 +24,8 @@ export class HTTPstatus {
     this.currentStatus = status;
   }
 
-  set(status: keyof typeof HTTPstatusCode | number) {
-    if (typeof status === "number") return (this.currentStatus = status);
-    return (this.currentStatus = HTTPstatusCode[status] || 500);
+  set(status: HTTPstatusCode) {
+    return (this.currentStatus = convertStatusCode(status));
   }
 
   get value() {

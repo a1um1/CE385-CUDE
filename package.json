@@ -28,10 +28,16 @@
   },
   "devDependencies": {
     "@types/react": "^19.2.18",
+    "@types/supertest": "^7.2.1",
+    "@vitest/coverage-v8": "^4.1.11",
     "concurrently": "^10.0.4",
     "oxfmt": "^0.63.0",
     "oxlint": "^1.78.0",
-    "typescript": "^7.0.2"
+    "supertest": "^7.2.2",
+    "typescript": "^7.0.2",
+    "unplugin-swc": "^1.5.11",
+    "vitest": "^4.1.11",
+    "vitest-mock-extended": "^5.1.1"
   },
   "overrides": {
     "openapi-typescript": {

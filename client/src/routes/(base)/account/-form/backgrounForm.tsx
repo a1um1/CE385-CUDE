@@ -14,7 +14,6 @@ export default function BackgroundForm() {
         await updateMutation.mutateAsync(value);
         alert("Background updated successfully!");
       } catch (error) {
-        console.error("Sign-in failed:", error);
         handleFormMutationError(form, error);
       }
     },
