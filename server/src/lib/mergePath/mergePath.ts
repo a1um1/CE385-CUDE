@@ -5,5 +5,5 @@ export function mergePath(...segments: (string | undefined)[]): string {
     .join("/")
     .replace(/\/{2,}/g, "/")
     .replace(/^\/+|\/+$/g, "");
-  return merged;
+  return `/${merged}`;
 }

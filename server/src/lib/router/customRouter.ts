@@ -49,6 +49,7 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
           config.query ? config.query.parse(req.query) : req.query
         ) as InferOrAny<TQuery>;
         const body = (config.body ? config.body.parse(req.body) : req.body) as InferOrAny<TBody>;
+
         req.ctx = {
           params,
           query,
