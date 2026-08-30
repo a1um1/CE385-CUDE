@@ -5,6 +5,8 @@ import type {
 import UserController from "#/controller/user/user";
 import type { userCreationSchema, userValidationSchema } from "#/controller/user/user.schema";
 import { Log } from "#/lib/logger/decorators";
+import userError from "#/lib/router/http/userError";
+import UserError from "#/lib/router/http/userError";
 import jwt from "jsonwebtoken";
 
 export default class AuthenticationController {
@@ -18,10 +20,23 @@ export default class AuthenticationController {
     };
   }
 
-  async validateToken(_token: string): Promise<UserController> {
+  async validateToken(token: string): Promise<UserController> {
     if (!this.secret) throw new Error("JWT secret is not defined");
-    const decoded = jwt.verify(_token, this.secret) as AuthenticationBody;
-    return UserController.getUserById(decoded.userId);
+    try {
+      const decoded = jwt.verify(token, this.secret, {
+        algorithms: ["HS256"],
+      }) as AuthenticationBody;
+      return await UserController.getUserById(decoded.userId);
+    } catch (error) {
+      if (error instanceof jwt.TokenExpiredError) throw new UserError(401, "Token expired");
+      if (error instanceof jwt.NotBeforeError) throw new UserError(401, "Token not active yet");
+      if (error instanceof jwt.JsonWebTokenError) throw new UserError(401, "Invalid token");
+      if (error instanceof userError) {
+        if (error.status === 404) throw new UserError(401, "Token validation failed");
+        throw error;
+      }
+      throw new UserError(500, "Token validation failed");
+    }
   }
 
   @Log()

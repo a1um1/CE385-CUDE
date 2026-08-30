@@ -7,5 +7,6 @@ export default class UserError extends Error {
     super(message);
     this.status = convertStatusCode(status);
     this.name = "UserError";
+    Error.captureStackTrace(this, this.constructor);
   }
 }

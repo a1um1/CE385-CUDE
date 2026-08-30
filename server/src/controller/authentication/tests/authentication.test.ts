@@ -1,12 +1,8 @@
 import AuthenticationController from "#/controller/authentication/authentication";
 import fakeUser from "#/controller/user/tests/user.mock";
 import { mockedDb } from "#/test/setup";
-import { it, expect, describe, beforeEach } from "vitest";
+import { it, expect, describe } from "vitest";
 import bcrypt from "bcrypt";
-
-beforeEach(() => {
-  process.env.JWT_SECRET = "test-secret";
-});
 
 describe("Authentication Tests", () => {
   it("should sign in a user and return a token", async () => {

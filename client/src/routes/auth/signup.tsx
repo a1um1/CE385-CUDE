@@ -22,7 +22,6 @@ function RouteComponent() {
         alert("Sign-up successful!");
         navigate({ to: "/auth/signin" });
       } catch (error) {
-        console.error("Sign-up failed:", error);
         handleFormMutationError(form, error);
       }
     },

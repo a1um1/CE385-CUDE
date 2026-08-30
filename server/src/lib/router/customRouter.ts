@@ -1,6 +1,6 @@
 import type { Role } from "#/generated/prisma/enums";
 import { Router } from "express";
-import type { RequestHandler } from "express-serve-static-core";
+import type { NextFunction, RequestHandler, Response, Request } from "express-serve-static-core";
 import { registry } from "#/openapi";
 import AuthenticationController from "#/controller/authentication/authentication";
 import { HTTPstatus } from "#/lib/router/http/httpStatus";
@@ -33,6 +33,32 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
     return this.router;
   }
 
+  private handleErrorMiddleware() {
+    return (err: Error, req: Request, res: Response, _next: NextFunction) => {
+      if (err instanceof z.ZodError) {
+        const errorString = z.treeifyError(err);
+        return res.status(400).json({
+          message: "Invalid request parameters",
+          details: errorString,
+        });
+      }
+
+      if (err instanceof UserError) {
+        return res.status(err.status).json({
+          message: err.message,
+        });
+      }
+
+      console.error("Unhandled error in route handler:", err);
+      const unhandledErrorMessage =
+        (err instanceof Error ? err.message : undefined) || "Internal Server Error";
+
+      return res.status(500).json({
+        message: unhandledErrorMessage,
+      });
+    };
+  }
+
   private parseRouteParameters<
     TParams extends RequestObject,
     TQuery extends RequestObject,
@@ -41,33 +67,20 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
     TAuth extends AuthenticationObject,
   >(config: RouteConfig<TParams, TQuery, TBody, TResponse, TAuth>): RequestHandler {
     return (req, res, next) => {
-      try {
-        const params = (
-          config.params ? config.params.parse(req.params) : req.params
-        ) as InferOrAny<TParams>;
-        const query = (
-          config.query ? config.query.parse(req.query) : req.query
-        ) as InferOrAny<TQuery>;
-        const body = (config.body ? config.body.parse(req.body) : req.body) as InferOrAny<TBody>;
+      const params = (
+        config.params ? config.params.parse(req.params) : req.params
+      ) as InferOrAny<TParams>;
+      const query = (
+        config.query ? config.query.parse(req.query) : req.query
+      ) as InferOrAny<TQuery>;
+      const body = (config.body ? config.body.parse(req.body) : req.body) as InferOrAny<TBody>;
 
-        req.ctx = {
-          params,
-          query,
-          body,
-        };
-        next();
-      } catch (error) {
-        if (error instanceof z.ZodError) {
-          const errorString = z.treeifyError(error);
-          return res.status(400).json({
-            message: "Invalid request parameters",
-            details: errorString,
-          });
-        }
-        return res.status(400).json({
-          message: error instanceof Error ? error.message : "Invalid request parameters",
-        });
-      }
+      req.ctx = {
+        params,
+        query,
+        body,
+      };
+      next();
     };
   }
 
@@ -79,21 +92,15 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
         config.authentication !== undefined
           ? config.authentication
           : this.defaultConfig.authentication;
-      if (!auth) return next();
-
+      if (!auth || (Array.isArray(auth) && auth.length === 0)) return next();
       const roleToCheck = (Array.isArray(auth) ? auth : ["USER", "ADMIN"]) as Role[];
-
       const token = (req.headers["authorization"] || "")?.split(" ")?.[1];
-      if (!token) return res.status(401).json({ error_message: "Unauthorize" });
+      if (!token) throw new UserError(401, "Unauthorize");
 
-      const user = await this.authController.validateToken(token).catch(() => undefined);
-      if (!user) return res.status(403).json({ error_message: "Forbidden" });
-
-      if (!roleToCheck.includes(user.json.role)) {
-        return res.status(403).json({ error_message: "Forbidden" });
-      }
-      if (req.ctx) req.ctx.user = user;
-
+      const user = await this.authController.validateToken(token);
+      if (!roleToCheck.includes(user.json.role)) throw new UserError(403, "Forbidden");
+      req.ctx ||= {};
+      req.ctx.user = user;
       next();
     };
   }
@@ -154,43 +161,21 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
       this.validateAuthentication(mergedConfig),
       async (req, res) => {
         const status = new HTTPstatus();
-        try {
-          let handlersResult = await options.handler({
-            params: req.ctx?.params as InferOrAny<TParams>,
-            query: req.ctx?.query as InferOrAny<TQuery>,
-            body: req.ctx?.body as InferOrAny<TBody>,
-            headers: req.headers,
-            user: req.ctx?.user as any,
-            status,
-          });
-          if (options.config.response) {
-            handlersResult = options.config.response.parse(handlersResult);
-          }
-
-          return res.status(status.value).json(handlersResult);
-        } catch (error) {
-          if (error instanceof UserError) {
-            return res.status(error.status).json({
-              message: error.message,
-            });
-          }
-
-          if (error instanceof z.ZodError) {
-            const errorString = z.treeifyError(error);
-            return res.status(500).json({
-              message: "Invalid response format",
-              details: errorString,
-            });
-          }
-
-          console.error("Unhandled error in route handler:", error);
-          const errorMessage =
-            (error instanceof Error ? error.message : undefined) || "Internal Server Error";
-          return res.status(500).json({
-            message: errorMessage,
-          });
+        let handlersResult = await options.handler({
+          params: req.ctx?.params as InferOrAny<TParams>,
+          query: req.ctx?.query as InferOrAny<TQuery>,
+          body: req.ctx?.body as InferOrAny<TBody>,
+          headers: req.headers,
+          user: req.ctx?.user as any,
+          status,
+        });
+        if (options.config.response) {
+          handlersResult = options.config.response.parse(handlersResult);
         }
+
+        return res.status(status.value).json(handlersResult);
       },
+      this.handleErrorMiddleware(),
     );
   }
 

@@ -10,5 +10,8 @@ export default defineConfig({
       reporter: ["text", "html"],
     },
     pool: "forks",
+    env: {
+      JWT_SECRET: "test-secret",
+    },
   },
 });

@@ -3,6 +3,7 @@ import type { AuthenticationBody } from "#/controller/authentication/authenticat
 import fakeUser from "#/controller/user/tests/user.mock";
 import { mockedDb } from "#/test/setup";
 import { it, expect, describe, beforeEach } from "vitest";
+import jwt from "jsonwebtoken";
 
 const mockAuthenticationBody = {
   userId: fakeUser.id,
@@ -50,5 +51,48 @@ describe("Token Tests", () => {
   it("should throw error when validating an invalid token", async () => {
     const controller = new AuthenticationController();
     await expect(controller.validateToken("invalid-token")).rejects.toThrow();
+  });
+
+  it("should throw error when validating a token for a non-existent user", async () => {
+    mockedDb.user.findUnique.mockResolvedValue(null);
+    const controller = new AuthenticationController();
+    const tokenData = controller.generateToken(mockAuthenticationBody);
+    await expect(controller.validateToken(tokenData.token)).rejects.toThrow();
+  });
+
+  it("should throw error when validating an expired token", async () => {
+    const controller = new AuthenticationController();
+    const expiredToken = jwt.sign(mockAuthenticationBody, process.env.JWT_SECRET!, {
+      expiresIn: "-1s",
+      algorithm: "HS256",
+    });
+    await expect(controller.validateToken(expiredToken)).rejects.toThrow();
+  });
+
+  it("should throw error when validating a token that is not active yet", async () => {
+    const controller = new AuthenticationController();
+    const notActiveToken = jwt.sign(mockAuthenticationBody, process.env.JWT_SECRET!, {
+      notBefore: "200s", // Token will not be valid for 200 seconds
+      algorithm: "HS256",
+    });
+    await expect(controller.validateToken(notActiveToken)).rejects.toThrow();
+  });
+
+  it("should throw error when validating a token with an invalid signature", async () => {
+    const controller = new AuthenticationController();
+    const invalidSignatureToken = jwt.sign(mockAuthenticationBody, "wrong-secret", {
+      expiresIn: "1h",
+      algorithm: "HS256",
+    });
+    await expect(controller.validateToken(invalidSignatureToken)).rejects.toThrow();
+  });
+
+  it("should throw error when validating a token with an unsupported algorithm", async () => {
+    const controller = new AuthenticationController();
+    const unsupportedAlgorithmToken = jwt.sign(mockAuthenticationBody, process.env.JWT_SECRET!, {
+      expiresIn: "1h",
+      algorithm: "HS512", // Using HS512 instead of HS256
+    });
+    await expect(controller.validateToken(unsupportedAlgorithmToken)).rejects.toThrow();
   });
 });

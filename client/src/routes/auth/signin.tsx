@@ -19,7 +19,6 @@ function RouteComponent() {
         await signInMutation.mutateAsync(value);
         alert("Sign-in successful!");
       } catch (error) {
-        console.error("Sign-in failed:", error);
         handleFormMutationError(form, error);
       }
     },

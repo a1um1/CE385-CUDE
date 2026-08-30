@@ -34,20 +34,20 @@ describe("Custom Router Tests", () => {
     });
   });
 
-  it("should return 500 for invalid responses", async () => {
+  it("should return 400 for invalid responses", async () => {
     const res = await request(ResponseRoutingApp).post("/dynamic-response-validation").send({
       id: 1,
       name: "John Doe",
     });
-    expect(res.status).toBe(500);
-    expect(res.body).toHaveProperty("message", "Invalid response format");
+    expect(res.status).toBe(400);
+    expect(res.body).toHaveProperty("message", "Invalid request parameters");
   });
 
-  it("should return 500 for invalid responses with missing fields", async () => {
+  it("should return 400 for invalid responses with missing fields", async () => {
     const res = await request(ResponseRoutingApp).post("/dynamic-response-validation").send({
       name: "John Doe",
     });
-    expect(res.status).toBe(500);
-    expect(res.body).toHaveProperty("message", "Invalid response format");
+    expect(res.status).toBe(400);
+    expect(res.body).toHaveProperty("message", "Invalid request parameters");
   });
 });
