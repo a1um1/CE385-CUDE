@@ -19,6 +19,7 @@ import { Route as AuthIndexRouteImport } from './routes/auth/index'
 import { Route as AuthSigninRouteImport } from './routes/auth/signin'
 import { Route as AuthSignupRouteImport } from './routes/auth/signup'
 import { Route as baseAccountIndexRouteImport } from './routes/(base)/account/index'
+import { Route as baseProfileIdRouteImport } from './routes/(base)/profile/$id'
 import { Route as AdminUserIndexRouteImport } from './routes/admin/user/index'
 import { Route as AdminUserIdRouteImport } from './routes/admin/user/$id'
 
@@ -71,6 +72,11 @@ const baseAccountIndexRoute = baseAccountIndexRouteImport.update({
   path: '/account/',
   getParentRoute: () => baseRouteRoute,
 } as any)
+const baseProfileIdRoute = baseProfileIdRouteImport.update({
+  id: '/profile/$id',
+  path: '/profile/$id',
+  getParentRoute: () => baseRouteRoute,
+} as any)
 const AdminUserIndexRoute = AdminUserIndexRouteImport.update({
   id: '/user/',
   path: '/user/',
@@ -91,6 +97,7 @@ export interface FileRoutesByFullPath {
   '/': typeof baseIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/auth/': typeof AuthIndexRoute
+  '/profile/$id': typeof baseProfileIdRoute
   '/admin/user/$id': typeof AdminUserIdRoute
   '/account/': typeof baseAccountIndexRoute
   '/admin/user/': typeof AdminUserIndexRoute
@@ -102,6 +109,7 @@ export interface FileRoutesByTo {
   '/': typeof baseIndexRoute
   '/admin': typeof AdminIndexRoute
   '/auth': typeof AuthIndexRoute
+  '/profile/$id': typeof baseProfileIdRoute
   '/admin/user/$id': typeof AdminUserIdRoute
   '/account': typeof baseAccountIndexRoute
   '/admin/user': typeof AdminUserIndexRoute
@@ -117,6 +125,7 @@ export interface FileRoutesById {
   '/(base)/': typeof baseIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/auth/': typeof AuthIndexRoute
+  '/(base)/profile/$id': typeof baseProfileIdRoute
   '/admin/user/$id': typeof AdminUserIdRoute
   '/(base)/account/': typeof baseAccountIndexRoute
   '/admin/user/': typeof AdminUserIndexRoute
@@ -132,6 +141,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin/'
     | '/auth/'
+    | '/profile/$id'
     | '/admin/user/$id'
     | '/account/'
     | '/admin/user/'
@@ -143,6 +153,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/auth'
+    | '/profile/$id'
     | '/admin/user/$id'
     | '/account'
     | '/admin/user'
@@ -157,6 +168,7 @@ export interface FileRouteTypes {
     | '/(base)/'
     | '/admin/'
     | '/auth/'
+    | '/(base)/profile/$id'
     | '/admin/user/$id'
     | '/(base)/account/'
     | '/admin/user/'
@@ -240,6 +252,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof baseAccountIndexRouteImport
       parentRoute: typeof baseRouteRoute
     }
+    '/(base)/profile/$id': {
+      id: '/(base)/profile/$id'
+      path: '/profile/$id'
+      fullPath: '/profile/$id'
+      preLoaderRoute: typeof baseProfileIdRouteImport
+      parentRoute: typeof baseRouteRoute
+    }
     '/admin/user/': {
       id: '/admin/user/'
       path: '/user'
@@ -260,12 +279,14 @@ declare module '@tanstack/react-router' {
 interface baseRouteRouteChildren {
   basePlayRoute: typeof basePlayRoute
   baseIndexRoute: typeof baseIndexRoute
+  baseProfileIdRoute: typeof baseProfileIdRoute
   baseAccountIndexRoute: typeof baseAccountIndexRoute
 }
 
 const baseRouteRouteChildren: baseRouteRouteChildren = {
   basePlayRoute: basePlayRoute,
   baseIndexRoute: baseIndexRoute,
+  baseProfileIdRoute: baseProfileIdRoute,
   baseAccountIndexRoute: baseAccountIndexRoute,
 }
 
