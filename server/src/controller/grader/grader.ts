@@ -1,30 +1,6 @@
 import GoJudge from "#/controller/go-judge";
+import type { gradeConfig, runTestCaseProps, testResult } from "#/controller/grader/grader.schema";
 import pLimit from "p-limit";
-
-interface testCase {
-  input: string;
-  output: string;
-}
-
-interface testResult {
-  ok: boolean;
-  input: string;
-  output: string;
-  expectedOutput: string;
-  error?: string;
-}
-
-interface runTestCaseProps {
-  code: string;
-  language: keyof typeof GoJudge.LANGAUGES;
-  testCase: testCase;
-}
-
-interface gradeConfig {
-  code: string;
-  language: keyof typeof GoJudge.LANGAUGES;
-  testCases: testCase[];
-}
 
 export default class Grader {
   private readonly sandbox = new GoJudge();

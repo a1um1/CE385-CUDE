@@ -3,15 +3,15 @@ import { CompilerType } from "#/controller/go-judge/go-judge.schema";
 import { GoJudgeLanguagesConfig } from "#/controller/go-judge/languages.config";
 import pLimit from "p-limit";
 
-export default class GoJudge {
+export default class GoJudgeClient {
   private readonly hostUrl = "http://localhost:5050";
   private readonly limit = pLimit(5); // Limit concurrent requests to 5
   static readonly COMPILE_MEMORY_LIMIT = 256; // mb
   static readonly COMPILE_CPU_LIMIT = 5000; // ms
   static readonly LANGAUGES = GoJudgeLanguagesConfig;
   static readonly LANGUAGES_KEYS = Object.keys(
-    GoJudge.LANGAUGES,
-  ) as (keyof typeof GoJudge.LANGAUGES)[];
+    GoJudgeClient.LANGAUGES,
+  ) as (keyof typeof GoJudgeClient.LANGAUGES)[];
 
   private async sendRequest<T>(
     method: string,
@@ -90,8 +90,9 @@ export default class GoJudge {
     };
   }
 
-  private async compileCode(code: string, language: keyof typeof GoJudge.LANGAUGES) {
-    const languageConfig = GoJudge.LANGAUGES[language as keyof typeof GoJudge.LANGAUGES];
+  private async compileCode(code: string, language: keyof typeof GoJudgeClient.LANGAUGES) {
+    const languageConfig =
+      GoJudgeClient.LANGAUGES[language as keyof typeof GoJudgeClient.LANGAUGES];
     if (!languageConfig) throw new Error(`Unsupported language: ${language}`);
     if (languageConfig.type !== CompilerType.Compile || !languageConfig.compileArgs) {
       throw new Error(`Compile args not defined for language: ${language}`);
@@ -99,8 +100,8 @@ export default class GoJudge {
 
     const compileRequestBody = this.generateRunConfig({
       args: languageConfig.compileArgs,
-      cpuLimit: GoJudge.COMPILE_CPU_LIMIT,
-      memoryLimit: GoJudge.COMPILE_MEMORY_LIMIT,
+      cpuLimit: GoJudgeClient.COMPILE_CPU_LIMIT,
+      memoryLimit: GoJudgeClient.COMPILE_MEMORY_LIMIT,
       stdin: "", // No input for compilation
       procLimit: 3,
       tempFile: {
@@ -136,7 +137,8 @@ export default class GoJudge {
     cpuLimit = 1000, // ms
     memoryLimit = 64, // mb
   }: RunConfig): Promise<cleanRunResult> {
-    const languageConfig = GoJudge.LANGAUGES[language as keyof typeof GoJudge.LANGAUGES];
+    const languageConfig =
+      GoJudgeClient.LANGAUGES[language as keyof typeof GoJudgeClient.LANGAUGES];
     if (!languageConfig) throw new Error(`Unsupported language: ${language}`);
 
     let requestBody = this.generateRunConfig({
