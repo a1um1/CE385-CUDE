@@ -17,4 +17,6 @@ model User {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
   courses          Course[]
+
+  submissions Submission[]
 }

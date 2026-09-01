@@ -1,0 +1,23 @@
+model CodeExercise {
+  id            String   @id @default(uuid(7)) @db.Uuid
+  exerciseID    String   @unique @db.Uuid
+  exercise      Exercise @relation(fields: [exerciseID], references: [id])
+  starterCode   String?
+  testerCode    String?
+  timeLimitMs   Int      @default(2000)
+  memoryLimitMb Int      @default(256)
+
+  testCases TestCase[]
+}
+
+model TestCase {
+  id             String       @id @default(uuid(7)) @db.Uuid
+  codeExerciseID String       @db.Uuid
+  codeExercise   CodeExercise @relation(fields: [codeExerciseID], references: [id])
+  input          String
+  output         String
+  order          Int          @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

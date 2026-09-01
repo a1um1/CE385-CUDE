@@ -1,0 +1,11 @@
+model Submission {
+  id         String   @id @default(uuid(7)) @db.Uuid
+  userID     String   @db.Uuid
+  user       User     @relation(fields: [userID], references: [id])
+  exerciseID String   @db.Uuid
+  exercise   Exercise @relation(fields: [exerciseID], references: [id])
+  content    Json
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

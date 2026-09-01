@@ -12,7 +12,7 @@ import type {
 } from "#/controller/user/user.schema";
 
 export default class UserController {
-  private user?: userSafeSchema;
+  private user: userSafeSchema;
 
   constructor(user: userSafeSchema) {
     this.user = user;
@@ -25,7 +25,6 @@ export default class UserController {
 
   @Log()
   async updateAvatar(data: userUpdateAvatarSchema) {
-    if (!this.user) throw new Error("User not found");
     await db.user.update({
       where: { id: this.user.id },
       data: { profileImage: data.profileImageURL },
@@ -36,7 +35,6 @@ export default class UserController {
 
   @Log()
   async updateBackground(data: userUpdateBackgroundSchema) {
-    if (!this.user) throw new Error("User not found");
     await db.user.update({
       where: { id: this.user.id },
       data: { backgroundImage: data.backgroundImageURL },
