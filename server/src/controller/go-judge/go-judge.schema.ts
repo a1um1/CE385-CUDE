@@ -1,4 +1,5 @@
 import type GoJudge from "#/controller/go-judge";
+import type { GoJudgeLanguagesConfig } from "#/controller/go-judge/languages.config";
 import { z } from "#/lib/extendZod";
 
 export enum RunStatus {
@@ -25,6 +26,11 @@ interface BaseConfig {
     version: string;
   };
 }
+export type GoJudgeFileFormat = ({ content: string } | { fileId: string }) & {
+  includeInArgs?: boolean;
+  isMainFile?: boolean;
+};
+export type GoJudegeLangauge = keyof typeof GoJudgeLanguagesConfig;
 
 type CompileConfig = BaseConfig & {
   type: CompilerType.Compile;
