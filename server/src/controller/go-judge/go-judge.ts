@@ -4,8 +4,8 @@ import { GoJudgeLanguagesConfig } from "#/controller/go-judge/languages.config";
 import pLimit from "p-limit";
 
 export default class GoJudge {
-  private hostUrl = "http://localhost:5050";
-  private limit = pLimit(5); // Limit concurrent requests to 5
+  private readonly hostUrl = "http://localhost:5050";
+  private readonly limit = pLimit(5); // Limit concurrent requests to 5
   static readonly COMPILE_MEMORY_LIMIT = 256; // mb
   static readonly COMPILE_CPU_LIMIT = 5000; // ms
   static readonly LANGAUGES = GoJudgeLanguagesConfig;
