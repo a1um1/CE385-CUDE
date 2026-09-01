@@ -1,4 +1,5 @@
 import GoJudge from "#/controller/go-judge";
+import GraderComparator from "#/controller/grader/grader.compartor";
 import type { gradeConfig, runTestCaseProps, testResult } from "#/controller/grader/grader.schema";
 import pLimit from "p-limit";
 
@@ -14,9 +15,9 @@ export default class Grader {
           code: props.code,
           language: props.language,
         });
-
+        const ok = GraderComparator.compareResult(props.testCase.output, result.stdout);
         return {
-          ok: result.stdout.trim() === props.testCase.output.trim(),
+          ok,
           input: props.testCase.input,
           output: result.stdout,
           expectedOutput: props.testCase.output,
