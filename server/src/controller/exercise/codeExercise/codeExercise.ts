@@ -1,4 +1,5 @@
 import ExerciseController from "#/controller/exercise/base/exercise";
+import { CodeTestCase } from "#/controller/exercise/codeExercise/codeTestCase";
 import type { CodeExercise, Exercise } from "#/generated/prisma/client";
 
 export class CodeExerciseController extends ExerciseController {
@@ -11,5 +12,9 @@ export class CodeExerciseController extends ExerciseController {
 
   get JSON() {
     return { ...this.data, codeExercise: this.codeExercise };
+  }
+
+  async getAllTestCase() {
+    return await CodeTestCase.getAllByExerciseID(this.data.id);
   }
 }
