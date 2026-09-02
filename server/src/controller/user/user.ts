@@ -2,13 +2,14 @@ import { Log } from "#/lib/logger/decorators";
 import { db } from "#/lib/prisma";
 import bcrypt from "bcrypt";
 import UserError from "#/lib/router/http/userError";
-import type {
-  userSafeSchema,
-  userUpdateAvatarSchema,
-  userUpdateBackgroundSchema,
-  userUpdatePasswordSchema,
-  userValidationSchema,
-  userCreationSchema,
+import {
+  type userSafeSchema,
+  type userUpdateAvatarSchema,
+  type userUpdateBackgroundSchema,
+  type userUpdatePasswordSchema,
+  type userValidationSchema,
+  type userCreationSchema,
+  userQueryPayload,
 } from "#/controller/user/user.schema";
 
 export default class UserController {
@@ -62,19 +63,16 @@ export default class UserController {
   static async getUserById(userId: string): Promise<UserController> {
     const user = await db.user.findUnique({
       where: { id: userId, isActive: true },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-        profileImage: true,
-        backgroundImage: true,
-        createdAt: true,
-        updatedAt: true,
-        epithet: true,
-        isActive: true,
-        deactivateReason: true,
-      },
+      select: userQueryPayload,
+    });
+    if (!user) throw new UserError(404, "User not found");
+    return new UserController(user);
+  }
+
+  static async getUserByUsername(username: string): Promise<UserController> {
+    const user = await db.user.findUnique({
+      where: { username, isActive: true },
+      select: userQueryPayload,
     });
     if (!user) throw new UserError(404, "User not found");
     return new UserController(user);
@@ -94,6 +92,7 @@ export default class UserController {
     const created = await db.user.create({
       data: {
         name: userData.name,
+        username: userData.username,
         email: userData.email,
         password: hashedPassword,
       },

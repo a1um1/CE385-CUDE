@@ -25,6 +25,7 @@ export const UserPasswordDefinition = z
 export const UserSchema = z
   .object({
     id: z.string().openapi({ example: "123456" }),
+    username: z.string().openapi({ example: "j_doe" }),
     name: z.string().openapi({ example: "John Doe" }),
     email: z.email().openapi({ example: "email@gmail.com" }),
     password: UserPasswordDefinition,
@@ -70,6 +71,7 @@ export const UserSafeSchema = UserSchema.omit({
 
 export const UserCreationSchema = UserSchema.pick({
   name: true,
+  username: true,
   email: true,
   password: true,
 }).openapi("UserCreationData");
@@ -81,6 +83,7 @@ export const UserValidationSchema = UserSchema.pick({
 
 export const userQueryPayload = {
   id: true,
+  username: true,
   name: true,
   email: true,
   role: true,

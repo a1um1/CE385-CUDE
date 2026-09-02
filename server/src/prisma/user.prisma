@@ -5,6 +5,7 @@ enum Role {
 
 model User {
   id               String   @id @default(uuid(7)) @db.Uuid
+  username         String   @unique
   name             String
   email            String   @unique
   profileImage     String?
