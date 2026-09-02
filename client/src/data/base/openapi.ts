@@ -987,10 +987,7 @@ export interface paths {
                          * @enum {string}
                          */
                         language: "python" | "c";
-                        testCases: {
-                            input: string;
-                            output: components["schemas"]["Hello world"];
-                        }[];
+                        testCases: components["schemas"]["graderRequestBody"];
                     };
                 };
             };
@@ -1001,7 +998,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": unknown;
+                        "application/json": components["schemas"]["codeGraderResultLists"];
                     };
                 };
                 /** @description Validation error */
@@ -1162,6 +1159,18 @@ export interface components {
             stdout: string;
             stderr: string;
         };
+        codeGraderResultLists: components["schemas"]["codeGraderResult"][];
+        codeGraderResult: {
+            ok: boolean;
+            input: string;
+            output: string;
+            expectedOutput: string;
+            error?: string;
+        };
+        graderRequestBody: {
+            input: string;
+            output: components["schemas"]["Hello world"];
+        }[];
         "Hello world": string;
     };
     responses: never;

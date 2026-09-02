@@ -78,8 +78,8 @@ const CodingRouter = new CustomRouter({
             }),
           )
           .openapi("graderRequestBody"),
-        response: codeGraderResult,
       }),
+      response: z.array(codeGraderResult).openapi("codeGraderResultLists"),
     },
     async ({ body }) => {
       const codeGrader = new CodeGrader();

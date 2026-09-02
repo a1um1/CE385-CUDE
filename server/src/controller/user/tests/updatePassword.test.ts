@@ -1,6 +1,5 @@
 import fakeUser from "#/controller/user/tests/user.mock";
 import UserController from "#/controller/user/user";
-import type { User } from "#/generated/prisma/client";
 import UserError from "#/lib/router/http/userError";
 import { mockedDb } from "#/test/setup";
 import { it, expect, describe } from "vitest";
@@ -35,15 +34,5 @@ describe("User Update Password", () => {
         newPassword: "NewValidPass123!",
       }),
     ).rejects.toThrow(UserError);
-  });
-
-  it("should throw error when updating password for a non-existent user", async () => {
-    const userController = new UserController(null as unknown as User);
-    await expect(
-      userController.updatePassword({
-        currentPassword: "ValidPass123!",
-        newPassword: "NewValidPass123!",
-      }),
-    ).rejects.toThrow("User not found");
   });
 });

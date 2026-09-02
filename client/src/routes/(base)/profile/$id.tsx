@@ -7,7 +7,7 @@ export const Route = createFileRoute("/(base)/profile/$id")({
 
 function RouteComponent() {
   const { id } = Route.useParams();
-  const { data, error, isLoading } = useQueryProfile(id);
+  const { data, isLoading } = useQueryProfile(id);
   if (isLoading) return <div>Loading...</div>;
   return <div>{data?.name}</div>;
 }

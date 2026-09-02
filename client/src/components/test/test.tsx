@@ -20,7 +20,7 @@ function TestComponent(props: TestProps) {
     <div
       style={{
         backgroundColor: currentVaraint.color,
-        border: "1px solid " + currentVaraint.border,
+        border: `1px solid ${currentVaraint.border}`,
         color: currentVaraint.border,
       }}
     >

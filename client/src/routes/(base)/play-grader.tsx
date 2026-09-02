@@ -1,12 +1,11 @@
 import Button from "#/components/button";
 import CodeEditor, { type CodeLanguage } from "#/components/codeEditor";
-import Input from "#/components/input";
 import { APIclient, type ExtractRequestBody } from "#/data/base/baseAPI";
 import { useMutation } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import clsx from "clsx";
-import { Check, CheckIcon, XIcon } from "lucide-react";
-import { useState, type EventHandler, type InputEventHandler } from "react";
+import { CheckIcon, XIcon } from "lucide-react";
+import { useState } from "react";
 
 export const Route = createFileRoute("/(base)/play-grader")({
   component: RouteComponent,
@@ -35,7 +34,8 @@ function RouteComponent() {
       const { data, error } = await APIclient.POST("/coding/judge", {
         body,
       });
-      if (error || !data) throw error;
+      if (error) throw error;
+      if (!data) throw new Error("Failed to retrive data");
       return data;
     },
   });
@@ -64,7 +64,7 @@ function RouteComponent() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const index = parseInt(e.target.getAttribute("data-index") || "-1");
-    const name = e.target.name;
+    const name = e.target.name as keyof (typeof testCases)[number];
     const val = e.target.value;
     setTestCases((base) =>
       base.map((data, i) => {
@@ -92,7 +92,8 @@ function RouteComponent() {
         <div>
           <Button onClick={addTestCase}>Add Test case</Button>
           {testCases.map((data, index) => (
-            <div key={"test-case-" + index} className="grid grid-cols-3 gap-3 items-end">
+            // oxlint-disable-next-line react/no-array-index-key
+            <div key={`test-case-${index}`} className="grid grid-cols-3 gap-3 items-end">
               <div>
                 <label>Input</label>
                 <textarea
@@ -125,7 +126,10 @@ function RouteComponent() {
             <div>Output</div>
           </div>
           {(runMuation?.data || [])?.map((v) => (
-            <div className={clsx("grid grid-cols-4", v.ok ? "bg-green-500/20" : "bg-red-500/20")}>
+            <div
+              key={`test-${v.input}-${v.expectedOutput}`}
+              className={clsx("grid grid-cols-4", v.ok ? "bg-green-500/20" : "bg-red-500/20")}
+            >
               <div>{v.ok ? <CheckIcon /> : <XIcon />}</div>
               <div>{v.input}</div>
               <div>{v.expectedOutput}</div>

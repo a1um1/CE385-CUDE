@@ -10,6 +10,6 @@ export default meta;
 
 export const Playground = {
   args: {
-    varaint: "1"
-  }
+    varaint: "1",
+  },
 };
