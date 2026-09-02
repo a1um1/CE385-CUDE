@@ -1,5 +1,6 @@
 import UserController from "#/controller/user";
 import {
+  UserSafePublicSchema,
   UserSafeSchema,
   UserUpdateAvatarSchema,
   UserUpdateBackgroundSchema,
@@ -75,11 +76,11 @@ const userRoute = new CustomRouter({
             username: "john_doe",
           },
         }),
-      response: UserSafeSchema,
+      response: UserSafePublicSchema,
     },
     async ({ params }) => {
       const user = await UserController.getUserByUsername(params.username);
-      return user.json;
+      return user.publicJson;
     },
   );
 

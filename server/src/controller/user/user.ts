@@ -10,6 +10,7 @@ import {
   type userValidationSchema,
   type userCreationSchema,
   userQueryPayload,
+  type userSafePublicSchema,
 } from "#/controller/user/user.schema";
 
 export default class UserController {
@@ -22,6 +23,18 @@ export default class UserController {
   get json(): userSafeSchema {
     if (!this.user) throw new Error("User not found");
     return this.user;
+  }
+
+  get publicJson(): userSafePublicSchema {
+    if (!this.user) throw new Error("User not found");
+    const {
+      email: _email,
+      deactivateReason: _deactivateReason,
+      role: _role,
+      isActive: _isActive,
+      ...publicData
+    } = this.user;
+    return publicData as userSafePublicSchema;
   }
 
   @Log()
