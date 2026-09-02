@@ -60,7 +60,7 @@ const CodingRouter = new CustomRouter({
       return result;
     },
   )
-  .get(
+  .post(
     "/judge",
     {
       summary: "Judge code with testCases",

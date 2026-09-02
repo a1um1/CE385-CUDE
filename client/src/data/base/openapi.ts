@@ -846,6 +846,186 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/coding/language": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Return all support language */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["JudgeLanguagesResponse"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/coding/run": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Run Code */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /**
+                         * @example python
+                         * @enum {string}
+                         */
+                        language: "python" | "c";
+                        /** @example print("Hello world", input()) */
+                        code: string;
+                        /** @example Hello */
+                        input?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["JudgeCleanRunResult"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/coding/judge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Judge code with testCases */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** @example print("Hello World") */
+                        code: string;
+                        /**
+                         * @example python
+                         * @enum {string}
+                         */
+                        language: "python" | "c";
+                        testCases: {
+                            input: string;
+                            output: components["schemas"]["Hello world"];
+                        }[];
+                    };
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": unknown;
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -956,6 +1136,33 @@ export interface components {
             /** @example Password123! */
             password: string;
         };
+        JudgeLanguagesResponse: {
+            languages: {
+                python?: {
+                    /** @example Python */
+                    name: string;
+                    /** @example 3.11.4 */
+                    version: string;
+                };
+                c?: {
+                    /** @example Python */
+                    name: string;
+                    /** @example 3.11.4 */
+                    version: string;
+                };
+            };
+        };
+        JudgeCleanRunResult: {
+            /** @enum {string} */
+            status: "Accepted" | "Memory Limit Exceeded" | "Time Limit Exceeded" | "Output Limit Exceeded" | "File Error" | "Nonzero Exit Status" | "Signalled" | "Internal Error";
+            exitCode: number;
+            time: number;
+            memory: number;
+            procPeak: number;
+            stdout: string;
+            stderr: string;
+        };
+        "Hello world": string;
     };
     responses: never;
     parameters: never;

@@ -1,12 +1,20 @@
 import { Editor, type OnMount } from "@monaco-editor/react";
 import { Panel } from "react-resizable-panels";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type JSX, type ReactNode } from "react";
 import Spinner from "#/components/spinner";
 import { MONACO_LANGUAGE_MAP } from "../codeEditor.schema";
 import { useEditorContext } from "./editorContext";
 import styles from "../styles/monacoPanel.module.css";
+import { useCodeAvailableLanguage } from "#/data/code.data";
+
+const CodeEditorPanelLayout = ({ children }: { children: ReactNode }) => (
+  <Panel id="editor" defaultSize="65%" minSize="25%" className={styles.editorPanel}>
+    {children}
+  </Panel>
+);
 
 export default function MonacoPanel() {
+  const { isLoading, isError } = useCodeAvailableLanguage();
   const { value, onChange, language, runCode } = useEditorContext();
   const runCodeRef = useRef(runCode);
 
@@ -24,11 +32,14 @@ export default function MonacoPanel() {
     });
   };
 
+  if (isLoading) return <CodeEditorPanelLayout>Loading</CodeEditorPanelLayout>;
+  if (isError) return <CodeEditorPanelLayout>Error !</CodeEditorPanelLayout>;
+
   return (
-    <Panel id="editor" defaultSize="65%" minSize="25%" className={styles.editorPanel}>
+    <CodeEditorPanelLayout>
       <div className={styles.editorContainer}>
         <Editor
-          language={MONACO_LANGUAGE_MAP[language ?? "c"]}
+          language={language}
           value={value}
           theme="vs-dark"
           height="100%"
@@ -44,6 +55,6 @@ export default function MonacoPanel() {
           }}
         />
       </div>
-    </Panel>
+    </CodeEditorPanelLayout>
   );
 }

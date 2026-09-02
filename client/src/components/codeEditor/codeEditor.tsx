@@ -7,6 +7,7 @@ import { EditorContextProvider } from "./subcomponent/editorContext";
 import EditorToolbar from "./subcomponent/toolbar";
 import MonacoPanel from "./subcomponent/monacoPanel";
 import IOPanel from "./subcomponent/ioPanel";
+import { useCodeAvailableLanguage } from "#/data/code.data";
 
 export type { CodeEditorProps, CodeLanguage, PanelLayout } from "./codeEditor.schema";
 

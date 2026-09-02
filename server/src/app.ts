@@ -6,6 +6,7 @@ import { apiReference } from "@scalar/express-api-reference";
 import { adminRoute } from "#/routes/admin/index";
 import cors from "cors";
 import { authRoute } from "#/routes/auth";
+import { CodingRoute } from "#/routes/coding";
 
 const app = express()
   .use(express.json())
@@ -16,6 +17,7 @@ const app = express()
   )
   .use(authRoute)
   .use(userRouter)
+  .use(CodingRoute)
   .use(adminRoute)
   .use(testRouter);
 
