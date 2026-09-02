@@ -24,6 +24,7 @@ export const Playground: Story = {
       queryClient.setQueryData(["user"], {
         id: "xxx",
         name: "tlakchai",
+        username: "tlakchai",
         email: "th.lakchai@gmail.com",
         epithet: null,
         role: "USER",

@@ -20,7 +20,7 @@ import { Route as AuthIndexRouteImport } from './routes/auth/index'
 import { Route as AuthSigninRouteImport } from './routes/auth/signin'
 import { Route as AuthSignupRouteImport } from './routes/auth/signup'
 import { Route as baseAccountIndexRouteImport } from './routes/(base)/account/index'
-import { Route as baseProfileIdRouteImport } from './routes/(base)/profile/$id'
+import { Route as baseProfileUsernameRouteImport } from './routes/(base)/profile/$username'
 import { Route as AdminUserIndexRouteImport } from './routes/admin/user/index'
 import { Route as AdminUserIdRouteImport } from './routes/admin/user/$id'
 
@@ -78,9 +78,9 @@ const baseAccountIndexRoute = baseAccountIndexRouteImport.update({
   path: '/account/',
   getParentRoute: () => baseRouteRoute,
 } as any)
-const baseProfileIdRoute = baseProfileIdRouteImport.update({
-  id: '/profile/$id',
-  path: '/profile/$id',
+const baseProfileUsernameRoute = baseProfileUsernameRouteImport.update({
+  id: '/profile/$username',
+  path: '/profile/$username',
   getParentRoute: () => baseRouteRoute,
 } as any)
 const AdminUserIndexRoute = AdminUserIndexRouteImport.update({
@@ -104,7 +104,7 @@ export interface FileRoutesByFullPath {
   '/': typeof baseIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/auth/': typeof AuthIndexRoute
-  '/profile/$id': typeof baseProfileIdRoute
+  '/profile/$username': typeof baseProfileUsernameRoute
   '/admin/user/$id': typeof AdminUserIdRoute
   '/account/': typeof baseAccountIndexRoute
   '/admin/user/': typeof AdminUserIndexRoute
@@ -117,7 +117,7 @@ export interface FileRoutesByTo {
   '/': typeof baseIndexRoute
   '/admin': typeof AdminIndexRoute
   '/auth': typeof AuthIndexRoute
-  '/profile/$id': typeof baseProfileIdRoute
+  '/profile/$username': typeof baseProfileUsernameRoute
   '/admin/user/$id': typeof AdminUserIdRoute
   '/account': typeof baseAccountIndexRoute
   '/admin/user': typeof AdminUserIndexRoute
@@ -134,7 +134,7 @@ export interface FileRoutesById {
   '/(base)/': typeof baseIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/auth/': typeof AuthIndexRoute
-  '/(base)/profile/$id': typeof baseProfileIdRoute
+  '/(base)/profile/$username': typeof baseProfileUsernameRoute
   '/admin/user/$id': typeof AdminUserIdRoute
   '/(base)/account/': typeof baseAccountIndexRoute
   '/admin/user/': typeof AdminUserIndexRoute
@@ -151,7 +151,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin/'
     | '/auth/'
-    | '/profile/$id'
+    | '/profile/$username'
     | '/admin/user/$id'
     | '/account/'
     | '/admin/user/'
@@ -164,7 +164,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/auth'
-    | '/profile/$id'
+    | '/profile/$username'
     | '/admin/user/$id'
     | '/account'
     | '/admin/user'
@@ -180,7 +180,7 @@ export interface FileRouteTypes {
     | '/(base)/'
     | '/admin/'
     | '/auth/'
-    | '/(base)/profile/$id'
+    | '/(base)/profile/$username'
     | '/admin/user/$id'
     | '/(base)/account/'
     | '/admin/user/'
@@ -271,11 +271,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof baseAccountIndexRouteImport
       parentRoute: typeof baseRouteRoute
     }
-    '/(base)/profile/$id': {
-      id: '/(base)/profile/$id'
-      path: '/profile/$id'
-      fullPath: '/profile/$id'
-      preLoaderRoute: typeof baseProfileIdRouteImport
+    '/(base)/profile/$username': {
+      id: '/(base)/profile/$username'
+      path: '/profile/$username'
+      fullPath: '/profile/$username'
+      preLoaderRoute: typeof baseProfileUsernameRouteImport
       parentRoute: typeof baseRouteRoute
     }
     '/admin/user/': {
@@ -299,7 +299,7 @@ interface baseRouteRouteChildren {
   basePlayRoute: typeof basePlayRoute
   basePlayGraderRoute: typeof basePlayGraderRoute
   baseIndexRoute: typeof baseIndexRoute
-  baseProfileIdRoute: typeof baseProfileIdRoute
+  baseProfileUsernameRoute: typeof baseProfileUsernameRoute
   baseAccountIndexRoute: typeof baseAccountIndexRoute
 }
 
@@ -307,7 +307,7 @@ const baseRouteRouteChildren: baseRouteRouteChildren = {
   basePlayRoute: basePlayRoute,
   basePlayGraderRoute: basePlayGraderRoute,
   baseIndexRoute: baseIndexRoute,
-  baseProfileIdRoute: baseProfileIdRoute,
+  baseProfileUsernameRoute: baseProfileUsernameRoute,
   baseAccountIndexRoute: baseAccountIndexRoute,
 }
 

@@ -216,20 +216,20 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/user/get-profile/{id}": {
+    "/user/get-profile/{username}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Get user profile by ID */
+        /** Get user profile by username */
         get: {
             parameters: {
                 query?: never;
                 header?: never;
                 path: {
-                    id: string;
+                    username: string;
                 };
                 cookie?: never;
             };
@@ -1030,6 +1030,8 @@ export interface components {
         UserSafeData: {
             /** @example 123456 */
             id: string;
+            /** @example j_doe */
+            username: string;
             /** @example John Doe */
             name: string;
             /**
@@ -1116,6 +1118,8 @@ export interface components {
         UserCreationData: {
             /** @example John Doe */
             name: string;
+            /** @example j_doe */
+            username: string;
             /**
              * Format: email
              * @example email@gmail.com

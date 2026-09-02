@@ -33,7 +33,7 @@ export default function UserMenu() {
         <div className={style["dropdown-body"]}>
           <Dropdown.Item
             nativeButton={false}
-            render={<Link to="/profile/$id" params={{ id: user?.id }} />}
+            render={<Link to="/profile/$id" params={{ id: user?.username }} />}
           >
             <User size={16} />
             My Profile

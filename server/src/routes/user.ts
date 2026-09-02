@@ -63,22 +63,22 @@ const userRoute = new CustomRouter({
     },
   )
   .get(
-    "/get-profile/:id",
+    "/get-profile/:username",
     {
-      summary: "Get user profile by ID",
+      summary: "Get user profile by username",
       params: z
         .object({
-          id: z.uuid(),
+          username: z.string(),
         })
         .openapi("queryProfileParams", {
           example: {
-            id: "123e4567-e89b-12d3-a456-426614174000",
+            username: "john_doe",
           },
         }),
       response: UserSafeSchema,
     },
     async ({ params }) => {
-      const user = await UserController.getUserById(params.id);
+      const user = await UserController.getUserByUsername(params.username);
       return user.json;
     },
   );

@@ -1,14 +1,14 @@
 import { APIclient } from "#/data/base/baseAPI";
 import { useQuery } from "@tanstack/react-query";
 
-export const useQueryProfile = (userId: string) =>
+export const useQueryProfile = (username: string) =>
   useQuery({
-    queryKey: ["user", userId],
+    queryKey: ["user", username],
     queryFn: async () => {
-      const { data, error } = await APIclient.GET(`/user/get-profile/{id}`, {
+      const { data, error } = await APIclient.GET(`/user/get-profile/{username}`, {
         params: {
           path: {
-            id: userId,
+            username,
           },
         },
       });
