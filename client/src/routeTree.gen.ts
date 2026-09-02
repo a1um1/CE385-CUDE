@@ -14,11 +14,13 @@ import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as AuthRouteRouteImport } from './routes/auth/route'
 import { Route as baseIndexRouteImport } from './routes/(base)/index'
 import { Route as basePlayRouteImport } from './routes/(base)/play'
+import { Route as basePlayGraderRouteImport } from './routes/(base)/play-grader'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AuthIndexRouteImport } from './routes/auth/index'
 import { Route as AuthSigninRouteImport } from './routes/auth/signin'
 import { Route as AuthSignupRouteImport } from './routes/auth/signup'
 import { Route as baseAccountIndexRouteImport } from './routes/(base)/account/index'
+import { Route as baseProfileUsernameRouteImport } from './routes/(base)/profile/$username'
 import { Route as AdminUserIndexRouteImport } from './routes/admin/user/index'
 import { Route as AdminUserIdRouteImport } from './routes/admin/user/$id'
 
@@ -46,6 +48,11 @@ const basePlayRoute = basePlayRouteImport.update({
   path: '/play',
   getParentRoute: () => baseRouteRoute,
 } as any)
+const basePlayGraderRoute = basePlayGraderRouteImport.update({
+  id: '/play-grader',
+  path: '/play-grader',
+  getParentRoute: () => baseRouteRoute,
+} as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -71,6 +78,11 @@ const baseAccountIndexRoute = baseAccountIndexRouteImport.update({
   path: '/account/',
   getParentRoute: () => baseRouteRoute,
 } as any)
+const baseProfileUsernameRoute = baseProfileUsernameRouteImport.update({
+  id: '/profile/$username',
+  path: '/profile/$username',
+  getParentRoute: () => baseRouteRoute,
+} as any)
 const AdminUserIndexRoute = AdminUserIndexRouteImport.update({
   id: '/user/',
   path: '/user/',
@@ -86,22 +98,26 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteRouteWithChildren
   '/auth': typeof AuthRouteRouteWithChildren
   '/play': typeof basePlayRoute
+  '/play-grader': typeof basePlayGraderRoute
   '/auth/signin': typeof AuthSigninRoute
   '/auth/signup': typeof AuthSignupRoute
   '/': typeof baseIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/auth/': typeof AuthIndexRoute
+  '/profile/$username': typeof baseProfileUsernameRoute
   '/admin/user/$id': typeof AdminUserIdRoute
   '/account/': typeof baseAccountIndexRoute
   '/admin/user/': typeof AdminUserIndexRoute
 }
 export interface FileRoutesByTo {
   '/play': typeof basePlayRoute
+  '/play-grader': typeof basePlayGraderRoute
   '/auth/signin': typeof AuthSigninRoute
   '/auth/signup': typeof AuthSignupRoute
   '/': typeof baseIndexRoute
   '/admin': typeof AdminIndexRoute
   '/auth': typeof AuthIndexRoute
+  '/profile/$username': typeof baseProfileUsernameRoute
   '/admin/user/$id': typeof AdminUserIdRoute
   '/account': typeof baseAccountIndexRoute
   '/admin/user': typeof AdminUserIndexRoute
@@ -112,11 +128,13 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteRouteWithChildren
   '/auth': typeof AuthRouteRouteWithChildren
   '/(base)/play': typeof basePlayRoute
+  '/(base)/play-grader': typeof basePlayGraderRoute
   '/auth/signin': typeof AuthSigninRoute
   '/auth/signup': typeof AuthSignupRoute
   '/(base)/': typeof baseIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/auth/': typeof AuthIndexRoute
+  '/(base)/profile/$username': typeof baseProfileUsernameRoute
   '/admin/user/$id': typeof AdminUserIdRoute
   '/(base)/account/': typeof baseAccountIndexRoute
   '/admin/user/': typeof AdminUserIndexRoute
@@ -127,22 +145,26 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/play'
+    | '/play-grader'
     | '/auth/signin'
     | '/auth/signup'
     | '/'
     | '/admin/'
     | '/auth/'
+    | '/profile/$username'
     | '/admin/user/$id'
     | '/account/'
     | '/admin/user/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/play'
+    | '/play-grader'
     | '/auth/signin'
     | '/auth/signup'
     | '/'
     | '/admin'
     | '/auth'
+    | '/profile/$username'
     | '/admin/user/$id'
     | '/account'
     | '/admin/user'
@@ -152,11 +174,13 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/(base)/play'
+    | '/(base)/play-grader'
     | '/auth/signin'
     | '/auth/signup'
     | '/(base)/'
     | '/admin/'
     | '/auth/'
+    | '/(base)/profile/$username'
     | '/admin/user/$id'
     | '/(base)/account/'
     | '/admin/user/'
@@ -205,6 +229,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof basePlayRouteImport
       parentRoute: typeof baseRouteRoute
     }
+    '/(base)/play-grader': {
+      id: '/(base)/play-grader'
+      path: '/play-grader'
+      fullPath: '/play-grader'
+      preLoaderRoute: typeof basePlayGraderRouteImport
+      parentRoute: typeof baseRouteRoute
+    }
     '/admin/': {
       id: '/admin/'
       path: '/'
@@ -240,6 +271,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof baseAccountIndexRouteImport
       parentRoute: typeof baseRouteRoute
     }
+    '/(base)/profile/$username': {
+      id: '/(base)/profile/$username'
+      path: '/profile/$username'
+      fullPath: '/profile/$username'
+      preLoaderRoute: typeof baseProfileUsernameRouteImport
+      parentRoute: typeof baseRouteRoute
+    }
     '/admin/user/': {
       id: '/admin/user/'
       path: '/user'
@@ -259,13 +297,17 @@ declare module '@tanstack/react-router' {
 
 interface baseRouteRouteChildren {
   basePlayRoute: typeof basePlayRoute
+  basePlayGraderRoute: typeof basePlayGraderRoute
   baseIndexRoute: typeof baseIndexRoute
+  baseProfileUsernameRoute: typeof baseProfileUsernameRoute
   baseAccountIndexRoute: typeof baseAccountIndexRoute
 }
 
 const baseRouteRouteChildren: baseRouteRouteChildren = {
   basePlayRoute: basePlayRoute,
+  basePlayGraderRoute: basePlayGraderRoute,
   baseIndexRoute: baseIndexRoute,
+  baseProfileUsernameRoute: baseProfileUsernameRoute,
   baseAccountIndexRoute: baseAccountIndexRoute,
 }
 

@@ -47,7 +47,7 @@ export const useSignOut = () => {
     mutationFn: async () => {
       localStorage.removeItem("token");
       await queryClient.resetQueries({ queryKey: ["user"] });
-      return true;
+      return { message: "Signed out successfully" };
     },
   });
 };

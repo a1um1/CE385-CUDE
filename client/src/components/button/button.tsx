@@ -8,6 +8,8 @@ export const ButtonVariants = {
   primary: ButtonStyles["primary"],
   secondary: ButtonStyles["secondary"],
   ghost: ButtonStyles["ghost"],
+  danger: ButtonStyles["danger"],
+  success: ButtonStyles["success"],
 } as const;
 
 export const ButtonSizes = {

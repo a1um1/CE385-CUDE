@@ -72,19 +72,7 @@ export default class AdminUserController {
       skip: query.cursor ? 1 : 0,
       cursor: query.cursor ? { id: query.cursor } : undefined,
       orderBy: { createdAt: isBackward ? "asc" : "desc" },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-        profileImage: true,
-        backgroundImage: true,
-        createdAt: true,
-        updatedAt: true,
-        epithet: true,
-        isActive: true,
-        deactivateReason: true,
-      },
+      select: userQueryPayload,
     });
 
     let nextCursor: string | undefined = undefined;

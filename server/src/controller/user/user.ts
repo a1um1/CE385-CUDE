@@ -2,17 +2,19 @@ import { Log } from "#/lib/logger/decorators";
 import { db } from "#/lib/prisma";
 import bcrypt from "bcrypt";
 import UserError from "#/lib/router/http/userError";
-import type {
-  userSafeSchema,
-  userUpdateAvatarSchema,
-  userUpdateBackgroundSchema,
-  userUpdatePasswordSchema,
-  userValidationSchema,
-  userCreationSchema,
+import {
+  type userSafeSchema,
+  type userUpdateAvatarSchema,
+  type userUpdateBackgroundSchema,
+  type userUpdatePasswordSchema,
+  type userValidationSchema,
+  type userCreationSchema,
+  userQueryPayload,
+  type userSafePublicSchema,
 } from "#/controller/user/user.schema";
 
 export default class UserController {
-  private user?: userSafeSchema;
+  private user: userSafeSchema;
 
   constructor(user: userSafeSchema) {
     this.user = user;
@@ -23,9 +25,19 @@ export default class UserController {
     return this.user;
   }
 
+  get publicJson(): userSafePublicSchema {
+    const {
+      email: _email,
+      deactivateReason: _deactivateReason,
+      role: _role,
+      isActive: _isActive,
+      ...publicData
+    } = this.user;
+    return publicData as userSafePublicSchema;
+  }
+
   @Log()
   async updateAvatar(data: userUpdateAvatarSchema) {
-    if (!this.user) throw new Error("User not found");
     await db.user.update({
       where: { id: this.user.id },
       data: { profileImage: data.profileImageURL },
@@ -36,7 +48,6 @@ export default class UserController {
 
   @Log()
   async updateBackground(data: userUpdateBackgroundSchema) {
-    if (!this.user) throw new Error("User not found");
     await db.user.update({
       where: { id: this.user.id },
       data: { backgroundImage: data.backgroundImageURL },
@@ -47,7 +58,6 @@ export default class UserController {
 
   @Log()
   async updatePassword(data: userUpdatePasswordSchema) {
-    if (!this.user) throw new Error("User not found");
     const userRecord = await db.user.findUniqueOrThrow({
       where: { id: this.user.id },
       select: { password: true },
@@ -64,19 +74,16 @@ export default class UserController {
   static async getUserById(userId: string): Promise<UserController> {
     const user = await db.user.findUnique({
       where: { id: userId, isActive: true },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-        profileImage: true,
-        backgroundImage: true,
-        createdAt: true,
-        updatedAt: true,
-        epithet: true,
-        isActive: true,
-        deactivateReason: true,
-      },
+      select: userQueryPayload,
+    });
+    if (!user) throw new UserError(404, "User not found");
+    return new UserController(user);
+  }
+
+  static async getUserByUsername(username: string): Promise<UserController> {
+    const user = await db.user.findUnique({
+      where: { username, isActive: true },
+      select: userQueryPayload,
     });
     if (!user) throw new UserError(404, "User not found");
     return new UserController(user);
@@ -96,6 +103,7 @@ export default class UserController {
     const created = await db.user.create({
       data: {
         name: userData.name,
+        username: userData.username,
         email: userData.email,
         password: hashedPassword,
       },

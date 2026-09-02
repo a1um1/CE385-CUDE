@@ -39,19 +39,20 @@ function RouteComponent() {
           <form.FormError />
           <form.AppField name="email">
             {(field) => (
-              <field.TextField label="Email" type="email" disabled={signInMutation.isPending} />
+              <field.TextField
+                label="Email"
+                required
+                type="email"
+                disabled={signInMutation.isPending}
+              />
             )}
           </form.AppField>
 
-          <form.AppField
-            name="password"
-            validators={{
-              onChange: ({ value }) => (!value ? "Password is required" : undefined),
-            }}
-          >
+          <form.AppField name="password">
             {(field) => (
               <field.TextField
                 label="Password"
+                required
                 type="password"
                 disabled={signInMutation.isPending}
               />

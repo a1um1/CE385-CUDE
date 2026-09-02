@@ -1,9 +1,12 @@
+import UserController from "#/controller/user";
 import {
+  UserSafePublicSchema,
   UserSafeSchema,
   UserUpdateAvatarSchema,
   UserUpdateBackgroundSchema,
   UserUpdatePasswordSchema,
 } from "#/controller/user/user.schema";
+import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 import { GenericResponseSchema } from "#/lib/router/http/genericResponse";
 
@@ -58,6 +61,26 @@ const userRoute = new CustomRouter({
     async ({ user, body }) => {
       await user.updatePassword(body);
       return { message: "Password updated successfully" };
+    },
+  )
+  .get(
+    "/get-profile/:username",
+    {
+      summary: "Get user profile by username",
+      params: z
+        .object({
+          username: z.string(),
+        })
+        .openapi("queryProfileParams", {
+          example: {
+            username: "john_doe",
+          },
+        }),
+      response: UserSafePublicSchema,
+    },
+    async ({ params }) => {
+      const user = await UserController.getUserByUsername(params.username);
+      return user.publicJson;
     },
   );
 

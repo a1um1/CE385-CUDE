@@ -1,4 +1,4 @@
-@reference "../../styles.css";
+@reference "#/styles/main.css";
 
 .spinner {
   animation: spin 1s linear infinite;

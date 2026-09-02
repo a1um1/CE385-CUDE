@@ -1,0 +1,13 @@
+model Exercise {
+  id            String        @id @default(uuid(7)) @db.Uuid
+  name          String
+  lessonID      String        @db.Uuid
+  lesson        Lesson        @relation(fields: [lessonID], references: [id])
+  content       String
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  type          EXERCISE_TYPE @default(NONE)
+  codeExercises CodeExercise?
+
+  submissions Submission[]
+}

@@ -26,5 +26,8 @@ const config = defineConfig({
   build: {
     target: "esnext",
   },
+  css: {
+    devSourcemap: process.env.NODE_ENV === "development",
+  },
 });
 export default config;

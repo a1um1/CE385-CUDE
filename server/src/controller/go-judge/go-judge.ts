@@ -1,186 +1,155 @@
-import type { RunResult, RunConfig, cleanRunResult } from "#/controller/go-judge/go-judge.schema";
-import { CompilerType } from "#/controller/go-judge/go-judge.schema";
+import { CompilerType } from "#/controller/go-judge/go-judge.enum";
+import { GoJudgeHTTpClient } from "#/controller/go-judge/go-judge.http";
+import type {
+  RunResult,
+  RunConfig,
+  cleanRunResult,
+  GoJudegeLangauge,
+  GoJudgeFileFormat,
+} from "#/controller/go-judge/go-judge.schema";
+import {
+  generateGoJudgeRunConfig,
+  GoJudgeResponseToCleanResult,
+} from "#/controller/go-judge/go-judge.utils";
 import { GoJudgeLanguagesConfig } from "#/controller/go-judge/languages.config";
 import pLimit from "p-limit";
 
-export default class GoJudge {
-  private hostUrl = "http://localhost:5050";
-  private limit = pLimit(5); // Limit concurrent requests to 5
+export default class GoJudgeClient {
+  private readonly httpClient = new GoJudgeHTTpClient();
+  private readonly limit = pLimit(5); // Limit concurrent requests to 5
   static readonly COMPILE_MEMORY_LIMIT = 256; // mb
   static readonly COMPILE_CPU_LIMIT = 5000; // ms
   static readonly LANGAUGES = GoJudgeLanguagesConfig;
-  static readonly LANGUAGES_KEYS = Object.keys(
-    GoJudge.LANGAUGES,
-  ) as (keyof typeof GoJudge.LANGAUGES)[];
-
-  private async sendRequest<T>(
-    method: string,
-    endpoint: string,
-    body?: unknown,
-    expect: "status" | "json" = "json",
-  ): Promise<T> {
-    const bodyContent = method === "GET" || !body ? undefined : JSON.stringify(body);
-    const response = await fetch(`${this.hostUrl}${endpoint}`, {
-      method,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: bodyContent,
-    });
-
-    if (!response.ok) {
-      console.error(`Request failed with status ${response.status}: ${await response.text()}`);
-      throw new Error(`Request failed with status ${response.status}`);
-    }
-    if (expect === "status") return { status: response.status } as unknown as T;
-    return response.json() as Promise<T>;
-  }
+  static readonly LANGUAGES_KEYS = Object.keys(GoJudgeClient.LANGAUGES) as GoJudegeLangauge[];
 
   private async deleteFile(fileId: string) {
-    await this.sendRequest("DELETE", `/file/${fileId}`, undefined, "status");
+    await this.httpClient.sendRequest("DELETE", `/file/${fileId}`, undefined, "status");
   }
 
-  private generateRunConfig(props: {
-    args: string[];
-    cpuLimit: number;
-    memoryLimit: number;
-    tempFile: {
-      name: string;
-      file: { content: string } | { fileId: string };
-    };
-    outputFile?: string;
-    stdin?: string;
-    procLimit?: number;
-  }) {
-    const { args, cpuLimit, memoryLimit, tempFile, outputFile, stdin, procLimit = 1 } = props;
-    return {
-      cmd: [
-        {
-          args: args.map((arg) =>
-            arg.replace("$tempFile", tempFile.name).replace("$outputFile", outputFile || ""),
-          ),
-          env: ["PATH=/usr/bin:/bin"],
-          files: [
-            ...(stdin !== undefined && stdin !== null
-              ? [
-                  {
-                    content: stdin,
-                  },
-                ]
-              : []),
-            {
-              name: "stdout",
-              max: 10_240,
-            },
-            {
-              name: "stderr",
-              max: 10_240,
-            },
-          ],
-          cpuLimit: cpuLimit * 1_000_000,
-          memoryLimit: memoryLimit * 1_048_576,
-          procLimit,
-          copyIn: {
-            [tempFile.name]: tempFile.file,
-          },
-          copyOut: ["stdout", "stderr"],
-          ...(outputFile && { copyOutCached: [outputFile] }),
+  async runCode(props: RunConfig): Promise<cleanRunResult> {
+    if (!GoJudgeClient.LANGAUGES[props.language]) {
+      throw new Error(`Unsupported language: ${props.language}`);
+    }
+
+    return this.runCodeFromFiles({
+      files: {
+        [GoJudgeClient.LANGAUGES[props.language].tempFile]: {
+          content: props.code,
+          isMainFile: true,
         },
-      ],
-    };
+      },
+      language: props.language,
+      input: props.input,
+      cpuLimit: props.cpuLimit,
+      memoryLimit: props.memoryLimit,
+    });
   }
 
-  private async compileCode(code: string, language: keyof typeof GoJudge.LANGAUGES) {
-    const languageConfig = GoJudge.LANGAUGES[language as keyof typeof GoJudge.LANGAUGES];
+  async compileCodeFromFiles({
+    files,
+    language,
+  }: {
+    files: Record<string, GoJudgeFileFormat>;
+    language: GoJudegeLangauge;
+  }) {
+    const languageConfig = GoJudgeClient.LANGAUGES[language];
     if (!languageConfig) throw new Error(`Unsupported language: ${language}`);
     if (languageConfig.type !== CompilerType.Compile || !languageConfig.compileArgs) {
       throw new Error(`Compile args not defined for language: ${language}`);
     }
 
-    const compileRequestBody = this.generateRunConfig({
+    const compileRequestBody = generateGoJudgeRunConfig({
       args: languageConfig.compileArgs,
-      cpuLimit: GoJudge.COMPILE_CPU_LIMIT,
-      memoryLimit: GoJudge.COMPILE_MEMORY_LIMIT,
-      stdin: "", // No input for compilation
+      cpuLimit: GoJudgeClient.COMPILE_CPU_LIMIT,
+      memoryLimit: GoJudgeClient.COMPILE_MEMORY_LIMIT,
       procLimit: 3,
-      tempFile: {
-        name: languageConfig.tempFile,
-        file: {
-          content: code,
-        },
-      },
+      inputFiles: files,
       outputFile: languageConfig.outputFile,
     });
-    const response = await this.sendRequest<RunResult[]>("POST", "/run", compileRequestBody);
-    const fileId = response[0]?.fileIds?.[languageConfig.outputFile || ""] || undefined;
+
+    const [response] = await this.httpClient.sendRequest<RunResult[]>(
+      "POST",
+      "/run",
+      compileRequestBody,
+    );
+    if (!response) throw new Error("No response from GoJudge during compilation");
+    const fileId = response?.fileIds?.[languageConfig.outputFile || ""] || undefined;
     if (!fileId) {
-      throw new Error(`Compilation failed, no output file generated ${response[0]?.files.stderr}`);
+      return {
+        error: GoJudgeResponseToCleanResult(response),
+      };
     }
-    return fileId;
+
+    return {
+      files: {
+        [languageConfig.outputFile!]: {
+          fileId,
+          isMainFile: true,
+        },
+      },
+    };
   }
 
-  async runCode({
-    input,
-    code,
+  async runCodeFromFiles({
+    files,
     language,
     cpuLimit = 1000, // ms
     memoryLimit = 64, // mb
-  }: RunConfig): Promise<cleanRunResult> {
-    const languageConfig = GoJudge.LANGAUGES[language as keyof typeof GoJudge.LANGAUGES];
+    input,
+  }: {
+    files: Record<string, GoJudgeFileFormat>;
+    language: GoJudegeLangauge;
+    cpuLimit?: number;
+    memoryLimit?: number;
+    input?: string;
+  }) {
+    const languageConfig = GoJudgeClient.LANGAUGES[language];
     if (!languageConfig) throw new Error(`Unsupported language: ${language}`);
 
-    let requestBody = this.generateRunConfig({
+    let requestBody = generateGoJudgeRunConfig({
       args: languageConfig.args,
       cpuLimit,
       memoryLimit,
-      tempFile: {
-        name: languageConfig.tempFile,
-        file: {
-          content: code,
-        },
-      },
+      inputFiles: files,
       stdin: input,
     });
 
     if (languageConfig.type === CompilerType.Compile && languageConfig.compileArgs) {
-      const compiledFileId = await this.compileCode(code, language);
-      requestBody = this.generateRunConfig({
+      const { files: compiledFiles, error } = await this.compileCodeFromFiles({
+        files: Object.fromEntries(
+          Object.entries(files).map(([fileName, file]) => [
+            fileName,
+            { ...file, includeInArgs: true },
+          ]),
+        ),
+        language,
+      });
+      if (error) return error;
+      if (!compiledFiles) throw new Error("Compilation failed but no error returned");
+
+      requestBody = generateGoJudgeRunConfig({
         args: languageConfig.args,
         cpuLimit,
         memoryLimit,
-        tempFile: {
-          name: languageConfig.outputFile!,
-          file: {
-            fileId: compiledFileId,
-          },
-        },
+        inputFiles: compiledFiles,
         stdin: input,
       });
     }
 
-    const [response] = await this.sendRequest<RunResult[]>("POST", "/run", requestBody);
+    const [response] = await this.httpClient.sendRequest<RunResult[]>("POST", "/run", requestBody);
     if (!response) throw new Error("No response from GoJudge");
-
     const fileToDelete = Object.values(requestBody?.cmd?.[0]?.copyIn || {})
       ?.map((file) => ("fileId" in file ? file.fileId : undefined))
       ?.filter((fileId): fileId is string => fileId !== undefined);
 
     await this.cleanAllFiles(fileToDelete);
-    return {
-      status: response.status,
-      exitCode: response.exitStatus,
-      time: response.time,
-      memory: response.memory,
-      procPeak: response.procPeak,
-      stdout: response.files.stdout,
-      stderr: response.files.stderr,
-    } satisfies cleanRunResult;
+    return GoJudgeResponseToCleanResult(response);
   }
 
   async cleanAllFiles(fileIdsInput?: string[]) {
     let fileIds = fileIdsInput;
     if (!fileIdsInput) {
-      const files = await this.sendRequest<Record<string, string>>("GET", "/file", {});
+      const files = await this.httpClient.sendRequest<Record<string, string>>("GET", "/file");
       fileIds = Object.keys(files);
     }
     fileIds ||= [];

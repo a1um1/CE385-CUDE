@@ -1,0 +1,97 @@
+@reference "#/styles/main.css";
+
+.sidebarPanel {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  background-color: oklch(18% 0.025 267);
+  overflow: hidden !important;
+}
+
+.ioWrapper {
+  flex: 1;
+  height: 100%;
+  width: 100%;
+  min-height: 0;
+  min-width: 0;
+}
+
+.resizeHandle {
+  background-color: var(--color-border);
+  transition: background-color 0.15s;
+  /* z-index: 10; */
+  outline: none;
+  flex-shrink: 0;
+}
+
+.resizeHandle[aria-orientation="vertical"] {
+  width: 4px;
+}
+
+.resizeHandle[aria-orientation="horizontal"] {
+  height: 4px;
+}
+
+.resizeHandle:hover,
+.resizeHandle[data-separator="hover"],
+.resizeHandle[data-separator="drag"],
+.resizeHandle[data-separator="focus"] {
+  background-color: var(--color-primary);
+}
+
+.editorLabel {
+  font-size: var(--size-sm-font-size);
+  margin-left: 0.25rem;
+  border-radius: var(--radius);
+  padding: 0.25rem 0.5rem;
+  color: var(--color-text);
+  flex-shrink: 0;
+}
+
+.editorStdin {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden !important;
+
+  textarea {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    resize: none;
+    padding: var(--size-xs-padding-y) var(--size-xs-padding-x);
+    font-size: var(--size-xs-font-size);
+    font-family: var(--font-mono);
+    background-color: var(--color-input);
+    color: var(--color-input-text);
+    border: none;
+    outline: none;
+  }
+}
+
+.editorStdout {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background-color: black;
+
+  pre {
+    width: 100%;
+    overflow: auto;
+    padding: 0.25rem;
+    font-size: var(--size-xs-font-size);
+    font-family: var(--font-mono);
+    margin: 0;
+  }
+
+  .stderr {
+    color: var(--color-danger);
+  }
+}

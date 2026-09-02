@@ -1,2 +1,2 @@
 export { default } from "./codeEditor";
-export type { CodeEditorProps, CodeLanguage } from "./codeEditor";
+export type { CodeEditorProps, CodeLanguage, PanelLayout } from "./codeEditor";

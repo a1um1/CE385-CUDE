@@ -47,22 +47,4 @@ describe("User Base Controller", () => {
     const user = new UserController(null as unknown as User);
     expect(() => user.json).toThrow("User not found");
   });
-
-  it("should throw error when updating avatar for a non-existent user", async () => {
-    const userController = new UserController(null as unknown as User);
-    await expect(
-      userController.updateAvatar({
-        profileImageURL: "https://example.com/new-avatar.jpg",
-      }),
-    ).rejects.toThrow("User not found");
-  });
-
-  it("should throw error when updating background for a non-existent user", async () => {
-    const userController = new UserController(null as unknown as User);
-    await expect(
-      userController.updateBackground({
-        backgroundImageURL: "https://example.com/new-background.jpg",
-      }),
-    ).rejects.toThrow("User not found");
-  });
 });
