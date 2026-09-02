@@ -26,7 +26,6 @@ export default class UserController {
   }
 
   get publicJson(): userSafePublicSchema {
-    if (!this.user) throw new Error("User not found");
     const {
       email: _email,
       deactivateReason: _deactivateReason,
@@ -59,7 +58,6 @@ export default class UserController {
 
   @Log()
   async updatePassword(data: userUpdatePasswordSchema) {
-    if (!this.user) throw new Error("User not found");
     const userRecord = await db.user.findUniqueOrThrow({
       where: { id: this.user.id },
       select: { password: true },
