@@ -5,14 +5,6 @@ export interface testCase {
   output: string;
 }
 
-export interface testResult {
-  ok: boolean;
-  input: string;
-  output: string;
-  expectedOutput: string;
-  error?: string;
-}
-
 export interface runTestCaseProps {
   code: string;
   language: keyof typeof GoJudge.LANGAUGES;

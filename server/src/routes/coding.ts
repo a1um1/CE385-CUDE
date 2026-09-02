@@ -3,6 +3,7 @@ import GoJudgeClient from "#/controller/go-judge";
 import { z } from "#/lib/extendZod";
 import { cleanResultSchema, zGoJudgeLanguage } from "#/controller/go-judge/go-judge.schema";
 import CodeGrader from "#/controller/grader/codeGrader";
+import { codeGraderResult } from "#/controller/grader/codeGrader.scema";
 
 const CodingRouter = new CustomRouter({
   prefix: "/coding",
@@ -69,12 +70,15 @@ const CodingRouter = new CustomRouter({
           example: 'print("Hello World")',
         }),
         language: zGoJudgeLanguage,
-        testCases: z.array(
-          z.object({
-            input: z.string().openapi(""),
-            output: z.string().openapi("Hello world"),
-          }),
-        ),
+        testCases: z
+          .array(
+            z.object({
+              input: z.string().openapi(""),
+              output: z.string().openapi("Hello world"),
+            }),
+          )
+          .openapi("graderRequestBody"),
+        response: codeGraderResult,
       }),
     },
     async ({ body }) => {
