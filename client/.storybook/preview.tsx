@@ -1,6 +1,6 @@
 import type { Preview } from "@storybook/tanstack-react";
 // @ts-ignore
-import "../src/styles.css";
+import "#/styles/main.css";
 
 const preview: Preview = {
   parameters: {

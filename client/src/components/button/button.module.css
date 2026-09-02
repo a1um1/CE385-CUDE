@@ -1,11 +1,11 @@
-@reference "../../styles.css";
+@reference "#/styles/main.css";
 
 .button {
   --btn-sizing: var(--size-md);
   --btn-font-size: var(--size-md-font-size);
   --btn-color: var(--color-primary);
   --btn-text-color: var(--color-primary-text);
-  --btn-hover-color: var(--color-primary-hover);
+  --btn-hover-color: color-mix(in oklch, var(--btn-color), black 15%);
   --btn-radius: var(--radius);
 
   background-color: var(--btn-color);
@@ -35,13 +35,11 @@
   &.primary {
     --btn-color: var(--color-primary);
     --btn-text-color: var(--color-primary-text);
-    --btn-hover-color: var(--color-primary-hover);
   }
 
   &.secondary {
     --btn-color: var(--color-secondary);
     --btn-text-color: var(--color-secondary-text);
-    --btn-hover-color: var(--color-secondary-hover);
   }
 
   &.ghost {

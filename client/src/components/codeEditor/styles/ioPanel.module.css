@@ -1,4 +1,4 @@
-@reference "../../../styles.css";
+@reference "#/styles/main.css";
 
 .sidebarPanel {
   height: 100%;
@@ -88,7 +88,6 @@
     padding: 0.25rem;
     font-size: var(--size-xs-font-size);
     font-family: var(--font-mono);
-    color: white;
     margin: 0;
   }
 

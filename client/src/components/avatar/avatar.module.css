@@ -1,4 +1,4 @@
-@reference "../../styles.css";
+@reference "#/styles/main.css";
 
 .avatar {
   --size: 3rem;
@@ -23,7 +23,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
   font-weight: 600;
   text-transform: uppercase;
   user-select: none;

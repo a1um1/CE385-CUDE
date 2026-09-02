@@ -1,0 +1,44 @@
+@import url("https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+@import "tailwindcss";
+@import "#/styles/color.css";
+@theme {
+  --font-web: "Space Mono", "Google Sans", system-ui, sans-serif;
+  --radius: 0.25rem;
+
+  --size-xs-padding: 0.1rem 0.5rem;
+  --size-xs-font-size: 0.75rem;
+
+  --size-sm-padding: 0.25rem 1rem;
+  --size-sm-font-size: 0.875rem;
+
+  --size-md-padding: 0.5rem 1.5rem;
+  --size-md-font-size: 1rem;
+
+  --size-lg-padding: 1rem 3rem;
+  --size-lg-font-size: 1.25rem;
+
+  --container-size: 1280px;
+}
+
+.container {
+  max-width: var(--container-size);
+  margin: 0 auto;
+  width: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-background);
+  font-family: var(--font-web);
+  color: var(--color-background-text);
+}
