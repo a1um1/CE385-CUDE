@@ -9,7 +9,7 @@ export const queryClient = new QueryClient({
   },
   mutationCache: new MutationCache({
     onSuccess: (data: unknown) => {
-      toast.success(data?.message || "Operation successful");
+      toast.success((data as any)?.message || "Operation successful");
     },
   }),
 });
