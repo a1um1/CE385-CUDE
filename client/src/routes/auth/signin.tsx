@@ -17,7 +17,6 @@ function RouteComponent() {
     onSubmit: async ({ value }) => {
       try {
         await signInMutation.mutateAsync(value);
-        alert("Sign-in successful!");
       } catch (error) {
         handleFormMutationError(form, error);
       }

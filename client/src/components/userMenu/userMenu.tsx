@@ -27,7 +27,10 @@ export default function UserMenu() {
           />
           <div className={style["header-info"]}>
             <Avatar name={user?.name || ""} avatarUrl={user?.profileImage} size="4rem" />
-            <p className={style["username"]}>{user?.name}</p>
+            <div>
+              <small>@{user?.username}</small>
+              <p className={style["username"]}>{user?.name}</p>
+            </div>
           </div>
         </div>
         <div className={style["dropdown-body"]}>

@@ -20,7 +20,6 @@ function RouteComponent() {
     onSubmit: async ({ value }) => {
       try {
         await signUpMutation.mutateAsync(value);
-        alert("Sign-up successful!");
         navigate({ to: "/auth/signin" });
       } catch (error) {
         handleFormMutationError(form, error);
