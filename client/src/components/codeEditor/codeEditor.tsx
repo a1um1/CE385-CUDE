@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { Group, Separator } from "react-resizable-panels";
+import { Group } from "react-resizable-panels";
 import styles from "./codeEditor.module.css";
 import type { CodeEditorProps } from "./codeEditor.schema";
 import { useEditorLayout } from "./hooks/useEditorLayout";
@@ -7,7 +7,6 @@ import { EditorContextProvider } from "./subcomponent/editorContext";
 import EditorToolbar from "./subcomponent/toolbar";
 import MonacoPanel from "./subcomponent/monacoPanel";
 import IOPanel from "./subcomponent/ioPanel";
-import { useCodeAvailableLanguage } from "#/data/code.data";
 
 export type { CodeEditorProps, CodeLanguage, PanelLayout } from "./codeEditor.schema";
 
@@ -30,7 +29,6 @@ export default function CodeEditor(props: CodeEditorProps) {
           className={styles.editorWrapper}
         >
           <MonacoPanel />
-          <Separator className={styles.resizeHandle} />
           <IOPanel />
         </Group>
       </div>

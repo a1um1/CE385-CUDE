@@ -1,6 +1,8 @@
 import { Group, Panel, Separator } from "react-resizable-panels";
 import { useEditorContext } from "./editorContext";
 import styles from "../styles/ioPanel.module.css";
+import formatNstoMs from "#/lib/formatNs";
+import formatBytetoMb from "#/lib/formatByte";
 
 export default function IOPanel() {
   const {
@@ -10,6 +12,8 @@ export default function IOPanel() {
     stderr,
     runCode,
     layout: { panelLayout, currentIoLayout, handleIoLayoutChange },
+    runResult,
+    disableOutput,
   } = useEditorContext();
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
@@ -18,49 +22,70 @@ export default function IOPanel() {
       runCode?.();
     }
   }
+  const isSideBarHidden = !setStdin && disableOutput;
+
+  if (isSideBarHidden) return undefined;
 
   return (
-    <Panel id="io" defaultSize="35%" minSize="15%" collapsible className={styles.sidebarPanel}>
-      <Group
-        key={`io-${panelLayout}`}
-        id={`codeEditor-io-${panelLayout}`}
-        orientation={panelLayout === "side" ? "vertical" : "horizontal"}
-        defaultLayout={currentIoLayout.defaultLayout}
-        onLayoutChanged={handleIoLayoutChange}
-        className={styles.ioWrapper}
-      >
-        <Panel
-          id="stdin"
-          defaultSize="50%"
-          minSize="15%"
-          collapsible
-          className={styles.editorStdin}
-        >
-          <label className={styles.editorLabel}>Input</label>
-          <textarea
-            value={stdin}
-            onChange={(e) => setStdin?.(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Enter input..."
-          />
-        </Panel>
+    <>
+      <Separator className={styles.resizeHandle} />
 
-        <Separator className={styles.resizeHandle} />
-
-        <Panel
-          id="stdout"
-          defaultSize="50%"
-          minSize="15%"
-          collapsible
-          className={styles.editorStdout}
+      <Panel id="io" defaultSize="35%" minSize="15%" collapsible className={styles.sidebarPanel}>
+        <Group
+          key={`io-${panelLayout}`}
+          id={`codeEditor-io-${panelLayout}`}
+          orientation={panelLayout === "side" ? "vertical" : "horizontal"}
+          defaultLayout={currentIoLayout.defaultLayout}
+          onLayoutChanged={handleIoLayoutChange}
+          className={styles.ioWrapper}
         >
-          <label className={styles.editorLabel}>Output</label>
-          <div>
-            <pre className={styles.stderr}>{stderr}</pre>
-            <pre>{stdout}</pre>
-          </div>
-        </Panel>
-      </Group>
-    </Panel>
+          {setStdin && (
+            <>
+              <Panel
+                id="stdin"
+                defaultSize="50%"
+                minSize="15%"
+                collapsible
+                className={styles.editorStdin}
+              >
+                <label className={styles.editorLabel}>Input</label>
+                <textarea
+                  value={stdin}
+                  onChange={(e) => setStdin?.(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Enter input..."
+                />
+              </Panel>
+              <Separator className={styles.resizeHandle} />
+            </>
+          )}
+          {!disableOutput && (
+            <Panel
+              id="stdout"
+              defaultSize="50%"
+              minSize="15%"
+              collapsible
+              className={styles.editorStdout}
+            >
+              <label className={styles.editorLabel}>Output</label>
+              <div>
+                <pre className={styles.stderr}>{stderr}</pre>
+                <pre>{stdout}</pre>
+                {runResult && (
+                  <pre>
+                    Exit with status {runResult.status} ({runResult.exitCode})<br />
+                    Time usage: {formatNstoMs(runResult.time)} ms
+                    <br />
+                    Memory usage: {formatBytetoMb(runResult.memory)} Mb
+                    <br />
+                    Peak Process: {runResult.procPeak}
+                  </pre>
+                )}
+              </div>
+            </Panel>
+          )}
+        </Group>
+      </Panel>
+    </>
   );
 }

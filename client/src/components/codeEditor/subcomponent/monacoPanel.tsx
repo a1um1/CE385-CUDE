@@ -1,8 +1,7 @@
 import { Editor, type OnMount } from "@monaco-editor/react";
 import { Panel } from "react-resizable-panels";
-import { useEffect, useRef, type JSX, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import Spinner from "#/components/spinner";
-import { MONACO_LANGUAGE_MAP } from "../codeEditor.schema";
 import { useEditorContext } from "./editorContext";
 import styles from "../styles/monacoPanel.module.css";
 import { useCodeAvailableLanguage } from "#/data/code.data";

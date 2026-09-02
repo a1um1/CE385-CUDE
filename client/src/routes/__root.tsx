@@ -57,7 +57,14 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           />
           <Scripts />
         </QueryClientProvider>
-        <Toaster position="top-right" expand visibleToasts={9} theme="dark" richColors />
+        <Toaster
+          position="top-right"
+          expand
+          visibleToasts={9}
+          theme="dark"
+          richColors
+          closeButton
+        />
       </body>
     </html>
   );

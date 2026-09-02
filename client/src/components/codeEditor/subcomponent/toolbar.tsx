@@ -1,10 +1,17 @@
-import { LANGUAGE_OPTIONS, type CodeLanguage } from "#/components/codeEditor/codeEditor.schema";
+import { type CodeLanguage } from "#/components/codeEditor/codeEditor.schema";
 import { useEditorContext } from "#/components/codeEditor/subcomponent/editorContext";
 import { PanelBottomIcon, PanelRightIcon, PlayIcon } from "lucide-react";
 import styles from "../styles/toolbar.module.css";
 import Button from "#/components/button";
+import { useCodeAvailableLanguage } from "#/data/code.data";
+import { useIsMutating } from "@tanstack/react-query";
+import Spinner from "#/components/spinner";
 
 export default function EditorToolbar() {
+  const { data: langaugeData, isLoading, isError } = useCodeAvailableLanguage();
+  const isMutating = useIsMutating();
+
+  const isMutatingOrLoading = isLoading || isMutating;
   const {
     language,
     onChangeLanguage,
@@ -27,11 +34,11 @@ export default function EditorToolbar() {
         value={language ?? "c"}
         onChange={handleLanguageChange}
         aria-label="Programming language"
-        disabled={disableLanguageSwitch}
+        disabled={disableLanguageSwitch || isLoading || isError}
       >
-        {LANGUAGE_OPTIONS.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
+        {Object.entries(langaugeData?.languages || []).map(([lang, props]) => (
+          <option key={lang} value={lang}>
+            {props.name} {props.version}
           </option>
         ))}
       </select>
@@ -46,9 +53,24 @@ export default function EditorToolbar() {
           {panelLayout === "side" ? <PanelBottomIcon /> : <PanelRightIcon />}
         </Button>
         {runCode && (
-          <Button onClick={runCode} size="sm" title="Run (Shift+Enter)" radius="square">
-            <PlayIcon fill="currentColor" />
-            Run
+          <Button
+            onClick={runCode}
+            size="sm"
+            title="Run (Shift+Enter)"
+            radius="square"
+            disabled={isLoading}
+          >
+            {isMutatingOrLoading ? (
+              <>
+                <Spinner />
+                Procsessing
+              </>
+            ) : (
+              <>
+                <PlayIcon fill="currentColor" />
+                Run
+              </>
+            )}
           </Button>
         )}
       </div>

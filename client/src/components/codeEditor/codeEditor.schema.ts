@@ -2,16 +2,7 @@ import type { components } from "#/data/base/openapi";
 
 export type CodeLanguage = keyof components["schemas"]["JudgeLanguagesResponse"]["languages"];
 
-export const LANGUAGE_OPTIONS: { label: string; value: CodeLanguage }[] = [
-  { label: "C", value: "c" },
-  { label: "Python", value: "python" },
-];
-
-export const MONACO_LANGUAGE_MAP: Record<CodeLanguage, string> = {
-  c: "c",
-  python: "python",
-};
-
+export type RunResult = components["schemas"]["JudgeCleanRunResult"];
 export type PanelLayout = "side" | "bottom";
 
 export const LS_LAYOUT_KEY = "codeEditor_panelLayout";
@@ -28,4 +19,6 @@ export interface CodeEditorProps {
   stderr?: string;
   stdout?: string;
   className?: string;
+  runResult?: RunResult;
+  disableOutput?: boolean;
 }
