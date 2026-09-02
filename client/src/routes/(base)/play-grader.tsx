@@ -1,6 +1,8 @@
 import Button from "#/components/button";
 import CodeEditor, { type CodeLanguage } from "#/components/codeEditor";
 import { APIclient, type ExtractRequestBody } from "#/data/base/baseAPI";
+import formatBytetoMb from "#/lib/formatByte";
+import formatNstoMs from "#/lib/formatNs";
 import { useMutation } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import clsx from "clsx";
@@ -125,7 +127,7 @@ function RouteComponent() {
             <div>Expected Output</div>
             <div>Output</div>
           </div>
-          {(runMuation?.data || [])?.map((v) => (
+          {(runMuation?.data?.testResults || [])?.map((v) => (
             <div
               key={`test-${v.input}-${v.expectedOutput}`}
               className={clsx("grid grid-cols-4", v.ok ? "bg-green-500/20" : "bg-red-500/20")}
@@ -136,7 +138,21 @@ function RouteComponent() {
               <div>{v.output}</div>
             </div>
           ))}
-          <pre>{JSON.stringify(runMuation.data, null, 2)}</pre>
+
+          <div className="flex gap-4 items-start">
+            <div className="aspect-squre bg-teal-500 w-48 h-48 flex items-center justify-center p-5 text-5xl">
+              {runMuation.data?.percentage ?? "?"}
+              <small className="text-lg">%</small>
+            </div>
+            <div>
+              <p>Total Cases: {runMuation?.data?.total}</p>
+              <p>Passed: {runMuation?.data?.passed}</p>
+              <p>Failed: {runMuation?.data?.failed}</p>
+              <p>Failed: {runMuation?.data?.failed}</p>
+              <p>Average Time: {formatNstoMs(runMuation?.data?.averageTime || 0)} ms</p>
+              <p>Average Memory: {formatBytetoMb(runMuation?.data?.averageMemory || 0)} mb</p>
+            </div>
+          </div>
         </div>
       </div>
     </>

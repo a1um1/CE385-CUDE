@@ -1,6 +1,7 @@
 import GoJudge from "#/controller/go-judge";
+import type { codeGradingSummary, testResult } from "#/controller/grader/codeGrader.schema";
 import GraderComparator from "#/controller/grader/grader.compartor";
-import type { gradeConfig, runTestCaseProps, testResult } from "#/controller/grader/grader.schema";
+import type { gradeConfig, runTestCaseProps } from "#/controller/grader/grader.schema";
 import pLimit from "p-limit";
 
 export default class CodeGrader {
@@ -22,6 +23,8 @@ export default class CodeGrader {
           output: result.stdout,
           expectedOutput: props.testCase.output,
           error: result.stderr,
+          time: result.time,
+          memory: result.memory,
         };
       } catch (error) {
         return {
@@ -30,6 +33,8 @@ export default class CodeGrader {
           output: "",
           expectedOutput: props.testCase.output,
           error: (error as Error).message,
+          memory: 0,
+          time: 0,
         };
       }
     });
@@ -47,15 +52,21 @@ export default class CodeGrader {
     );
   }
 
-  gradeSummary(results: Awaited<ReturnType<this["grade"]>>) {
+  gradeSummary(results: testResult[]): codeGradingSummary {
     const total = results.length;
-    const passed = results.filter((result) => result.ok).length;
-    const failed = total - passed;
+    const passed = results.filter((result) => result.ok);
+    const failed = total - passed.length;
+    const averageTime = results.reduce((base, value) => base + value.time, 0) / (total || 1);
+    const averageMemory = results.reduce((base, value) => base + value.memory, 0) / (total || 1);
+
     return {
       total,
-      passed,
+      passed: passed.length,
       failed,
-      percentage: (passed / total) * 100,
+      percentage: (passed.length / total) * 100,
+      averageMemory,
+      averageTime,
+      testResults: results,
     };
   }
 }

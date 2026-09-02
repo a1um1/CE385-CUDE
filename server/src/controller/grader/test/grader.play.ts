@@ -1,6 +1,6 @@
-import Grader from "../grader";
+import CodeGrader from "../codeGrader";
 
-const grader = new Grader();
+const grader = new CodeGrader();
 
 const reuslt = await grader.grade({
   code: `def add(a, b):

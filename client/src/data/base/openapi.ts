@@ -998,7 +998,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["codeGraderResultLists"];
+                        "application/json": components["schemas"]["codeGradingSummary"];
                     };
                 };
                 /** @description Validation error */
@@ -1159,13 +1159,23 @@ export interface components {
             stdout: string;
             stderr: string;
         };
-        codeGraderResultLists: components["schemas"]["codeGraderResult"][];
+        codeGradingSummary: {
+            total: number;
+            passed: number;
+            failed: number;
+            percentage: number;
+            averageTime: number;
+            averageMemory: number;
+            testResults: components["schemas"]["codeGraderResult"][];
+        };
         codeGraderResult: {
             ok: boolean;
             input: string;
             output: string;
             expectedOutput: string;
             error?: string;
+            time: number;
+            memory: number;
         };
         graderRequestBody: {
             input: string;
