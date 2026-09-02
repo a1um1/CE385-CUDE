@@ -1,8 +1,13 @@
 import clsx from "clsx";
 import styles from "./alert.module.css";
-import { CheckIcon, XIcon } from "lucide-react";
+import { CheckIcon, InfoIcon, XIcon } from "lucide-react";
+import type { ReactNode } from "react";
 
 const alertVaraints = {
+  default: {
+    class: "",
+    icon: InfoIcon,
+  },
   success: {
     class: styles["success"],
     icon: CheckIcon,
@@ -14,7 +19,7 @@ const alertVaraints = {
 } as const;
 
 interface AlertProps {
-  message: string;
+  children: ReactNode;
   variant?: keyof typeof alertVaraints;
 }
 
@@ -23,7 +28,7 @@ export default function Alert(props: AlertProps) {
   return (
     <div className={clsx(styles["alert"], currentVaraint.class)}>
       <currentVaraint.icon />
-      {props.message}
+      {props.children}
     </div>
   );
 }

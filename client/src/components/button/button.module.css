@@ -48,8 +48,20 @@
     --btn-hover-color: transparent;
   }
 
+  &.danger {
+    --btn-color: var(--color-danger);
+    --btn-text-color: var(--color-danger-text);
+  }
+
+  &.success {
+    --btn-color: var(--color-success);
+    --btn-text-color: var(--color-success-text);
+  }
+
   &.icon {
     aspect-ratio: 1 / 1;
+    height: 100%;
+    width: auto;
   }
 
   &.size-xs {
