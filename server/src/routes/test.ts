@@ -49,59 +49,6 @@ const testRoute = new CustomRouter({
     async () => {
       throw new Error("unhandled Error");
     },
-  )
-  .post(
-    "/judge",
-    {
-      summary: "Judge Test",
-      body: z.object({
-        language: z.enum(GoJudge.LANGUAGES_KEYS).openapi({ example: "python" }),
-        code: z.string().openapi({ example: 'print("Hello world", input())' }),
-        input: z.string().optional().openapi({ example: "Hello" }),
-      }),
-      response: cleanResultSchema,
-    },
-    async ({ body }) => {
-      const goJudge = new GoJudge();
-      const result = await goJudge.runCode({
-        input: body.input,
-        code: body.code,
-        language: body.language,
-      });
-      return result;
-    },
-  )
-  .get(
-    "/judge-languages",
-    {
-      summary: "Get Judge Languages",
-      response: z
-        .object({
-          languages: z.record(
-            z.enum(GoJudge.LANGUAGES_KEYS).openapi("JudgeAvailableLanguage"),
-            z.object({
-              name: z.string().openapi({ example: "Python" }),
-              version: z.string().openapi({ example: "3.11.4" }),
-            }),
-          ),
-        })
-        .openapi("JudgeLanguagesResponse"),
-    },
-    async () => ({
-      languages: Object.entries(GoJudge.LANGAUGES).reduce(
-        (acc, [key, lang]) => {
-          acc[key as keyof typeof GoJudge.LANGAUGES] = lang.safeAttribute;
-          return acc;
-        },
-        {} as Record<
-          keyof typeof GoJudge.LANGAUGES,
-          {
-            name: string;
-            version: string;
-          }
-        >,
-      ),
-    }),
   );
 
 export const testRouter = testRoute.route;

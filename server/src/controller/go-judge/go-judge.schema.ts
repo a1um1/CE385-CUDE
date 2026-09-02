@@ -1,22 +1,7 @@
 import type GoJudge from "#/controller/go-judge";
-import type { GoJudgeLanguagesConfig } from "#/controller/go-judge/languages.config";
+import { RunStatus, type CompilerType } from "#/controller/go-judge/go-judge.enum";
+import { GoJudgeLanguagesConfig } from "#/controller/go-judge/languages.config";
 import { z } from "#/lib/extendZod";
-
-export enum RunStatus {
-  Accepted = "Accepted", // normal
-  MemoryLimitExceeded = "Memory Limit Exceeded", // mle
-  TimeLimitExceeded = "Time Limit Exceeded", // tle
-  OutputLimitExceeded = "Output Limit Exceeded", // ole
-  FileError = "File Error", // fe
-  NonzeroExitStatus = "Nonzero Exit Status",
-  Signalled = "Signalled",
-  InternalError = "Internal Error", // system error
-}
-
-export enum CompilerType {
-  Interprete,
-  Compile,
-}
 
 interface BaseConfig {
   args: string[];
@@ -89,3 +74,7 @@ export interface RunConfig {
   cpuLimit?: number; // ms
   memoryLimit?: number; // mb
 }
+
+export const zGoJudgeLanguage = z
+  .enum(Object.keys(GoJudgeLanguagesConfig) as GoJudegeLangauge[])
+  .openapi({ example: "python" });

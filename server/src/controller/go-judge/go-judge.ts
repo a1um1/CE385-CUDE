@@ -1,3 +1,4 @@
+import { CompilerType } from "#/controller/go-judge/go-judge.enum";
 import { GoJudgeHTTpClient } from "#/controller/go-judge/go-judge.http";
 import type {
   RunResult,
@@ -6,7 +7,6 @@ import type {
   GoJudegeLangauge,
   GoJudgeFileFormat,
 } from "#/controller/go-judge/go-judge.schema";
-import { CompilerType } from "#/controller/go-judge/go-judge.schema";
 import {
   generateGoJudgeRunConfig,
   GoJudgeResponseToCleanResult,
