@@ -1,7 +1,9 @@
 @reference "#/styles/main.css";
 
 .button {
-  --btn-sizing: var(--size-md);
+  --padding-x: var(--size-md-padding-x);
+  --padding-y: var(--size-md-padding-y);
+  --btn-sizing: var(--padding-y) var(--padding-x);
   --btn-font-size: var(--size-md-font-size);
   --btn-color: var(--color-primary);
   --btn-text-color: var(--color-primary-text);
@@ -48,6 +50,12 @@
     --btn-hover-color: transparent;
   }
 
+  &.icon {
+    --padding-x: var(--padding-y) !important;
+    aspect-ratio: 1 / 1;
+    height: 100%;
+  }
+
   &.danger {
     --btn-color: var(--color-danger);
     --btn-text-color: var(--color-danger-text);
@@ -58,29 +66,27 @@
     --btn-text-color: var(--color-success-text);
   }
 
-  &.icon {
-    aspect-ratio: 1 / 1;
-    height: 100%;
-    width: auto;
-  }
-
   &.size-xs {
-    --btn-sizing: var(--size-xs-padding);
+    --padding-x: var(--size-xs-padding-x);
+    --padding-y: var(--size-xs-padding-y);
     --btn-font-size: var(--size-xs-font-size);
   }
 
   &.size-sm {
-    --btn-sizing: var(--size-sm-padding);
+    --padding-x: var(--size-sm-padding-x);
+    --padding-y: var(--size-sm-padding-y);
     --btn-font-size: var(--size-sm-font-size);
   }
 
   &.size-md {
-    --btn-sizing: var(--size-md-padding);
+    --padding-x: var(--size-md-padding-x);
+    --padding-y: var(--size-md-padding-y);
     --btn-font-size: var(--size-md-font-size);
   }
 
   &.size-lg {
-    --btn-sizing: var(--size-lg-padding);
+    --padding-x: var(--size-lg-padding-x);
+    --padding-y: var(--size-lg-padding-y);
     --btn-font-size: var(--size-lg-font-size);
   }
 

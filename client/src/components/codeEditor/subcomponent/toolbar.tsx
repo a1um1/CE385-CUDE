@@ -49,6 +49,7 @@ export default function EditorToolbar() {
           variant="secondary"
           title={panelLayout === "side" ? "Switch to bottom panel" : "Switch to side panel"}
           radius="square"
+          icon
         >
           {panelLayout === "side" ? <PanelBottomIcon /> : <PanelRightIcon />}
         </Button>

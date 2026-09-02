@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { Group } from "react-resizable-panels";
-import styles from "./codeEditor.module.css";
+import styles from "./styles/codeEditor.module.css";
 import type { CodeEditorProps } from "./codeEditor.schema";
 import { useEditorLayout } from "./hooks/useEditorLayout";
 import { EditorContextProvider } from "./subcomponent/editorContext";

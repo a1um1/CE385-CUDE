@@ -5,17 +5,23 @@
   --font-web: "Space Mono", "Google Sans", system-ui, sans-serif;
   --radius: 0.25rem;
 
-  --size-xs-padding: 0.1rem 0.5rem;
+  --size-xs-padding-y: 0.1rem;
+  --size-xs-padding-x: 0.5rem;
   --size-xs-font-size: 0.75rem;
 
-  --size-sm-padding: 0.25rem 1rem;
+  --size-sm-padding-y: 0.25rem;
+  --size-sm-padding-x: 1rem;
   --size-sm-font-size: 0.875rem;
 
-  --size-md-padding: 0.5rem 1.5rem;
+  --size-md-padding-y: 0.5rem;
+  --size-md-padding-x: 1.5rem;
   --size-md-font-size: 1rem;
 
-  --size-lg-padding: 1rem 3rem;
+  --size-lg-padding-y: 1rem;
+  --size-lg-padding-x: 3rem;
+
   --size-lg-font-size: 1.25rem;
+  --size-xs-square-padding: 0.1rem;
 
   --container-size: 1280px;
 }

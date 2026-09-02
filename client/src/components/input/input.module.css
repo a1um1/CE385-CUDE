@@ -1,7 +1,7 @@
 @reference "#/styles/main.css";
 
 .input {
-  --input-sizing: var(--size-md-padding);
+  --input-sizing: var(--size-md-padding-y) var(--size-md-padding-x);
   --input-font-size: var(--size-md-font-size);
   --input-color: var(--color-input);
   --input-text-color: var(--color-input-text);
@@ -45,17 +45,17 @@
   }
 
   &.size-xs {
-    --input-sizing: var(--size-xs-padding);
+    --input-sizing: var(--size-xs-padding-y) var(--size-xs-padding-x);
     --input-font-size: var(--size-xs-font-size);
   }
 
   &.size-sm {
-    --input-sizing: var(--size-sm-padding);
+    --input-sizing: var(--size-sm-padding-y) var(--size-sm-padding-x);
     --input-font-size: var(--size-sm-font-size);
   }
 
   &.size-md {
-    --input-sizing: var(--size-md-padding);
+    --input-sizing: var(--size-md-padding-y) var(--size-md-padding-x);
     --input-font-size: var(--size-md-font-size);
   }
 

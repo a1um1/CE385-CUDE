@@ -27,11 +27,6 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-// function ControlledCodeEditor(args: Omit<React.ComponentProps<typeof CodeEditor>, "onChange">) {
-//   const [value, setValue] = useState(args.value);
-//   return <CodeEditor {...args} value={value} onChange={setValue} />;
-// }
-
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: Infinity, refetchOnMount: true } },
 });
