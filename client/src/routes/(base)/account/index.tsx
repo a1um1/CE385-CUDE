@@ -4,6 +4,10 @@ import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/(base)/account/")({
   component: RouteComponent,
+  staticData: {
+    pageKey: "profile",
+    pageTitle: "Profile",
+  },
 });
 
 function RouteComponent() {

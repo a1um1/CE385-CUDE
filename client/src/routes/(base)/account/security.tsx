@@ -3,6 +3,10 @@ import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/(base)/account/security")({
   component: RouteComponent,
+  staticData: {
+    pageKey: "security",
+    pageTitle: "Security",
+  },
 });
 
 function RouteComponent() {
