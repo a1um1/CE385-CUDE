@@ -16,9 +16,9 @@
     flex-direction: column;
     align-items: start;
 
-		.navigation-logo {
-			margin-bottom: 0.5rem;
-		}
+    .navigation-logo {
+      margin-bottom: 0.5rem;
+    }
 
     .navigation-items {
       display: flex;

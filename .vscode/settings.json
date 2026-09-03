@@ -14,6 +14,12 @@
   "[typescriptreact]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
   },
+	"[tailwindcss]": {
+		"editor.defaultFormatter": "oxc.oxc-vscode"
+	},
+	"[css]": {
+		"editor.defaultFormatter": "oxc.oxc-vscode"
+	},
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
   },
