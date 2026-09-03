@@ -6,6 +6,13 @@ const meta = {
   title: "Components/Ranked",
   component: Ranked,
   tags: ["autodocs"],
+  argTypes: {
+    rank: {conTrol: "text"},
+    size: {control: "text"},
+    bgColor: {control: "color"},
+    borderColor: {control: "color"},
+    textColor: {control: "color"},
+  }
 } satisfies Meta<typeof Ranked>;
 
 

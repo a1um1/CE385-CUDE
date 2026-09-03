@@ -33,7 +33,7 @@
     top: 6%;
     left: 6%;
     width: 88%;
-    height: 8%;
+    height: 88%;
     background-color: var(--bg-color);
     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
     display: flex;
