@@ -25,10 +25,18 @@ export const ButtonRadius = {
   square: ButtonStyles.square,
 } as const;
 
+export const ButtonInnerAlignments = {
+  start: ButtonStyles["inner-start"],
+  center: ButtonStyles["inner-center"],
+  end: ButtonStyles["inner-end"],
+  between: ButtonStyles["inner-between"],
+} as const;
+
 export interface ButtonProps extends BaseButtonProps {
   variant?: keyof typeof ButtonVariants;
   size?: keyof typeof ButtonSizes;
   radius?: keyof typeof ButtonRadius;
+  align?: keyof typeof ButtonInnerAlignments;
   block?: boolean;
   icon?: boolean;
 }
@@ -41,6 +49,7 @@ const Button = forwardRef<HTMLElement, ButtonProps>(
       radius = "none",
       block = false,
       icon = false,
+      align = "center",
       className,
       ...props
     },
@@ -54,6 +63,7 @@ const Button = forwardRef<HTMLElement, ButtonProps>(
         ButtonVariants[variant] || ButtonStyles.primary,
         ButtonSizes[size] || ButtonStyles["size-md"],
         ButtonRadius[radius] || undefined,
+        ButtonInnerAlignments[align] || undefined,
         block && ButtonStyles.block,
         icon && ButtonStyles.icon,
         className,
