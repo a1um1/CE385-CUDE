@@ -19,14 +19,18 @@
 .languageSelect {
   background-color: var(--color-input);
   color: var(--color-input-text);
+  border-top: none;
+  border-bottom: none;
+  border-left: none;
   border-right: 1px solid var(--color-border);
+  border-radius: 0;
   padding: var(--size-sm-padding-y) var(--size-sm-padding-x);
   font-size: var(--size-sm-font-size);
   font-family: var(--font-web);
   cursor: pointer;
-  outline: none;
+  min-width: 140px;
 }
 
-.languageSelect:focus {
-  border-color: var(--color-primary);
+.languageSelect:hover:not(:disabled) {
+  border-right-color: var(--color-border);
 }
