@@ -1,4 +1,4 @@
-import Button, { ButtonRadius, ButtonSizes, ButtonVariants } from "./button";
+import Button, { ButtonInnerAlignments, ButtonRadius, ButtonSizes, ButtonVariants } from "./button";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta = {
@@ -17,6 +17,10 @@ const meta = {
     },
     disabled: { control: "boolean" },
     block: { control: "boolean" },
+    align: {
+      control: "select",
+      options: Object.keys(ButtonInnerAlignments) as (keyof typeof ButtonInnerAlignments)[],
+    },
   },
 } satisfies Meta<typeof Button>;
 

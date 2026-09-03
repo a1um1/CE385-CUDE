@@ -22,7 +22,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  gap: 0.25rem;
+  gap: 1rem;
 
   &:hover,
   &:focus {
@@ -110,5 +110,18 @@
   svg {
     width: var(--btn-font-size);
     height: var(--btn-font-size);
+  }
+
+  &.inner-start {
+    justify-content: flex-start;
+  }
+  &.inner-end {
+    justify-content: flex-end;
+  }
+  &.inner-center {
+    justify-content: center;
+  }
+  &.inner-between {
+    justify-content: space-between;
   }
 }

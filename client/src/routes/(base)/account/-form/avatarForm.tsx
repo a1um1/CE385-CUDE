@@ -12,7 +12,6 @@ export default function AvatarForm() {
     onSubmit: async ({ value }) => {
       try {
         await updateMutation.mutateAsync(value);
-        alert("Avatar updated successfully!");
       } catch (error) {
         handleFormMutationError(form, error);
       }

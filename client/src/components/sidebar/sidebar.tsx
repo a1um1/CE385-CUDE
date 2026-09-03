@@ -18,8 +18,8 @@ const navItems: { key: string; label: string; link: LinkProps }[] = [
 
 export default function Sidebar() {
   const matches = useMatches();
-
   const pageKey = matches[matches.length - 1]?.staticData?.pageKey;
+
   return (
     <nav className={navbarStyles.navbar}>
       <div className={navbarStyles["navigation-content"]}>

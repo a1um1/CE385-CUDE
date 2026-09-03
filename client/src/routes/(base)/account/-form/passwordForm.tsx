@@ -11,7 +11,6 @@ export default function UpdatePasswordForm() {
     onSubmit: async ({ value }) => {
       try {
         await updateMutation.mutateAsync(value);
-        alert("Password updated successfully!");
       } catch (error) {
         handleFormMutationError(form, error);
       }

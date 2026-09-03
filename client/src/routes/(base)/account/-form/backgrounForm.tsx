@@ -12,7 +12,6 @@ export default function BackgroundForm() {
     onSubmit: async ({ value }) => {
       try {
         await updateMutation.mutateAsync(value);
-        alert("Background updated successfully!");
       } catch (error) {
         handleFormMutationError(form, error);
       }
