@@ -3,31 +3,14 @@ import { Menu } from "@base-ui/react/menu";
 import { clsx } from "clsx";
 import { Check, ChevronDown } from "lucide-react";
 import styles from "./select.module.css";
-
-export const SelectSizes = {
-  xs: styles["size-xs"],
-  sm: styles["size-sm"],
-  md: styles["size-md"],
-} as const;
-
-export const SelectRadius = {
-  none: styles["radius-none"],
-  square: styles["radius-square"],
-  pilled: styles["radius-pilled"],
-} as const;
-
-export type SelectSize = keyof typeof SelectSizes;
-export type SelectRadiusType = keyof typeof SelectRadius;
-
-interface SelectContextValue {
-  value?: string;
-  onValueChange?: (value: string) => void;
-  disabled?: boolean;
-  size?: SelectSize;
-  radius?: SelectRadiusType;
-}
-
-const SelectContext = React.createContext<SelectContextValue | null>(null);
+import type {
+  SelectContextValue,
+  SelectValueProps,
+  SelectContentProps,
+  SelectRootProps,
+  SelectTriggerProps,
+} from "#/components/select/select.schema";
+import { SelectContext, SelectSizes, SelectRadius } from "#/components/select/select.schema";
 
 function useSelectContext() {
   const context = React.useContext(SelectContext);
@@ -35,21 +18,6 @@ function useSelectContext() {
     throw new Error("Select compound components must be used within a Select.Root");
   }
   return context;
-}
-
-export interface SelectRootProps extends Omit<
-  React.ComponentProps<typeof Menu.Root>,
-  "onOpenChange"
-> {
-  value?: string;
-  defaultValue?: string;
-  onValueChange?: (value: string) => void;
-  size?: SelectSize;
-  radius?: SelectRadiusType;
-  disabled?: boolean;
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
-  children?: React.ReactNode;
 }
 
 export function SelectRoot({
@@ -98,12 +66,6 @@ export function SelectRoot({
   );
 }
 
-export interface SelectTriggerProps extends React.ComponentProps<typeof Menu.Trigger> {
-  size?: SelectSize;
-  radius?: SelectRadiusType;
-  showChevron?: boolean;
-}
-
 export function SelectTrigger({
   className,
   size: sizeProp,
@@ -128,10 +90,6 @@ export function SelectTrigger({
   );
 }
 
-export interface SelectValueProps extends React.HTMLAttributes<HTMLSpanElement> {
-  placeholder?: string;
-}
-
 export function SelectValue({ placeholder, className, children, ...props }: SelectValueProps) {
   const { value } = useSelectContext();
 
@@ -143,14 +101,6 @@ export function SelectValue({ placeholder, className, children, ...props }: Sele
       {content}
     </span>
   );
-}
-
-export interface SelectContentProps extends Omit<React.ComponentProps<typeof Menu.Popup>, "dir"> {
-  align?: "start" | "center" | "end";
-  side?: "top" | "right" | "bottom" | "left";
-  sideOffset?: number;
-  alignOffset?: number;
-  positionerClassName?: string;
 }
 
 export function SelectContent({
