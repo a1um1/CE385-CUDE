@@ -1,7 +1,7 @@
 @reference "#/styles/main.css";
 
 .user-background {
-  --aspect-ratio: 21 / 9;
+  --aspect-ratio: 32 / 9;
 
   position: relative;
   width: 100%;

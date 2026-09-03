@@ -22,7 +22,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  gap: 0.25rem;
+  gap: 1rem;
 
   &:hover,
   &:focus {

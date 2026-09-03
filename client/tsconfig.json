@@ -1,12 +1,6 @@
 {
   "extends": "../tsconfig.base.json",
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    "**/*.css.d.ts",
-    "src/types/router.d.ts",
-    "src/routes/(base)/play-grader.tsx"
-  ],
+  "include": ["**/*.ts", "**/*.tsx", "**/*.css.d.ts", "src/types/router.d.ts"],
   "compilerOptions": {
     "jsx": "react-jsx",
     "paths": {
