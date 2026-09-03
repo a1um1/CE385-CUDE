@@ -5,7 +5,7 @@
     --bg-color: #99ffff;
     --border-color: #3b9ab8;
     --text-color: #3b9ab8;
-    --font-size: 56px;
+
 
     position:  relative;
     width: var(--hex-size);
@@ -16,26 +16,49 @@
     margin: calc(var(--hex-size)*0.1) 0;
 }
 
-.hexagonOuter {
+.hexagonSvg {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: var(--border-color);
-    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%,0% 25%);
-    border-radius: 12px;
-    transition: all 0.3s ease;
 }
 
-.hexagonInner {
+.content {
+    position: relative;
+    z-index: 2;
+    color: var(--text-color);
+    font-size: clamp(calc(var(--hex-size) * 0.2), calc(var(--hex-size) * 0.467), calc(var(--hex-size) * 0.467));    font-family: "Segeo UI, Tahoma, Geneva, Verdana, sans-serif";
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1;
+    overflow: hidden;
+}
+
+.squareOuter {
+    position: absolute;
+    top: 0;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+    background-color: var(--border-color);
+    clip-path: none;
+    border-radius: calc(var(--hex-size)*0.32);
+    transition: all 0.3 ease;
+}
+
+.squareInner {
     position: absolute;
     top: 6%;
     left: 6%;
     width: 88%;
     height: 88%;
     background-color: var(--bg-color);
-    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    clip-path: none;
+    border-radius: calc(var(--hex-size)*0.28);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -45,7 +68,12 @@
     position: relative;
     z-index: 2;
     color: var(--text-color);
-    font-size: var(--font-size);
-    font-family: "Segeo UI, Tahoma, Geneva, Verdana, sans-serif";
+    font-size: clamp(calc(var(--hex-size) * 0.2), calc(var(--hex-size) * 0.467), calc(var(--hex-size) * 0.467));    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1;
+    overflow: hidden;
 }

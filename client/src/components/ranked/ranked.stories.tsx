@@ -7,11 +7,13 @@ const meta = {
   component: Ranked,
   tags: ["autodocs"],
   argTypes: {
+    shape: {control:  "radio", options: ["hexagon", "square"]},
     rank: {conTrol: "text"},
     size: {control: "text"},
     bgColor: {control: "color"},
     borderColor: {control: "color"},
     textColor: {control: "color"},
+
   }
 } satisfies Meta<typeof Ranked>;
 
