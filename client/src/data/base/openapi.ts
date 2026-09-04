@@ -291,7 +291,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["userStatObject"];
+                        "application/json": components["schemas"]["userStatExtendedObject"];
                     };
                 };
                 /** @description Validation error */
@@ -1156,6 +1156,10 @@ export interface components {
              * @example 2023-01-01T00:00:00.000Z
              */
             updatedAt: string;
+        };
+        userStatExtendedObject: components["schemas"]["userStatObject"] & {
+            /** Format: date-time */
+            willRegenerateAt?: string;
         };
         userStatObject: {
             userID: string;

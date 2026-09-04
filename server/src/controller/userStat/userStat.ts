@@ -1,48 +1,37 @@
 import TransactionsController from "#/controller/transactions";
-import type { Prisma } from "#/generated/prisma/client";
-import { z } from "#/lib/extendZod";
+import {
+  userStatQueryPayload,
+  type userStatsExtendedQueryPayload,
+  type userStatsQueryPayload,
+} from "#/controller/userStat/userStat.schema";
 import { db } from "#/lib/prisma";
 import UserError from "#/lib/router/http/userError";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
-import type zod from "zod";
-const MAX_ENERGY = 5;
-const ENERGY_REGEN_RATE = 10; // energy per minute
-
-export const userStatQueryPayload = {
-  userID: true,
-  energyUpdatedAt: true,
-  energy: true,
-  currentGems: true,
-  totalXP: true,
-  createdAt: true,
-  updatedAt: true,
-} as const satisfies Prisma.UserStatSelect;
-
-export type userStatsQueryPayload = Prisma.UserStatGetPayload<{
-  select: typeof userStatQueryPayload;
-}>;
-
-export const zodUserStatObject = z
-  .object({
-    userID: z.string(),
-    energyUpdatedAt: z.date(),
-    energy: z.number(),
-    currentGems: z.number(),
-    totalXP: z.number(),
-    createdAt: z.date(),
-    updatedAt: z.date(),
-  })
-  .openapi("userStatObject") satisfies zod.ZodType<userStatsQueryPayload>;
 
 export default class UserStatController {
   private data: userStatsQueryPayload;
+  static readonly MAX_ENERGY = 5;
+  static readonly ENERGY_REGEN_RATE = 10;
 
   constructor(data: userStatsQueryPayload) {
     this.data = data;
   }
 
-  get JSON() {
-    return this.data;
+  get JSON(): userStatsExtendedQueryPayload {
+    const shouldRegenerate = this.data.energy < UserStatController.MAX_ENERGY;
+    const healthLeft = UserStatController.MAX_ENERGY - this.data.energy;
+    const willRegenerateAt = shouldRegenerate
+      ? new Date(
+          this.data.energyUpdatedAt.getTime() +
+            healthLeft * UserStatController.ENERGY_REGEN_RATE * 60 * 1000,
+        )
+      : undefined;
+
+    const data = {
+      ...this.data,
+      willRegenerateAt,
+    };
+    return data;
   }
 
   async spendEnergy(amount = 1): Promise<void> {
@@ -52,7 +41,7 @@ export default class UserStatController {
       throw new UserError(403, "Not enough energy to perform this action.");
     }
 
-    const wasFull = currentEnergy === MAX_ENERGY;
+    const wasFull = currentEnergy === UserStatController.MAX_ENERGY;
     this.data.energy -= amount;
 
     if (wasFull) this.data.energyUpdatedAt = new Date();
@@ -86,19 +75,20 @@ export default class UserStatController {
   private async calculateCurrentEnergy(): Promise<number> {
     const { energy, energyUpdatedAt } = this.data;
     if (!energyUpdatedAt) return energy;
-    if (energy >= MAX_ENERGY) {
+    if (energy >= UserStatController.MAX_ENERGY) {
       // If the user is already at max energy, we don't need to calculate regeneration
       return energy;
     }
     const now = new Date();
     const elapsedTime = (now.getTime() - energyUpdatedAt.getTime()) / 1000; // in seconds
-    const regenRateInSeconds = ENERGY_REGEN_RATE; // convert minutes to seconds
+    const regenRateInSeconds = UserStatController.MAX_ENERGY * 60; // convert minutes to seconds
     const ticks = Math.floor(elapsedTime * (1 / regenRateInSeconds)); // energy regenerated since last update
     if (ticks <= 0) return energy;
 
-    this.data.energy = Math.min(energy + ticks, MAX_ENERGY);
+    this.data.energy = Math.min(energy + ticks, UserStatController.MAX_ENERGY);
+
     this.data.energyUpdatedAt = new Date(
-      energyUpdatedAt.getTime() + ticks * (regenRateInSeconds * 60) * 1000,
+      energyUpdatedAt.getTime() + ticks * regenRateInSeconds * 1000,
     ); // update the last updated time based on regenerated energy
 
     await db.userStat.update({
@@ -128,7 +118,7 @@ export default class UserStatController {
     if (!userStat) {
       // create if not exists
       const data = await db.userStat.create({
-        data: { userID },
+        data: { userID, energy: UserStatController.MAX_ENERGY, energyUpdatedAt: new Date() },
       });
       return await UserStatController.prepareData(data);
     }

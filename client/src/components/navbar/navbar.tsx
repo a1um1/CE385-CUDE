@@ -45,7 +45,7 @@ export default function Navbar() {
               <span className={clsx(navbarStyles["badge"], "text-energy")}>
                 <Enegry />
                 {userStats?.energy || 0}x
-                <CountdownTimer targetDate={userStats?.energyUpdatedAt} />
+                <CountdownTimer targetDate={userStats?.willRegenerateAt} />
               </span>
               <UserMenu />
             </>
