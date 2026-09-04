@@ -1,4 +1,4 @@
-import { ButtonRadius, ButtonSizes, ButtonVariants } from "#/components/button/button";
+import { ButtonRadius, ButtonSizes, ButtonVariants } from "#/components/button";
 import ButtonLink from "./buttonLink";
 import type { Meta, StoryObj } from "@storybook/react";
 

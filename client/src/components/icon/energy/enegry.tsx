@@ -1,4 +1,4 @@
-import type { IconProps } from "#/components/icon/streak/streak";
+import type { IconProps } from "#/components/icon/streak";
 import { Zap } from "lucide-react";
 
 export default function Energy({ size }: IconProps) {

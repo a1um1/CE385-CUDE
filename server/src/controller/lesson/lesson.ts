@@ -1,5 +1,5 @@
 import ExerciseController from "#/controller/exercise/base/exercise";
-import UnitController from "#/controller/unit/unit";
+import UnitController from "#/controller/unit";
 import type { Lesson } from "#/generated/prisma/client";
 import { db } from "#/lib/prisma";
 import UserError from "#/lib/router/http/userError";

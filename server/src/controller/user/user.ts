@@ -12,8 +12,8 @@ import {
   userQueryPayload,
   type userSafePublicSchema,
 } from "#/controller/user/user.schema";
-import UserStatController from "#/controller/userStat/userStat";
-import TransactionsController from "#/controller/transactions/transactions";
+import UserStatController from "#/controller/userStat";
+import TransactionsController from "#/controller/transactions";
 import type { TransactionQuerySchema } from "#/controller/transactions/transactions.schema";
 
 export default class UserController {

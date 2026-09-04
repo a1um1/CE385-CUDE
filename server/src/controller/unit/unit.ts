@@ -1,5 +1,5 @@
-import CourseController from "#/controller/course/course";
-import lesson from "#/controller/lesson/lesson";
+import CourseController from "#/controller/course";
+import lesson from "#/controller/lesson";
 import type { Unit } from "#/generated/prisma/client";
 import { db } from "#/lib/prisma";
 import UserError from "#/lib/router/http/userError";

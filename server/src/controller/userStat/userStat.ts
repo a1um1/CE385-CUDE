@@ -1,4 +1,4 @@
-import TransactionsController from "#/controller/transactions";
+import TransactionsController from "#/controller/transactions/index";
 import {
   userStatQueryPayload,
   type spendEnergyProps,

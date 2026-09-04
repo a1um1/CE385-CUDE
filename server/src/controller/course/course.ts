@@ -1,4 +1,4 @@
-import UnitController from "#/controller/unit/unit";
+import UnitController from "#/controller/unit";
 import type { Course } from "#/generated/prisma/client";
 import { db } from "#/lib/prisma";
 import UserError from "#/lib/router/http/userError";

@@ -1,5 +1,5 @@
 import fakeUser from "#/controller/user/tests/user.mock";
-import UserController from "#/controller/user/user";
+import UserController from "#/controller/user";
 import { mockedDb } from "#/test/setup";
 import { it, expect, describe } from "vitest";
 

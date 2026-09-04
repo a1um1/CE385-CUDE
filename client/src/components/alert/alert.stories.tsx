@@ -1,4 +1,4 @@
-import Alert from "#/components/alert/alert";
+import Alert from "#/components/alert";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta = {

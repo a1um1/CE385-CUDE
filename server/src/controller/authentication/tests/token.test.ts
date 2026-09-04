@@ -1,4 +1,4 @@
-import AuthenticationController from "#/controller/authentication/authentication";
+import AuthenticationController from "#/controller/authentication";
 import type { AuthenticationBody } from "#/controller/authentication/authentication.schema";
 import fakeUser from "#/controller/user/tests/user.mock";
 import { mockedDb } from "#/test/setup";

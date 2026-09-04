@@ -8,10 +8,10 @@ import type {
   ErrorRequestHandler,
 } from "express-serve-static-core";
 import { registry } from "#/openapi";
-import AuthenticationController from "#/controller/authentication/authentication";
+import AuthenticationController from "#/controller/authentication";
 import { HTTPstatus } from "#/lib/router/http/httpStatus";
 import UserError from "#/lib/router/http/userError";
-import { mergePath } from "#/lib/mergePath/mergePath";
+import { mergePath } from "#/lib/mergePath";
 import type {
   AuthenticationObject,
   RequestObject,
