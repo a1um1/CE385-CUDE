@@ -1,16 +1,43 @@
 import TransactionsController from "#/controller/transactions";
-import type { UserStat } from "#/generated/prisma/client";
+import type { Prisma } from "#/generated/prisma/client";
+import { z } from "#/lib/extendZod";
 import { db } from "#/lib/prisma";
 import UserError from "#/lib/router/http/userError";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
-
+import type zod from "zod";
 const MAX_ENERGY = 5;
 const ENERGY_REGEN_RATE = 10; // energy per minute
 
-export default class UserStatController {
-  private data: UserStat;
+export const userStatQueryPayload = {
+  userID: true,
+  energyUpdatedAt: true,
+  energy: true,
+  currentGems: true,
+  totalXP: true,
+  createdAt: true,
+  updatedAt: true,
+} as const satisfies Prisma.UserStatSelect;
 
-  constructor(data: UserStat) {
+export type userStatsQueryPayload = Prisma.UserStatGetPayload<{
+  select: typeof userStatQueryPayload;
+}>;
+
+export const zodUserStatObject = z
+  .object({
+    userID: z.string(),
+    energyUpdatedAt: z.date(),
+    energy: z.number(),
+    currentGems: z.number(),
+    totalXP: z.number(),
+    createdAt: z.date(),
+    updatedAt: z.date(),
+  })
+  .openapi("userStatObject") satisfies zod.ZodType<userStatsQueryPayload>;
+
+export default class UserStatController {
+  private data: userStatsQueryPayload;
+
+  constructor(data: userStatsQueryPayload) {
     this.data = data;
   }
 
@@ -65,12 +92,13 @@ export default class UserStatController {
     }
     const now = new Date();
     const elapsedTime = (now.getTime() - energyUpdatedAt.getTime()) / 1000; // in seconds
-    const ticks = Math.floor(elapsedTime * (1 / ENERGY_REGEN_RATE)); // energy regenerated since last update
+    const regenRateInSeconds = ENERGY_REGEN_RATE; // convert minutes to seconds
+    const ticks = Math.floor(elapsedTime * (1 / regenRateInSeconds)); // energy regenerated since last update
     if (ticks <= 0) return energy;
 
     this.data.energy = Math.min(energy + ticks, MAX_ENERGY);
     this.data.energyUpdatedAt = new Date(
-      energyUpdatedAt.getTime() + ticks * ENERGY_REGEN_RATE * 1000,
+      energyUpdatedAt.getTime() + ticks * (regenRateInSeconds * 60) * 1000,
     ); // update the last updated time based on regenerated energy
 
     await db.userStat.update({
@@ -84,7 +112,7 @@ export default class UserStatController {
     return this.data.energy;
   }
 
-  private static async prepareData(data: UserStat): Promise<UserStatController> {
+  private static async prepareData(data: userStatsQueryPayload): Promise<UserStatController> {
     const controller = new UserStatController(data);
     await controller.calculateCurrentEnergy();
 
@@ -94,6 +122,7 @@ export default class UserStatController {
   static async getByUserId(userID: string): Promise<UserStatController> {
     const userStat = await db.userStat.findUnique({
       where: { userID },
+      select: userStatQueryPayload,
     });
 
     if (!userStat) {

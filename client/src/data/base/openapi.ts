@@ -241,7 +241,57 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["UserSafeData"];
+                        "application/json": components["schemas"]["UserSafePublicData"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/user/current-stat": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get current user stat */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["userStatObject"];
                     };
                 };
                 /** @description Validation error */
@@ -1082,6 +1132,42 @@ export interface components {
             currentPassword: string;
             /** @example Password123! */
             newPassword: string;
+        };
+        UserSafePublicData: {
+            /** @example 123456 */
+            id: string;
+            /** @example j_doe */
+            username: string;
+            /** @example John Doe */
+            name: string;
+            /** @example The Brave */
+            epithet: string | null;
+            /** @example https://example.com/profile.jpg */
+            profileImage: string | null;
+            /** @example https://example.com/background.jpg */
+            backgroundImage: string | null;
+            /**
+             * Format: date-time
+             * @example 2023-01-01T00:00:00.000Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @example 2023-01-01T00:00:00.000Z
+             */
+            updatedAt: string;
+        };
+        userStatObject: {
+            userID: string;
+            /** Format: date-time */
+            energyUpdatedAt: string;
+            energy: number;
+            currentGems: number;
+            totalXP: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
         };
         Test: {
             /** @example 123456 */

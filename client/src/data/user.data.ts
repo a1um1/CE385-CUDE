@@ -95,3 +95,13 @@ export const useUpdatePassword = () =>
       return data;
     },
   });
+
+export const useUserStats = () =>
+  useQuery({
+    queryKey: ["userStats"],
+    queryFn: async () => {
+      const { data, error } = await APIclient.GET("/user/current-stat");
+      if (error || !data) throw error;
+      return data;
+    },
+  });

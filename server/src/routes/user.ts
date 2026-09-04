@@ -6,6 +6,7 @@ import {
   UserUpdateBackgroundSchema,
   UserUpdatePasswordSchema,
 } from "#/controller/user/user.schema";
+import { zodUserStatObject } from "#/controller/userStat";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 import { GenericResponseSchema } from "#/lib/router/http/genericResponse";
@@ -81,6 +82,19 @@ const userRoute = new CustomRouter({
     async ({ params }) => {
       const user = await UserController.getUserByUsername(params.username);
       return user.publicJson;
+    },
+  )
+  .get(
+    "/current-stat",
+    {
+      prefix: "/user",
+      tags: ["User"],
+      summary: "Get current user stat",
+      response: zodUserStatObject,
+    },
+    async ({ user }) => {
+      const userStat = await user.getUserStat();
+      return userStat.JSON;
     },
   );
 
