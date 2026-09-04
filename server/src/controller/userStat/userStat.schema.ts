@@ -37,3 +37,8 @@ export const zodUserStatExtendedObject = zodUserStatObject
 export type userStatsExtendedQueryPayload = userStatsQueryPayload & {
   willRegenerateAt?: Date;
 };
+
+export interface spendEnergyProps {
+  amount?: number;
+  reason?: string;
+}

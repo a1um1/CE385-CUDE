@@ -1,6 +1,7 @@
 import TransactionsController from "#/controller/transactions";
 import {
   userStatQueryPayload,
+  type spendEnergyProps,
   type userStatsExtendedQueryPayload,
   type userStatsQueryPayload,
 } from "#/controller/userStat/userStat.schema";
@@ -34,7 +35,7 @@ export default class UserStatController {
     return data;
   }
 
-  async spendEnergy(amount = 1): Promise<void> {
+  async spendEnergy({ amount = 1, reason }: spendEnergyProps): Promise<void> {
     const currentEnergy = await this.calculateCurrentEnergy();
 
     if (currentEnergy < amount) {
@@ -67,7 +68,7 @@ export default class UserStatController {
         type: "ENERGY",
         amount: -amount,
         afterAmount: result.energy,
-        reason: "Spent energy",
+        reason: reason || "No reason provided",
       });
     });
   }
