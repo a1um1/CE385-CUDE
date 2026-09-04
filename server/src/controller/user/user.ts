@@ -13,6 +13,8 @@ import {
   type userSafePublicSchema,
 } from "#/controller/user/user.schema";
 import UserStatController from "#/controller/userStat/userStat";
+import TransactionsController from "#/controller/transactions/transactions";
+import type { TransactionQuerySchema } from "#/controller/transactions/transactions.schema";
 
 export default class UserController {
   private user: userSafeSchema;
@@ -114,5 +116,9 @@ export default class UserController {
 
   getUserStat(): Promise<UserStatController> {
     return UserStatController.getByUserId(this.user.id);
+  }
+
+  async getUserTransactions(query: TransactionQuerySchema) {
+    return await TransactionsController.getAllTransactionsByUserID(this.user.id, query);
   }
 }

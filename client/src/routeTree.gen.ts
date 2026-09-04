@@ -22,6 +22,7 @@ import { Route as AuthSigninRouteImport } from './routes/auth/signin'
 import { Route as AuthSignupRouteImport } from './routes/auth/signup'
 import { Route as baseAccountIndexRouteImport } from './routes/(base)/account/index'
 import { Route as baseAccountSecurityRouteImport } from './routes/(base)/account/security'
+import { Route as baseAccountTransactionsRouteImport } from './routes/(base)/account/transactions'
 import { Route as baseProfileUsernameRouteImport } from './routes/(base)/profile/$username'
 import { Route as AdminUserIndexRouteImport } from './routes/admin/user/index'
 import { Route as AdminUserIdRouteImport } from './routes/admin/user/$id'
@@ -90,6 +91,11 @@ const baseAccountSecurityRoute = baseAccountSecurityRouteImport.update({
   path: '/security',
   getParentRoute: () => baseAccountRouteRoute,
 } as any)
+const baseAccountTransactionsRoute = baseAccountTransactionsRouteImport.update({
+  id: '/transactions',
+  path: '/transactions',
+  getParentRoute: () => baseAccountRouteRoute,
+} as any)
 const baseProfileUsernameRoute = baseProfileUsernameRouteImport.update({
   id: '/profile/$username',
   path: '/profile/$username',
@@ -118,6 +124,7 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/auth/': typeof AuthIndexRoute
   '/account/security': typeof baseAccountSecurityRoute
+  '/account/transactions': typeof baseAccountTransactionsRoute
   '/profile/$username': typeof baseProfileUsernameRoute
   '/admin/user/$id': typeof AdminUserIdRoute
   '/account/': typeof baseAccountIndexRoute
@@ -132,6 +139,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/auth': typeof AuthIndexRoute
   '/account/security': typeof baseAccountSecurityRoute
+  '/account/transactions': typeof baseAccountTransactionsRoute
   '/profile/$username': typeof baseProfileUsernameRoute
   '/admin/user/$id': typeof AdminUserIdRoute
   '/account': typeof baseAccountIndexRoute
@@ -151,6 +159,7 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/auth/': typeof AuthIndexRoute
   '/(base)/account/security': typeof baseAccountSecurityRoute
+  '/(base)/account/transactions': typeof baseAccountTransactionsRoute
   '/(base)/profile/$username': typeof baseProfileUsernameRoute
   '/admin/user/$id': typeof AdminUserIdRoute
   '/(base)/account/': typeof baseAccountIndexRoute
@@ -170,6 +179,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/auth/'
     | '/account/security'
+    | '/account/transactions'
     | '/profile/$username'
     | '/admin/user/$id'
     | '/account/'
@@ -184,6 +194,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/account/security'
+    | '/account/transactions'
     | '/profile/$username'
     | '/admin/user/$id'
     | '/account'
@@ -202,6 +213,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/auth/'
     | '/(base)/account/security'
+    | '/(base)/account/transactions'
     | '/(base)/profile/$username'
     | '/admin/user/$id'
     | '/(base)/account/'
@@ -307,6 +319,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof baseAccountSecurityRouteImport
       parentRoute: typeof baseAccountRouteRoute
     }
+    '/(base)/account/transactions': {
+      id: '/(base)/account/transactions'
+      path: '/transactions'
+      fullPath: '/account/transactions'
+      preLoaderRoute: typeof baseAccountTransactionsRouteImport
+      parentRoute: typeof baseAccountRouteRoute
+    }
     '/(base)/profile/$username': {
       id: '/(base)/profile/$username'
       path: '/profile/$username'
@@ -333,11 +352,13 @@ declare module '@tanstack/react-router' {
 
 interface baseAccountRouteRouteChildren {
   baseAccountSecurityRoute: typeof baseAccountSecurityRoute
+  baseAccountTransactionsRoute: typeof baseAccountTransactionsRoute
   baseAccountIndexRoute: typeof baseAccountIndexRoute
 }
 
 const baseAccountRouteRouteChildren: baseAccountRouteRouteChildren = {
   baseAccountSecurityRoute: baseAccountSecurityRoute,
+  baseAccountTransactionsRoute: baseAccountTransactionsRoute,
   baseAccountIndexRoute: baseAccountIndexRoute,
 }
 

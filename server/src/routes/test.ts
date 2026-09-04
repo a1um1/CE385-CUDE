@@ -47,6 +47,25 @@ const testRoute = new CustomRouter({
     async () => {
       throw new Error("unhandled Error");
     },
+  )
+  .post(
+    "/spend-enegry",
+    {
+      summary: "Spend Energy",
+      response: z.object({
+        message: z.string().openapi({ example: "Energy spent successfully" }),
+      }),
+      authentication: true,
+    },
+    async ({ user }) => {
+      const currencieController = await user.getUserStat();
+      await currencieController.spendEnergy({
+        reason: "test spend energy",
+      });
+      return {
+        message: "Energy spent successfully",
+      };
+    },
   );
 
 export const testRouter = testRoute.route;

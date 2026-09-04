@@ -89,8 +89,8 @@ export default class AdminUserController {
 
     return {
       data: users,
-      nextCursor,
-      prevCursor,
+      nextCursor: nextCursor || null,
+      prevCursor: prevCursor || null,
     };
   }
 }

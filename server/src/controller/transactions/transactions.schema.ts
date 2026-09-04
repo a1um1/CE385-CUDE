@@ -36,9 +36,7 @@ export const TransactionSchema = z
 
 export type TransactionSchema = zod.infer<typeof TransactionSchema>;
 
-export const TransactionQuerySchema = BaseCursorPaginationQuerySchema.extend({
-  userID: z.uuid().openapi({ example: "user_id" }),
-}).openapi("TransactionQuery");
+export const TransactionQuerySchema = BaseCursorPaginationQuerySchema.openapi("TransactionQuery");
 
 export type TransactionQuerySchema = zod.infer<typeof TransactionQuerySchema>;
 

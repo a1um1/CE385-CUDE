@@ -35,6 +35,7 @@ export default class TransactionsController {
   }
 
   static async getAllTransactionsByUserID(
+    userID: string,
     query: TransactionQuerySchema,
   ): Promise<TransactionListResponseSchema> {
     const isBackward = query.direction === "backward" && Boolean(query.cursor);
@@ -42,7 +43,7 @@ export default class TransactionsController {
     const users = await db.transactions.findMany({
       take: query.perPage + 1,
       skip: query.cursor ? 1 : 0,
-      cursor: query.cursor ? { id: query.cursor, userID: query.userID } : undefined,
+      cursor: query.cursor ? { id: query.cursor, userID } : undefined,
       orderBy: { createdAt: isBackward ? "asc" : "desc" },
       select: TransactionQueryPayload,
     });
@@ -61,8 +62,8 @@ export default class TransactionsController {
 
     return {
       data: users,
-      nextCursor,
-      prevCursor,
+      nextCursor: nextCursor || null,
+      prevCursor: prevCursor || null,
     };
   }
 }

@@ -1,3 +1,7 @@
+import {
+  TransactionListResponseSchema,
+  TransactionQuerySchema,
+} from "#/controller/transactions/transactions.schema";
 import UserController from "#/controller/user";
 import {
   UserSafePublicSchema,
@@ -96,6 +100,15 @@ const userRoute = new CustomRouter({
       const userStat = await user.getUserStat();
       return userStat.JSON;
     },
+  )
+  .get(
+    "/transactions",
+    {
+      summary: "Get user transactions",
+      response: TransactionListResponseSchema,
+      query: TransactionQuerySchema,
+    },
+    async ({ user, query }) => await user.getUserTransactions(query),
   );
 
 export const userRouter = userRoute.route;

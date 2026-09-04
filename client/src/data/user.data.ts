@@ -1,4 +1,4 @@
-import { APIclient, type ExtractRequestBody } from "#/data/base/baseAPI";
+import { APIclient, type ExtractRequestBody, type ExtractRequestQuery } from "#/data/base/baseAPI";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useUser = () =>
@@ -101,6 +101,20 @@ export const useUserStats = () =>
     queryKey: ["userStats"],
     queryFn: async () => {
       const { data, error } = await APIclient.GET("/user/current-stat");
+      if (error || !data) throw error;
+      return data;
+    },
+  });
+
+export const useUserTransactions = (query: ExtractRequestQuery<"/user/transactions", "get">) =>
+  useQuery({
+    queryKey: ["userTransactions", query],
+    queryFn: async () => {
+      const { data, error } = await APIclient.GET("/user/transactions", {
+        params: {
+          query,
+        },
+      });
       if (error || !data) throw error;
       return data;
     },
