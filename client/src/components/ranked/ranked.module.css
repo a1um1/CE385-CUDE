@@ -55,10 +55,10 @@
     top: 6%;
     left: 6%;
     width: 88%;
-    height: 88%;
+    height: 88%; 
     background-color: var(--bg-color);
     clip-path: none;
-    border-radius: calc(var(--hex-size)*0.28);
+    border-radius: calc(var(--hex-size)*0.28); 
     display: flex;
     align-items: center;
     justify-content: center;
@@ -68,9 +68,9 @@
     position: relative;
     z-index: 2;
     color: var(--text-color);
-    font-size: clamp(calc(var(--hex-size) * 0.2), calc(var(--hex-size) * 0.467), calc(var(--hex-size) * 0.467));    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: clamp(calc(var(--hex-size) * 0.2), calc(var(--hex-size) * 0.467), calc(var(--hex-size) * 0.467)) ;    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     user-select: none;
-    display: flex;
+    display: flex;                  
     align-items: center;
     justify-content: center;
     text-align: center;
