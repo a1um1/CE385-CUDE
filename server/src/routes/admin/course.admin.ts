@@ -31,7 +31,7 @@ const adminCourseRouter = new CustomRouter({
     async ({ body, user }) => {
       const controller = await AdminCoursesController.create({
         ...body,
-        createdByID: user.json.id,
+        createdByID: user.JSON.id,
       });
       return controller.JSON;
     },

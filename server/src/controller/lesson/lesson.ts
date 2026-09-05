@@ -15,7 +15,7 @@ export default class LessonController {
     return this.data;
   }
 
-  static async getLessonById(id: string): Promise<LessonController> {
+  static async getById(id: string): Promise<LessonController> {
     const lesson = await db.lesson.findUnique({
       where: { id },
     });
@@ -23,7 +23,7 @@ export default class LessonController {
     return new LessonController(lesson);
   }
 
-  static async getLessonByUnitId(unitID: string): Promise<LessonController[]> {
+  static async getByUnitId(unitID: string): Promise<LessonController[]> {
     const lessons = await db.lesson.findMany({
       where: { unitID },
     });
@@ -31,10 +31,10 @@ export default class LessonController {
   }
 
   async getAllExercise() {
-    return await ExerciseController.getExerciseByLessonId(this.data.id);
+    return await ExerciseController.getByLessonId(this.data.id);
   }
 
   async getUnit() {
-    return await UnitController.getUnitById(this.data.unitID);
+    return await UnitController.getById(this.data.unitID);
   }
 }

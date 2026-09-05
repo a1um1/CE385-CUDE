@@ -7,7 +7,7 @@ describe("User Creation", () => {
   it("should create a new user", async () => {
     mockedDb.user.create.mockResolvedValue(fakeUser);
     mockedDb.user.findUnique.mockResolvedValue(fakeUser);
-    await UserController.createUser({
+    await UserController.create({
       email: fakeUser.email,
       name: fakeUser.name,
       username: fakeUser.username,
@@ -22,7 +22,7 @@ describe("User Creation", () => {
     );
 
     await expect(
-      UserController.createUser({
+      UserController.create({
         email: fakeUser.email,
         name: fakeUser.name,
         username: fakeUser.username,

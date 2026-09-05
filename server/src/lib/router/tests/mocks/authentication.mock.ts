@@ -27,7 +27,7 @@ const authenticationRouting = new CustomRouter()
     },
     async ({ user }) => ({
       message: "authentication required route",
-      user: user.json,
+      user: user.JSON,
     }),
   )
   .get(
@@ -37,7 +37,7 @@ const authenticationRouting = new CustomRouter()
     },
     async ({ user }) => ({
       message: "authentication required route for admin only",
-      user: user.json,
+      user: user.JSON,
     }),
   );
 

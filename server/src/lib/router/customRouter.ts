@@ -110,7 +110,7 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
       if (!token) throw new UserError(401, "Unauthorize");
 
       const user = await this.authController.validateToken(token);
-      if (!roleToCheck.includes(user.json.role)) throw new UserError(403, "Forbidden");
+      if (!roleToCheck.includes(user.JSON.role)) throw new UserError(403, "Forbidden");
       req.ctx ||= {};
       req.ctx.user = user;
       next();

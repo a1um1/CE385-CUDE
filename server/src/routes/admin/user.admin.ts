@@ -35,8 +35,8 @@ const adminUserRouter = new CustomRouter({
       response: UserSafeSchema,
     },
     async ({ params }) => {
-      const user = await AdminUserController.getUserById(params.id);
-      return user.json;
+      const user = await AdminUserController.getById(params.id);
+      return user.JSON;
     },
   )
   .post(
@@ -47,7 +47,7 @@ const adminUserRouter = new CustomRouter({
       response: GenericResponseSchema,
     },
     async ({ body }) => {
-      const user = await AdminUserController.getUserById(body.id);
+      const user = await AdminUserController.getById(body.id);
       await user.forceChangePassword(body);
       return {
         message: "User password changed successfully",
@@ -62,7 +62,7 @@ const adminUserRouter = new CustomRouter({
       response: GenericResponseSchema,
     },
     async ({ body }) => {
-      const user = await AdminUserController.getUserById(body.id);
+      const user = await AdminUserController.getById(body.id);
       await user.deactivate(body);
       return {
         message: "User deactivated successfully",
@@ -77,7 +77,7 @@ const adminUserRouter = new CustomRouter({
       response: GenericResponseSchema,
     },
     async ({ body }) => {
-      const user = await AdminUserController.getUserById(body.id);
+      const user = await AdminUserController.getById(body.id);
       await user.reactivate();
       return {
         message: "User activated successfully",

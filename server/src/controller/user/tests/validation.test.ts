@@ -7,7 +7,7 @@ import { describe, expect, it } from "vitest";
 describe("User Validation Tests", () => {
   it("should validate user credentials", async () => {
     mockedDb.user.findUnique.mockResolvedValue(fakeUser);
-    const user = await UserController.validateUserCredentials({
+    const user = await UserController.validateCredentials({
       email: fakeUser.email,
       password: "ValidPass123!",
     });
@@ -17,7 +17,7 @@ describe("User Validation Tests", () => {
   it("should throw error when validating user credentials with incorrect password", async () => {
     mockedDb.user.findUnique.mockResolvedValue(fakeUser);
     await expect(
-      UserController.validateUserCredentials({
+      UserController.validateCredentials({
         email: fakeUser.email,
         password: "WrongPassword123!",
       }),
@@ -27,7 +27,7 @@ describe("User Validation Tests", () => {
   it("should throw error when validating user credentials with non-existent email", async () => {
     mockedDb.user.findUnique.mockResolvedValue(null);
     await expect(
-      UserController.validateUserCredentials({
+      UserController.validateCredentials({
         email: fakeUser.email,
         password: "ValidPass123!",
       }),
@@ -38,7 +38,7 @@ describe("User Validation Tests", () => {
     const deactivatedUser = { ...fakeUser, isActive: false };
     mockedDb.user.findUnique.mockResolvedValue(deactivatedUser);
     await expect(
-      UserController.validateUserCredentials({
+      UserController.validateCredentials({
         email: deactivatedUser.email,
         password: "ValidPass123!",
       }),

@@ -17,7 +17,7 @@ export default class AdminUserController {
     this.user = user;
   }
 
-  get json(): userSafeSchema {
+  get JSON(): userSafeSchema {
     if (!this.user) throw new Error("User not found");
     return this.user;
   }
@@ -55,7 +55,7 @@ export default class AdminUserController {
     return this;
   }
 
-  static async getUserById(userId: string): Promise<AdminUserController> {
+  static async getById(userId: string): Promise<AdminUserController> {
     const user = await db.user.findUnique({
       where: { id: userId },
       select: userQueryPayload,

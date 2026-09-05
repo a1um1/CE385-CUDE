@@ -21,7 +21,7 @@ const userRoute = new CustomRouter({
       summary: "User information",
       response: UserSafeSchema,
     },
-    async ({ user }) => user.json,
+    async ({ user }) => user.JSON,
   )
   .post(
     "/avatar",
@@ -79,8 +79,8 @@ const userRoute = new CustomRouter({
       response: UserSafePublicSchema,
     },
     async ({ params }) => {
-      const user = await UserController.getUserByUsername(params.username);
-      return user.publicJson;
+      const user = await UserController.getByUsername(params.username);
+      return user.publicJSON;
     },
   );
 

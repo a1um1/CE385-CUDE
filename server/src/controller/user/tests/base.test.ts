@@ -9,14 +9,14 @@ import { describe, expect, it } from "vitest";
 describe("User Base Controller", () => {
   it("should return error when user is not found", async () => {
     mockedDb.user.findUnique.mockResolvedValue(null);
-    await expect(UserController.getUserById("nonexistent-user-id")).rejects.toThrow(UserError);
+    await expect(UserController.getById("nonexistent-user-id")).rejects.toThrow(UserError);
   });
 
   it("should have the correct error message", async () => {
     try {
       mockedDb.user.findUnique.mockResolvedValue(null);
-      await UserController.getUserById("nonexistent-user-id");
-      expect.unreachable("Expected getUserById to throw");
+      await UserController.getById("nonexistent-user-id");
+      expect.unreachable("Expected getById to throw");
     } catch (error) {
       expect(error).toBeInstanceOf(UserError);
       if (error instanceof UserError) {
@@ -28,7 +28,7 @@ describe("User Base Controller", () => {
 
   it("should return user", async () => {
     mockedDb.user.findUnique.mockResolvedValue(fakeUser);
-    const user = await UserController.getUserById(fakeUser.id);
+    const user = await UserController.getById(fakeUser.id);
     expect(user).toEqual(new UserController(fakeUser));
     expect(mockedDb.user.findUnique).toHaveBeenCalledWith({
       select: userQueryPayload,
@@ -38,13 +38,13 @@ describe("User Base Controller", () => {
 
   it("should return user json", async () => {
     mockedDb.user.findUnique.mockResolvedValue(fakeUser);
-    const user = await UserController.getUserById(fakeUser.id);
-    expect(user.json).toEqual(fakeUser);
+    const user = await UserController.getById(fakeUser.id);
+    expect(user.JSON).toEqual(fakeUser);
   });
 
   it("should throw error when accessing json of a user that is not found", async () => {
     mockedDb.user.findUnique.mockResolvedValue(null);
     const user = new UserController(null as unknown as User);
-    expect(() => user.json).toThrow("User not found");
+    expect(() => user.JSON).toThrow("User not found");
   });
 });
