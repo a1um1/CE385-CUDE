@@ -10,4 +10,4 @@ beforeEach(() => {
   mockReset(db);
 });
 
-export const mockedDb = db as unknown as ReturnType<typeof mockDeep<typeof db>>;
+export const mockDB = db as unknown as ReturnType<typeof mockDeep<typeof db>>;

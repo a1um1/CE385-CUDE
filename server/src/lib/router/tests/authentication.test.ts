@@ -1,7 +1,7 @@
 import AuthenticationController from "#/controller/authentication";
 import type { AuthenticationBody } from "#/controller/authentication/authentication.schema";
 import fakeUser from "#/controller/user/tests/user.mock";
-import { mockedDb } from "#/test/setup";
+import { mockDB } from "#/test/setup";
 import { describe, expect, it } from "vitest";
 import request from "supertest";
 import { AuthenticationRoutingApp } from "#/lib/router/tests/mocks/authentication.mock";
@@ -52,7 +52,7 @@ describe("Authentication Tests", () => {
   });
 
   it("should require authentication with valid token", async () => {
-    mockedDb.user.findUnique.mockResolvedValue(fakeUser);
+    mockDB.user.findUnique.mockResolvedValue(fakeUser);
     const res = await request(AuthenticationRoutingApp)
       .get("/auth-required")
       .set("Authorization", `Bearer ${authenticationToken}`);
@@ -65,7 +65,7 @@ describe("Authentication Tests", () => {
   });
 
   it("should require authentication with valid token but wrong role", async () => {
-    mockedDb.user.findUnique.mockResolvedValue(fakeUser);
+    mockDB.user.findUnique.mockResolvedValue(fakeUser);
     const res = await request(AuthenticationRoutingApp)
       .get("/auth-required-admin-only")
       .set("Authorization", `Bearer ${authenticationToken}`);
@@ -74,9 +74,9 @@ describe("Authentication Tests", () => {
   });
 
   it("should require authentication with valid token and correct role", async () => {
-    mockedDb.user.findUnique.mockResolvedValue(fakeUser);
+    mockDB.user.findUnique.mockResolvedValue(fakeUser);
     const adminUser = { ...fakeUser, role: "ADMIN" as const };
-    mockedDb.user.findUnique.mockResolvedValue(adminUser);
+    mockDB.user.findUnique.mockResolvedValue(adminUser);
     const res = await request(AuthenticationRoutingApp)
       .get("/auth-required-admin-only")
       .set("Authorization", `Bearer ${authenticationToken}`);
@@ -93,7 +93,7 @@ describe("Authentication Tests", () => {
   });
 
   it("should return 401 for valid token but user not found", async () => {
-    mockedDb.user.findUnique.mockResolvedValue(null);
+    mockDB.user.findUnique.mockResolvedValue(null);
     const res = await request(AuthenticationRoutingApp)
       .get("/auth-required")
       .set("Authorization", `Bearer ${authenticationToken}`);

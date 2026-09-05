@@ -1,7 +1,7 @@
 import AuthenticationController from "#/controller/authentication";
 import type { AuthenticationBody } from "#/controller/authentication/authentication.schema";
 import fakeUser from "#/controller/user/tests/user.mock";
-import { mockedDb } from "#/test/setup";
+import { mockDB } from "#/test/setup";
 import { it, expect, describe, beforeEach } from "vitest";
 import jwt from "jsonwebtoken";
 
@@ -40,7 +40,7 @@ describe("Token Tests", () => {
   });
 
   it("should validate a valid token", async () => {
-    mockedDb.user.findUnique.mockResolvedValue(fakeUser);
+    mockDB.user.findUnique.mockResolvedValue(fakeUser);
     const controller = new AuthenticationController();
     const tokenData = controller.generateToken(mockAuthenticationBody);
     const user = await controller.validateToken(tokenData.token);
@@ -54,7 +54,7 @@ describe("Token Tests", () => {
   });
 
   it("should throw error when validating a token for a non-existent user", async () => {
-    mockedDb.user.findUnique.mockResolvedValue(null);
+    mockDB.user.findUnique.mockResolvedValue(null);
     const controller = new AuthenticationController();
     const tokenData = controller.generateToken(mockAuthenticationBody);
     await expect(controller.validateToken(tokenData.token)).rejects.toThrow();

@@ -82,7 +82,7 @@ export default class UserStatController {
     }
     const now = new Date();
     const elapsedTime = (now.getTime() - energyUpdatedAt.getTime()) / 1000; // in seconds
-    const regenRateInSeconds = UserStatController.MAX_ENERGY * 60; // convert minutes to seconds
+    const regenRateInSeconds = UserStatController.ENERGY_REGEN_RATE * 60; // convert minutes to seconds
     const ticks = Math.floor(elapsedTime * (1 / regenRateInSeconds)); // energy regenerated since last update
     if (ticks <= 0) return energy;
 
