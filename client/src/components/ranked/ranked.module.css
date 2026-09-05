@@ -1,0 +1,69 @@
+@reference "../../styles.css";
+
+.hexagonWrapper {
+    --hex-size: 120px;
+    --bg-color: #99ffff;
+    --border-color: #3b9ab8;
+    --text-color: #3b9ab8;
+
+
+    position:  relative;
+    width: var(--hex-size); /*เลขตรงนี้คือ เพิ่มตัวคูณให้กว้างขึ้น */
+    height: calc(var(--hex-size)*1.12); /*เลขตรงนี้คือ เพิ่มตัวคูณขึ้น */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: calc(var(--hex-size)*0.1) 0;
+}
+
+.hexagonSvg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.content {
+    position: relative;
+    z-index: 2;
+    color: var(--text-color);
+    font-size: calc(var(--hex-size)*0.467); /*ตัวเลขคือ กำหนดสัดส่วนที่ให้ขยายตามไม่ต้องมาแก้fontใหม่*/
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1;
+    overflow: hidden;
+}
+
+
+.squareOuter {
+    position: absolute;
+    top: 0;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+    background-color: var(--border-color);
+    clip-path: none;
+    border-radius: calc(var(--hex-size)*0.32);
+}
+
+.squareInner {
+    position: absolute;
+    top: 6%;
+    left: 6%;
+    width: 88%;
+    height: 88%; 
+    background-color: var(--bg-color);
+    clip-path: none;
+    border-radius: calc(var(--hex-size)*0.28); 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.isSquare {
+    height: var(--hex-size); /* ไว้ทำให้ square คงที่ */
+}
