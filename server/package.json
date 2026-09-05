@@ -49,7 +49,7 @@
   },
   "overrides": {
     "openapi-typescript": {
-      "typescript": "$typescript"
+      "typescript": "npm:@typescript/typescript6@6.0.2"
     }
   }
 }

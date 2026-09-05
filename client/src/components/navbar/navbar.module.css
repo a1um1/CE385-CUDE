@@ -1,8 +1,11 @@
-@reference "../../styles.css";
+@reference "#/styles/main.css";
 
 .navbar {
   display: flex;
   width: 100%;
+  position: relative;
+  z-index: 100;
+
   .container {
     max-width: var(--container-size);
     margin: 0 auto;

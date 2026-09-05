@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 const fakeUser = {
   id: "test-user-id",
   email: "test@example.com",
+  username: "testuser",
   name: "Test User",
   password: bcrypt.hashSync("ValidPass123!", 12),
   epithet: null,

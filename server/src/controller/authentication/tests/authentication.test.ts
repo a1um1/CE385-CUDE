@@ -22,7 +22,12 @@ describe("Authentication Tests", () => {
     mockedDb.user.create.mockResolvedValue(fakeUser);
     mockedDb.user.findUnique.mockResolvedValue(fakeUser);
     const controller = new AuthenticationController();
-    const userData = { name: fakeUser.name, email: fakeUser.email, password: "password" };
+    const userData = {
+      name: fakeUser.name,
+      username: fakeUser.username,
+      email: fakeUser.email,
+      password: "password",
+    };
     const result = await controller.signUp(userData);
     expect(result).toHaveProperty("token");
     expect(result).toHaveProperty("user");
@@ -40,7 +45,12 @@ describe("Authentication Tests", () => {
   it("should throw error when signing up with existing email", async () => {
     mockedDb.user.create.mockRejectedValue(new Error("Unique constraint failed"));
     const controller = new AuthenticationController();
-    const userData = { name: fakeUser.name, email: fakeUser.email, password: "password" };
+    const userData = {
+      name: fakeUser.name,
+      username: fakeUser.username,
+      email: fakeUser.email,
+      password: "password",
+    };
     await expect(controller.signUp(userData)).rejects.toThrow();
   });
 });

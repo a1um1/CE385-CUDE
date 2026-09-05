@@ -25,6 +25,7 @@ export const UserPasswordDefinition = z
 export const UserSchema = z
   .object({
     id: z.string().openapi({ example: "123456" }),
+    username: z.string().openapi({ example: "j_doe" }),
     name: z.string().openapi({ example: "John Doe" }),
     email: z.email().openapi({ example: "email@gmail.com" }),
     password: UserPasswordDefinition,
@@ -68,8 +69,17 @@ export const UserSafeSchema = UserSchema.omit({
   password: true,
 }).openapi("UserSafeData");
 
+export const UserSafePublicSchema = UserSchema.omit({
+  password: true,
+  email: true,
+  deactivateReason: true,
+  role: true,
+  isActive: true,
+}).openapi("UserSafePublicData");
+
 export const UserCreationSchema = UserSchema.pick({
   name: true,
+  username: true,
   email: true,
   password: true,
 }).openapi("UserCreationData");
@@ -81,6 +91,7 @@ export const UserValidationSchema = UserSchema.pick({
 
 export const userQueryPayload = {
   id: true,
+  username: true,
   name: true,
   email: true,
   role: true,
@@ -102,3 +113,4 @@ export type userValidationSchema = Zod.infer<typeof UserValidationSchema>;
 export type userUpdateAvatarSchema = Zod.infer<typeof UserUpdateAvatarSchema>;
 export type userUpdateBackgroundSchema = Zod.infer<typeof UserUpdateBackgroundSchema>;
 export type userUpdatePasswordSchema = Zod.infer<typeof UserUpdatePasswordSchema>;
+export type userSafePublicSchema = Zod.infer<typeof UserSafePublicSchema>;

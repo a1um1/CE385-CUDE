@@ -1,0 +1,4 @@
+enum EXERCISE_TYPE {
+  NONE
+  CODE
+}

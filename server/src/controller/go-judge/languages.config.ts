@@ -1,5 +1,5 @@
-import { CompilerType, type LanguageConfig } from "#/controller/go-judge/go-judge.schema";
-
+import { CompilerType } from "#/controller/go-judge/go-judge.enum";
+import type { LanguageConfig } from "#/controller/go-judge/go-judge.schema";
 export const GoJudgeLanguagesConfig = {
   python: {
     args: ["/usr/bin/python3", "$tempFile"],
@@ -15,9 +15,9 @@ export const GoJudgeLanguagesConfig = {
       name: "C",
       version: "11",
     },
-    compileArgs: ["/usr/bin/gcc", "$tempFile", "-o", "$outputFile"],
-    tempFile: "temp.c",
+    compileArgs: ["/usr/bin/gcc", "-o", "$outputFile"],
     outputFile: "temp.out",
+    tempFile: "temp.c",
     args: ["./$tempFile"],
     type: CompilerType.Compile,
   },

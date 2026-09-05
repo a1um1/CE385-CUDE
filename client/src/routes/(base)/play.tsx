@@ -15,8 +15,8 @@ function RouteComponent() {
 
   const runMuation = useMutation({
     mutationKey: ["run-code"],
-    mutationFn: async (body: ExtractRequestBody<"/test/judge", "post">) => {
-      const { data, error } = await APIclient.POST("/test/judge", {
+    mutationFn: async (body: ExtractRequestBody<"/coding/run", "post">) => {
+      const { data, error } = await APIclient.POST("/coding/run", {
         body,
       });
       if (error || !data) throw error;
@@ -44,8 +44,10 @@ function RouteComponent() {
           runCode={handleRunCode}
           stdin={stdin}
           setStdin={setStdin}
+
           stdout={runMuation.data?.stdout}
           stderr={runMuation.data?.stderr}
+          runResult={runMuation.data}
         />
       </div>
     </>

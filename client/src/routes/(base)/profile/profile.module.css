@@ -1,0 +1,55 @@
+.breakout {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  margin-top: -10rem;
+  position: relative;
+  z-index: 0;
+}
+
+.fade {
+  background-image: linear-gradient(0deg, transparent 0%, var(--color-background) 90%);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+.background-user-banner {
+  aspect-ratio: 32/9;
+
+  @media (max-width: 768px) {
+    aspect-ratio: 16/9;
+  }
+}
+
+.profile-header {
+  display: flex;
+  flex-direction: row;
+  align-items: end;
+  position: relative;
+  gap: 1rem;
+  z-index: 1;
+  margin-top: -5rem;
+  padding: 0 1rem;
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+}
+
+.epihet {
+  --badge-color: oklch(52.86% 0.22851 282.074);
+  --badge-color-outline: color-mix(in oklch, var(--badge-color), black 20%);
+  font-size: 1.25rem;
+  font-weight: 500;
+  background-image: linear-gradient(to bottom, var(--badge-color), var(--badge-color-outline));
+  padding: 0.1rem 1rem;
+  border-radius: 10rem;
+  color: var(--color-background-text);
+  display: inline-block;
+  margin-top: 0.5rem;
+  display: inline-block;
+}

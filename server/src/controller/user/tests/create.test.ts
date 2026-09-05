@@ -10,6 +10,7 @@ describe("User Creation", () => {
     await UserController.createUser({
       email: fakeUser.email,
       name: fakeUser.name,
+      username: fakeUser.username,
       password: "ValidPass123!",
     });
     expect(mockedDb.user.create).toHaveBeenCalled();
@@ -24,6 +25,7 @@ describe("User Creation", () => {
       UserController.createUser({
         email: fakeUser.email,
         name: fakeUser.name,
+        username: fakeUser.username,
         password: "ValidPass123!",
       }),
     ).rejects.toThrow("Unique constraint failed on the fields: (`email`)");

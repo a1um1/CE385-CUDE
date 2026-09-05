@@ -1,0 +1,22 @@
+.alert {
+  --background-color: rgb(29, 77, 199);
+  --text-color: white;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  padding: 1rem;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  border-radius: 4px;
+}
+
+.success {
+  --background-color: #4ae45b;
+  --text-color: white;
+}
+
+.error {
+  --background-color: #e4494c;
+  --text-color: white;
+}

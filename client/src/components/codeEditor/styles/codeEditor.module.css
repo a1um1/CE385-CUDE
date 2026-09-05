@@ -1,0 +1,49 @@
+@reference "#/styles/main.css";
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+/* ── Main PanelGroup Wrapper ────────────────────────────────────────── */
+
+.editorWrapper {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  height: 100%;
+  width: 100%;
+  font-family: var(--font-mono);
+}
+
+/* ── Resize Separator ──────────────────────────────────────────── */
+
+.resizeHandle {
+  background-color: var(--color-border);
+  transition: background-color 0.15s;
+  /* z-index: 10; */
+  outline: none;
+  flex-shrink: 0;
+}
+
+/* When dividing side-by-side (horizontal group -> vertical separator bar) */
+.resizeHandle[aria-orientation="vertical"] {
+  width: 4px;
+}
+
+/* When dividing top-and-bottom (vertical group -> horizontal separator bar) */
+.resizeHandle[aria-orientation="horizontal"] {
+  height: 4px;
+}
+
+.resizeHandle:hover,
+.resizeHandle[data-separator="hover"],
+.resizeHandle[data-separator="drag"],
+.resizeHandle[data-separator="focus"] {
+  background-color: var(--color-primary);
+}

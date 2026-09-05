@@ -12,6 +12,7 @@ function RouteComponent() {
 
   const form = useAppForm({
     defaultValues: {
+      username: "",
       name: "",
       email: "",
       password: "",
@@ -19,7 +20,6 @@ function RouteComponent() {
     onSubmit: async ({ value }) => {
       try {
         await signUpMutation.mutateAsync(value);
-        alert("Sign-up successful!");
         navigate({ to: "/auth/signin" });
       } catch (error) {
         handleFormMutationError(form, error);
@@ -40,14 +40,24 @@ function RouteComponent() {
       >
         <form.AppForm>
           <form.FormError />
-          <form.AppField
-            name="name"
-            validators={{
-              onChange: ({ value }) => (!value ? "Name is required" : undefined),
-            }}
-          >
+          <form.AppField name="username">
             {(field) => (
-              <field.TextField label="Name" type="text" disabled={signUpMutation.isPending} />
+              <field.TextField
+                label="Username"
+                required
+                type="text"
+                disabled={signUpMutation.isPending}
+              />
+            )}
+          </form.AppField>
+          <form.AppField name="name">
+            {(field) => (
+              <field.TextField
+                label="Name"
+                required
+                type="text"
+                disabled={signUpMutation.isPending}
+              />
             )}
           </form.AppField>
 
@@ -62,7 +72,12 @@ function RouteComponent() {
             }}
           >
             {(field) => (
-              <field.TextField label="Email" type="email" disabled={signUpMutation.isPending} />
+              <field.TextField
+                label="Email"
+                required
+                type="email"
+                disabled={signUpMutation.isPending}
+              />
             )}
           </form.AppField>
 
@@ -79,6 +94,7 @@ function RouteComponent() {
             {(field) => (
               <field.TextField
                 label="Password"
+                required
                 type="password"
                 disabled={signUpMutation.isPending}
               />

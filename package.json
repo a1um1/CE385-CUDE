@@ -26,6 +26,9 @@
     "ts:check": "npm run ts:check --prefix client && npm run ts:check --prefix server",
     "judge0:up": "DOCKER_DEFAULT_PLATFORM=linux/amd64 docker-compose -f scripts/judge0/docker-compose.yml up -d"
   },
+  "dependencies": {
+    "@typescript/typescript6": "^6.0.2"
+  },
   "devDependencies": {
     "@types/react": "^19.2.18",
     "@types/supertest": "^7.2.1",
@@ -34,7 +37,7 @@
     "oxfmt": "^0.63.0",
     "oxlint": "^1.78.0",
     "supertest": "^7.2.2",
-    "typescript": "^7.0.2",
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
     "unplugin-swc": "^1.5.11",
     "vitest": "^4.1.11",
     "vitest-mock-extended": "^5.1.1"
