@@ -1,8 +1,8 @@
 import Button from "#/components/button";
 import CodeEditor, { type CodeLanguage } from "#/components/codeEditor";
 import { APIclient, type ExtractRequestBody } from "#/data/base/baseAPI";
-import formatBytetoMb from "#/lib/formatByte";
 import formatNstoMs from "#/lib/formatNs";
+import formatFileSize from "#/lib/formatSize";
 import { useMutation } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import clsx from "clsx";
@@ -168,7 +168,9 @@ function RouteComponent() {
               <p>Failed: {runMuation?.data?.failed}</p>
               <p>Failed: {runMuation?.data?.failed}</p>
               <p>Average Time: {formatNstoMs(runMuation?.data?.averageTime || 0)} ms</p>
-              <p>Average Memory: {formatBytetoMb(runMuation?.data?.averageMemory || 0)} mb</p>
+              <p>
+                Average Memory: {formatFileSize(runMuation?.data?.averageMemory || 0, "Bytes")} Mb
+              </p>
             </div>
           </div>
         </div>

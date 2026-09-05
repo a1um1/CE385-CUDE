@@ -1,3 +1,4 @@
+import formatNumber from "#/lib/formatNumber";
 import { useState, useEffect } from "react";
 
 interface CountdownTimerProps {
@@ -24,6 +25,7 @@ export default function CountdownTimer({ targetDate }: CountdownTimerProps) {
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
   useEffect(() => {
+    calculateTimeLeft();
     const timer = setInterval(() => {
       setTimeLeft(calculateTimeLeft());
     }, 1000);
@@ -33,7 +35,6 @@ export default function CountdownTimer({ targetDate }: CountdownTimerProps) {
   }, [targetDate]);
 
   // Helper function to pad single digits with a leading zero
-  const formatNumber = (num: number) => String(num).padStart(2, "0");
 
   if (timeLeft.isExpired) return null;
 

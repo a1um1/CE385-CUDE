@@ -2,7 +2,7 @@ import { Group, Panel, Separator } from "react-resizable-panels";
 import { useEditorContext } from "./editorContext";
 import styles from "../styles/ioPanel.module.css";
 import formatNstoMs from "#/lib/formatNs";
-import formatBytetoMb from "#/lib/formatByte";
+import formatFileSize from "#/lib/formatSize";
 
 export default function IOPanel() {
   const {
@@ -76,7 +76,7 @@ export default function IOPanel() {
                     Exit with status {runResult.status} ({runResult.exitCode})<br />
                     Time usage: {formatNstoMs(runResult.time)} ms
                     <br />
-                    Memory usage: {formatBytetoMb(runResult.memory)} Mb
+                    Memory usage: {formatFileSize(runResult.memory, "Bytes")} Mb
                     <br />
                     Peak Process: {runResult.procPeak}
                   </pre>
