@@ -71,7 +71,7 @@ export default class AdminUserController {
       take: query.perPage + 1,
       skip: query.cursor ? 1 : 0,
       cursor: query.cursor ? { id: query.cursor } : undefined,
-      orderBy: { createdAt: isBackward ? "asc" : "desc" },
+      orderBy: { id: isBackward ? "asc" : "desc" },
       select: userQueryPayload,
     });
 
