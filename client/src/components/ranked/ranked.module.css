@@ -29,7 +29,6 @@
     z-index: 2;
     color: var(--text-color);
     font-size: calc(var(--hex-size)*0.467); /*ตัวเลขคือ กำหนดสัดส่วนที่ให้ขยายตามไม่ต้องมาแก้fontใหม่*/
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     user-select: none;
     display: flex;
     align-items: center;
@@ -49,7 +48,6 @@
     background-color: var(--border-color);
     clip-path: none;
     border-radius: calc(var(--hex-size)*0.32);
-    transition: all 0.3s ease;
 }
 
 .squareInner {
