@@ -64,7 +64,7 @@ export default function EditorToolbar() {
             {isMutatingOrLoading ? (
               <>
                 <Spinner />
-                Procsessing
+                Proccessing
               </>
             ) : (
               <>
