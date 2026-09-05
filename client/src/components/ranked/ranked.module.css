@@ -8,8 +8,8 @@
 
 
     position:  relative;
-    width: var(--hex-size);
-    height: calc(var(--hex-size));
+    width: var(--hex-size); /*เลขตรงนี้คือ เพิ่มตัวคูณให้กว้างขึ้น */
+    height: calc(var(--hex-size)*1.12); /*เลขตรงนี้คือ เพิ่มตัวคูณขึ้น */
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -28,7 +28,8 @@
     position: relative;
     z-index: 2;
     color: var(--text-color);
-    font-size: clamp(calc(var(--hex-size) * 0.2), calc(var(--hex-size) * 0.467), calc(var(--hex-size) * 0.467));    font-family: "Segeo UI, Tahoma, Geneva, Verdana, sans-serif";
+    font-size: calc(var(--hex-size)*0.467); /*ตัวเลขคือ กำหนดสัดส่วนที่ให้ขยายตามไม่ต้องมาแก้fontใหม่*/
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     user-select: none;
     display: flex;
     align-items: center;
@@ -37,6 +38,7 @@
     line-height: 1;
     overflow: hidden;
 }
+
 
 .squareOuter {
     position: absolute;
@@ -47,7 +49,7 @@
     background-color: var(--border-color);
     clip-path: none;
     border-radius: calc(var(--hex-size)*0.32);
-    transition: all 0.3 ease;
+    transition: all 0.3s ease;
 }
 
 .squareInner {
@@ -64,16 +66,6 @@
     justify-content: center;
 }
 
-.content {
-    position: relative;
-    z-index: 2;
-    color: var(--text-color);
-    font-size: clamp(calc(var(--hex-size) * 0.2), calc(var(--hex-size) * 0.467), calc(var(--hex-size) * 0.467)) ;    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    user-select: none;
-    display: flex;                  
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    line-height: 1;
-    overflow: hidden;
+.isSquare {
+    height: var(--hex-size); /* ไว้ทำให้ square คงที่ */
 }

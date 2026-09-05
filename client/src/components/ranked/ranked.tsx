@@ -13,9 +13,7 @@ export interface RankedProps {
 export function Ranked(props: RankedProps) {
   const { rank, size, bgColor, borderColor, textColor, shape = "hexagon" } = props;
 
-  const normalSize = size !== undefined 
-  ? (/^\d+$/.test(size) ? `${size}px` : size) 
-  : undefined;
+  const normalSize = size !== undefined ? (/^\d+$/.test(size) ? `${size}px` : size) : undefined;
 
   const cssVars = {
     ...(normalSize !== undefined && { "--hex-size": normalSize }),
@@ -24,7 +22,7 @@ export function Ranked(props: RankedProps) {
     ...(textColor !== undefined && { "--text-color": textColor }),
   } as CSSProperties;
 
-   let shapeElement = null;
+  let shapeElement = null;
 
   if (shape === "square") {
     shapeElement = (
@@ -35,7 +33,7 @@ export function Ranked(props: RankedProps) {
     );
   } else {
     shapeElement = (
-      <svg className={styles.hexagonSvg} viewBox="0 0 100 100">
+      <svg className={styles.hexagonSvg} viewBox="0 0 100 100" preserveAspectRatio="none">
         <path
           d="M12.52,18.74 L37.48,6.26 Q50,0 62.52,6.26 L87.48,18.74 Q100,25 100,39 L100,61 Q100,75 87.48,81.26 L62.52,93.74 Q50,100 37.48,93.74 L12.52,81.26 Q0,75 0,61 L0,39 Q0,25 12.52,18.74 Z"
           fill="var(--border-color)"
@@ -49,11 +47,12 @@ export function Ranked(props: RankedProps) {
   }
 
   return (
-    <div className={styles.hexagonWrapper} style={cssVars}>
+    <div
+      className={`${styles.hexagonWrapper} ${shape === "square" ? styles.isSquare : ""}`}
+      style={cssVars}
+    >
       {shapeElement}
       <span className={styles.content}>{rank}</span>
     </div>
   );
 }
-
-
