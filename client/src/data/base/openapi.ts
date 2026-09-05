@@ -330,7 +330,7 @@ export interface paths {
             parameters: {
                 query?: {
                     perPage?: number;
-                    cursor?: string;
+                    cursor?: string | null;
                     direction?: "forward" | "backward";
                 };
                 header?: never;
@@ -589,7 +589,7 @@ export interface paths {
             parameters: {
                 query?: {
                     perPage?: number;
-                    cursor?: string;
+                    cursor?: string | null;
                     direction?: "forward" | "backward";
                 };
                 header?: never;
@@ -1312,12 +1312,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-09-04T12:56:47.735Z
+             * @example 2026-09-05T15:04:32.579Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-09-04T12:56:47.737Z
+             * @example 2026-09-05T15:04:32.580Z
              */
             updatedAt: string;
         };

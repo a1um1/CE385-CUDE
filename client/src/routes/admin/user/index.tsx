@@ -5,7 +5,7 @@ import { useAdminUserListQuery } from "#/data/admin/user.data";
 import ButtonLink from "#/components/buttonLink";
 
 const userSearchSchema = z.object({
-  cursor: z.string().optional(),
+  cursor: z.string().nullable(),
   direction: z.enum(["forward", "backward"]).default("forward"),
   perPage: z.number().catch(20).default(20),
 });
@@ -102,7 +102,7 @@ function RouteComponent() {
       search: (prev) => ({
         ...prev,
         perPage: newSize,
-        cursor: undefined,
+        cursor: null,
         direction: "forward",
       }),
     });

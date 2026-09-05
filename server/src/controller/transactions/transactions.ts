@@ -54,7 +54,7 @@ export default class TransactionsController {
     if (isBackward) {
       if (users.length > query.perPage) prevCursor = users.pop()?.id;
       users.reverse();
-      nextCursor = query.cursor;
+      nextCursor = query.cursor || undefined;
     } else {
       if (users.length > query.perPage) nextCursor = users.pop()?.id;
       if (query.cursor) prevCursor = query.cursor;

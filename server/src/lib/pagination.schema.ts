@@ -4,7 +4,7 @@ import { z } from "#/lib/extendZod";
 export const BaseCursorPaginationQuerySchema = z
   .object({
     perPage: z.coerce.number().int().min(1).max(100).default(20).openapi({ example: 20 }),
-    cursor: z.string().optional().openapi({ example: "cursor" }),
+    cursor: z.string().nullable().openapi({ example: "cursor" }),
     direction: z.enum(["forward", "backward"]).default("forward").openapi({ example: "forward" }),
   })
   .openapi("BaseCursorPaginationQuery");
