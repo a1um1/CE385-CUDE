@@ -1,1 +1,1 @@
-export * from "./ranked"
+export * from "./ranked";
