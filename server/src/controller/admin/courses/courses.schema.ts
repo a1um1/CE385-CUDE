@@ -31,7 +31,7 @@ export type courseQueryPayload = Prisma.CourseGetPayload<{ select: typeof course
 
 export const AdminCourseListResponseSchema = createCursorPaginationResponseSchema(
   adminCourseSchema,
-  "AdminUserListResponse",
+  "AdminCourseListResponse",
 );
 
 export type AdminCourseListResponseSchema = zod.infer<typeof AdminCourseListResponseSchema>;

@@ -2,7 +2,7 @@ import Logo from "#/components/logo";
 import navbarStyles from "./sidebar.module.css";
 import ButtonLink from "#/components/buttonLink";
 import { Link, useMatches, type LinkProps } from "@tanstack/react-router";
-import { LayoutDashboardIcon, UsersIcon, type LucideIcon } from "lucide-react";
+import { BookTextIcon, LayoutDashboardIcon, UsersIcon, type LucideIcon } from "lucide-react";
 
 const navItems: { key: string; label: string; link: LinkProps; icon: LucideIcon }[] = [
   {
@@ -10,6 +10,12 @@ const navItems: { key: string; label: string; link: LinkProps; icon: LucideIcon 
     label: "Dashboard",
     link: { to: "/admin" },
     icon: LayoutDashboardIcon,
+  },
+  {
+    key: "admin-course-list",
+    label: "Courses",
+    link: { to: "/admin/course" },
+    icon: BookTextIcon,
   },
   {
     key: "admin-user-list",

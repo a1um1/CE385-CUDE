@@ -4,6 +4,7 @@ import {
   AdminCourseListResponseSchema,
   adminCourseSchema,
 } from "#/controller/admin/courses/courses.schema";
+import { z } from "#/lib/extendZod";
 import { BaseCursorPaginationQuerySchema } from "#/lib/pagination.schema";
 import CustomRouter from "#/lib/router/customRouter";
 
@@ -21,6 +22,21 @@ const adminCourseRouter = new CustomRouter({
     },
     ({ query }) => AdminCoursesController.getPaginateLists(query),
   )
+  .get(
+    "/:id",
+    {
+      summary: "Get course by ID",
+      response: adminCourseSchema,
+      params: z.object({
+        id: z.uuid().openapi({ example: "course_id" }),
+      }),
+    },
+    async ({ params }) => {
+      const controller = await AdminCoursesController.getById(params.id);
+      return controller.JSON;
+    },
+  )
+
   .post(
     "/",
     {

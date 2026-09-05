@@ -23,6 +23,8 @@ import { Route as AuthSignupRouteImport } from './routes/auth/signup'
 import { Route as baseAccountIndexRouteImport } from './routes/(base)/account/index'
 import { Route as baseAccountSecurityRouteImport } from './routes/(base)/account/security'
 import { Route as baseProfileUsernameRouteImport } from './routes/(base)/profile/$username'
+import { Route as AdminCourseIndexRouteImport } from './routes/admin/course/index'
+import { Route as AdminCourseCreateRouteImport } from './routes/admin/course/create'
 import { Route as AdminUserIndexRouteImport } from './routes/admin/user/index'
 import { Route as AdminUserIdRouteImport } from './routes/admin/user/$id'
 
@@ -95,6 +97,16 @@ const baseProfileUsernameRoute = baseProfileUsernameRouteImport.update({
   path: '/profile/$username',
   getParentRoute: () => baseRouteRoute,
 } as any)
+const AdminCourseIndexRoute = AdminCourseIndexRouteImport.update({
+  id: '/course/',
+  path: '/course/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminCourseCreateRoute = AdminCourseCreateRouteImport.update({
+  id: '/course/create',
+  path: '/course/create',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminUserIndexRoute = AdminUserIndexRouteImport.update({
   id: '/user/',
   path: '/user/',
@@ -119,8 +131,10 @@ export interface FileRoutesByFullPath {
   '/auth/': typeof AuthIndexRoute
   '/account/security': typeof baseAccountSecurityRoute
   '/profile/$username': typeof baseProfileUsernameRoute
+  '/admin/course/create': typeof AdminCourseCreateRoute
   '/admin/user/$id': typeof AdminUserIdRoute
   '/account/': typeof baseAccountIndexRoute
+  '/admin/course/': typeof AdminCourseIndexRoute
   '/admin/user/': typeof AdminUserIndexRoute
 }
 export interface FileRoutesByTo {
@@ -133,8 +147,10 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthIndexRoute
   '/account/security': typeof baseAccountSecurityRoute
   '/profile/$username': typeof baseProfileUsernameRoute
+  '/admin/course/create': typeof AdminCourseCreateRoute
   '/admin/user/$id': typeof AdminUserIdRoute
   '/account': typeof baseAccountIndexRoute
+  '/admin/course': typeof AdminCourseIndexRoute
   '/admin/user': typeof AdminUserIndexRoute
 }
 export interface FileRoutesById {
@@ -152,8 +168,10 @@ export interface FileRoutesById {
   '/auth/': typeof AuthIndexRoute
   '/(base)/account/security': typeof baseAccountSecurityRoute
   '/(base)/profile/$username': typeof baseProfileUsernameRoute
+  '/admin/course/create': typeof AdminCourseCreateRoute
   '/admin/user/$id': typeof AdminUserIdRoute
   '/(base)/account/': typeof baseAccountIndexRoute
+  '/admin/course/': typeof AdminCourseIndexRoute
   '/admin/user/': typeof AdminUserIndexRoute
 }
 export interface FileRouteTypes {
@@ -171,8 +189,10 @@ export interface FileRouteTypes {
     | '/auth/'
     | '/account/security'
     | '/profile/$username'
+    | '/admin/course/create'
     | '/admin/user/$id'
     | '/account/'
+    | '/admin/course/'
     | '/admin/user/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -185,8 +205,10 @@ export interface FileRouteTypes {
     | '/auth'
     | '/account/security'
     | '/profile/$username'
+    | '/admin/course/create'
     | '/admin/user/$id'
     | '/account'
+    | '/admin/course'
     | '/admin/user'
   id:
     | '__root__'
@@ -203,8 +225,10 @@ export interface FileRouteTypes {
     | '/auth/'
     | '/(base)/account/security'
     | '/(base)/profile/$username'
+    | '/admin/course/create'
     | '/admin/user/$id'
     | '/(base)/account/'
+    | '/admin/course/'
     | '/admin/user/'
   fileRoutesById: FileRoutesById
 }
@@ -314,6 +338,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof baseProfileUsernameRouteImport
       parentRoute: typeof baseRouteRoute
     }
+    '/admin/course/': {
+      id: '/admin/course/'
+      path: '/course'
+      fullPath: '/admin/course/'
+      preLoaderRoute: typeof AdminCourseIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/course/create': {
+      id: '/admin/course/create'
+      path: '/course/create'
+      fullPath: '/admin/course/create'
+      preLoaderRoute: typeof AdminCourseCreateRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/user/': {
       id: '/admin/user/'
       path: '/user'
@@ -366,13 +404,17 @@ const baseRouteRouteWithChildren = baseRouteRoute._addFileChildren(
 
 interface AdminRouteRouteChildren {
   AdminIndexRoute: typeof AdminIndexRoute
+  AdminCourseCreateRoute: typeof AdminCourseCreateRoute
   AdminUserIdRoute: typeof AdminUserIdRoute
+  AdminCourseIndexRoute: typeof AdminCourseIndexRoute
   AdminUserIndexRoute: typeof AdminUserIndexRoute
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminIndexRoute: AdminIndexRoute,
+  AdminCourseCreateRoute: AdminCourseCreateRoute,
   AdminUserIdRoute: AdminUserIdRoute,
+  AdminCourseIndexRoute: AdminCourseIndexRoute,
   AdminUserIndexRoute: AdminUserIndexRoute,
 }
 
