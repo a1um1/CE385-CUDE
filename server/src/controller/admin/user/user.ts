@@ -75,22 +75,22 @@ export default class AdminUserController {
       select: userQueryPayload,
     });
 
-    let nextCursor: string | null = null;
-    let prevCursor: string | null = null;
+    let nextCursor: string | undefined = undefined;
+    let prevCursor: string | undefined = undefined;
 
     if (isBackward) {
-      if (users.length > query.perPage) prevCursor = users.pop()?.id || null;
+      if (users.length > query.perPage) prevCursor = users.pop()?.id || undefined;
       users.reverse();
-      nextCursor = query.cursor || null;
+      nextCursor = query.cursor || undefined;
     } else {
-      if (users.length > query.perPage) nextCursor = users.pop()?.id || null;
+      if (users.length > query.perPage) nextCursor = users.pop()?.id || undefined;
       if (query.cursor) prevCursor = query.cursor;
     }
 
     return {
       data: users,
-      nextCursor: nextCursor || null,
-      prevCursor: prevCursor || null,
+      nextCursor: nextCursor || undefined,
+      prevCursor: prevCursor || undefined,
     };
   }
 }

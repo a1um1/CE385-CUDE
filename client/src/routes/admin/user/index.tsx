@@ -5,7 +5,7 @@ import { useAdminUserListQuery } from "#/data/admin/user.data";
 import ButtonLink from "#/components/buttonLink";
 
 const userSearchSchema = z.object({
-  cursor: z.string().nullable(),
+  cursor: z.string().optional(),
   direction: z.enum(["forward", "backward"]).default("forward"),
   perPage: z.number().catch(20).default(20),
 });

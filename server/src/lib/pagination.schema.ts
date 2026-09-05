@@ -4,7 +4,7 @@ import { z } from "#/lib/extendZod";
 export const BaseCursorPaginationQuerySchema = z
   .object({
     perPage: z.coerce.number().int().min(1).max(100).default(20).openapi({ example: 20 }),
-    cursor: z.string().nullable().openapi({ example: "cursor" }),
+    cursor: z.string().optional().openapi({ example: "cursor" }),
     direction: z.enum(["forward", "backward"]).default("forward").openapi({ example: "forward" }),
   })
   .openapi("BaseCursorPaginationQuery");
@@ -18,13 +18,13 @@ export const createCursorPaginationResponseSchema = <T extends ZodType.ZodTypeAn
   z
     .object({
       data: itemSchema.array().openapi({ example: [] }),
-      nextCursor: z.string().nullable().openapi({ example: "next_cursor_id" }),
-      prevCursor: z.string().nullable().openapi({ example: "prev_cursor_id" }),
+      nextCursor: z.string().optional().openapi({ example: "next_cursor_id" }),
+      prevCursor: z.string().optional().openapi({ example: "prev_cursor_id" }),
     })
     .openapi(schemaTitle);
 
 export interface CursorPaginationResponse<T> {
   data: T[];
-  nextCursor: string | null;
-  prevCursor: string | null;
+  nextCursor: string | undefined;
+  prevCursor: string | undefined;
 }

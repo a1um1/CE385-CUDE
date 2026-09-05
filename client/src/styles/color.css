@@ -5,13 +5,13 @@
   --color-primary-text: oklch(100% 0.00011 271.152);
 
   --color-energy: oklch(88.596% 0.12292 84.746);
-  --color-energy-outline: color-mix(in oklch, var(--color-energy), black 20%);
+  --color-energy-outline: oklch(from var(--color-energy) 50% c h);
 
   --color-streak: oklch(68.383% 0.21402 7.99);
-  --color-streak-outline: color-mix(in oklch, var(--color-streak), black 20%);
+  --color-streak-outline: oklch(from var(--color-streak) 50% c h);
 
   --color-gem: lch(64.99% 74.64 313.81);
-  --color-gem-outline: color-mix(in oklch, var(--color-gem), black 20%);
+  --color-gem-outline: oklch(from var(--color-gem) 50% c h);
 
   --color-background: oklch(22.383% 0.03083 267.192);
   --color-background-text: oklch(100% 0 0);

@@ -1,4 +1,4 @@
-import formatNumber from "#/lib/formatNumber";
+import formatNumber, { padNumber } from "#/lib/formatNumber";
 import { useState, useEffect } from "react";
 
 interface CountdownTimerProps {
@@ -41,8 +41,8 @@ export default function CountdownTimer({ targetDate }: CountdownTimerProps) {
   return (
     <p>
       {timeLeft.days > 0 && <span>{timeLeft.days}d </span>}
-      {timeLeft.hours > 0 && <span>{formatNumber(timeLeft.hours)}:</span>}
-      <span>{formatNumber(timeLeft.minutes)}</span>:<span>{formatNumber(timeLeft.seconds)}</span>
+      {timeLeft.hours > 0 && <span>{padNumber(timeLeft.hours, 2)}:</span>}
+      <span>{padNumber(timeLeft.minutes, 2)}</span>:<span>{padNumber(timeLeft.seconds, 2)}</span>
     </p>
   );
 }

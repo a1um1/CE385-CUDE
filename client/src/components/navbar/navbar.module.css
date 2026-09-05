@@ -5,48 +5,70 @@
   width: 100%;
   position: relative;
   z-index: 100;
+}
 
-  .container {
-    max-width: var(--container-size);
-    margin: 0 auto;
-    width: 100%;
+.container {
+  max-width: var(--container-size);
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1rem;
+}
+
+.navigation-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+}
+
+.navigation-items {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  user-select: none;
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+.countdown-container {
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1rem;
+  display: none;
+  margin-left: 0.5rem;
+
+  &:has(p) {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem 1rem;
+  }
 
-    .navigation-content {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      gap: 1rem;
-      .navigation-items {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-        @media (max-width: 768px) {
-          display: none;
-        }
-      }
-    }
-    .user-profile {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      .badge {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.25rem;
-        user-select: none;
-        @media (max-width: 768px) {
-          display: none;
-        }
-      }
-    }
+  > span {
+    font-size: 0.75rem;
   }
 }

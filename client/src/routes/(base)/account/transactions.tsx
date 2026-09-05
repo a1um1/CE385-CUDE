@@ -13,7 +13,7 @@ export const Route = createFileRoute("/(base)/account/transactions")({
 
 function RouteComponent() {
   const { data, isLoading } = useUserTransactions({
-    perPage: 10,
+    perPage: 20,
     direction: "forward",
     cursor: undefined,
   });

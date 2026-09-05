@@ -62,8 +62,8 @@ export default class TransactionsController {
 
     return {
       data: users,
-      nextCursor: nextCursor || null,
-      prevCursor: prevCursor || null,
+      nextCursor: nextCursor || undefined,
+      prevCursor: prevCursor || undefined,
     };
   }
 }
