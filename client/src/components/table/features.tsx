@@ -30,6 +30,7 @@ import type {
   DateFormatOptions,
   BadgeFormatOptions,
   BooleanFormatOptions,
+  ColorFormatOptions,
 } from "#/components/table/cell";
 import {
   renderTextCell,
@@ -38,6 +39,7 @@ import {
   renderDateCell,
   renderBadgeCell,
   renderBooleanCell,
+  renderColorCell,
 } from "#/components/table/cell";
 
 export const defaultTableFeatures = tableFeatures({
@@ -83,6 +85,9 @@ export type BadgeFieldOptions<
 export type BooleanFieldOptions<TData extends RowData, TValue> = BaseFieldOptions<TData, TValue> &
   BooleanFormatOptions;
 
+export type ColorFieldOptions<TData extends RowData, TValue> = BaseFieldOptions<TData, TValue> &
+  ColorFormatOptions;
+
 export type GenericFieldType =
   | "text"
   | "number"
@@ -90,7 +95,8 @@ export type GenericFieldType =
   | "date"
   | "datetime"
   | "badge"
-  | "boolean";
+  | "boolean"
+  | "color";
 
 export type GenericFieldOptions<TData extends RowData, TValue> = BaseFieldOptions<TData, TValue> & {
   type?: GenericFieldType;
@@ -99,7 +105,8 @@ export type GenericFieldOptions<TData extends RowData, TValue> = BaseFieldOption
   CurrencyFormatOptions &
   DateFormatOptions &
   BadgeFormatOptions<string | number> &
-  BooleanFormatOptions;
+  BooleanFormatOptions &
+  ColorFormatOptions;
 
 function resolveHeader<TData extends RowData, TValue>(
   headerOption?: string | ColumnDefTemplate<HeaderContext<DefaultTableFeatures, TData, TValue>>,
@@ -256,6 +263,24 @@ export function createTableColumnHelper<TData extends RowData = RowData>() {
         header,
         sortable,
         (info) => renderBooleanCell(info.getValue(), { mode, trueLabel, falseLabel, fallback }),
+        rest,
+      );
+    },
+
+    /**
+     * Define a color column with preview swatch and hex value.
+     */
+    color: <TKey extends DeepKeys<TData>>(
+      accessorKey: TKey,
+      options: ColorFieldOptions<TData, unknown> = {},
+    ) => {
+      const { header, sortable, fallback, showHex, shape, size, ...rest } = options;
+      return makeAccessorColumn(
+        helper,
+        accessorKey,
+        header,
+        sortable,
+        (info) => renderColorCell(info.getValue(), { fallback, showHex, shape, size }),
         rest,
       );
     },

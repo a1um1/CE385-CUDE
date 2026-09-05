@@ -1,0 +1,62 @@
+@reference "#/styles/main.css";
+
+.colorInputWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.swatchButton {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: var(--radius);
+  border: 2px solid var(--color-border);
+  background-color: var(--color-input);
+  cursor: pointer;
+  padding: 0.25rem;
+  flex-shrink: 0;
+  overflow: hidden;
+  transition:
+    border-color 0.2s ease-in-out,
+    outline-offset 0.2s ease-in-out;
+
+  &:focus-within {
+    outline: 2px solid color-mix(in oklch, var(--color-border) 50%, transparent);
+    outline-offset: 0px;
+  }
+
+  &:hover {
+    border-color: color-mix(in oklch, var(--color-border) 80%, white);
+  }
+}
+
+.swatchPreview {
+  width: 100%;
+  height: 100%;
+  border-radius: calc(var(--radius) - 2px);
+  border: 1px solid color-mix(in oklch, currentColor 15%, transparent);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+.nativePickerInput {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  border: none;
+}
+
+.hexInput {
+  flex: 1;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}

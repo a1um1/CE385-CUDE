@@ -23,7 +23,7 @@ const typedColumns = columnHelper.columns([
     header: "Name",
     strong: true,
   }),
-  columnHelper.text("color", {
+  columnHelper.color("color", {
     header: "Color",
   }),
   columnHelper.text("icon", {

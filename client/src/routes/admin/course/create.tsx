@@ -35,7 +35,7 @@ function RouteComponent() {
             {(field) => <field.TextField label="Course Name" type="text" required />}
           </form.AppField>
           <form.AppField name="color">
-            {(field) => <field.TextField label="Course Color" type="text" required />}
+            {(field) => <field.ColorField label="Course Color" required />}
           </form.AppField>
           <form.AppField name="icon">
             {(field) => <field.TextField label="Course Icon" type="text" required />}
