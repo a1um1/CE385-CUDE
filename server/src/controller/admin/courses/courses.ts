@@ -1,5 +1,6 @@
 import type {
   AdminCourseCreateSchema,
+  AdminCourseUpdateSchema,
   AdminCourseSchema,
   AdminCourseListResponseSchema,
 } from "#/controller/admin/courses/courses.schema";
@@ -62,6 +63,14 @@ export default class AdminCoursesController {
     data: AdminCourseCreateSchema & { createdByID: string },
   ): Promise<AdminCoursesController> {
     const course = await db.course.create({
+      data,
+    });
+    return new AdminCoursesController(course);
+  }
+
+  static async update(id: string, data: AdminCourseUpdateSchema): Promise<AdminCoursesController> {
+    const course = await db.course.update({
+      where: { id },
       data,
     });
     return new AdminCoursesController(course);

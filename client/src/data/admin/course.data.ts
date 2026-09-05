@@ -1,5 +1,5 @@
 import { APIclient, type ExtractRequestBody, type ExtractRequestQuery } from "#/data/base/baseAPI";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useAdminCourseListQuery = (props: ExtractRequestQuery<"/admin/course", "get">) =>
   useQuery({
@@ -31,8 +31,9 @@ export const useGetAdminCourse = (props: { id: string }) =>
     },
   });
 
-export const useAdminCreateCourse = () =>
-  useMutation({
+export const useAdminCreateCourse = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
     mutationKey: ["admin", "course", "create"],
     mutationFn: async (body: ExtractRequestBody<"/admin/course", "post">) => {
       const { data, error } = await APIclient.POST("/admin/course", {
@@ -41,4 +42,36 @@ export const useAdminCreateCourse = () =>
       if (error || !data) throw error;
       return data;
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin", "course", "list"] });
+    },
   });
+};
+
+export const useAdminUpdateCourse = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["admin", "course", "update"],
+    mutationFn: async (props: {
+      id: string;
+      body: ExtractRequestBody<"/admin/course/{id}", "put">;
+    }) => {
+      const { data, error } = await APIclient.PUT("/admin/course/{id}", {
+        params: {
+          path: {
+            id: props.id,
+          },
+        },
+        body: props.body,
+      });
+      if (error || !data) throw error;
+      return data;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["admin", "course", "list"] });
+      queryClient.invalidateQueries({
+        queryKey: ["admin", "course", "info", { id: variables.id }],
+      });
+    },
+  });
+};

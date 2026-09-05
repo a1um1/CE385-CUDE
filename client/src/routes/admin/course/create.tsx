@@ -1,4 +1,4 @@
-import { useAppForm } from "#/components/form";
+import CourseForm from "./-form/courseForm";
 import { useAdminCreateCourse } from "#/data/admin/course.data";
 import { createFileRoute } from "@tanstack/react-router";
 
@@ -11,38 +11,17 @@ export const Route = createFileRoute("/admin/course/create")({
 });
 
 function RouteComponent() {
+  const navigate = Route.useNavigate();
   const createMutation = useAdminCreateCourse();
-  const form = useAppForm({
-    defaultValues: {
-      name: "",
-      color: "",
-      icon: "",
-    } satisfies Parameters<typeof createMutation.mutate>[0],
-    onSubmit: ({ value }) => {
-      createMutation.mutate(value);
-    },
-  });
+
   return (
-    <>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          form.handleSubmit();
-        }}
-      >
-        <form.AppForm>
-          <form.AppField name="name">
-            {(field) => <field.TextField label="Course Name" type="text" required />}
-          </form.AppField>
-          <form.AppField name="color">
-            {(field) => <field.ColorField label="Course Color" required />}
-          </form.AppField>
-          <form.AppField name="icon">
-            {(field) => <field.TextField label="Course Icon" type="text" required />}
-          </form.AppField>
-          <form.SubmitButton label="Create" />
-        </form.AppForm>
-      </form>
-    </>
+    <CourseForm
+      submitLabel="Create"
+      isPending={createMutation.isPending}
+      onSubmit={async (value) => {
+        await createMutation.mutateAsync(value);
+        navigate({ to: "/admin/course" });
+      }}
+    />
   );
 }

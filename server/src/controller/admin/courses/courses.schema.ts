@@ -50,3 +50,15 @@ export const AdminCourseCreateSchema = z
   .openapi("AdminCourseCreate") satisfies zod.ZodType<adminCourseCreatePayload>;
 
 export type AdminCourseCreateSchema = zod.infer<typeof AdminCourseCreateSchema>;
+
+export type adminCourseUpdatePayload = adminCourseCreatePayload;
+
+export const AdminCourseUpdateSchema = z
+  .object({
+    name: z.string().openapi({ example: "Course Name" }),
+    color: z.string().openapi({ example: "#FFFFFF" }),
+    icon: z.string().openapi({ example: "icon_name" }),
+  })
+  .openapi("AdminCourseUpdate") satisfies zod.ZodType<adminCourseUpdatePayload>;
+
+export type AdminCourseUpdateSchema = zod.infer<typeof AdminCourseUpdateSchema>;

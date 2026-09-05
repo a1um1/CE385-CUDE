@@ -32,6 +32,22 @@ const typedColumns = columnHelper.columns([
   columnHelper.datetime("createdAt", {
     header: "Created At",
   }),
+  columnHelper.display({
+    id: "actions",
+    header: "Actions",
+    cell: (_info) => (
+      <div style={{ display: "flex", gap: "0.5rem" }}>
+        <ButtonLink
+          size="xs"
+          variant="secondary"
+          to="/admin/course/$id"
+          params={{ id: _info.row.original.id }}
+        >
+          Edit
+        </ButtonLink>
+      </div>
+    ),
+  }),
 ]);
 
 function RouteComponent() {

@@ -1,6 +1,7 @@
 import AdminCoursesController from "#/controller/admin/courses";
 import {
   AdminCourseCreateSchema,
+  AdminCourseUpdateSchema,
   AdminCourseListResponseSchema,
   adminCourseSchema,
 } from "#/controller/admin/courses/courses.schema";
@@ -49,6 +50,21 @@ const adminCourseRouter = new CustomRouter({
         ...body,
         createdByID: user.JSON.id,
       });
+      return controller.JSON;
+    },
+  )
+  .put(
+    "/:id",
+    {
+      summary: "Update course by ID",
+      params: z.object({
+        id: z.uuid().openapi({ example: "course_id" }),
+      }),
+      body: AdminCourseUpdateSchema,
+      response: adminCourseSchema,
+    },
+    async ({ params, body }) => {
+      const controller = await AdminCoursesController.update(params.id, body);
       return controller.JSON;
     },
   );

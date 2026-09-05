@@ -556,7 +556,47 @@ export interface paths {
                 };
             };
         };
-        put?: never;
+        /** Update course by ID */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["AdminCourseUpdate"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminCourseObject"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
         post?: never;
         delete?: never;
         options?: never;
@@ -1289,6 +1329,14 @@ export interface components {
             updatedAt: string;
         };
         AdminCourseCreate: {
+            /** @example Course Name */
+            name: string;
+            /** @example #FFFFFF */
+            color: string;
+            /** @example icon_name */
+            icon: string;
+        };
+        AdminCourseUpdate: {
             /** @example Course Name */
             name: string;
             /** @example #FFFFFF */
