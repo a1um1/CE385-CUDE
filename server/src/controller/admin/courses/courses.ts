@@ -1,8 +1,9 @@
-import {
-  courseQueryPayload,
-  type AdminCourseSchema,
-  type AdminUserListResponseSchema,
+import type {
+  AdminCourseCreateSchema,
+  AdminCourseSchema,
+  AdminCourseListResponseSchema,
 } from "#/controller/admin/courses/courses.schema";
+import { courseQueryPayload } from "#/controller/admin/courses/courses.schema";
 import { type BaseCursorPaginationQuery } from "#/lib/pagination.schema";
 import { db } from "#/lib/prisma";
 
@@ -27,7 +28,7 @@ export default class AdminCoursesController {
 
   static async getPaginateLists(
     query: BaseCursorPaginationQuery,
-  ): Promise<AdminUserListResponseSchema> {
+  ): Promise<AdminCourseListResponseSchema> {
     const isBackward = query.direction === "backward" && Boolean(query.cursor);
 
     const data = await db.course.findMany({
@@ -55,5 +56,14 @@ export default class AdminCoursesController {
       nextCursor,
       prevCursor,
     };
+  }
+
+  static async create(
+    data: AdminCourseCreateSchema & { createdByID: string },
+  ): Promise<AdminCoursesController> {
+    const course = await db.course.create({
+      data,
+    });
+    return new AdminCoursesController(course);
   }
 }

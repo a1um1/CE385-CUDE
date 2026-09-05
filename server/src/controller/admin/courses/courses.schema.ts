@@ -29,9 +29,24 @@ export const courseQueryPayload = {
 
 export type courseQueryPayload = Prisma.CourseGetPayload<{ select: typeof courseQueryPayload }>;
 
-export const AdminUserListResponseSchema = createCursorPaginationResponseSchema(
+export const AdminCourseListResponseSchema = createCursorPaginationResponseSchema(
   adminCourseSchema,
   "AdminUserListResponse",
 );
 
-export type AdminUserListResponseSchema = zod.infer<typeof AdminUserListResponseSchema>;
+export type AdminCourseListResponseSchema = zod.infer<typeof AdminCourseListResponseSchema>;
+
+export type adminCourseCreatePayload = Omit<
+  AdminCourseSchema,
+  "id" | "createdAt" | "updatedAt" | "createdByID"
+>;
+
+export const AdminCourseCreateSchema = z
+  .object({
+    name: z.string().openapi({ example: "Course Name" }),
+    color: z.string().openapi({ example: "#FFFFFF" }),
+    icon: z.string().openapi({ example: "icon_name" }),
+  })
+  .openapi("AdminCourseCreate") satisfies zod.ZodType<adminCourseCreatePayload>;
+
+export type AdminCourseCreateSchema = zod.infer<typeof AdminCourseCreateSchema>;
