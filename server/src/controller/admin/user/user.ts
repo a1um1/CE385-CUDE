@@ -75,15 +75,15 @@ export default class AdminUserController {
       select: userQueryPayload,
     });
 
-    let nextCursor: string | undefined = undefined;
-    let prevCursor: string | undefined = undefined;
+    let nextCursor: string | null = null;
+    let prevCursor: string | null = null;
 
     if (isBackward) {
-      if (users.length > query.perPage) prevCursor = users.pop()?.id;
+      if (users.length > query.perPage) prevCursor = users.pop()?.id || null;
       users.reverse();
-      nextCursor = query.cursor || undefined;
+      nextCursor = query.cursor || null;
     } else {
-      if (users.length > query.perPage) nextCursor = users.pop()?.id;
+      if (users.length > query.perPage) nextCursor = users.pop()?.id || null;
       if (query.cursor) prevCursor = query.cursor;
     }
 
