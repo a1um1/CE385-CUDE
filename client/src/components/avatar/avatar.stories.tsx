@@ -23,5 +23,6 @@ export const Playground: Story = {
   args: {
     name: "John Doe",
     avatarUrl: "https://picsum.photos/200/300",
+    size: ""
   },
 };
