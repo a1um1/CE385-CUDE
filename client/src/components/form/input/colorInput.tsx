@@ -14,7 +14,7 @@ export interface ColorFieldProps extends Omit<
 }
 
 function isValidHex(hex: string): boolean {
-  return /^#?([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/.test(hex.trim());
+  return /^#?(?<hex>[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/.test(hex.trim());
 }
 
 function normalizeHex(hex: string): string {

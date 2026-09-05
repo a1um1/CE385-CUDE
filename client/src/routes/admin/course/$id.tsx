@@ -34,7 +34,10 @@ function RouteComponent() {
           id,
           body: value,
         });
-        navigate({ to: "/admin/course" });
+        navigate({
+          to: "/admin/course",
+          search: { cursor: undefined, perPage: 20, direction: "forward" },
+        });
       }}
     />
   );

@@ -14,8 +14,14 @@ export interface CourseFormProps {
   isPending?: boolean;
 }
 
+const defaultFormValues: CourseFormValues = {
+  name: "",
+  color: "",
+  icon: "",
+};
+
 export function CourseForm({
-  defaultValues = { name: "", color: "", icon: "" },
+  defaultValues = defaultFormValues,
   onSubmit,
   submitLabel = "Submit",
   isPending,
@@ -52,7 +58,15 @@ export function CourseForm({
         </form.AppField>
         <div style={{ display: "flex", gap: "0.75rem", alignItems: "center", marginTop: "1rem" }}>
           <form.SubmitButton label={submitLabel} isPending={isPending} />
-          <ButtonLink to="/admin/course" variant="secondary">
+          <ButtonLink
+            to="/admin/course"
+            search={{
+              cursor: undefined,
+              perPage: 20,
+              direction: "forward",
+            }}
+            variant="secondary"
+          >
             Cancel
           </ButtonLink>
         </div>

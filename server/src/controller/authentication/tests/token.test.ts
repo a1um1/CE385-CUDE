@@ -44,7 +44,7 @@ describe("Token Tests", () => {
     const controller = new AuthenticationController();
     const tokenData = controller.generateToken(mockAuthenticationBody);
     const user = await controller.validateToken(tokenData.token);
-    expect(user).toHaveProperty("json");
+    expect(user).toHaveProperty("JSON");
     expect(user.JSON).toHaveProperty("id", mockAuthenticationBody.userId);
   });
 
