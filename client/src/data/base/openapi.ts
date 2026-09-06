@@ -330,7 +330,7 @@ export interface paths {
             parameters: {
                 query?: {
                     perPage?: number;
-                    cursor?: string | null;
+                    cursor?: string;
                     direction?: "forward" | "backward";
                 };
                 header?: never;
@@ -589,7 +589,7 @@ export interface paths {
             parameters: {
                 query?: {
                     perPage?: number;
-                    cursor?: string | null;
+                    cursor?: string;
                     direction?: "forward" | "backward";
                 };
                 header?: never;
@@ -1284,9 +1284,9 @@ export interface components {
             /** @example [] */
             data: components["schemas"]["TransactionObject"][];
             /** @example next_cursor_id */
-            nextCursor: string | null;
+            nextCursor?: string;
             /** @example prev_cursor_id */
-            prevCursor: string | null;
+            prevCursor?: string;
         };
         TransactionObject: {
             /**
@@ -1312,12 +1312,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-09-05T15:04:32.579Z
+             * @example 2026-09-06T13:22:48.408Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-09-05T15:04:32.580Z
+             * @example 2026-09-06T13:22:48.408Z
              */
             updatedAt: string;
         };
@@ -1329,9 +1329,9 @@ export interface components {
             /** @example [] */
             data: components["schemas"]["UserSafeData"][];
             /** @example next_cursor_id */
-            nextCursor: string | null;
+            nextCursor?: string;
             /** @example prev_cursor_id */
-            prevCursor: string | null;
+            prevCursor?: string;
         };
         AdminUserUpdatePassword: {
             /** @example user_id */

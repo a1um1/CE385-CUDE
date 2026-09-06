@@ -102,7 +102,7 @@ function RouteComponent() {
       search: (prev) => ({
         ...prev,
         perPage: newSize,
-        cursor: null,
+        cursor: undefined,
         direction: "forward",
       }),
     });

@@ -1,4 +1,4 @@
-import formatNumber, { padNumber } from "#/lib/formatNumber";
+import { padNumber } from "#/lib/formatNumber";
 import { useState, useEffect } from "react";
 
 interface CountdownTimerProps {
