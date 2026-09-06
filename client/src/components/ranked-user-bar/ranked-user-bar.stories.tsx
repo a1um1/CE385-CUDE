@@ -7,9 +7,7 @@ const meta: Meta<typeof RankedUserBar> = {
   parameters: {
     layout: 'centered', // จัดให้อยู่กึ่งกลางจอ
     backgrounds: {
-      default: 'pink-bg',
       values: [
-        { name: 'pink-bg', value: '#FFC8C8' }, // สีพื้นหลังสีชมพูอ่อนแบบในรูป
         { name: 'dark', value: '#1E293B' },
       ],
     },
