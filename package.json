@@ -27,8 +27,7 @@
     "judge0:up": "DOCKER_DEFAULT_PLATFORM=linux/amd64 docker-compose -f scripts/judge0/docker-compose.yml up -d"
   },
   "dependencies": {
-    "@typescript/typescript6": "^6.0.2",
-    "lucide-react": "^1.41.0"
+    "@typescript/typescript6": "^6.0.2"
   },
   "devDependencies": {
     "@types/react": "^19.2.18",

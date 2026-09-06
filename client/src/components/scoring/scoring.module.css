@@ -11,15 +11,15 @@
 }
 
 .success {
-    background-color: var(--color-scoring-success);
+    background-color: var(--color-success);
 }
 
 .fail {
-    background-color: var(--color-scoring-fail);
+    background-color: var(--color-danger);
 }
 
 .inProgress {
-    background-color:var(--color-scoring-in-progress);
+    background-color:var(--color-user-background);
 }
 
 .iconWrapper {
