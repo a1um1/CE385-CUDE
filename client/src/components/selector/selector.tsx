@@ -3,20 +3,18 @@ import React from 'react';
 import clsx from "clsx";
 
 
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>{
-  variant?: "primary" | "secondary";
-  isLoading?: boolean;
-} 
 
 
-export interface SelectorProps {
+export interface SelectorProps 
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>
+ {
   iconUrl?: string;
   label: string;
   isActive?: boolean;
 
 }
 
-export function Selector({iconUrl, label, isActive = false}: SelectorProps) {
+export function Selector({iconUrl, label, isActive = false, ...props}: SelectorProps) {
 
   const className = clsx(styles.card, isActive && styles.selected);
     
@@ -25,6 +23,7 @@ return (
       type="button"
       className={className}
       aria-pressed={isActive}
+      {...props}
     >
       {iconUrl && (
         <div className={styles.iconWrapper}>
