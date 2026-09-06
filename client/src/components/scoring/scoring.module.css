@@ -1,0 +1,50 @@
+.card {
+    width: 150px;
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    border-radius: 12px;
+    color: #fff;
+}
+
+.success {
+    background-color: #4CD964;
+}
+
+.fail {
+    background-color: #E9515A;
+}
+
+.inProgress {
+    background-color: #14C8B4;
+}
+
+.iconWrapper {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon {
+    font-size: 60px;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 3px dashed #fff;
+    box-sizing: border-box;  /* ทำให้วงกลมดูใหญ่เท่ากัลอันอื่น */
+}
+
+.label {
+    font-size: 18px;
+    font-weight: 600;
+}
