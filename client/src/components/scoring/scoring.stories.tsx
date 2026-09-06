@@ -13,7 +13,7 @@ const meta = {
 export default meta;
 
 export const Playground = {
-    args: {
-        status: "success"
+    args:{
+        status:"inProgress"
     }
 };

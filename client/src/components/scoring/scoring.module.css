@@ -11,15 +11,15 @@
 }
 
 .success {
-    background-color: #4CD964;
+    background-color: var(--color-scoring-success);
 }
 
 .fail {
-    background-color: #E9515A;
+    background-color: var(--color-scoring-fail);
 }
 
 .inProgress {
-    background-color: #14C8B4;
+    background-color:var(--color-scoring-in-progress);
 }
 
 .iconWrapper {
@@ -30,11 +30,7 @@
     justify-content: center;
 }
 
-.icon {
-    font-size: 60px;
-    font-weight: bold;
-    line-height: 1;
-}
+
 
 .circle {
     width: 60px;

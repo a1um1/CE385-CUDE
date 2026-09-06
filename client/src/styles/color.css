@@ -32,4 +32,8 @@
   --color-placeholder: oklch(100% 0.00011 271.152 / 0.5);
 
   --color-border: oklch(38.187% 0.05028 267.532);
+
+--color-scoring-success: oklch(78.393% 0.19958 146.325);
+--color-scoring-fail: oklch(64.389% 0.18736 20.780);
+--color-scoring-in-progress: oklch(74.849% 0.13155 182.207);
 }
