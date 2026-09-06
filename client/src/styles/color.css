@@ -33,8 +33,8 @@
 
   --color-border: oklch(38.187% 0.05028 267.532);
 
-  --color-selector-background: oklch(33.197% 0.05031 266.74);
+  --color-selector-active: oklch(33.197% 0.05031 266.74);
   --color-selector-text: oklch(97.015% 0 89.88);
-  --color-selector-active: oklch(61.941% 0.02082 265.90);;
+  --color-selector-background: oklch(34.907% 0.02376 268.616);;
 
 }

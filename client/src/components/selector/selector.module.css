@@ -3,14 +3,13 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 16px;
+    gap: 4px;
     width: 220px;
-    height: 200px;
     padding: 20px;
     border: 2px;
     background-color: var(--color-selector-background);
-    color: var(--color-selector-text);
     border-radius: 8px;
+    color: var(--color-selector-text);
     box-sizing: border-box;
     transition: all 0.2s ease;
 }
@@ -20,13 +19,12 @@
 }
 
 .selected {
-    background-color:var(--color-selector-active);
+    background-color: var(--color-selector-active);
     color:var(--color-selector-text);
 }
 
 .iconWrapper {
-    width: 120px;
-    height: 120px;
+    width: 100px;
     display: flex;
     align-items: center;
     justify-content: center;
