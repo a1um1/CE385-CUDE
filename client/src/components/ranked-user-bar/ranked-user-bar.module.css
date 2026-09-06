@@ -1,0 +1,92 @@
+.container{
+    display: flex;
+    align-items: center;
+    justify-content: space-between; 
+    background-color: #324269; /* สีพื้นหลังของแถบผู้ใช้ */
+    border-radius: 12px;
+    padding: 12px 24px; /* ระยะห่างด้านใน บนล่าง ซ้ายขวา  */
+    width: 100%;
+    max-width: 600px;
+    box-sizing: border-box;
+}
+
+.leftSection {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* ระยะห่างระหว่างรูปภาพและชื่อผู้ใช้ */
+}
+
+.rankNumber {
+    color: #FFFFFF;
+    font-family: monospace;
+    font-size: 1.25rem;
+    font-weight: 500;
+}
+
+.avatarWrapper {
+    width: 48px; /* กำหนดความกว้างของรูปภาพ */
+    height: 48px; /* กำหนดความสูงของรูปภาพ */
+    border-radius: 50%; /* ทำให้รูปภาพเป็นวงกลม */
+    overflow: hidden; /* ตัดส่วนที่เกินออก */
+    border: 2px solid #111827; /* ขอบสีรอบรูปภาพ */
+    background-color: #ffffff; /* สีพื้นหลังของรูปภาพ */
+    flex-shrink: 0; /* ป้องกันไม่ให้รูปภาพย่อขนาด */
+}
+
+.avatarImage {
+    width: 100%; /* ให้รูปภาพเต็มพื้นที่ของ wrapper */
+    height: 100%; /* ให้รูปภาพเต็มพื้นที่ของ wrapper */
+    object-fit: cover; /* ครอบตัดรูปภาพให้พอดีกับขนาด */
+}
+
+.userInfo {
+    display: flex;
+    flex-direction: column; /* จัดเรียงชื่อและคะแนนในแนวตั้ง */
+    justify-content: center; /* จัดให้อยู่ตรงกลางแนวตั้ง */
+    gap: 4px; /* ระยะห่างระหว่างชื่อและคะแนน */
+}
+
+.username {
+    font-size: 18px;
+    font-weight: 500; /* ความหนาของชื่อผู้ใช้ */
+    color: #ffffff;
+    line-height: 1; /* ระยะห่างระหว่างบรรทัด */
+}
+
+.streakWrapper {
+    display: flex;
+    align-items: center; /* จัดให้อยู่ตรงกลางแนวตั้ง */
+    gap: 4px; /* ระยะห่างระหว่างไอคอนและข้อความ */
+}
+
+.flameIcon {
+    width: 16px; /* กำหนดความกว้างของไอคอน */
+    height: 16px; /* กำหนดความสูงของไอคอน */
+    object-fit: contain; /* ปรับขนาดไอคอนให้พอดีกับพื้นที่ */
+}
+
+.streakText {
+    font-family: monospace;
+    font-weight: 700; /* ความหนาของข้อความ */
+    color: #ffffff;
+}
+
+.rightSection {
+    display: flex;
+    align-items: center; /* จัดให้อยู่ตรงกลางแนวตั้ง */
+    gap: 7px; /* ระยะห่างระหว่างไอคอนและข้อความ */
+}
+
+.xpNumber {
+    font-size: 24px;
+    font-family: monospace;
+    font-weight: 700; /* ความหนาของข้อความ */
+    color: #ffffff;
+}
+
+.xpLabel {
+    font-size: 20px;
+    font-family: monospace;
+    font-weight: 700; /* ความหนาของข้อความ */
+    color: #ffffff;
+}
