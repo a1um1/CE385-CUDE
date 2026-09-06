@@ -434,6 +434,8 @@ export interface paths {
                     perPage?: number;
                     cursor?: string;
                     direction?: "forward" | "backward";
+                    sortBy?: "name" | "createdAt" | "updatedAt" | "id";
+                    sortOrder?: "asc" | "desc";
                 };
                 header?: never;
                 path?: never;
@@ -618,6 +620,8 @@ export interface paths {
                     perPage?: number;
                     cursor?: string;
                     direction?: "forward" | "backward";
+                    sortBy?: "name" | "email" | "role" | "createdAt" | "isActive" | "id";
+                    sortOrder?: "asc" | "desc";
                 };
                 header?: never;
                 path?: never;

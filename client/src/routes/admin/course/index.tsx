@@ -1,9 +1,11 @@
+import * as React from "react";
 import ButtonLink from "#/components/buttonLink";
 import DataTable from "#/components/table";
 import { createTableColumnHelper } from "#/components/table/features";
 import { useAdminCourseListQuery } from "#/data/admin/course.data";
 import { basicPaginationSchema } from "#/lib/pagination.schema";
 import { createFileRoute } from "@tanstack/react-router";
+import type { OnChangeFn, SortingState } from "@tanstack/react-table";
 
 export const Route = createFileRoute("/admin/course/")({
   validateSearch: (search) => basicPaginationSchema.parse(search),
@@ -25,9 +27,11 @@ const typedColumns = columnHelper.columns([
   }),
   columnHelper.color("color", {
     header: "Color",
+    sortable: false,
   }),
   columnHelper.text("icon", {
     header: "Icon",
+    sortable: false,
   }),
   columnHelper.datetime("createdAt", {
     header: "Created At",
@@ -53,6 +57,27 @@ const typedColumns = columnHelper.columns([
 function RouteComponent() {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
+
+  const sorting: SortingState = React.useMemo(() => {
+    if (!search.sortBy) return [];
+    return [{ id: search.sortBy, desc: search.sortOrder === "desc" }];
+  }, [search.sortBy, search.sortOrder]);
+
+  const handleSortingChange: OnChangeFn<SortingState> = (updaterOrValue) => {
+    const nextSorting =
+      typeof updaterOrValue === "function" ? updaterOrValue(sorting) : updaterOrValue;
+    const [firstSort] = nextSorting;
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        sortBy: firstSort?.id,
+        sortOrder: firstSort ? (firstSort.desc ? "desc" : "asc") : undefined,
+        cursor: undefined,
+        direction: "forward",
+      }),
+    });
+  };
+
   const handleNextPage = () => {
     if (!data?.nextCursor) return;
     navigate({
@@ -90,6 +115,8 @@ function RouteComponent() {
     perPage: search.perPage,
     cursor: search.cursor,
     direction: search.direction,
+    sortBy: search.sortBy as any,
+    sortOrder: search.sortOrder,
   });
 
   return (
@@ -101,6 +128,9 @@ function RouteComponent() {
         data={data?.data ?? []}
         columns={typedColumns}
         isLoading={isLoading}
+        sorting={sorting}
+        onSortingChange={handleSortingChange}
+        manualSorting
         cursorPagination={{
           hasNextPage: Boolean(data?.nextCursor),
           hasPreviousPage: Boolean(data?.prevCursor),

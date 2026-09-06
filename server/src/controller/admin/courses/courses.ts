@@ -3,9 +3,10 @@ import type {
   AdminCourseUpdateSchema,
   AdminCourseSchema,
   AdminCourseListResponseSchema,
+  AdminCourseQuery,
 } from "#/controller/admin/courses/courses.schema";
 import { courseQueryPayload } from "#/controller/admin/courses/courses.schema";
-import { type BaseCursorPaginationQuery } from "#/lib/pagination.schema";
+import { buildCursorOrderBy } from "#/lib/pagination.schema";
 import { db } from "#/lib/prisma";
 
 export default class AdminCoursesController {
@@ -27,16 +28,15 @@ export default class AdminCoursesController {
     return new AdminCoursesController(course);
   }
 
-  static async getPaginateLists(
-    query: BaseCursorPaginationQuery,
-  ): Promise<AdminCourseListResponseSchema> {
+  static async getPaginateLists(query: AdminCourseQuery): Promise<AdminCourseListResponseSchema> {
     const isBackward = query.direction === "backward" && Boolean(query.cursor);
+    const orderBy = buildCursorOrderBy(query.sortBy, query.sortOrder, isBackward);
 
     const data = await db.course.findMany({
       take: query.perPage + 1,
       skip: query.cursor ? 1 : 0,
       cursor: query.cursor ? { id: query.cursor } : undefined,
-      orderBy: { id: isBackward ? "asc" : "desc" },
+      orderBy,
       select: courseQueryPayload,
     });
 

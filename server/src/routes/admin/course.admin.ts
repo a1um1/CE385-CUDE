@@ -3,10 +3,10 @@ import {
   AdminCourseCreateSchema,
   AdminCourseUpdateSchema,
   AdminCourseListResponseSchema,
+  AdminCourseQuerySchema,
   adminCourseSchema,
 } from "#/controller/admin/courses/courses.schema";
 import { z } from "#/lib/extendZod";
-import { BaseCursorPaginationQuerySchema } from "#/lib/pagination.schema";
 import CustomRouter from "#/lib/router/customRouter";
 
 const adminCourseRouter = new CustomRouter({
@@ -18,7 +18,7 @@ const adminCourseRouter = new CustomRouter({
     "/",
     {
       summary: "List all courses",
-      query: BaseCursorPaginationQuerySchema,
+      query: AdminCourseQuerySchema,
       response: AdminCourseListResponseSchema,
     },
     ({ query }) => AdminCoursesController.getPaginateLists(query),

@@ -1,6 +1,9 @@
 import type { Course, Prisma } from "#/generated/prisma/client";
 import { z } from "#/lib/extendZod";
-import { createCursorPaginationResponseSchema } from "#/lib/pagination.schema";
+import {
+  createCursorPaginationQuerySchema,
+  createCursorPaginationResponseSchema,
+} from "#/lib/pagination.schema";
 import type zod from "zod";
 
 export const adminCourseSchema = z
@@ -28,6 +31,13 @@ export const courseQueryPayload = {
 } satisfies Prisma.CourseSelect;
 
 export type courseQueryPayload = Prisma.CourseGetPayload<{ select: typeof courseQueryPayload }>;
+
+export const AdminCourseQuerySchema = createCursorPaginationQuerySchema(
+  ["name", "createdAt", "updatedAt", "id"],
+  "AdminCourseQuery",
+);
+
+export type AdminCourseQuery = zod.infer<typeof AdminCourseQuerySchema>;
 
 export const AdminCourseListResponseSchema = createCursorPaginationResponseSchema(
   adminCourseSchema,
