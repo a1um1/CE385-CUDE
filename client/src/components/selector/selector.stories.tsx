@@ -7,13 +7,8 @@ const meta = {
   component: Selector,
   tags: ["autodocs"],
   argTypes: {
-    bgColor: { control: "color" },
-    selectedBgColor: { control: "color" },
-    outlineColor: { control: "color" },
-    textColor: { control: "color" },
-    selected: { control: "boolean" },
+    isActive: { control: "boolean" },
     iconUrl: { control: "text"}, 
-    size: { control: "text"}
   },
 }  satisfies Meta <typeof Selector>;
 
@@ -24,12 +19,7 @@ type Story = StoryObj<typeof meta>;
 const defaultArgs = {
   label: "Python",
   iconUrl: "https://www.jetbrains.com/guide/assets/thumbnail-ab255c68.png",
-  selected: false,
-  bgColor: "#f0f0f0",
-  selectedBgColor: "#306998",
-  outlineColor: "#4B8BBE",
-  textColor: "#000",
-  size: "250px",
+  isActive: false,
 };
 
 export const Playground: Story = {

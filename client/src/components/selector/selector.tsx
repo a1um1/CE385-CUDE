@@ -1,48 +1,42 @@
 import styles from "./selector.module.css";
-import type { CSSProperties } from "react";
+import React from 'react';
+import clsx from "clsx";
+
+
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>{
+  variant?: "primary" | "secondary";
+  isLoading?: boolean;
+} 
+
+export const Button = ({
+  variant = "primary",
+  isLoading,
+  children,
+  ...props
+}: ButtonProps) => {
+  return ( 
+     <button className={`btn btn-${variant}`} {...props}>
+      {isLoading ? 'Loading...' : children}
+    </button>
+  );
+} 
 
 export interface SelectorProps {
   iconUrl?: string;
   label: string;
-  selected?: boolean;
-  size?: string;
-  bgColor?: string;
-  selectedBgColor?: string;
-  outlineColor?: string;
-  textColor?: string;
+  isActive?: boolean;
+
 }
 
-export function Selector({
-  iconUrl,
-  label,
-  selected = false,
-  size,
-  bgColor,
-  selectedBgColor,
-  outlineColor,
-  textColor,
-}: SelectorProps) {
-  const normalSize =
-    size !== undefined ? (/^\d+$/.test(size) ? `${size}px` : size) : undefined;
+export function Selector({iconUrl, label, isActive = false}: SelectorProps) {
 
-  const cssVars = {
-    ...(normalSize && { "--selector-size": normalSize }),
-    ...(bgColor && { "--bg-color": bgColor }),
-    ...(selectedBgColor && { "--selected-bg-color": selectedBgColor }),
-    ...(outlineColor && { "--outline-color": outlineColor }),
-    ...(textColor && { "--text-color": textColor }),
-  } as CSSProperties;
-
-  const className = [styles.card, selected ? styles.selected : "",  ]
-    .filter(Boolean)
-    .join(" ");
-
+  const className = clsx(styles.card, isActive && styles.selected);
+    
 return (
     <button
       type="button"
       className={className}
-      style={cssVars}
-      aria-pressed={selected}
+      aria-pressed={isActive}
     >
       {iconUrl && (
         <div className={styles.iconWrapper}>

@@ -3,13 +3,13 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: calc(var(--selector-size, 220px) * 0.0727); /* ~16px ที่ 220px */
-    width: var(--selector-size, 220px);
-    height: calc(var(--selector-size, 220px) * 0.909); /* 0.909 คือ สูงกว่าของค่า selector-size */
-    padding: calc(var(--selector-size, 220px) * 0.0909); /* 0.909 คือ สูงกว่าของค่า selector-size */
-    border: 2px solid var(--outline-color, #ccc);
-    background-color: var(--bg-color, #0d1b2a);
-    color: var(--text-color, #fff);
+    gap: 16px;
+    width: 220px;
+    height: 200px;
+    padding: 20px;
+    border: 2px;
+    background-color: var(--color-selector-background);
+    color: var(--color-selector-text);
     border-radius: 8px;
     box-sizing: border-box;
     transition: all 0.2s ease;
@@ -20,18 +20,18 @@
 }
 
 .selected {
-    background-color: var(--selected-bg-color, #007bff);
-    color: #fff;
+    background-color:var(--color-selector-active);
+    color:var(--color-selector-text);
 }
 
 .iconWrapper {
-    width: calc(var(--selector-size, 220px) * 0.545);   /* 120 ÷ 220 = 0.545(120 คือ ขนาดที่ต้องการ)*/
-    height: calc(var(--selector-size, 220px) * 0.545);
+    width: 120px;
+    height: 120px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 8px;
-    padding: calc(var(--selector-size, 220px) * 0.0364);
+    padding: 8px;
 }
 
 .iconWrapper img {
@@ -40,11 +40,9 @@
 }
 
 .label {
-    font-size: calc(var(--selector-size, 220px) * 0.12); /* 220 × 0.0818 ≈ 18px*/
+    font-size: 18px;
     font-weight: 600;
     text-align: center;
-    padding: calc(var(--selector-size, 220px) * 0.0364) calc(var(--selector-size, 220px) * 0.0545);
-     /* คูณขนาดกล่องด้วย 3.64% ที่ 220px ประมาณ 8px* padding บน-ล่างของ label/                /* คูณขนาดกล่องด้วย 5.45%
-ที่ 220px ประมาณ 12px padding ซ้าย-ขวาของ label*/
+    padding: 8px 12px;
     border-radius: 6px;
 }
