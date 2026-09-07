@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import styles from "./quest-bar.module.css";
 
 export interface QuestBarProps {
@@ -12,7 +13,7 @@ export const QuestBar = ({ current = 0, max = 30, className }: QuestBarProps) =>
   const percentage = safeMax === 0 ? 0 : (safeCurrent / safeMax) * 100;
 
   return (
-    <div className={`${styles.container} ${className || ""}`}>
+    <div className={clsx(styles.container, className)}>
       <div className={styles.fill} style={{ width: `${percentage}%` }} />
       <span className={styles.text}>
         {safeCurrent}/{safeMax}
