@@ -4,3 +4,5 @@ client/package-lock.json linguist-generated=true
 client/package-lock.json linguist-vendored
 server/package-lock.json linguist-generated=true
 server/package-lock.json linguist-vendored
+client/src/data/base/openapi.ts linguist-generated=true
+client/src/routeTree.gen.ts linguist-generated=true

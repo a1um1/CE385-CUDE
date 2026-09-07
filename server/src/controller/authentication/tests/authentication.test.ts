@@ -15,7 +15,7 @@ describe("Authentication Tests", () => {
     expect(result).toHaveProperty("token");
     expect(result).toHaveProperty("user");
     expect(typeof result.token.token).toBe("string");
-    expect(result.user.json.id).toBe(fakeUser.id);
+    expect(result.user.JSON.id).toBe(fakeUser.id);
   });
 
   it("should sign up a user and return a token", async () => {
@@ -32,7 +32,7 @@ describe("Authentication Tests", () => {
     expect(result).toHaveProperty("token");
     expect(result).toHaveProperty("user");
     expect(typeof result.token.token).toBe("string");
-    expect(result.user.json.id).toBe(fakeUser.id);
+    expect(result.user.JSON.id).toBe(fakeUser.id);
   });
 
   it("should throw error when signing in with invalid credentials", async () => {

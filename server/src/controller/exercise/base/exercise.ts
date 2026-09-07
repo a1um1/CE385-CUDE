@@ -28,7 +28,7 @@ export default class ExerciseController {
     return new ExerciseController(data);
   }
 
-  static async getExerciseById(id: string): Promise<ExerciseController | null> {
+  static async getById(id: string): Promise<ExerciseController | null> {
     const exercise = await db.exercise.findUnique({
       select: ExerciseSelection,
       where: {
@@ -40,7 +40,7 @@ export default class ExerciseController {
     return this.getMatchedController(exercise);
   }
 
-  static async getExerciseByLessonId(lessonID: string): Promise<ExerciseController[]> {
+  static async getByLessonId(lessonID: string): Promise<ExerciseController[]> {
     const exercises = await db.exercise.findMany({
       select: ExerciseSelection,
       where: { lessonID },
@@ -50,6 +50,6 @@ export default class ExerciseController {
   }
 
   async getLesson() {
-    return await LessonController.getLessonById(this.data.lessonID);
+    return await LessonController.getById(this.data.lessonID);
   }
 }

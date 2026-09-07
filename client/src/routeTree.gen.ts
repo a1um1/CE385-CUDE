@@ -24,6 +24,9 @@ import { Route as baseAccountIndexRouteImport } from './routes/(base)/account/in
 import { Route as baseAccountSecurityRouteImport } from './routes/(base)/account/security'
 import { Route as baseAccountTransactionsRouteImport } from './routes/(base)/account/transactions'
 import { Route as baseProfileUsernameRouteImport } from './routes/(base)/profile/$username'
+import { Route as AdminCourseIndexRouteImport } from './routes/admin/course/index'
+import { Route as AdminCourseIdRouteImport } from './routes/admin/course/$id'
+import { Route as AdminCourseCreateRouteImport } from './routes/admin/course/create'
 import { Route as AdminUserIndexRouteImport } from './routes/admin/user/index'
 import { Route as AdminUserIdRouteImport } from './routes/admin/user/$id'
 
@@ -101,6 +104,21 @@ const baseProfileUsernameRoute = baseProfileUsernameRouteImport.update({
   path: '/profile/$username',
   getParentRoute: () => baseRouteRoute,
 } as any)
+const AdminCourseIndexRoute = AdminCourseIndexRouteImport.update({
+  id: '/course/',
+  path: '/course/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminCourseIdRoute = AdminCourseIdRouteImport.update({
+  id: '/course/$id',
+  path: '/course/$id',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminCourseCreateRoute = AdminCourseCreateRouteImport.update({
+  id: '/course/create',
+  path: '/course/create',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminUserIndexRoute = AdminUserIndexRouteImport.update({
   id: '/user/',
   path: '/user/',
@@ -126,8 +144,11 @@ export interface FileRoutesByFullPath {
   '/account/security': typeof baseAccountSecurityRoute
   '/account/transactions': typeof baseAccountTransactionsRoute
   '/profile/$username': typeof baseProfileUsernameRoute
+  '/admin/course/$id': typeof AdminCourseIdRoute
+  '/admin/course/create': typeof AdminCourseCreateRoute
   '/admin/user/$id': typeof AdminUserIdRoute
   '/account/': typeof baseAccountIndexRoute
+  '/admin/course/': typeof AdminCourseIndexRoute
   '/admin/user/': typeof AdminUserIndexRoute
 }
 export interface FileRoutesByTo {
@@ -141,8 +162,11 @@ export interface FileRoutesByTo {
   '/account/security': typeof baseAccountSecurityRoute
   '/account/transactions': typeof baseAccountTransactionsRoute
   '/profile/$username': typeof baseProfileUsernameRoute
+  '/admin/course/$id': typeof AdminCourseIdRoute
+  '/admin/course/create': typeof AdminCourseCreateRoute
   '/admin/user/$id': typeof AdminUserIdRoute
   '/account': typeof baseAccountIndexRoute
+  '/admin/course': typeof AdminCourseIndexRoute
   '/admin/user': typeof AdminUserIndexRoute
 }
 export interface FileRoutesById {
@@ -161,8 +185,11 @@ export interface FileRoutesById {
   '/(base)/account/security': typeof baseAccountSecurityRoute
   '/(base)/account/transactions': typeof baseAccountTransactionsRoute
   '/(base)/profile/$username': typeof baseProfileUsernameRoute
+  '/admin/course/$id': typeof AdminCourseIdRoute
+  '/admin/course/create': typeof AdminCourseCreateRoute
   '/admin/user/$id': typeof AdminUserIdRoute
   '/(base)/account/': typeof baseAccountIndexRoute
+  '/admin/course/': typeof AdminCourseIndexRoute
   '/admin/user/': typeof AdminUserIndexRoute
 }
 export interface FileRouteTypes {
@@ -181,8 +208,11 @@ export interface FileRouteTypes {
     | '/account/security'
     | '/account/transactions'
     | '/profile/$username'
+    | '/admin/course/$id'
+    | '/admin/course/create'
     | '/admin/user/$id'
     | '/account/'
+    | '/admin/course/'
     | '/admin/user/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -196,8 +226,11 @@ export interface FileRouteTypes {
     | '/account/security'
     | '/account/transactions'
     | '/profile/$username'
+    | '/admin/course/$id'
+    | '/admin/course/create'
     | '/admin/user/$id'
     | '/account'
+    | '/admin/course'
     | '/admin/user'
   id:
     | '__root__'
@@ -215,8 +248,11 @@ export interface FileRouteTypes {
     | '/(base)/account/security'
     | '/(base)/account/transactions'
     | '/(base)/profile/$username'
+    | '/admin/course/$id'
+    | '/admin/course/create'
     | '/admin/user/$id'
     | '/(base)/account/'
+    | '/admin/course/'
     | '/admin/user/'
   fileRoutesById: FileRoutesById
 }
@@ -333,6 +369,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof baseProfileUsernameRouteImport
       parentRoute: typeof baseRouteRoute
     }
+    '/admin/course/': {
+      id: '/admin/course/'
+      path: '/course'
+      fullPath: '/admin/course/'
+      preLoaderRoute: typeof AdminCourseIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/course/$id': {
+      id: '/admin/course/$id'
+      path: '/course/$id'
+      fullPath: '/admin/course/$id'
+      preLoaderRoute: typeof AdminCourseIdRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/course/create': {
+      id: '/admin/course/create'
+      path: '/course/create'
+      fullPath: '/admin/course/create'
+      preLoaderRoute: typeof AdminCourseCreateRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/user/': {
       id: '/admin/user/'
       path: '/user'
@@ -387,13 +444,19 @@ const baseRouteRouteWithChildren = baseRouteRoute._addFileChildren(
 
 interface AdminRouteRouteChildren {
   AdminIndexRoute: typeof AdminIndexRoute
+  AdminCourseIdRoute: typeof AdminCourseIdRoute
+  AdminCourseCreateRoute: typeof AdminCourseCreateRoute
   AdminUserIdRoute: typeof AdminUserIdRoute
+  AdminCourseIndexRoute: typeof AdminCourseIndexRoute
   AdminUserIndexRoute: typeof AdminUserIndexRoute
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminIndexRoute: AdminIndexRoute,
+  AdminCourseIdRoute: AdminCourseIdRoute,
+  AdminCourseCreateRoute: AdminCourseCreateRoute,
   AdminUserIdRoute: AdminUserIdRoute,
+  AdminCourseIndexRoute: AdminCourseIndexRoute,
   AdminUserIndexRoute: AdminUserIndexRoute,
 }
 

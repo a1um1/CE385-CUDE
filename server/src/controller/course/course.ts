@@ -14,7 +14,7 @@ export default class CourseController {
     return this.data;
   }
 
-  static async getCourseById(id: string): Promise<CourseController> {
+  static async getById(id: string): Promise<CourseController> {
     const course = await db.course.findUnique({
       where: { id },
     });
@@ -23,6 +23,6 @@ export default class CourseController {
   }
 
   async getAllUnit() {
-    return await UnitController.getAllUnitById(this.data.id);
+    return await UnitController.getAllById(this.data.id);
   }
 }

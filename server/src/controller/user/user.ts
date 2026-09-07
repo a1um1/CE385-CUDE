@@ -23,12 +23,12 @@ export default class UserController {
     this.user = user;
   }
 
-  get json(): userSafeSchema {
+  get JSON(): userSafeSchema {
     if (!this.user) throw new Error("User not found");
     return this.user;
   }
 
-  get publicJson(): userSafePublicSchema {
+  get publicJSON(): userSafePublicSchema {
     const {
       email: _email,
       deactivateReason: _deactivateReason,
@@ -74,7 +74,7 @@ export default class UserController {
     });
   }
 
-  static async getUserById(userId: string): Promise<UserController> {
+  static async getById(userId: string): Promise<UserController> {
     const user = await db.user.findUnique({
       where: { id: userId, isActive: true },
       select: userQueryPayload,
@@ -83,7 +83,7 @@ export default class UserController {
     return new UserController(user);
   }
 
-  static async getUserByUsername(username: string): Promise<UserController> {
+  static async getByUsername(username: string): Promise<UserController> {
     const user = await db.user.findUnique({
       where: { username, isActive: true },
       select: userQueryPayload,
@@ -92,7 +92,7 @@ export default class UserController {
     return new UserController(user);
   }
 
-  static async validateUserCredentials(credentials: userValidationSchema): Promise<UserController> {
+  static async validateCredentials(credentials: userValidationSchema): Promise<UserController> {
     const user = await db.user.findUnique({ where: { email: credentials.email } });
     if (!user) throw new UserError(400, "Email or Password is incorrect");
     const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
@@ -101,7 +101,7 @@ export default class UserController {
     return new UserController(user);
   }
 
-  static async createUser(userData: userCreationSchema): Promise<UserController> {
+  static async create(userData: userCreationSchema): Promise<UserController> {
     const hashedPassword = await bcrypt.hash(userData.password, 12);
     const created = await db.user.create({
       data: {
@@ -111,7 +111,7 @@ export default class UserController {
         password: hashedPassword,
       },
     });
-    return await UserController.getUserById(created.id);
+    return await UserController.getById(created.id);
   }
 
   getUserStat(): Promise<UserStatController> {

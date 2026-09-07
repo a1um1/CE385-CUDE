@@ -1,48 +1,40 @@
 import * as React from "react";
-import { createFileRoute } from "@tanstack/react-router";
-import DataTable, { createTableColumnHelper } from "#/components/table";
-import { useAdminUserListQuery } from "#/data/admin/user.data";
 import ButtonLink from "#/components/buttonLink";
+import DataTable from "#/components/table";
+import { createTableColumnHelper } from "#/components/table/features";
+import { useAdminCourseListQuery } from "#/data/admin/course.data";
 import { basicPaginationSchema } from "#/lib/pagination.schema";
+import { createFileRoute } from "@tanstack/react-router";
 import type { OnChangeFn, SortingState } from "@tanstack/react-table";
 
-export const Route = createFileRoute("/admin/user/")({
+export const Route = createFileRoute("/admin/course/")({
   validateSearch: (search) => basicPaginationSchema.parse(search),
   component: RouteComponent,
   staticData: {
-    pageTitle: "All Users",
-    pageKey: "admin-user-list",
+    pageTitle: "All Courses",
+    pageKey: "admin-course-list",
   },
 });
 
-type AdminUser = NonNullable<ReturnType<typeof useAdminUserListQuery>["data"]>["data"][number];
+type AdminCourse = NonNullable<ReturnType<typeof useAdminCourseListQuery>["data"]>["data"][number];
 
-const columnHelper = createTableColumnHelper<AdminUser>();
+const columnHelper = createTableColumnHelper<AdminCourse>();
 
 const typedColumns = columnHelper.columns([
   columnHelper.text("name", {
     header: "Name",
     strong: true,
   }),
-  columnHelper.text("email", {
-    header: "Email",
-  }),
-  columnHelper.text("epithet", {
-    header: "Epithet",
+  columnHelper.color("color", {
+    header: "Color",
     sortable: false,
   }),
-  columnHelper.badge("role", {
-    header: "Role",
-    map: {
-      ADMIN: { color: "#10B981", label: "ADMIN" },
-      USER: { color: "#F59E0B", label: "USER" },
-    },
+  columnHelper.text("icon", {
+    header: "Icon",
+    sortable: false,
   }),
   columnHelper.datetime("createdAt", {
     header: "Created At",
-  }),
-  columnHelper.boolean("isActive", {
-    header: "Is Active",
   }),
   columnHelper.display({
     id: "actions",
@@ -52,7 +44,7 @@ const typedColumns = columnHelper.columns([
         <ButtonLink
           size="xs"
           variant="secondary"
-          to="/admin/user/$id"
+          to="/admin/course/$id"
           params={{ id: _info.row.original.id }}
         >
           Edit
@@ -85,14 +77,6 @@ function RouteComponent() {
       }),
     });
   };
-
-  const { data, isLoading } = useAdminUserListQuery({
-    perPage: search.perPage,
-    cursor: search.cursor,
-    direction: search.direction,
-    sortBy: search.sortBy as any,
-    sortOrder: search.sortOrder,
-  });
 
   const handleNextPage = () => {
     if (!data?.nextCursor) return;
@@ -127,8 +111,19 @@ function RouteComponent() {
     });
   };
 
+  const { data, isLoading } = useAdminCourseListQuery({
+    perPage: search.perPage,
+    cursor: search.cursor,
+    direction: search.direction,
+    sortBy: search.sortBy as any,
+    sortOrder: search.sortOrder,
+  });
+
   return (
     <>
+      <ButtonLink to="/admin/course/create" variant="primary">
+        Create New Course
+      </ButtonLink>
       <DataTable
         data={data?.data ?? []}
         columns={typedColumns}

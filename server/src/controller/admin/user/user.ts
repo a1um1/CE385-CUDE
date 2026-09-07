@@ -1,12 +1,13 @@
 import { db } from "#/lib/prisma";
 import bcrypt from "bcrypt";
-import { type BaseCursorPaginationQuery } from "#/lib/pagination.schema";
+import { buildCursorOrderBy } from "#/lib/pagination.schema";
 import { userQueryPayload, type userSafeSchema } from "#/controller/user/user.schema";
 import UserError from "#/lib/router/http/userError";
 import { Log } from "#/lib/logger/decorators";
 import type {
   AdminUserDeactivateSchema,
   AdminUserListResponseSchema,
+  AdminUserQuery,
   AdminUserUpdatePasswordSchema,
 } from "#/controller/admin/user/user.schema";
 
@@ -17,7 +18,7 @@ export default class AdminUserController {
     this.user = user;
   }
 
-  get json(): userSafeSchema {
+  get JSON(): userSafeSchema {
     if (!this.user) throw new Error("User not found");
     return this.user;
   }
@@ -55,7 +56,7 @@ export default class AdminUserController {
     return this;
   }
 
-  static async getUserById(userId: string): Promise<AdminUserController> {
+  static async getById(userId: string): Promise<AdminUserController> {
     const user = await db.user.findUnique({
       where: { id: userId },
       select: userQueryPayload,
@@ -64,14 +65,15 @@ export default class AdminUserController {
     return new AdminUserController(user);
   }
 
-  static async queryUser(query: BaseCursorPaginationQuery): Promise<AdminUserListResponseSchema> {
+  static async queryUser(query: AdminUserQuery): Promise<AdminUserListResponseSchema> {
     const isBackward = query.direction === "backward" && Boolean(query.cursor);
+    const orderBy = buildCursorOrderBy(query.sortBy, query.sortOrder, isBackward);
 
     const users = await db.user.findMany({
       take: query.perPage + 1,
       skip: query.cursor ? 1 : 0,
       cursor: query.cursor ? { id: query.cursor } : undefined,
-      orderBy: { createdAt: isBackward ? "asc" : "desc" },
+      orderBy,
       select: userQueryPayload,
     });
 

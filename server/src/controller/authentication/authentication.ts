@@ -26,7 +26,7 @@ export default class AuthenticationController {
       const decoded = jwt.verify(token, this.secret, {
         algorithms: ["HS256"],
       }) as AuthenticationBody;
-      return await UserController.getUserById(decoded.userId);
+      return await UserController.getById(decoded.userId);
     } catch (error) {
       if (error instanceof jwt.TokenExpiredError) throw new UserError(401, "Token expired");
       if (error instanceof jwt.NotBeforeError) throw new UserError(401, "Token not active yet");
@@ -44,11 +44,11 @@ export default class AuthenticationController {
     token: ReturnType<AuthenticationController["generateToken"]>;
     user: UserController;
   }> {
-    const user = await UserController.validateUserCredentials(credentials);
+    const user = await UserController.validateCredentials(credentials);
     const token = this.generateToken({
-      userId: user.json.id,
-      name: user.json.name,
-      email: user.json.email,
+      userId: user.JSON.id,
+      name: user.JSON.name,
+      email: user.JSON.email,
     });
     return { token, user };
   }
@@ -58,11 +58,11 @@ export default class AuthenticationController {
     token: ReturnType<AuthenticationController["generateToken"]>;
     user: UserController;
   }> {
-    const user = await UserController.createUser(userData);
+    const user = await UserController.create(userData);
     const token = this.generateToken({
-      userId: user.json.id,
-      name: user.json.name,
-      email: user.json.email,
+      userId: user.JSON.id,
+      name: user.JSON.name,
+      email: user.JSON.email,
     });
 
     return { token, user };

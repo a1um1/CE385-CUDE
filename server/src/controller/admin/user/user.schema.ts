@@ -1,7 +1,17 @@
 import { UserPasswordDefinition, UserSafeSchema } from "#/controller/user/user.schema";
 import { z } from "#/lib/extendZod";
-import { createCursorPaginationResponseSchema } from "#/lib/pagination.schema";
+import {
+  createCursorPaginationQuerySchema,
+  createCursorPaginationResponseSchema,
+} from "#/lib/pagination.schema";
 import type Zod from "zod";
+
+export const AdminUserQuerySchema = createCursorPaginationQuerySchema(
+  ["name", "email", "role", "createdAt", "isActive", "id"],
+  "AdminUserQuery",
+);
+
+export type AdminUserQuery = Zod.infer<typeof AdminUserQuerySchema>;
 
 export const AdminUserListResponseSchema = createCursorPaginationResponseSchema(
   UserSafeSchema,

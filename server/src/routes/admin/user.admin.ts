@@ -2,12 +2,12 @@ import {
   AdminUserActivateSchema,
   AdminUserDeactivateSchema,
   AdminUserListResponseSchema,
+  AdminUserQuerySchema,
   AdminUserUpdatePasswordSchema,
 } from "#/controller/admin/user/user.schema";
 import CustomRouter from "#/lib/router/customRouter";
 import { z } from "#/lib/extendZod";
 import { GenericResponseSchema } from "#/lib/router/http/genericResponse";
-import { BaseCursorPaginationQuerySchema } from "#/lib/pagination.schema";
 import AdminUserController from "#/controller/admin/user";
 import { UserSafeSchema } from "#/controller/user/user.schema";
 
@@ -20,7 +20,7 @@ const adminUserRouter = new CustomRouter({
     "/",
     {
       summary: "List all users",
-      query: BaseCursorPaginationQuerySchema,
+      query: AdminUserQuerySchema,
       response: AdminUserListResponseSchema,
     },
     async ({ query }) => await AdminUserController.queryUser(query),
@@ -35,8 +35,8 @@ const adminUserRouter = new CustomRouter({
       response: UserSafeSchema,
     },
     async ({ params }) => {
-      const user = await AdminUserController.getUserById(params.id);
-      return user.json;
+      const user = await AdminUserController.getById(params.id);
+      return user.JSON;
     },
   )
   .post(
@@ -47,7 +47,7 @@ const adminUserRouter = new CustomRouter({
       response: GenericResponseSchema,
     },
     async ({ body }) => {
-      const user = await AdminUserController.getUserById(body.id);
+      const user = await AdminUserController.getById(body.id);
       await user.forceChangePassword(body);
       return {
         message: "User password changed successfully",
@@ -62,7 +62,7 @@ const adminUserRouter = new CustomRouter({
       response: GenericResponseSchema,
     },
     async ({ body }) => {
-      const user = await AdminUserController.getUserById(body.id);
+      const user = await AdminUserController.getById(body.id);
       await user.deactivate(body);
       return {
         message: "User deactivated successfully",
@@ -77,7 +77,7 @@ const adminUserRouter = new CustomRouter({
       response: GenericResponseSchema,
     },
     async ({ body }) => {
-      const user = await AdminUserController.getUserById(body.id);
+      const user = await AdminUserController.getById(body.id);
       await user.reactivate();
       return {
         message: "User activated successfully",

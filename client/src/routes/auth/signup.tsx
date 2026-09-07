@@ -101,12 +101,7 @@ function RouteComponent() {
             )}
           </form.AppField>
 
-          <form.SubmitButton
-            label="Sign Up"
-            isPending={signUpMutation.isPending}
-            block
-            className="mt-2"
-          />
+          <form.SubmitButton label="Sign Up" block className="mt-2" />
         </form.AppForm>
       </form>
     </div>

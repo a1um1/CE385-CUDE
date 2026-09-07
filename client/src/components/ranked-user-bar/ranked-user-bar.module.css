@@ -4,7 +4,6 @@
   justify-content: space-between;
   background-color: var(--color-border); /* 💡 ใช้ Token สีแทน Hex code */
   color: var(--color-input-text);
-  font-family: monospace; /* 💡 ย้าย font-family มารวมที่นี่ทีเดียว */
   border-radius: 12px;
   padding: 12px 24px;
   width: 100%;
