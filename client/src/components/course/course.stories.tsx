@@ -1,10 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { Course } from './course';
+import type { Meta, StoryObj } from "@storybook/react";
+import { Course } from "./course";
 
 const meta: Meta<typeof Course> = {
-  title: 'Components/Course',
+  title: "Components/Course",
   component: Course,
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     status: {
       control: "radio",
@@ -14,14 +14,14 @@ const meta: Meta<typeof Course> = {
       control: "text",
     },
   },
-}
+};
 
 export default meta;
 type Story = StoryObj<typeof Course>;
 
 export const Default: Story = {
   args: {
-    status: 'active',
-    label: 'Subject',
+    status: "active",
+    label: "Subject",
   },
 };
