@@ -6,14 +6,14 @@ const meta = {
   component: Scoring,
   tags: ["autodocs"],
   argTypes: {
-    status: {control: "radio", options: ["success", "fail", "inProgress"]},
-  }
+    status: { control: "radio", options: ["success", "fail", "inProgress"] },
+  },
 } satisfies Meta<typeof Scoring>;
 
 export default meta;
 
 export const Playground = {
-    args:{
-        status:"inProgress"
-    }
+  args: {
+    status: "inProgress",
+  },
 };
