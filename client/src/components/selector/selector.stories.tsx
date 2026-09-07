@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Selector } from "./selector"
-
+import { Selector } from "./selector";
 
 const meta = {
   title: "Components/Selector",
@@ -8,9 +7,9 @@ const meta = {
   tags: ["autodocs"],
   argTypes: {
     isActive: { control: "boolean" },
-    iconUrl: { control: "text"}, 
+    iconUrl: { control: "text" },
   },
-}  satisfies Meta <typeof Selector>;
+} satisfies Meta<typeof Selector>;
 
 export default meta;
 
@@ -23,5 +22,5 @@ const defaultArgs = {
 };
 
 export const Playground: Story = {
-    args:defaultArgs
+  args: defaultArgs,
 };
