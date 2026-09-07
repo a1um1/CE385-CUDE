@@ -1,58 +1,49 @@
-import styles from './ranked-user-bar.module.css';
+import Avatar from "../avatar";
+import Streak from "../icon/streak";
+import styles from "./ranked-user-bar.module.css";
 
 // กำหนดชนิดของข้อมูล (Props) ที่ Component นี้สามารถรับได้ เพื่อให้เปลี่ยนค่าได้อย่างอิสระ
 export interface RankedUserBarProps {
   rank?: number;
-  avatarUrl?: string;
+  avatarUrl?: string | null;
   username?: string;
-  streakText?: string;
+  streakDay?: number;
   xp?: number;
 }
 
+const formatStreak = (days: number) => {
+  if (days >= 365) return `${Math.floor(days / 365)}y`;
+  if (days >= 30) return `${Math.floor(days / 30)}m`;
+  return `${days}d`;
+};
+
 export const RankedUserBar = ({
-  rank = 9999 ,
-  avatarUrl = 'https://i.pravatar.cc/150?u=guest',
-  username = 'guest',
-  streakText = '0 year',
+  rank = 9999,
+  avatarUrl = "https://picsum.photos/200/300",
+  username = "guest",
+  streakDay = 0,
   xp = 0,
 }: RankedUserBarProps) => (
   <div className={styles.container}>
-      {/* ส่วนที่ 1: ฝั่งซ้าย (อันดับ, รูป, ข้อมูลส่วนตัว) */}
-      <div className={styles.leftSection}>
-        {/* หมายเลขอันดับ (Rank) */}
-        <span className={styles.rankNumber}>#{rank}</span>
-        {/* รูป Avatar */}
-        <div className={styles.avatarWrapper}>
-          <img src={avatarUrl} alt={`${username} avatar`} className={styles.avatarImage} />
-        </div>
-        
-        {/* ข้อมูลชื่อและสถานะ */}
-        <div className={styles.userInfo}>
-          {/* แสดงชื่อผู้ใช้ */}
-          
-          <div className={styles.userInfo}>
-          <span className={styles.username}>{username}</span>
-          
+    <div className={styles.leftSection}>
+      <span className={styles.rankNumber}>#{rank}</span>
+      <Avatar name={username} avatarUrl={avatarUrl} size="48px" />
+
+      <div className={styles.userInfo}>
+        <span className={styles.username}>{username}</span>
+
+        {streakDay > 0 && (
           <div className={styles.streakWrapper}>
-            {/* 💡 เปลี่ยนจาก <svg> เป็น <img> และใส่ลิงก์รูปภาพใหม่ */}
-            <img 
-              src="https://raw.githubusercontent.com/googlefonts/noto-emoji/main/png/128/emoji_u1f525.png" 
-              alt="flame" 
-              className={styles.flameIcon} 
-            />
-            <span className={styles.streakText}>{streakText}</span>
+            <Streak size={16} />
+            <span className={styles.streakText}>+{formatStreak(streakDay)}</span>
           </div>
-        </div>
-        </div>
+        )}
       </div>
-
-      {/* ส่วนที่ 2: ฝั่งขวา (คะแนน XP) */}
-      <div className={styles.rightSection}>
-        {/* ตัวเลข XP */}
-        <span className={styles.xpNumber}>{xp}</span>
-        {/* ตัวอักษร XP */}
-        <span className={styles.xpLabel}>XP</span>
-      </div>
-
     </div>
+
+    <div className={styles.rightSection}>
+      <span className={styles.xpNumber}>{xp.toLocaleString("en-US")}</span>
+      <span className={styles.xpLabel}>XP</span>
+    </div>
+  </div>
 );
