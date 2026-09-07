@@ -1,5 +1,5 @@
-import CourseController from "#/controller/course/course";
-import lesson from "#/controller/lesson/lesson";
+import CourseController from "#/controller/course";
+import lesson from "#/controller/lesson";
 import type { Unit } from "#/generated/prisma/client";
 import { db } from "#/lib/prisma";
 import UserError from "#/lib/router/http/userError";
@@ -15,7 +15,7 @@ export default class UnitController {
     return this.data;
   }
 
-  static async getUnitById(id: string): Promise<UnitController | null> {
+  static async getById(id: string): Promise<UnitController | null> {
     const unit = await db.unit.findUnique({
       where: { id },
     });
@@ -23,7 +23,7 @@ export default class UnitController {
     return new UnitController(unit);
   }
 
-  static async getAllUnitById(id: string): Promise<UnitController[]> {
+  static async getAllById(id: string): Promise<UnitController[]> {
     const units = await db.unit.findMany({
       where: { courseID: id },
     });
@@ -31,10 +31,10 @@ export default class UnitController {
   }
 
   async getAllLesson() {
-    return await lesson.getLessonByUnitId(this.data.id);
+    return await lesson.getByUnitId(this.data.id);
   }
 
   async getCourse() {
-    return await CourseController.getCourseById(this.data.courseID);
+    return await CourseController.getById(this.data.courseID);
   }
 }

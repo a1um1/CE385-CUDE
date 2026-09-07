@@ -1,3 +1,7 @@
+import {
+  TransactionListResponseSchema,
+  TransactionQuerySchema,
+} from "#/controller/transactions/transactions.schema";
 import UserController from "#/controller/user";
 import {
   UserSafePublicSchema,
@@ -6,6 +10,7 @@ import {
   UserUpdateBackgroundSchema,
   UserUpdatePasswordSchema,
 } from "#/controller/user/user.schema";
+import { zodUserStatExtendedObject } from "#/controller/userStat/userStat.schema";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 import { GenericResponseSchema } from "#/lib/router/http/genericResponse";
@@ -21,7 +26,7 @@ const userRoute = new CustomRouter({
       summary: "User information",
       response: UserSafeSchema,
     },
-    async ({ user }) => user.json,
+    async ({ user }) => user.JSON,
   )
   .post(
     "/avatar",
@@ -79,9 +84,31 @@ const userRoute = new CustomRouter({
       response: UserSafePublicSchema,
     },
     async ({ params }) => {
-      const user = await UserController.getUserByUsername(params.username);
-      return user.publicJson;
+      const user = await UserController.getByUsername(params.username);
+      return user.publicJSON;
     },
+  )
+  .get(
+    "/current-stat",
+    {
+      prefix: "/user",
+      tags: ["User"],
+      summary: "Get current user stat",
+      response: zodUserStatExtendedObject,
+    },
+    async ({ user }) => {
+      const userStat = await user.getUserStat();
+      return userStat.JSON;
+    },
+  )
+  .get(
+    "/transactions",
+    {
+      summary: "Get user transactions",
+      response: TransactionListResponseSchema,
+      query: TransactionQuerySchema,
+    },
+    async ({ user, query }) => await user.getUserTransactions(query),
   );
 
 export const userRouter = userRoute.route;

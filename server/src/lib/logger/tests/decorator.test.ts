@@ -1,5 +1,5 @@
 import { Log } from "#/lib/logger/decorators";
-import { mockedDb } from "#/test/setup";
+import { mockDB } from "#/test/setup";
 import { describe, expect, it } from "vitest";
 import { mockErrorLog, mockSuccessLog } from "#/lib/logger/tests/log.mock";
 
@@ -51,11 +51,11 @@ describe("Logger Decorators", () => {
   });
 
   it("should log method calls with default label", () => {
-    mockedDb.log.create.mockResolvedValueOnce(mockSuccessLog);
+    mockDB.log.create.mockResolvedValueOnce(mockSuccessLog);
     const testInstance = new TestClass();
     testInstance.method();
 
-    expect(mockedDb.log.create).toHaveBeenCalledWith({
+    expect(mockDB.log.create).toHaveBeenCalledWith({
       data: {
         content: expect.stringContaining("TestClass.method executed in"),
         status: "SUCCESS",
@@ -64,11 +64,11 @@ describe("Logger Decorators", () => {
   });
 
   it("should log method calls with custom label", () => {
-    mockedDb.log.create.mockResolvedValueOnce(mockSuccessLog);
+    mockDB.log.create.mockResolvedValueOnce(mockSuccessLog);
     const testInstance = new TestClass();
     testInstance.customMethod();
 
-    expect(mockedDb.log.create).toHaveBeenCalledWith({
+    expect(mockDB.log.create).toHaveBeenCalledWith({
       data: {
         content: expect.stringContaining("CustomLabel executed in"),
         status: "SUCCESS",
@@ -77,11 +77,11 @@ describe("Logger Decorators", () => {
   });
 
   it("should log async method calls", async () => {
-    mockedDb.log.create.mockResolvedValueOnce(mockSuccessLog);
+    mockDB.log.create.mockResolvedValueOnce(mockSuccessLog);
     const testInstance = new TestClass();
     await testInstance.asyncMethod();
 
-    expect(mockedDb.log.create).toHaveBeenCalledWith({
+    expect(mockDB.log.create).toHaveBeenCalledWith({
       data: {
         content: expect.stringContaining("TestClass.asyncMethod executed in"),
         status: "SUCCESS",
@@ -90,11 +90,11 @@ describe("Logger Decorators", () => {
   });
 
   it("should log method calls with error", async () => {
-    mockedDb.log.create.mockResolvedValueOnce(mockErrorLog);
+    mockDB.log.create.mockResolvedValueOnce(mockErrorLog);
     const testInstance = new TestClass();
     await expect(() => testInstance.methodWithError()).rejects.toThrow("Test error");
 
-    expect(mockedDb.log.create).toHaveBeenCalledWith({
+    expect(mockDB.log.create).toHaveBeenCalledWith({
       data: {
         content: expect.stringContaining("TestClass.methodWithError failed in"),
         status: "ERROR",
@@ -103,11 +103,11 @@ describe("Logger Decorators", () => {
   });
 
   it("should log async method calls with error", async () => {
-    mockedDb.log.create.mockResolvedValueOnce(mockErrorLog);
+    mockDB.log.create.mockResolvedValueOnce(mockErrorLog);
     const testInstance = new TestClass();
     await expect(testInstance.asyncMethodWithError()).rejects.toThrow("Test error");
 
-    expect(mockedDb.log.create).toHaveBeenCalledWith({
+    expect(mockDB.log.create).toHaveBeenCalledWith({
       data: {
         content: expect.stringContaining("TestClass.asyncMethodWithError failed in"),
         status: "ERROR",
@@ -116,11 +116,11 @@ describe("Logger Decorators", () => {
   });
 
   it("should log async method calls with string error", async () => {
-    mockedDb.log.create.mockResolvedValueOnce(mockErrorLog);
+    mockDB.log.create.mockResolvedValueOnce(mockErrorLog);
     const testInstance = new TestClass();
     await expect(testInstance.asyncMethodWithCustomError()).rejects.toThrow("I'm a string error");
 
-    expect(mockedDb.log.create).toHaveBeenCalledWith({
+    expect(mockDB.log.create).toHaveBeenCalledWith({
       data: {
         content: expect.stringContaining("I'm a string error"),
         status: "ERROR",

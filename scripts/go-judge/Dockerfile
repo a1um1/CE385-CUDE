@@ -1,9 +1,14 @@
 FROM criyle/go-judge:latest AS go-judge 
 FROM debian:latest
 
-# install compilers
+# install compilers & runtime
 # RUN apt ...
-RUN apt update && apt install -y python3 gcc build-essential binutils && rm -rf /var/lib/apt/lists/*
+RUN apt update && apt install -y \
+python3\
+gcc\
+build-essential\
+binutils\
+&& rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt
 COPY --from=go-judge /opt/go-judge /opt/mount.yaml /opt/

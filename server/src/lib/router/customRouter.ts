@@ -8,10 +8,10 @@ import type {
   ErrorRequestHandler,
 } from "express-serve-static-core";
 import { registry } from "#/openapi";
-import AuthenticationController from "#/controller/authentication/authentication";
+import AuthenticationController from "#/controller/authentication";
 import { HTTPstatus } from "#/lib/router/http/httpStatus";
 import UserError from "#/lib/router/http/userError";
-import { mergePath } from "#/lib/mergePath/mergePath";
+import { mergePath } from "#/lib/mergePath";
 import type {
   AuthenticationObject,
   RequestObject,
@@ -110,7 +110,7 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
       if (!token) throw new UserError(401, "Unauthorize");
 
       const user = await this.authController.validateToken(token);
-      if (!roleToCheck.includes(user.json.role)) throw new UserError(403, "Forbidden");
+      if (!roleToCheck.includes(user.JSON.role)) throw new UserError(403, "Forbidden");
       req.ctx ||= {};
       req.ctx.user = user;
       next();

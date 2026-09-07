@@ -25,6 +25,29 @@ export const createCursorPaginationResponseSchema = <T extends ZodType.ZodTypeAn
 
 export interface CursorPaginationResponse<T> {
   data: T[];
-  nextCursor?: string;
-  prevCursor?: string;
+  nextCursor: string | undefined;
+  prevCursor: string | undefined;
 }
+
+export const createCursorPaginationQuerySchema = <T extends [string, ...string[]]>(
+  sortableFields: T,
+  schemaTitle = "CursorPaginationQuery",
+) =>
+  BaseCursorPaginationQuerySchema.extend({
+    sortBy: z.enum(sortableFields).optional().openapi({ example: sortableFields[0] }),
+    sortOrder: z.enum(["asc", "desc"]).default("desc").openapi({ example: "desc" }),
+  }).openapi(schemaTitle);
+
+export const buildCursorOrderBy = <TField extends string>(
+  sortBy?: TField,
+  sortOrder: "asc" | "desc" = "desc",
+  isBackward = false,
+): Record<string, "asc" | "desc">[] => {
+  const inverted = sortOrder === "asc" ? "desc" : "asc";
+  const effectiveOrder = isBackward ? inverted : sortOrder;
+
+  if (!sortBy || sortBy === "id") {
+    return [{ id: effectiveOrder }];
+  }
+  return [{ [sortBy]: effectiveOrder }, { id: effectiveOrder }];
+};

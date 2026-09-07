@@ -41,9 +41,7 @@ function ChangePasswordDialog({ open, onOpenChange, userId }: ChangePasswordDial
   });
 
   const handleOpenChange = (nextOpen: boolean) => {
-    if (!nextOpen) {
-      form.reset();
-    }
+    if (!nextOpen) form.reset();
     onOpenChange(nextOpen);
   };
 
@@ -60,20 +58,23 @@ function ChangePasswordDialog({ open, onOpenChange, userId }: ChangePasswordDial
           form.handleSubmit();
         }}
       >
-        <form.AppField name="newPassword">
-          {(field) => (
-            <field.TextField label="New Password" type="password" autoComplete="new-password" />
-          )}
-        </form.AppField>
-
-        <form.AppField name="confirmPassword">
-          {(field) => (
-            <field.TextField label="Confirm Password" type="password" autoComplete="new-password" />
-          )}
-        </form.AppField>
-
         <form.AppForm>
           <form.FormError />
+          <form.AppField name="newPassword">
+            {(field) => (
+              <field.TextField label="New Password" type="password" autoComplete="new-password" />
+            )}
+          </form.AppField>
+
+          <form.AppField name="confirmPassword">
+            {(field) => (
+              <field.TextField
+                label="Confirm Password"
+                type="password"
+                autoComplete="new-password"
+              />
+            )}
+          </form.AppField>
           <div
             style={{
               display: "flex",

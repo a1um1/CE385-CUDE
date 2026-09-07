@@ -241,7 +241,111 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["UserSafeData"];
+                        "application/json": components["schemas"]["UserSafePublicData"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/user/current-stat": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get current user stat */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["userStatExtendedObject"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/user/transactions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get user transactions */
+        get: {
+            parameters: {
+                query?: {
+                    perPage?: number;
+                    cursor?: string;
+                    direction?: "forward" | "backward";
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["TransactionListResponse"];
                     };
                 };
                 /** @description Validation error */
@@ -420,6 +524,245 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/test/spend-enegry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Spend Energy */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @example Energy spent successfully */
+                            message: string;
+                        };
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/course": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List all courses */
+        get: {
+            parameters: {
+                query?: {
+                    perPage?: number;
+                    cursor?: string;
+                    direction?: "forward" | "backward";
+                    sortBy?: "name" | "createdAt" | "updatedAt" | "id";
+                    sortOrder?: "asc" | "desc";
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminCourseListResponse"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        /** Create a new course */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["AdminCourseCreate"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminCourseObject"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/course/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get course by ID */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminCourseObject"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        /** Update course by ID */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["AdminCourseUpdate"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminCourseObject"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/user": {
         parameters: {
             query?: never;
@@ -434,6 +777,8 @@ export interface paths {
                     perPage?: number;
                     cursor?: string;
                     direction?: "forward" | "backward";
+                    sortBy?: "name" | "email" | "role" | "createdAt" | "isActive" | "id";
+                    sortOrder?: "asc" | "desc";
                 };
                 header?: never;
                 path?: never;
@@ -1083,9 +1428,139 @@ export interface components {
             /** @example Password123! */
             newPassword: string;
         };
+        UserSafePublicData: {
+            /** @example 123456 */
+            id: string;
+            /** @example j_doe */
+            username: string;
+            /** @example John Doe */
+            name: string;
+            /** @example The Brave */
+            epithet: string | null;
+            /** @example https://example.com/profile.jpg */
+            profileImage: string | null;
+            /** @example https://example.com/background.jpg */
+            backgroundImage: string | null;
+            /**
+             * Format: date-time
+             * @example 2023-01-01T00:00:00.000Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @example 2023-01-01T00:00:00.000Z
+             */
+            updatedAt: string;
+        };
+        userStatExtendedObject: components["schemas"]["userStatObject"] & {
+            /** Format: date-time */
+            willRegenerateAt?: string;
+        };
+        userStatObject: {
+            userID: string;
+            /** Format: date-time */
+            energyUpdatedAt: string;
+            energy: number;
+            currentGems: number;
+            totalXP: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        TransactionListResponse: {
+            /** @example [] */
+            data: components["schemas"]["TransactionObject"][];
+            /** @example next_cursor_id */
+            nextCursor?: string;
+            /** @example prev_cursor_id */
+            prevCursor?: string;
+        };
+        TransactionObject: {
+            /**
+             * Format: uuid
+             * @example transaction_id
+             */
+            id: string;
+            /**
+             * Format: uuid
+             * @example user_id
+             */
+            userID: string;
+            /**
+             * @example GEM
+             * @enum {string}
+             */
+            type: "ENERGY" | "GEM" | "XP";
+            /** @example 100 */
+            amount: number;
+            /** @example 200 */
+            afterAmount: number;
+            /** @example Transaction reason */
+            reason: string;
+            /**
+             * Format: date-time
+             * @example 2026-09-07T07:42:42.458Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @example 2026-09-07T07:42:42.459Z
+             */
+            updatedAt: string;
+        };
         Test: {
             /** @example 123456 */
             randomNumber: number | null;
+        };
+        AdminCourseListResponse: {
+            /** @example [] */
+            data: components["schemas"]["AdminCourseObject"][];
+            /** @example next_cursor_id */
+            nextCursor?: string;
+            /** @example prev_cursor_id */
+            prevCursor?: string;
+        };
+        AdminCourseObject: {
+            /** @example course_id */
+            id: string;
+            /** @example Course Name */
+            name: string;
+            /** @example #FFFFFF */
+            color: string;
+            /** @example icon_name */
+            icon: string;
+            /**
+             * Format: uuid
+             * @example user_id
+             */
+            createdByID: string;
+            /**
+             * Format: date-time
+             * @example 2023-01-01T00:00:00Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @example 2023-01-01T00:00:00Z
+             */
+            updatedAt: string;
+        };
+        AdminCourseCreate: {
+            /** @example Course Name */
+            name: string;
+            /** @example #FFFFFF */
+            color: string;
+            /** @example icon_name */
+            icon: string;
+        };
+        AdminCourseUpdate: {
+            /** @example Course Name */
+            name: string;
+            /** @example #FFFFFF */
+            color: string;
+            /** @example icon_name */
+            icon: string;
         };
         AdminUserListResponse: {
             /** @example [] */
