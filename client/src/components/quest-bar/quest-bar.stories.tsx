@@ -1,24 +1,24 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { QuestBar } from './quest-bar';
+import type { Meta, StoryObj } from "@storybook/react";
+import { QuestBar } from "./quest-bar";
 
 const meta: Meta<typeof QuestBar> = {
-  title: 'Components/QuestBar',
+  title: "Components/QuestBar",
   component: QuestBar,
   parameters: {
-    layout: 'padded',
+    layout: "padded",
     backgrounds: {
-      default: 'light-gray',
+      default: "light-gray",
       values: [
-        { name: 'light-gray', value: '#FFC4C8' },
-        { name: 'white', value: '#FFFFFF' },
+        { name: "light-gray", value: "#FFC4C8" },
+        { name: "white", value: "#FFFFFF" },
       ],
     },
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     current: {
-      control: { type: 'number', min: 0, max: 9999, step: 1 },
-      description: 'ค่าปัจจุบัน ต้องไม่เกิน max',
+      control: { type: "number", min: 0, max: 9999, step: 1 },
+      description: "ค่าปัจจุบัน ต้องไม่เกิน max",
     },
   },
 };

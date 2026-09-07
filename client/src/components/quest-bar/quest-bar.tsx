@@ -1,4 +1,4 @@
-import styles from './quest-bar.module.css';
+import styles from "./quest-bar.module.css";
 
 export interface QuestBarProps {
   current?: number;
@@ -6,21 +6,14 @@ export interface QuestBarProps {
   className?: string;
 }
 
-export const QuestBar = ({
-  current = 0,
-  max = 30,
-  className,
-}: QuestBarProps) => {
+export const QuestBar = ({ current = 0, max = 30, className }: QuestBarProps) => {
   const safeMax = Math.max(0, max);
   const safeCurrent = Math.min(safeMax, Math.max(0, current));
   const percentage = safeMax === 0 ? 0 : (safeCurrent / safeMax) * 100;
 
   return (
-    <div className={`${styles.container} ${className || ''}`}>
-      <div
-        className={styles.fill}
-        style={{ width: `${percentage}%` }}
-      />
+    <div className={`${styles.container} ${className || ""}`}>
+      <div className={styles.fill} style={{ width: `${percentage}%` }} />
       <span className={styles.text}>
         {safeCurrent}/{safeMax}
       </span>
