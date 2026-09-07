@@ -7,20 +7,24 @@
   width: 220px;
   padding: 20px;
   border: 2px solid var(--color-selector-border);
-  background-color: var(--color-selector-background);
+  background-color: color-mix(in srgb, var(--color-selector-background) 80%, transparent);
   border-radius: 8px;
   color: var(--color-selector-text);
   box-sizing: border-box;
-  transition: opacity 0.2s ease;
+  transition: background-color 0.2s ease;
 }
 
 .card:hover {
-  opacity: 0.9;
+  background-color: var(--color-selector-background);
 }
 
 .selected {
   background-color: var(--color-selector-active);
   color: var(--color-selector-text);
+}
+
+.selected:hover {
+  background-color: var(--color-selector-active);
 }
 
 .iconWrapper {
