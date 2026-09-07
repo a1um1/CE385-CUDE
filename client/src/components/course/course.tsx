@@ -12,7 +12,7 @@ export interface CourseProps {
 
 const statusConfig: Record<CourseStatus, { className?: string; icon: React.ReactElement }> = {
   active: {
-    className: styles.active ,
+    className: styles.active,
     icon: <Book size={32} strokeWidth={2.5} />,
   },
   completed: {
