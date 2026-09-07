@@ -1,8 +1,8 @@
 import clsx from "clsx";
 import { useFieldContext } from "../form";
 import styles from "../form.module.css";
-import type { InputProps } from "#/components/input/input";
-import Input from "#/components/input/input";
+import type { InputProps } from "#/components/input";
+import Input from "#/components/input";
 
 export interface TextFieldProps extends Omit<InputProps, "value" | "onChange" | "onBlur"> {
   label: string;

@@ -3,7 +3,7 @@ import {
   type ExercisePayload,
 } from "#/controller/exercise/base/exercise.schema";
 import { CodeExerciseController } from "#/controller/exercise/codeExercise/codeExercise";
-import LessonController from "#/controller/lesson/lesson";
+import LessonController from "#/controller/lesson";
 import type { Exercise } from "#/generated/prisma/client";
 import { db } from "#/lib/prisma";
 import UserError from "#/lib/router/http/userError";

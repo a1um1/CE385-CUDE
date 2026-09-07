@@ -1,5 +1,5 @@
 import Button from "#/components/button";
-import type { ButtonProps } from "#/components/button/button";
+import type { ButtonProps } from "#/components/button";
 import { useFormContext } from "../form";
 import Spinner from "#/components/spinner";
 

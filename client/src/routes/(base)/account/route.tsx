@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet, useMatches, type LinkProps } from "@tanstack/react-router";
 import styles from "./settingLayout.module.css";
 import ButtonLink from "#/components/buttonLink";
-import { ShieldIcon, UserIcon, type LucideIcon } from "lucide-react";
+import { ShieldIcon, UserIcon, type LucideIcon, RotateCcwIcon } from "lucide-react";
 export const Route = createFileRoute("/(base)/account")({
   component: RouteComponent,
 });
@@ -14,6 +14,14 @@ const menuItems = [
       to: "/account",
     },
     icon: UserIcon,
+  },
+  {
+    key: "transactions",
+    name: "Transactions",
+    nav: {
+      to: "/account/transactions",
+    },
+    icon: RotateCcwIcon,
   },
 
   {

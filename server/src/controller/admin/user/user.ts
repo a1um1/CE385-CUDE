@@ -79,18 +79,18 @@ export default class AdminUserController {
     let prevCursor: string | undefined = undefined;
 
     if (isBackward) {
-      if (users.length > query.perPage) prevCursor = users.pop()?.id;
+      if (users.length > query.perPage) prevCursor = users.pop()?.id || undefined;
       users.reverse();
-      nextCursor = query.cursor;
+      nextCursor = query.cursor || undefined;
     } else {
-      if (users.length > query.perPage) nextCursor = users.pop()?.id;
+      if (users.length > query.perPage) nextCursor = users.pop()?.id || undefined;
       if (query.cursor) prevCursor = query.cursor;
     }
 
     return {
       data: users,
-      nextCursor,
-      prevCursor,
+      nextCursor: nextCursor || undefined,
+      prevCursor: prevCursor || undefined,
     };
   }
 }

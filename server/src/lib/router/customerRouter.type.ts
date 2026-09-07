@@ -2,7 +2,7 @@ import type { z, ZodObject, ZodType } from "zod";
 import type { IncomingHttpHeaders } from "http";
 import type { Role } from "#/generated/prisma/enums";
 import type { HTTPstatus } from "#/lib/router/http/httpStatus";
-import type UserController from "#/controller/user/user";
+import type UserController from "#/controller/user";
 
 export type RequestObject = ZodObject<any, any> | undefined;
 export type AuthenticationObject = boolean | Role[] | undefined;

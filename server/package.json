@@ -45,7 +45,8 @@
     "@vitest/ui": "^4.1.11",
     "openapi-typescript": "^7.13.0",
     "prisma": "^7.9.1",
-    "tsx": "^4.23.12"
+    "tsx": "^4.23.12",
+    "vite-tsconfig-paths": "^6.1.1"
   },
   "overrides": {
     "openapi-typescript": {

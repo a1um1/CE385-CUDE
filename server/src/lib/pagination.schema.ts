@@ -25,6 +25,6 @@ export const createCursorPaginationResponseSchema = <T extends ZodType.ZodTypeAn
 
 export interface CursorPaginationResponse<T> {
   data: T[];
-  nextCursor?: string;
-  prevCursor?: string;
+  nextCursor: string | undefined;
+  prevCursor: string | undefined;
 }

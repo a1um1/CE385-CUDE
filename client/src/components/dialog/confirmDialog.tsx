@@ -49,7 +49,7 @@ function ConfirmDialog({
                 : undefined
             }
           >
-            {isPending && <Spinner className="mr-2" size="1rem" />}
+            {isPending && <Spinner size="1rem" />}
             {confirmLabel}
           </Button>
         </>
