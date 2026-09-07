@@ -7,3 +7,8 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+generator dbml {
+  provider = "prisma-dbml-generator"
+  output   = "../../../dbml"
+}

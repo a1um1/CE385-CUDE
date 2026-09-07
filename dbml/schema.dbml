@@ -1,0 +1,140 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table Course {
+  id String [pk]
+  name String [not null]
+  color String [not null]
+  icon String [not null]
+  createdByID String [not null]
+  createdBy User [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  units Unit [not null]
+}
+
+Table Unit {
+  id String [pk]
+  name String [not null]
+  courseID String [not null]
+  course Course [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  lessons Lesson [not null]
+}
+
+Table Lesson {
+  id String [pk]
+  name String [not null]
+  unitID String [not null]
+  unit Unit [not null]
+  passTheshold Float [not null]
+  XPgiven Int [not null]
+  gemsGiven Int [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  exercises Exercise [not null]
+}
+
+Table Exercise {
+  id String [pk]
+  name String [not null]
+  lessonID String [not null]
+  lesson Lesson [not null]
+  content String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  type EXERCISE_TYPE [not null, default: 'NONE']
+  codeExercises CodeExercise
+  submissions Submission [not null]
+}
+
+Table CodeExercise {
+  id String [pk]
+  exerciseID String [unique, not null]
+  exercise Exercise [not null]
+  starterCode String
+  testerCode String
+  timeLimitMs Int [not null, default: 2000]
+  memoryLimitMb Int [not null, default: 256]
+  testCases TestCase [not null]
+}
+
+Table TestCase {
+  id String [pk]
+  codeExerciseID String [not null]
+  codeExercise CodeExercise [not null]
+  input String [not null]
+  output String [not null]
+  order Int [not null, default: 0]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Log {
+  id String [pk]
+  content String [not null]
+  status logStatus [not null]
+  createdAt DateTime [default: `now()`, not null]
+}
+
+Table Submission {
+  id String [pk]
+  userID String [not null]
+  user User [not null]
+  exerciseID String [not null]
+  exercise Exercise [not null]
+  content Json [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table User {
+  id String [pk]
+  username String [unique, not null]
+  name String [not null]
+  email String [unique, not null]
+  profileImage String
+  backgroundImage String
+  epithet String
+  password String [not null]
+  isActive Boolean [not null, default: true]
+  deactivateReason String
+  role Role [not null, default: 'USER']
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  courses Course [not null]
+  submissions Submission [not null]
+}
+
+Enum EXERCISE_TYPE {
+  NONE
+  CODE
+}
+
+Enum logStatus {
+  SUCCESS
+  ERROR
+}
+
+Enum Role {
+  USER
+  ADMIN
+}
+
+Ref: Course.createdByID > User.id
+
+Ref: Unit.courseID > Course.id
+
+Ref: Lesson.unitID > Unit.id
+
+Ref: Exercise.lessonID > Lesson.id
+
+Ref: CodeExercise.exerciseID - Exercise.id
+
+Ref: TestCase.codeExerciseID > CodeExercise.id
+
+Ref: Submission.userID > User.id
+
+Ref: Submission.exerciseID > Exercise.id
