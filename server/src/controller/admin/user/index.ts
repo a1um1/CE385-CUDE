@@ -1,1 +1,1 @@
-export { default } from "#/controller/admin/user/user";
+export { default } from "./user";

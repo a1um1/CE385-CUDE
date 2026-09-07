@@ -1,5 +1,5 @@
 import { UserCreationSchema, UserValidationSchema } from "#/controller/user/user.schema";
-import AuthenticationController from "#/controller/authentication/authentication";
+import AuthenticationController from "#/controller/authentication";
 import CustomRouter from "#/lib/router/customRouter";
 import { authenticationSchema } from "#/controller/authentication/authentication.schema";
 

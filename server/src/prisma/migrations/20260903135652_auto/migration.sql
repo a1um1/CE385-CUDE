@@ -1,0 +1,14 @@
+-- CreateTable
+CREATE TABLE "UserStat" (
+    "userID" UUID NOT NULL,
+    "currentGems" INTEGER NOT NULL DEFAULT 0,
+    "energy" INTEGER NOT NULL DEFAULT 0,
+    "totalXP" INTEGER NOT NULL DEFAULT 0,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "UserStat_pkey" PRIMARY KEY ("userID")
+);
+
+-- AddForeignKey
+ALTER TABLE "UserStat" ADD CONSTRAINT "UserStat_userID_fkey" FOREIGN KEY ("userID") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import { createLink } from "@tanstack/react-router";
-import Button from "#/components/button/button";
+import Button from "#/components/button";
 import type {
   ButtonInnerAlignments,
   ButtonRadius,

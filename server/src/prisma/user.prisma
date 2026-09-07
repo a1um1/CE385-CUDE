@@ -19,5 +19,7 @@ model User {
   updatedAt        DateTime @updatedAt
   courses          Course[]
 
-  submissions Submission[]
+  submissions  Submission[]
+  userStats    UserStat[]
+  transactions Transactions[]
 }

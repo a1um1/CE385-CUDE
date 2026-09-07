@@ -1,8 +1,8 @@
 import Button from "#/components/button";
 import CodeEditor, { type CodeLanguage } from "#/components/codeEditor";
 import { APIclient, type ExtractRequestBody } from "#/data/base/baseAPI";
-import formatBytetoMb from "#/lib/formatByte";
 import formatNstoMs from "#/lib/formatNs";
+import formatFileSize from "#/lib/formatSize";
 import { useMutation } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import clsx from "clsx";
@@ -13,7 +13,28 @@ export const Route = createFileRoute("/(base)/play-grader")({
   component: RouteComponent,
 });
 
-const defualtCode = `print("Hello World")`;
+const defualtCode = `def two_sum(nums, target):
+	# Your code here
+	return []
+
+test = input().strip().split(" ")
+target = int(input().strip())
+print(two_sum(test, target))`;
+
+const defaultTestCases = [
+  {
+    input: "2 7 11 15\n9",
+    output: "[0, 1]",
+  },
+  {
+    input: "3 2 4\n6",
+    output: "[1, 2]",
+  },
+  {
+    input: "3 3\n6",
+    output: "[0, 1]",
+  },
+];
 const defaultLangauge = `python` as const;
 function RouteComponent() {
   const [code, setCode] = useState<string>(defualtCode);
@@ -23,12 +44,7 @@ function RouteComponent() {
       input: string;
       output: string;
     }[]
-  >([
-    {
-      input: "",
-      output: "Hello World",
-    },
-  ]);
+  >(defaultTestCases);
 
   const runMuation = useMutation({
     mutationKey: ["run-grader"],
@@ -141,7 +157,9 @@ function RouteComponent() {
 
           <div className="flex gap-4 items-start">
             <div className="aspect-squre bg-teal-500 w-48 h-48 flex items-center justify-center p-5 text-5xl">
-              {runMuation.data?.percentage ?? "?"}
+              {typeof runMuation.data?.percentage === "number"
+                ? runMuation.data.percentage.toFixed(0)
+                : "?"}
               <small className="text-lg">%</small>
             </div>
             <div>
@@ -150,7 +168,9 @@ function RouteComponent() {
               <p>Failed: {runMuation?.data?.failed}</p>
               <p>Failed: {runMuation?.data?.failed}</p>
               <p>Average Time: {formatNstoMs(runMuation?.data?.averageTime || 0)} ms</p>
-              <p>Average Memory: {formatBytetoMb(runMuation?.data?.averageMemory || 0)} mb</p>
+              <p>
+                Average Memory: {formatFileSize(runMuation?.data?.averageMemory || 0, "Bytes")} Mb
+              </p>
             </div>
           </div>
         </div>

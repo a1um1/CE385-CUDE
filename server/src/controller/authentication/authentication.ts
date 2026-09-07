@@ -2,7 +2,7 @@ import type {
   AuthenticationBody,
   authenticationSchema,
 } from "#/controller/authentication/authentication.schema";
-import UserController from "#/controller/user/user";
+import UserController from "#/controller/user";
 import type { userCreationSchema, userValidationSchema } from "#/controller/user/user.schema";
 import { Log } from "#/lib/logger/decorators";
 import userError from "#/lib/router/http/userError";
