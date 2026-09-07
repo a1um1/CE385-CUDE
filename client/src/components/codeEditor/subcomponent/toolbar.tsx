@@ -7,6 +7,8 @@ import { useCodeAvailableLanguage } from "#/data/code.data";
 import { useIsMutating } from "@tanstack/react-query";
 import Spinner from "#/components/spinner";
 
+import Select from "#/components/select";
+
 export default function EditorToolbar() {
   const { data: langaugeData, isLoading, isError } = useCodeAvailableLanguage();
   const isMutating = useIsMutating();
@@ -21,27 +23,37 @@ export default function EditorToolbar() {
     layout: { panelLayout, toggleLayout },
   } = useEditorContext();
 
-  function handleLanguageChange(event: React.ChangeEvent<HTMLSelectElement>) {
-    const selectedLanguage = event.target.value as CodeLanguage;
-    onChangeLanguage?.(selectedLanguage);
+  function handleLanguageChange(selectedLanguage: string) {
+    onChangeLanguage?.(selectedLanguage as CodeLanguage);
     onChange("");
   }
 
+  const currentLang = language ?? "c";
+  const currentLanguageInfo = langaugeData?.languages?.[currentLang];
+  const currentLanguageLabel = currentLanguageInfo
+    ? `${currentLanguageInfo.name} ${currentLanguageInfo.version}`
+    : currentLang;
+
   return (
     <div className={styles.toolbar}>
-      <select
-        className={styles.languageSelect}
-        value={language ?? "c"}
-        onChange={handleLanguageChange}
-        aria-label="Programming language"
+      <Select.Root
+        value={currentLang}
+        onValueChange={handleLanguageChange}
         disabled={disableLanguageSwitch || isLoading || isError}
+        size="sm"
+        radius="none"
       >
-        {Object.entries(langaugeData?.languages || []).map(([lang, props]) => (
-          <option key={lang} value={lang}>
-            {props.name} {props.version}
-          </option>
-        ))}
-      </select>
+        <Select.Trigger className={styles.languageSelect} aria-label="Programming language">
+          <Select.Value>{currentLanguageLabel}</Select.Value>
+        </Select.Trigger>
+        <Select.Content align="start" sideOffset={4}>
+          {Object.entries(langaugeData?.languages || []).map(([lang, props]) => (
+            <Select.Item key={lang} value={lang}>
+              {props.name} {props.version}
+            </Select.Item>
+          ))}
+        </Select.Content>
+      </Select.Root>
       <div className={styles.toolbarActions}>
         <Button
           onClick={toggleLayout}
