@@ -30,14 +30,6 @@
   justify-content: center;
 }
 
-.circle {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  border: 3px dashed #fff;
-  box-sizing: border-box; /* ทำให้วงกลมดูใหญ่เท่ากันอันอื่น */
-}
-
 .label {
   font-size: 18px;
   font-weight: 600;
