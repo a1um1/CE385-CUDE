@@ -1,0 +1,30 @@
+.container {
+  position: relative;
+  width: 100%;
+  padding: 8px 16px;
+  background-color: var(--color-border);
+  border-radius: 9999px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background-color: var(--color-success);
+  border-radius: 9999px;
+  transition: width 0.3s ease-out;
+  z-index: 1;
+}
+
+.text {
+  position: relative;
+  z-index: 2;
+  color: var(--color-input-text);
+  font-size: 24px;
+  font-weight: 700;
+}
