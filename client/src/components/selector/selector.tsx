@@ -9,7 +9,7 @@ export interface SelectorProps extends React.ButtonHTMLAttributes<HTMLButtonElem
 }
 
 export function Selector({ iconUrl, label, isActive = false, ...props }: SelectorProps) {
-  const className = clsx(styles.card, isActive && styles.selected ,props.className);
+  const className = clsx(styles.card, isActive && styles.selected, props.className);
 
   return (
     <button type="button" aria-pressed={isActive} {...props} className={className}>
