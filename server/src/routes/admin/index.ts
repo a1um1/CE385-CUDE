@@ -1,6 +1,7 @@
 import CustomRouter from "#/lib/router/customRouter";
 import { adminCourseRoute } from "#/routes/admin/course.admin";
 import { adminUserRoute } from "#/routes/admin/user.admin";
+import { adminUnitRoute } from "#/routes/admin/unit.admin";
 
 const adminRouter = new CustomRouter({
   prefix: "/admin",
@@ -21,6 +22,7 @@ const adminRouter = new CustomRouter({
     },
   )
   .use(adminUserRoute)
-  .use(adminCourseRoute);
+  .use(adminCourseRoute)
+  .use(adminUnitRoute);
 
 export const adminRoute = adminRouter.route;
