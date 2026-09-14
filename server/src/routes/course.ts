@@ -20,6 +20,7 @@ const publicCourseResponseSchema = z.object({
 const courseRouter = new CustomRouter({
   prefix: "/course",
   tags: ["Course"],
+  authentication: true,
 })
   .get(
     "/",
