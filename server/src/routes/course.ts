@@ -43,12 +43,12 @@ const courseRouter = new CustomRouter({
     },
   )
   .get(
-    "/error",
+    "/usererror",
     {
       summary: "Handled Error Example",
     },
     async () => {
-      throw new Error("This is an unhandled error");
+      throw new UserError(404, "course not found");
     },
   );
 
