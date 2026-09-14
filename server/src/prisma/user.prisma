@@ -22,4 +22,6 @@ model User {
   submissions  Submission[]
   userStats    UserStat[]
   transactions Transactions[]
+
+  sessions Sessions[]
 }
