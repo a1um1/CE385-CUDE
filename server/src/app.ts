@@ -7,6 +7,7 @@ import { adminRoute } from "#/routes/admin/index";
 import cors from "cors";
 import { authRoute } from "#/routes/auth";
 import { CodingRoute } from "#/routes/coding";
+import { courseRoute } from "./routes/course";
 
 const app = express()
   .use(express.json())
@@ -19,6 +20,7 @@ const app = express()
   .use(userRouter)
   .use(CodingRoute)
   .use(testRouter)
+  .use(courseRoute)
   .use(adminRoute);
 
 // Docs endpoint — regenerated from the registry above
