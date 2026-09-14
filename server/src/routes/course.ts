@@ -1,4 +1,4 @@
-import AdminCoursesController from "#/controller/admin/courses";
+import CoursesController from "#/controller/admin/courses";
 import { AdminCourseQuerySchema } from "#/controller/admin/courses/courses.schema";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
@@ -31,16 +31,10 @@ const courseRouter = new CustomRouter({
     },
     async ({ query, status }) => {
       try {
-        const result = await AdminCoursesController.getPaginateLists(query);
+        const result = await CoursesController.getPaginateLists(query);
         status.set(200); // กำหนด status OK
         return {
           ...result,
-          data: result.data.map(({ id, name, color, icon }) => ({
-            id,
-            name,
-            color,
-            icon,
-          })),
         };
       } catch (error) {
         console.error("Error fetching courses:", error);
