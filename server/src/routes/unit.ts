@@ -14,7 +14,7 @@ export const UnitSchema = z
 export const UnitListResponseSchema = z.array(UnitSchema).openapi("UnitListResponse");
 
 const unitRouter = new CustomRouter({
-  prefix: "/unit",
+  prefix: "/course",
   tags: ["Unit"],
 }).get(
   "/:courseId/unit",
