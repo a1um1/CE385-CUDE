@@ -1,4 +1,5 @@
-import { APIclient, type ExtractRequestBody, type ExtractRequestQuery } from "#/data/base/baseAPI";
+import type { ExtractRequestBody, ExtractRequestQuery } from "#/data/base/apiUtils.type";
+import { APIclient } from "#/data/base/baseAPI";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useUser = () =>
