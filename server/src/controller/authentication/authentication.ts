@@ -9,6 +9,7 @@ import { db } from "#/lib/prisma";
 import userError from "#/lib/router/http/userError";
 import UserError from "#/lib/router/http/userError";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 
 export default class AuthenticationController {
   private secret?: string = process.env.JWT_SECRET;
@@ -17,10 +18,14 @@ export default class AuthenticationController {
 
   async createRefreshToken(userId: string): Promise<string> {
     if (!this.secret) throw new Error("JWT secret is not defined");
-    const refreshToken = jwt.sign({ userId }, this.secret, {
-      expiresIn: AuthenticationController.REFRESH_TOKEN_EXPIRATION, // in seconds
-      algorithm: "HS256",
-    });
+    const refreshToken = jwt.sign(
+      { userId, salt: crypto.randomBytes(32).toString("hex") },
+      this.secret,
+      {
+        expiresIn: AuthenticationController.REFRESH_TOKEN_EXPIRATION, // in seconds
+        algorithm: "HS256",
+      },
+    );
 
     await db.refreshToken.create({
       data: {
