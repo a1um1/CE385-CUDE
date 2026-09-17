@@ -21,7 +21,8 @@ const testRoute = new CustomRouter({
       query: TestSchema,
       response: TestSchema,
     },
-    async ({ query, status }) => {
+    async ({ query, status, cookies }) => {
+      console.log("Cookies:", cookies);
       status.set(201);
       return {
         randomNumber: query.randomNumber,

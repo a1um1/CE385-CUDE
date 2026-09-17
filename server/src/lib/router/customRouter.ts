@@ -173,14 +173,20 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
       this.validateAuthentication(mergedConfig),
       async (req, res) => {
         const status = new HTTPstatus();
+
         let handlersResult = await options.handler({
           params: req.ctx?.params as InferOrAny<TParams>,
           query: req.ctx?.query as InferOrAny<TQuery>,
           body: req.ctx?.body as InferOrAny<TBody>,
           headers: req.headers,
-          user: req.ctx?.user as any,
+          user: req.ctx?.user,
+          cookies: {
+            ...(req.cookies as Record<string, string>),
+            set: res.cookie.bind(res),
+          } as any,
           status,
         });
+
         if (options.config.response) {
           handlersResult = options.config.response.parse(handlersResult);
         }
