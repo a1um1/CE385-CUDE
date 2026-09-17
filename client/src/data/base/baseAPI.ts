@@ -22,7 +22,7 @@ const authMiddleware: Middleware = {
     const cloned = clonedRequests.get(id);
     clonedRequests.delete(id);
 
-    // Only 401 triggers token refresh; 403 means user has no access and passes through
+    // Only 401 triggers token refresh;
     if (response.status !== 401) return response;
 
     // Do not attempt to refresh for /auth/* routes to avoid infinite loops
