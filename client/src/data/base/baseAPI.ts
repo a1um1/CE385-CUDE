@@ -7,9 +7,7 @@ const clonedRequests = new Map<string, Request>();
 const authMiddleware: Middleware = {
   async onRequest({ request, id }) {
     const token = localStorage.getItem("token");
-    if (token) {
-      request.headers.set("Authorization", `Bearer ${token}`);
-    }
+    if (token) request.headers.set("Authorization", `Bearer ${token}`);
 
     try {
       clonedRequests.set(id, request.clone());
@@ -25,18 +23,14 @@ const authMiddleware: Middleware = {
     clonedRequests.delete(id);
 
     // Only 401 triggers token refresh; 403 means user has no access and passes through
-    if (response.status !== 401) {
-      return response;
-    }
+    if (response.status !== 401) return response;
 
     // Do not attempt to refresh for /auth/* routes to avoid infinite loops
     const isAuthRoute =
       (schemaPath && schemaPath.startsWith("/auth/")) ||
       new URL(request.url, options.baseUrl).pathname.startsWith("/auth/");
 
-    if (isAuthRoute) {
-      return response;
-    }
+    if (isAuthRoute) return response;
 
     try {
       const newToken = await refreshToken();
@@ -51,7 +45,6 @@ const authMiddleware: Middleware = {
 
       return await options.fetch(retryRequest);
     } catch {
-      // Refresh failed; propagate original 401 response
       return response;
     }
   },
