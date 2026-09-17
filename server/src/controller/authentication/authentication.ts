@@ -39,7 +39,16 @@ export default class AuthenticationController {
     return refreshToken;
   }
 
-  async refreshToken(refreshToken: string) {
+  async revokeRefreshToken(refreshToken: string) {
+    if (!this.secret) throw new Error("JWT secret is not defined");
+    await db.refreshToken.delete({
+      where: {
+        token: refreshToken,
+      },
+    });
+  }
+
+  async validateRefreshToken(refreshToken: string): Promise<AuthenticationBody> {
     if (!this.secret) throw new Error("JWT secret is not defined");
     const refreshTokenData = await db.refreshToken.findUnique({
       where: {
@@ -55,24 +64,34 @@ export default class AuthenticationController {
         },
       },
     });
+
     if (!refreshTokenData) throw new UserError(403, "Invalid refresh token");
     if (refreshTokenData.expiresAt < new Date()) {
-      await db.refreshToken.delete({
+      await db.refreshToken.deleteMany({
         where: {
-          id: refreshTokenData.id,
+          userID: refreshTokenData.user.id,
+          expiresAt: {
+            lt: new Date(),
+          },
         },
       });
       throw new UserError(403, "Refresh token expired");
     }
 
-    const token = await this.generateToken({
+    return {
       userId: refreshTokenData.user.id,
       name: refreshTokenData.user.name,
       email: refreshTokenData.user.email,
-    });
+    };
+  }
+
+  async refreshToken(refreshToken: string) {
+    const refreshTokenData = await this.validateRefreshToken(refreshToken);
+    const token = await this.generateToken(refreshTokenData);
+
     await db.refreshToken.update({
       where: {
-        id: refreshTokenData.id,
+        token: refreshToken,
       },
       data: {
         expiresAt: new Date(Date.now() + AuthenticationController.REFRESH_TOKEN_EXPIRATION_MS),
