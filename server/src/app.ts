@@ -7,7 +7,6 @@ import { adminRoute } from "#/routes/admin/index";
 import cors from "cors";
 import { authRoute } from "#/routes/auth";
 import { CodingRoute } from "#/routes/coding";
-import { unitRoute } from "./routes/unit";
 
 const app = express()
   .use(express.json())
