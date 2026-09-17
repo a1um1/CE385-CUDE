@@ -10,10 +10,14 @@ export const useUser = () =>
       if (error || !data) throw error;
       return data;
     },
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    refetchOnWindowFocus: false,
   });
 
-export const useSignUp = () =>
-  useMutation({
+export const useSignUp = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
     mutationKey: ["signup"],
     mutationFn: async (body: ExtractRequestBody<"/auth/signup", "post">) => {
       const { data, error } = await APIclient.POST("/auth/signup", {
@@ -22,7 +26,11 @@ export const useSignUp = () =>
       if (error || !data) throw error;
       return data;
     },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["user"] });
+    },
   });
+};
 
 export const useSignIn = () => {
   const queryClient = useQueryClient();
@@ -37,6 +45,9 @@ export const useSignIn = () => {
       if (data.token) localStorage.setItem("token", data.token);
       await queryClient.resetQueries({ queryKey: ["user"] });
       return data;
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["user"] });
     },
   });
 };
