@@ -13,8 +13,9 @@ import crypto from "crypto";
 
 export default class AuthenticationController {
   private secret?: string = process.env.JWT_SECRET;
-  private static REFRESH_TOKEN_EXPIRATION = 60 * 60 * 24 * 7 * 1000; // 7 days in ms
-  private static TOKEN_EXPIRATION = 60 * 15 * 1000; // 15 minutes in ms
+  private static REFRESH_TOKEN_EXPIRATION: jwt.SignOptions["expiresIn"] = "7d"; // 7 days in ms
+  private static REFRESH_TOKEN_EXPIRATION_MS: number = 7 * 24 * 60 * 60 * 1000; // 7 days in ms
+  private static TOKEN_EXPIRATION: jwt.SignOptions["expiresIn"] = "15m"; // 15 minutes in ms
 
   async createRefreshToken(userId: string): Promise<string> {
     if (!this.secret) throw new Error("JWT secret is not defined");
@@ -31,7 +32,7 @@ export default class AuthenticationController {
       data: {
         token: refreshToken,
         userID: userId,
-        expiresAt: new Date(Date.now() + AuthenticationController.REFRESH_TOKEN_EXPIRATION),
+        expiresAt: new Date(Date.now() + AuthenticationController.REFRESH_TOKEN_EXPIRATION_MS),
       },
     });
 
@@ -54,7 +55,7 @@ export default class AuthenticationController {
         },
       },
     });
-    if (!refreshTokenData) throw new UserError(401, "Invalid refresh token");
+    if (!refreshTokenData) throw new UserError(403, "Invalid refresh token");
     if (refreshTokenData.expiresAt < new Date()) {
       await db.refreshToken.delete({
         where: {
@@ -74,7 +75,7 @@ export default class AuthenticationController {
         id: refreshTokenData.id,
       },
       data: {
-        expiresAt: new Date(Date.now() + AuthenticationController.REFRESH_TOKEN_EXPIRATION),
+        expiresAt: new Date(Date.now() + AuthenticationController.REFRESH_TOKEN_EXPIRATION_MS),
       },
     });
     return token;

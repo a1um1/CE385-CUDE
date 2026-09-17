@@ -11,12 +11,13 @@ import cookieParser from "cookie-parser";
 
 const app = express()
   .use(express.json())
-  .use(cookieParser())
   .use(
     cors({
       origin: "http://localhost:5173",
+      credentials: true,
     }),
   )
+  .use(cookieParser())
   .use(authRoute)
   .use(userRouter)
   .use(CodingRoute)
