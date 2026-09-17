@@ -61,7 +61,7 @@ export default class AuthenticationController {
           id: refreshTokenData.id,
         },
       });
-      throw new UserError(401, "Refresh token expired");
+      throw new UserError(403, "Refresh token expired");
     }
 
     const token = await this.generateToken({
@@ -98,10 +98,10 @@ export default class AuthenticationController {
       return await UserController.getById(decoded.userId);
     } catch (error) {
       if (error instanceof jwt.TokenExpiredError) throw new UserError(401, "Token expired");
-      if (error instanceof jwt.NotBeforeError) throw new UserError(401, "Token not active yet");
-      if (error instanceof jwt.JsonWebTokenError) throw new UserError(401, "Invalid token");
+      if (error instanceof jwt.NotBeforeError) throw new UserError(403, "Token not active yet");
+      if (error instanceof jwt.JsonWebTokenError) throw new UserError(403, "Invalid token");
       if (error instanceof userError) {
-        if (error.status === 404) throw new UserError(401, "Token validation failed");
+        if (error.status === 404) throw new UserError(403, "Token validation failed");
         throw error;
       }
       throw new UserError(500, "Token validation failed");

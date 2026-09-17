@@ -12,9 +12,7 @@ const mockAuthenticationBody = {
   email: fakeUser.email,
 } satisfies AuthenticationBody;
 
-const { token: authenticationToken } = new AuthenticationController().generateToken(
-  mockAuthenticationBody,
-);
+const authenticationToken = new AuthenticationController().generateToken(mockAuthenticationBody);
 
 describe("Authentication Tests", () => {
   it("should handle undefined authentication", async () => {
