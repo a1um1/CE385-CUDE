@@ -28,13 +28,6 @@ export default class AdminCoursesController {
     return new AdminCoursesController(course);
   }
 
-  static async getAll(): Promise<{ data: courseQueryPayload[] }> {
-    const data = await db.course.findMany({
-      select: courseQueryPayload,
-    });
-    return { data };
-  }
-
   static async getPaginateLists(query: AdminCourseQuery): Promise<AdminCourseListResponseSchema> {
     const isBackward = query.direction === "backward" && Boolean(query.cursor);
     const orderBy = buildCursorOrderBy(query.sortBy, query.sortOrder, isBackward);
