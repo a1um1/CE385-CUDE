@@ -2,6 +2,7 @@ import { UserCreationSchema, UserValidationSchema } from "#/controller/user/user
 import AuthenticationController from "#/controller/authentication";
 import CustomRouter from "#/lib/router/customRouter";
 import { authenticationResponseSchema } from "#/controller/authentication/authentication.schema";
+import UserError from "#/lib/router/http/userError";
 
 const authController = new AuthenticationController();
 
@@ -56,7 +57,7 @@ const authRouter = new CustomRouter({
     },
     async ({ cookies }) => {
       const { refreshToken } = cookies;
-      if (!refreshToken) throw new Error("Refresh token is required");
+      if (!refreshToken) throw new UserError(400, "Refresh token is required");
       const result = await authController.refreshToken(refreshToken);
       return { token: result };
     },
