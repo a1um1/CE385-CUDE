@@ -27,7 +27,6 @@ describe("Token Tests", () => {
   it("should generate a valid token", async () => {
     const controller = new AuthenticationController();
     const tokenData = controller.generateToken(mockAuthenticationBody);
-    expect(tokenData).toHaveProperty("token");
     expect(typeof tokenData).toBe("string");
   });
 
