@@ -26,10 +26,6 @@ const unitRouter = new CustomRouter({
     response: UnitListResponseSchema,
   },
   async ({ params }) => {
-    // เช็คว่า Course มีจริงก่อน - CourseController.getById() throw
-    // UserError(404, ...) ให้อัตโนมัติอยู่แล้ว (mechanism เดียวกับ
-    // ตัวอย่าง "/test/error") ทำให้ courseId ปลอม/พิมพ์ผิด ตอบ 404
-    // แทนที่จะเงียบๆ คืน array ว่างแบบไม่รู้สาเหตุ
     await CourseController.getById(params.courseId);
     const units = await UnitController.getAllById(params.courseId);
     return units.map((unit) => unit.JSON);
