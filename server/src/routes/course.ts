@@ -2,16 +2,20 @@ import CoursesController from "#/controller/course";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 
-const publicCourseSchema = z.object({
-  id: z.string().openapi({ example: "course_id" }),
-  name: z.string().openapi({ example: "Course_Name" }),
-  color: z.string().openapi({ example: "#FFFFF" }),
-  icon: z.string().openapi({ example: "icon_name" }),
-});
+const publicCourseSchema = z
+  .object({
+    id: z.string().openapi({ example: "course_id" }),
+    name: z.string().openapi({ example: "Course_Name" }),
+    color: z.string().openapi({ example: "#FFFFF" }),
+    icon: z.string().openapi({ example: "icon_name" }),
+  })
+  .openapi("publicCourseSchema");
 
-const publicCourseResponseSchema = z.object({
-  data: z.array(publicCourseSchema),
-});
+const publicCourseResponseSchema = z
+  .object({
+    data: z.array(publicCourseSchema),
+  })
+  .openapi("publicCourseResponseSchema");
 
 const courseRouter = new CustomRouter({
   prefix: "/course",
