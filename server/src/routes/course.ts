@@ -1,4 +1,4 @@
-import CoursesController from "#/controller/admin/courses";
+import CoursesController from "#/controller/course";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 
