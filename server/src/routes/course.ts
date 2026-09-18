@@ -11,8 +11,6 @@ const publicCourseSchema = z.object({
 
 const publicCourseResponseSchema = z.object({
   data: z.array(publicCourseSchema),
-  nextCursor: z.string().optional(),
-  preCursor: z.string().optional(),
 });
 
 const courseRouter = new CustomRouter({
@@ -28,7 +26,7 @@ const courseRouter = new CustomRouter({
   async () => {
     const result = await CoursesController.getAll();
     return {
-      ...result,
+      data: result.data.map(({ id, name, color, icon }) => ({ id, name, color, icon })),
     };
   },
 );
