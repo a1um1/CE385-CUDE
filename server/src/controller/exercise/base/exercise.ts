@@ -2,7 +2,7 @@ import {
   ExerciseSelection,
   type ExercisePayload,
 } from "#/controller/exercise/base/exercise.schema";
-import { CodeExerciseController } from "#/controller/exercise/codeExercise/codeExercise";
+// import { CodeExerciseController } from "#/controller/exercise/codeExercise/codeExercise";
 import LessonController from "#/controller/lesson";
 import type { Exercise } from "#/generated/prisma/client";
 import { db } from "#/lib/prisma";
@@ -20,10 +20,10 @@ export default class ExerciseController {
   }
 
   static getMatchedController(data: ExercisePayload) {
-    if (data.type === "CODE") {
-      if (!data.codeExercises) throw new UserError(404, "CodeExercise not found");
-      return new CodeExerciseController(data, data.codeExercises);
-    }
+    // if (data.type === "CODE") {
+    //   if (!data.codeExercises) throw new UserError(404, "CodeExercise not found");
+    //   return new CodeExerciseController(data, data.codeExercises);
+    // }
 
     return new ExerciseController(data);
   }
