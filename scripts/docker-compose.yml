@@ -11,6 +11,15 @@ services:
     volumes:
       - db_data:/var/lib/postgresql
     restart: unless-stopped
+  go-judge:
+    container_name: go-judge
+    image: go-judge:latest
+    build:
+      context: ./go-judge
+      dockerfile: Dockerfile
+    privileged: true
+    ports:
+      - "5050:5050"
 
 volumes:
   db_data:
