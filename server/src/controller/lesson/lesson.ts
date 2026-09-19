@@ -1,4 +1,4 @@
-import ExerciseController from "#/controller/exercise/base/exercise";
+import ExerciseController from "#/controller/exercise";
 import UnitController from "#/controller/unit";
 import type { Lesson } from "#/generated/prisma/client";
 import { db } from "#/lib/prisma";
