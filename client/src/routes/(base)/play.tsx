@@ -1,5 +1,6 @@
 import CodeEditor, { type CodeLanguage } from "#/components/codeEditor";
-import { APIclient, type ExtractRequestBody } from "#/data/base/baseAPI";
+import type { ExtractRequestBody } from "#/data/base/apiUtils.type";
+import { APIclient } from "#/data/base/baseAPI";
 import { useMutation } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";

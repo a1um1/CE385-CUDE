@@ -107,7 +107,7 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
       if (!auth || (Array.isArray(auth) && auth.length === 0)) return next();
       const roleToCheck = (Array.isArray(auth) ? auth : ["USER", "ADMIN"]) as Role[];
       const token = (req.headers["authorization"] || "")?.split(" ")?.[1];
-      if (!token) throw new UserError(401, "Unauthorize");
+      if (!token) throw new UserError(403, "Unauthorize");
 
       const user = await this.authController.validateToken(token);
       if (!roleToCheck.includes(user.JSON.role)) throw new UserError(403, "Forbidden");
@@ -173,14 +173,20 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
       this.validateAuthentication(mergedConfig),
       async (req, res) => {
         const status = new HTTPstatus();
+
         let handlersResult = await options.handler({
           params: req.ctx?.params as InferOrAny<TParams>,
           query: req.ctx?.query as InferOrAny<TQuery>,
           body: req.ctx?.body as InferOrAny<TBody>,
           headers: req.headers,
-          user: req.ctx?.user as any,
+          user: req.ctx?.user,
+          cookies: {
+            ...(req.cookies as Record<string, string>),
+            set: res.cookie.bind(res),
+          } as any,
           status,
         });
+
         if (options.config.response) {
           handlersResult = options.config.response.parse(handlersResult);
         }

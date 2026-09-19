@@ -8,14 +8,17 @@ import cors from "cors";
 import { authRoute } from "#/routes/auth";
 import { CodingRoute } from "#/routes/coding";
 import { courseRoute } from "./routes/course";
+import cookieParser from "cookie-parser";
 
 const app = express()
   .use(express.json())
   .use(
     cors({
       origin: "http://localhost:5173",
+      credentials: true,
     }),
   )
+  .use(cookieParser())
   .use(authRoute)
   .use(userRouter)
   .use(CodingRoute)

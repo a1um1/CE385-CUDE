@@ -14,7 +14,7 @@ describe("Authentication Tests", () => {
     const result = await controller.signIn(credentials);
     expect(result).toHaveProperty("token");
     expect(result).toHaveProperty("user");
-    expect(typeof result.token.token).toBe("string");
+    expect(typeof result.token).toBe("string");
     expect(result.user.JSON.id).toBe(fakeUser.id);
   });
 
@@ -31,7 +31,7 @@ describe("Authentication Tests", () => {
     const result = await controller.signUp(userData);
     expect(result).toHaveProperty("token");
     expect(result).toHaveProperty("user");
-    expect(typeof result.token.token).toBe("string");
+    expect(typeof result.token).toBe("string");
     expect(result.user.JSON.id).toBe(fakeUser.id);
   });
 

@@ -35,6 +35,30 @@ Table Lesson {
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   exercises Exercise [not null]
+  sessions Sessions [not null]
+}
+
+Table UserStat {
+  userID String [pk]
+  currentGems Int [not null, default: 0]
+  energy Int [not null, default: 0]
+  energyUpdatedAt DateTime [default: `now()`, not null]
+  totalXP Int [not null, default: 0]
+  user User [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Transactions {
+  id String [pk]
+  userID String [not null]
+  type TransactionType [not null]
+  amount Int [not null]
+  afterAmount Int [not null]
+  reason String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  user User [not null]
 }
 
 Table Exercise {
@@ -79,13 +103,29 @@ Table Log {
   createdAt DateTime [default: `now()`, not null]
 }
 
+Table Sessions {
+  id String [pk]
+  userID String [not null]
+  user User [not null]
+  LessonID String [not null]
+  lesson Lesson [not null]
+  status SubmissionStatus [not null, default: 'PENDING']
+  submissions Submission [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
 Table Submission {
   id String [pk]
   userID String [not null]
   user User [not null]
+  SessionID String [not null]
+  session Sessions [not null]
   exerciseID String [not null]
   exercise Exercise [not null]
   content Json [not null]
+  isGraded Boolean [not null, default: false]
+  ok Boolean [not null, default: false]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
 }
@@ -106,6 +146,26 @@ Table User {
   updatedAt DateTime [not null]
   courses Course [not null]
   submissions Submission [not null]
+  userStats UserStat [not null]
+  transactions Transactions [not null]
+  refreshTokens refreshToken [not null]
+  sessions Sessions [not null]
+}
+
+Table refreshToken {
+  id String [pk]
+  userID String [not null]
+  user User [not null]
+  token String [unique, not null]
+  expiresAt DateTime [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Enum TransactionType {
+  ENERGY
+  GEM
+  XP
 }
 
 Enum EXERCISE_TYPE {
@@ -116,6 +176,13 @@ Enum EXERCISE_TYPE {
 Enum logStatus {
   SUCCESS
   ERROR
+}
+
+Enum SubmissionStatus {
+  PENDING
+  SUBMITTED
+  GRADED
+  CANCELLED
 }
 
 Enum Role {
@@ -129,12 +196,24 @@ Ref: Unit.courseID > Course.id
 
 Ref: Lesson.unitID > Unit.id
 
+Ref: UserStat.userID > User.id [delete: Cascade]
+
+Ref: Transactions.userID > User.id [delete: Cascade]
+
 Ref: Exercise.lessonID > Lesson.id
 
 Ref: CodeExercise.exerciseID - Exercise.id
 
 Ref: TestCase.codeExerciseID > CodeExercise.id
 
+Ref: Sessions.userID > User.id
+
+Ref: Sessions.LessonID > Lesson.id
+
 Ref: Submission.userID > User.id
 
+Ref: Submission.SessionID > Sessions.id
+
 Ref: Submission.exerciseID > Exercise.id
+
+Ref: refreshToken.userID > User.id

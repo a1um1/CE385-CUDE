@@ -1,6 +1,7 @@
 import Button from "#/components/button";
 import CodeEditor, { type CodeLanguage } from "#/components/codeEditor";
-import { APIclient, type ExtractRequestBody } from "#/data/base/baseAPI";
+import type { ExtractRequestBody } from "#/data/base/apiUtils.type";
+import { APIclient } from "#/data/base/baseAPI";
 import formatNstoMs from "#/lib/formatNs";
 import formatFileSize from "#/lib/formatSize";
 import { useMutation } from "@tanstack/react-query";
