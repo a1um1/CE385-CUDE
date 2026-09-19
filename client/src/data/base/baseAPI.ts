@@ -1,6 +1,7 @@
 import createClient, { type Middleware } from "openapi-fetch";
 import type { paths } from "./openapi";
-import refreshToken, { BASE_URL } from "./refreshToken";
+import refreshToken from "./refreshToken";
+import { BASE_URL } from "#/data/base/baseURL";
 
 const clonedRequests = new Map<string, Request>();
 
