@@ -19,7 +19,7 @@ function RouteComponent() {
   });
   const testSpend = useTestSpendEnergy();
 
-  const handleSpendEnergy = async () => {
+  const handleSpendEnergy = () => {
     testSpend.mutate();
   };
 
