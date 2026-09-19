@@ -23,6 +23,7 @@ model User {
   userStats     UserStat[]
   transactions  Transactions[]
   refreshTokens refreshToken[]
+  sessions      Sessions[]
 }
 
 model refreshToken {
