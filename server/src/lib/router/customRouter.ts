@@ -9,6 +9,7 @@ import type {
 } from "express-serve-static-core";
 import { registry } from "#/openapi";
 import AuthenticationController from "#/controller/authentication";
+import { ServerErrorSchema, ValidationErrorSchema } from "#/lib/router/http/errorResponse";
 import { HTTPstatus } from "#/lib/router/http/httpStatus";
 import UserError from "#/lib/router/http/userError";
 import { mergePath } from "#/lib/mergePath";
@@ -144,8 +145,14 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
           description: config.responseDescription ?? "Successful response",
           content: { "application/json": { schema: config.response } },
         },
-        400: { description: "Validation error" },
-        500: { description: "Internal server error" },
+        400: {
+          description: "Validation error",
+          content: { "application/json": { schema: ValidationErrorSchema } },
+        },
+        500: {
+          description: "Internal server error",
+          content: { "application/json": { schema: ServerErrorSchema } },
+        },
       },
     });
   }
