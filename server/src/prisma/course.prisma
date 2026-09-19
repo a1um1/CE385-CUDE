@@ -34,4 +34,6 @@ model Lesson {
   updatedAt    DateTime @updatedAt
 
   exercises Exercise[]
+
+  sessions Sessions[]
 }
