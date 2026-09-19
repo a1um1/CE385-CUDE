@@ -41,7 +41,7 @@ export default class AuthenticationController {
 
   async revokeRefreshToken(refreshToken: string) {
     if (!this.secret) throw new Error("JWT secret is not defined");
-    await db.refreshToken.delete({
+    await db.refreshToken.deleteMany({
       where: {
         token: refreshToken,
       },
@@ -85,19 +85,16 @@ export default class AuthenticationController {
     };
   }
 
-  async refreshToken(refreshToken: string) {
+  async refreshToken(refreshToken: string): Promise<{
+    accessToken: authenticationSchema;
+    refreshToken: string;
+  }> {
     const refreshTokenData = await this.validateRefreshToken(refreshToken);
-    const token = await this.generateToken(refreshTokenData);
+    await this.revokeRefreshToken(refreshToken);
+    const newRefreshToken = await this.createRefreshToken(refreshTokenData.userId);
+    const accessToken = await this.generateToken(refreshTokenData);
 
-    await db.refreshToken.update({
-      where: {
-        token: refreshToken,
-      },
-      data: {
-        expiresAt: new Date(Date.now() + AuthenticationController.REFRESH_TOKEN_EXPIRATION_MS),
-      },
-    });
-    return token;
+    return { accessToken, refreshToken: newRefreshToken };
   }
 
   generateToken(user: AuthenticationBody): authenticationSchema {

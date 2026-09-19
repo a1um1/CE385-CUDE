@@ -13,7 +13,7 @@ export type authenticationSchema = Zod.infer<typeof authenticationSchema>;
 
 export const authenticationResponseSchema = z
   .object({
-    token: authenticationSchema,
+    message: z.string().openapi("SuccessMessage"),
   })
   .openapi("AuthenticationResponseData");
 
