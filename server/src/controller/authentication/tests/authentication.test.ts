@@ -17,6 +17,8 @@ const makeRefreshTokenRecord = (token: string): RefreshTokenRecord => ({
   id: "test-refresh-id",
   userID: fakeUser.id,
   token,
+  userAgent: null,
+  ipAddress: null,
   expiresAt: futureDate(),
   createdAt: new Date(),
   updatedAt: new Date(),
@@ -33,11 +35,19 @@ describe("Authentication Tests", () => {
     const hashedPassword = await bcrypt.hash(validPassword, 12);
     mockDB.user.findUnique.mockResolvedValue({ ...fakeUser, password: hashedPassword });
     const credentials = { email: fakeUser.email, password: validPassword };
-    const result = await controller.signIn(credentials);
+    const context = { userAgent: "test-agent", ipAddress: "127.0.0.1" };
+    const result = await controller.signIn(credentials, context);
     expect(result).toHaveProperty("token");
     expect(result).toHaveProperty("user");
     expect(typeof result.token).toBe("string");
     expect(result.user.JSON.id).toBe(fakeUser.id);
+    expect(mockDB.refreshToken.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        userID: fakeUser.id,
+        userAgent: "test-agent",
+        ipAddress: "127.0.0.1",
+      }),
+    });
   });
 
   it("should sign up a user and return a token", async () => {
@@ -79,7 +89,10 @@ describe("Authentication Tests", () => {
     mockDB.refreshToken.deleteMany.mockResolvedValue({ count: 1 });
     mockDB.refreshToken.create.mockResolvedValue(makeRefreshTokenRecord("new-refresh-token"));
 
-    const result = await controller.refreshToken(oldToken);
+    const result = await controller.refreshToken(oldToken, {
+      userAgent: "refresh-agent",
+      ipAddress: "10.0.0.1",
+    });
 
     expect(typeof result.accessToken).toBe("string");
     expect(typeof result.refreshToken).toBe("string");
@@ -87,7 +100,12 @@ describe("Authentication Tests", () => {
     expect(mockDB.refreshToken.deleteMany).toHaveBeenCalledWith({
       where: { token: oldToken },
     });
-    expect(mockDB.refreshToken.create).toHaveBeenCalled();
+    expect(mockDB.refreshToken.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        userAgent: "refresh-agent",
+        ipAddress: "10.0.0.1",
+      }),
+    });
   });
 
   it("should throw error when refreshing with an invalid refresh token", async () => {

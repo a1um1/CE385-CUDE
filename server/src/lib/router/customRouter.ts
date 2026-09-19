@@ -181,6 +181,7 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
           query: req.ctx?.query as InferOrAny<TQuery>,
           body: req.ctx?.body as InferOrAny<TBody>,
           headers: req.headers,
+          ip: req.ip,
           user: req.ctx?.user,
           cookies: {
             ...(req.cookies as Record<string, string>),
