@@ -29,7 +29,7 @@ Table Lesson {
   name String [not null]
   unitID String [not null]
   unit Unit [not null]
-  passTheshold Float [not null]
+  passThreshold Decimal [not null]
   XPgiven Int [not null]
   gemsGiven Int [not null]
   createdAt DateTime [default: `now()`, not null]
