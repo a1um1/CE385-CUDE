@@ -1112,7 +1112,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["AuthenticationResponseResponseData"];
+                        "application/json": components["schemas"]["AuthenticationResponseData"];
                     };
                 };
                 /** @description Validation error */
@@ -1201,6 +1201,56 @@ export interface paths {
         get?: never;
         put?: never;
         /** Refresh authentication token */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AuthenticationResponseData"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Sign out and revoke the refresh token */
         post: {
             parameters: {
                 query?: never;
@@ -1468,56 +1518,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/course": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List all available courses */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["publicCourseResponseSchema"];
-                    };
-                };
-                /** @description Validation error */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-                /** @description Internal server error */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1525,17 +1525,14 @@ export interface components {
         UserSafeData: {
             /** @example 123456 */
             id: string;
-            /** @example j_doe */
-            username: string;
-            /** @example John Doe */
-            name: string;
+            username: components["schemas"]["UsernameDefinition"];
+            name: components["schemas"]["NameDefinition"];
             /**
              * Format: email
              * @example email@gmail.com
              */
             email: string;
-            /** @example The Brave */
-            epithet: string | null;
+            epithet: components["schemas"]["EpithetDefinition"];
             /**
              * @example USER
              * @enum {string}
@@ -1560,6 +1557,12 @@ export interface components {
              */
             updatedAt: string;
         };
+        /** @example j_doe */
+        UsernameDefinition: string;
+        /** @example John Doe */
+        NameDefinition: string;
+        /** @example The Brave */
+        EpithetDefinition: string | null;
         GenericResponse: {
             /** @example Operation completed successfully */
             message: string;
@@ -1575,18 +1578,16 @@ export interface components {
         UserUpdatePassword: {
             /** @example currentPassword123 */
             currentPassword: string;
-            /** @example Password123! */
-            newPassword: string;
+            newPassword: components["schemas"]["UserPasswordDefinition"];
         };
+        /** @example Password123! */
+        UserPasswordDefinition: string;
         UserSafePublicData: {
             /** @example 123456 */
             id: string;
-            /** @example j_doe */
-            username: string;
-            /** @example John Doe */
-            name: string;
-            /** @example The Brave */
-            epithet: string | null;
+            username: components["schemas"]["UsernameDefinition"];
+            name: components["schemas"]["NameDefinition"];
+            epithet: components["schemas"]["EpithetDefinition"];
             /** @example https://example.com/profile.jpg */
             profileImage: string | null;
             /** @example https://example.com/background.jpg */
@@ -1650,12 +1651,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-09-19T15:11:58.064Z
+             * @example 2026-09-20T04:53:21.949Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-09-19T15:11:58.066Z
+             * @example 2026-09-20T04:53:21.950Z
              */
             updatedAt: string;
         };
@@ -1723,8 +1724,7 @@ export interface components {
         AdminUserUpdatePassword: {
             /** @example user_id */
             id: string;
-            /** @example Password123! */
-            newPassword: string;
+            newPassword: components["schemas"]["UserPasswordDefinition"];
         };
         AdminUserDeactivate: {
             /** @example user_id */
@@ -1737,22 +1737,18 @@ export interface components {
             id: string;
         };
         AuthenticationResponseData: {
-            token: components["schemas"]["AuthenticationData"];
+            message: components["schemas"]["SuccessMessage"];
         };
-        AuthenticationData: string;
         SuccessMessage: string;
         UserCreationData: {
-            /** @example John Doe */
-            name: string;
-            /** @example j_doe */
-            username: string;
+            name: components["schemas"]["NameDefinition"];
+            username: components["schemas"]["UsernameDefinition"];
             /**
              * Format: email
              * @example email@gmail.com
              */
             email: string;
-            /** @example Password123! */
-            password: string;
+            password: components["schemas"]["UserPasswordDefinition"];
         };
         UserValidationData: {
             /**
@@ -1760,8 +1756,7 @@ export interface components {
              * @example email@gmail.com
              */
             email: string;
-            /** @example Password123! */
-            password: string;
+            password: components["schemas"]["UserPasswordDefinition"];
         };
         JudgeLanguagesResponse: {
             languages: {
@@ -1812,19 +1807,6 @@ export interface components {
             output: components["schemas"]["Hello world"];
         }[];
         "Hello world": string;
-        publicCourseResponseSchema: {
-            data: components["schemas"]["publicCourseSchema"][];
-        };
-        publicCourseSchema: {
-            /** @example course_id */
-            id: string;
-            /** @example Course_Name */
-            name: string;
-            /** @example #FFFFF */
-            color: string;
-            /** @example icon_name */
-            icon: string;
-        };
         publicCourseResponseSchema: {
             data: components["schemas"]["publicCourseSchema"][];
         };
