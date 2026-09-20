@@ -1525,17 +1525,14 @@ export interface components {
         UserSafeData: {
             /** @example 123456 */
             id: string;
-            /** @example j_doe */
-            username: string;
-            /** @example John Doe */
-            name: string;
+            username: components["schemas"]["UsernameDefinition"];
+            name: components["schemas"]["NameDefinition"];
             /**
              * Format: email
              * @example email@gmail.com
              */
             email: string;
-            /** @example The Brave */
-            epithet: string | null;
+            epithet: components["schemas"]["EpithetDefinition"];
             /**
              * @example USER
              * @enum {string}
@@ -1560,6 +1557,12 @@ export interface components {
              */
             updatedAt: string;
         };
+        /** @example j_doe */
+        UsernameDefinition: string;
+        /** @example John Doe */
+        NameDefinition: string;
+        /** @example The Brave */
+        EpithetDefinition: string | null;
         GenericResponse: {
             /** @example Operation completed successfully */
             message: string;
@@ -1575,18 +1578,16 @@ export interface components {
         UserUpdatePassword: {
             /** @example currentPassword123 */
             currentPassword: string;
-            /** @example Password123! */
-            newPassword: string;
+            newPassword: components["schemas"]["UserPasswordDefinition"];
         };
+        /** @example Password123! */
+        UserPasswordDefinition: string;
         UserSafePublicData: {
             /** @example 123456 */
             id: string;
-            /** @example j_doe */
-            username: string;
-            /** @example John Doe */
-            name: string;
-            /** @example The Brave */
-            epithet: string | null;
+            username: components["schemas"]["UsernameDefinition"];
+            name: components["schemas"]["NameDefinition"];
+            epithet: components["schemas"]["EpithetDefinition"];
             /** @example https://example.com/profile.jpg */
             profileImage: string | null;
             /** @example https://example.com/background.jpg */
@@ -1650,12 +1651,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-09-19T11:54:21.297Z
+             * @example 2026-09-20T04:53:21.949Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-09-19T11:54:21.298Z
+             * @example 2026-09-20T04:53:21.950Z
              */
             updatedAt: string;
         };
@@ -1723,8 +1724,7 @@ export interface components {
         AdminUserUpdatePassword: {
             /** @example user_id */
             id: string;
-            /** @example Password123! */
-            newPassword: string;
+            newPassword: components["schemas"]["UserPasswordDefinition"];
         };
         AdminUserDeactivate: {
             /** @example user_id */
@@ -1741,17 +1741,14 @@ export interface components {
         };
         SuccessMessage: string;
         UserCreationData: {
-            /** @example John Doe */
-            name: string;
-            /** @example j_doe */
-            username: string;
+            name: components["schemas"]["NameDefinition"];
+            username: components["schemas"]["UsernameDefinition"];
             /**
              * Format: email
              * @example email@gmail.com
              */
             email: string;
-            /** @example Password123! */
-            password: string;
+            password: components["schemas"]["UserPasswordDefinition"];
         };
         UserValidationData: {
             /**
@@ -1759,8 +1756,7 @@ export interface components {
              * @example email@gmail.com
              */
             email: string;
-            /** @example Password123! */
-            password: string;
+            password: components["schemas"]["UserPasswordDefinition"];
         };
         JudgeLanguagesResponse: {
             languages: {
