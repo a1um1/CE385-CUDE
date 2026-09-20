@@ -42,7 +42,6 @@ export const useSignIn = () => {
         body,
       });
       if (error || !data) throw error;
-      if (data.token) localStorage.setItem("token", data.token);
       await queryClient.resetQueries({ queryKey: ["user"] });
       return data;
     },
@@ -57,7 +56,8 @@ export const useSignOut = () => {
   return useMutation({
     mutationKey: ["signout"],
     mutationFn: async () => {
-      localStorage.removeItem("token");
+      const { error } = await APIclient.POST("/auth/logout");
+      if (error) throw error;
       await queryClient.resetQueries({ queryKey: ["user"] });
       return { message: "Signed out successfully" };
     },

@@ -37,11 +37,12 @@ export type RouteHandler<
   params: InferOrAny<TParams>;
   query: InferOrAny<TQuery>;
   headers: IncomingHttpHeaders;
+  ip: string | undefined;
   user: TAuth extends true | Role[] ? UserController : undefined;
-  cookies: { set: (name: string, value: string, options: CookieOptions) => any } & Record<
-    string,
-    string
-  >;
+  cookies: {
+    set: (name: string, value: string, options: CookieOptions) => any;
+    clear: (name: string, options?: CookieOptions) => any;
+  } & Record<string, string>;
   status: HTTPstatus;
 }) => Promise<InferOrAny<TResponse>> | InferOrAny<TResponse>;
 
