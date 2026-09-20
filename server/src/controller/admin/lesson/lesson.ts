@@ -32,32 +32,36 @@ export default class AdminLessonsController {
     const isBackward = query.direction === "backward" && Boolean(query.cursor);
     const orderBy = buildCursorOrderBy(query.sortBy, query.sortOrder, isBackward);
 
-    // เช็คว่ามีการส่ง unitID มาหรือไม่ ถ้ามีให้ดึงเฉพาะ Lesson ของ Unit นั้น
-    const whereCondition = query.unitID ? { unitID: query.unitID } : {};
+    // เพิ่มเงื่อนไขเฉพาะเมื่อมี unitID เพื่อให้รองรับทั้งการดูทุก Lesson และการกรองตาม Unit
+    const where = query.unitID ? { unitID: query.unitID } : {};
 
-    const data = await db.lesson.findMany({
-      where: whereCondition,
+    const lessons = await db.lesson.findMany({
+      where,
+      // ดึงเกินมา 1 รายการเพื่อใช้ตรวจว่ามีหน้าถัดไปหรือไม่ โดยไม่ต้อง query เพิ่ม
       take: query.perPage + 1,
+      // เมื่อมี cursor ต้องข้ามรายการที่ cursor ชี้อยู่ เพราะรายการนั้นเป็นขอบเขตของหน้าปัจจุบัน
       skip: query.cursor ? 1 : 0,
       cursor: query.cursor ? { id: query.cursor } : undefined,
       orderBy,
       select: lessonQueryPayload,
     });
 
+    const hasExtraLesson = lessons.length > query.perPage;
     let nextCursor: string | undefined = undefined;
     let prevCursor: string | undefined = undefined;
 
     if (isBackward) {
-      if (data.length > query.perPage) prevCursor = data.pop()?.id;
-      data.reverse();
+      // ลำดับ query ถูกกลับด้านเพื่อหา Lesson ก่อนหน้า จึงต้องตัดตัวเกินและกลับลำดับก่อนส่งผลลัพธ์
+      if (hasExtraLesson) prevCursor = lessons.pop()?.id;
+      lessons.reverse();
       nextCursor = query.cursor;
     } else {
-      if (data.length > query.perPage) nextCursor = data.pop()?.id;
+      if (hasExtraLesson) nextCursor = lessons.pop()?.id;
       if (query.cursor) prevCursor = query.cursor;
     }
 
     return {
-      data,
+      data: lessons,
       nextCursor,
       prevCursor,
     };
