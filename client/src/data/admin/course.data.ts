@@ -11,7 +11,7 @@ export const useAdminCourseListQuery = (props: ExtractRequestQuery<"/admin/cours
           query: props,
         },
       });
-      if (error || !data) throw error;
+      if (error) throw error;
       return data;
     },
   });
@@ -27,7 +27,7 @@ export const useGetAdminCourse = (props: { id: string }) =>
           },
         },
       });
-      if (error || !data) throw error;
+      if (error) throw error;
       return data;
     },
   });
@@ -40,7 +40,7 @@ export const useAdminCreateCourse = () => {
       const { data, error } = await APIclient.POST("/admin/course", {
         body,
       });
-      if (error || !data) throw error;
+      if (error) throw error;
       return data;
     },
     onSuccess: () => {
@@ -65,7 +65,7 @@ export const useAdminUpdateCourse = () => {
         },
         body: props.body,
       });
-      if (error || !data) throw error;
+      if (error) throw error;
       return data;
     },
     onSuccess: (_, variables) => {

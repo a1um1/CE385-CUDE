@@ -23,6 +23,7 @@ import type {
 } from "#/lib/router/customerRouter.type";
 import type { ZodType } from "zod";
 import { z } from "#/lib/extendZod";
+import { ValidationErrorSchema, ServerErrorSchema } from "#/lib/router/http/errorResponse";
 
 export default class CustomRouter<TDefaultAuth extends AuthenticationObject = undefined> {
   private router = Router();
@@ -152,8 +153,14 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
           description: config.responseDescription ?? "Successful response",
           content: { "application/json": { schema: config.response } },
         },
-        400: { description: "Validation error" },
-        500: { description: "Internal server error" },
+        400: {
+          description: "Validation error",
+          content: { "application/json": { schema: ValidationErrorSchema } },
+        },
+        500: {
+          description: "Internal server error",
+          content: { "application/json": { schema: ServerErrorSchema } },
+        },
       },
     });
   }

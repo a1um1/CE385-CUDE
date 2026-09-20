@@ -35,14 +35,18 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ValidationError"];
+                    };
                 };
                 /** @description Internal server error */
                 500: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ServerError"];
+                    };
                 };
             };
         };
@@ -91,14 +95,18 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ValidationError"];
+                    };
                 };
                 /** @description Internal server error */
                 500: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ServerError"];
+                    };
                 };
             };
         };
@@ -145,14 +153,18 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ValidationError"];
+                    };
                 };
                 /** @description Internal server error */
                 500: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ServerError"];
+                    };
                 };
             };
         };
@@ -199,14 +211,18 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ValidationError"];
+                    };
                 };
                 /** @description Internal server error */
                 500: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ServerError"];
+                    };
                 };
             };
         };
@@ -249,14 +265,18 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ValidationError"];
+                    };
                 };
                 /** @description Internal server error */
                 500: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ServerError"];
+                    };
                 };
             };
         };
@@ -299,14 +319,18 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ValidationError"];
+                    };
                 };
                 /** @description Internal server error */
                 500: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ServerError"];
+                    };
                 };
             };
         };
@@ -353,14 +377,18 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ValidationError"];
+                    };
                 };
                 /** @description Internal server error */
                 500: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ServerError"];
+                    };
                 };
             };
         };
@@ -405,14 +433,18 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ValidationError"];
+                    };
                 };
                 /** @description Internal server error */
                 500: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ServerError"];
+                    };
                 };
             };
         };
@@ -455,14 +487,18 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ValidationError"];
+                    };
                 };
                 /** @description Internal server error */
                 500: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ServerError"];
+                    };
                 };
             };
         };
@@ -505,14 +541,18 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ValidationError"];
+                    };
                 };
                 /** @description Internal server error */
                 500: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ServerError"];
+                    };
                 };
             };
         };
@@ -560,14 +600,18 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ValidationError"];
+                    };
                 };
                 /** @description Internal server error */
                 500: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ServerError"];
+                    };
                 };
             };
         };
@@ -614,14 +658,18 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ValidationError"];
+                    };
                 };
                 /** @description Internal server error */
                 500: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ServerError"];
+                    };
                 };
             };
         };
@@ -654,14 +702,18 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ValidationError"];
+                    };
                 };
                 /** @description Internal server error */
                 500: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ServerError"];
+                    };
                 };
             };
         };
@@ -704,14 +756,18 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ValidationError"];
+                    };
                 };
                 /** @description Internal server error */
                 500: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ServerError"];
+                    };
                 };
             };
         };
@@ -745,14 +801,18 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ValidationError"];
+                    };
                 };
                 /** @description Internal server error */
                 500: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ServerError"];
+                    };
                 };
             };
         };
@@ -800,14 +860,18 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ValidationError"];
+                    };
                 };
                 /** @description Internal server error */
                 500: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ServerError"];
+                    };
                 };
             };
         };
@@ -852,14 +916,18 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ValidationError"];
+                    };
                 };
                 /** @description Internal server error */
                 500: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ServerError"];
+                    };
                 };
             };
         };
@@ -908,14 +976,18 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ValidationError"];
+                    };
                 };
                 /** @description Internal server error */
                 500: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ServerError"];
+                    };
                 };
             };
         };
@@ -962,14 +1034,18 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ValidationError"];
+                    };
                 };
                 /** @description Internal server error */
                 500: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ServerError"];
+                    };
                 };
             };
         };
@@ -1016,14 +1092,18 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ValidationError"];
+                    };
                 };
                 /** @description Internal server error */
                 500: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ServerError"];
+                    };
                 };
             };
         };
@@ -1064,14 +1144,18 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ValidationError"];
+                    };
                 };
                 /** @description Internal server error */
                 500: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ServerError"];
+                    };
                 };
             };
         };
@@ -1120,14 +1204,18 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ValidationError"];
+                    };
                 };
                 /** @description Internal server error */
                 500: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ServerError"];
+                    };
                 };
             };
         };
@@ -1174,14 +1262,18 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ValidationError"];
+                    };
                 };
                 /** @description Internal server error */
                 500: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ServerError"];
+                    };
                 };
             };
         };
@@ -1224,14 +1316,18 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ValidationError"];
+                    };
                 };
                 /** @description Internal server error */
                 500: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ServerError"];
+                    };
                 };
             };
         };
@@ -1274,14 +1370,18 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ValidationError"];
+                    };
                 };
                 /** @description Internal server error */
                 500: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ServerError"];
+                    };
                 };
             };
         };
@@ -1322,14 +1422,18 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ValidationError"];
+                    };
                 };
                 /** @description Internal server error */
                 500: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ServerError"];
+                    };
                 };
             };
         };
@@ -1388,14 +1492,18 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ValidationError"];
+                    };
                 };
                 /** @description Internal server error */
                 500: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ServerError"];
+                    };
                 };
             };
         };
@@ -1451,14 +1559,18 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ValidationError"];
+                    };
                 };
                 /** @description Internal server error */
                 500: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ServerError"];
+                    };
                 };
             };
         };
@@ -1499,14 +1611,18 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ValidationError"];
+                    };
                 };
                 /** @description Internal server error */
                 500: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ServerError"];
+                    };
                 };
             };
         };
@@ -1563,6 +1679,16 @@ export interface components {
         NameDefinition: string;
         /** @example The Brave */
         EpithetDefinition: string | null;
+        ValidationError: {
+            /** @example Invalid request parameters */
+            message: string;
+            /** @example username: Required */
+            details?: string;
+        };
+        ServerError: {
+            /** @example Internal Server Error */
+            message: string;
+        };
         GenericResponse: {
             /** @example Operation completed successfully */
             message: string;
@@ -1651,12 +1777,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-09-20T04:53:21.949Z
+             * @example 2026-09-20T06:46:14.198Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-09-20T04:53:21.950Z
+             * @example 2026-09-20T06:46:14.199Z
              */
             updatedAt: string;
         };
