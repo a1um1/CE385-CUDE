@@ -1112,7 +1112,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["AuthenticationData"];
+                        "application/json": components["schemas"]["AuthenticationResponseData"];
                     };
                 };
                 /** @description Validation error */
@@ -1166,7 +1166,107 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["AuthenticationData"];
+                        "application/json": components["schemas"]["AuthenticationResponseData"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Refresh authentication token */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AuthenticationResponseData"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Sign out and revoke the refresh token */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AuthenticationResponseData"];
                     };
                 };
                 /** @description Validation error */
@@ -1368,6 +1468,56 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/course": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List all available courses */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["publicCourseResponseSchema"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1500,12 +1650,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-09-07T07:42:42.458Z
+             * @example 2026-09-19T11:54:21.297Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-09-07T07:42:42.459Z
+             * @example 2026-09-19T11:54:21.298Z
              */
             updatedAt: string;
         };
@@ -1586,10 +1736,10 @@ export interface components {
             /** @example user_id */
             id: string;
         };
-        AuthenticationData: {
-            /** @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMjM0NTYiLCJuYW1lIjoiSm9obiBEb2UiLCJlbWFpbCI6ImVtYWlsQGdtYWlsLmNvbSIsImlhdCI6MTY4NzQyNjQwMCwiZXhwIjoxNjg3NDI2NDAwfQ.abc123 */
-            token: string;
+        AuthenticationResponseData: {
+            message: components["schemas"]["SuccessMessage"];
         };
+        SuccessMessage: string;
         UserCreationData: {
             /** @example John Doe */
             name: string;
@@ -1661,6 +1811,19 @@ export interface components {
             output: components["schemas"]["Hello world"];
         }[];
         "Hello world": string;
+        publicCourseResponseSchema: {
+            data: components["schemas"]["publicCourseSchema"][];
+        };
+        publicCourseSchema: {
+            /** @example course_id */
+            id: string;
+            /** @example Course_Name */
+            name: string;
+            /** @example #FFFFF */
+            color: string;
+            /** @example icon_name */
+            icon: string;
+        };
     };
     responses: never;
     parameters: never;

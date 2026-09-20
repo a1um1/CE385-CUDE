@@ -112,7 +112,9 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
           : this.defaultConfig.authentication;
       if (!auth || (Array.isArray(auth) && auth.length === 0)) return next();
       const roleToCheck = (Array.isArray(auth) ? auth : ["USER", "ADMIN"]) as Role[];
-      const token = (req.headers["authorization"] || "")?.split(" ")?.[1];
+      const token =
+        (req.cookies?.["accessToken"] as string | undefined) ??
+        (req.headers["authorization"] || "")?.split(" ")?.[1];
       if (!token) throw new UserError(403, "Unauthorize");
 
       const user = await this.authController.validateToken(token);
@@ -185,10 +187,12 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
           query: req.ctx?.query as InferOrAny<TQuery>,
           body: req.ctx?.body as InferOrAny<TBody>,
           headers: req.headers,
+          ip: req.ip,
           user: req.ctx?.user,
           cookies: {
             ...(req.cookies as Record<string, string>),
             set: res.cookie.bind(res),
+            clear: res.clearCookie.bind(res),
           } as any,
           status,
         });

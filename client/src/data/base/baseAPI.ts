@@ -7,9 +7,6 @@ const clonedRequests = new Map<string, Request>();
 
 const authMiddleware: Middleware = {
   async onRequest({ request, id }) {
-    const token = localStorage.getItem("token");
-    if (token) request.headers.set("Authorization", `Bearer ${token}`);
-
     try {
       clonedRequests.set(id, request.clone());
     } catch {
@@ -34,13 +31,9 @@ const authMiddleware: Middleware = {
     if (isAuthRoute) return response;
 
     try {
-      const newToken = await refreshToken();
+      await refreshToken();
       const retryRequestSource = cloned ?? request;
-      const headers = new Headers(retryRequestSource.headers);
-      headers.set("Authorization", `Bearer ${newToken}`);
-
       const retryRequest = new Request(retryRequestSource, {
-        headers,
         credentials: "include",
       });
 
