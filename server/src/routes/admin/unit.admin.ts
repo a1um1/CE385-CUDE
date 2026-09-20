@@ -1,4 +1,4 @@
-import AdminUnitsController from "#/controller/admin/unit"; 
+import AdminUnitsController from "#/controller/admin/unit";
 import {
   AdminUnitCreateSchema,
   AdminUnitUpdateSchema,
