@@ -18,18 +18,53 @@ export const UserPasswordDefinition = z
   .refine((password) => /[!@#$%^&*?\-_]/.test(password), {
     message: "Password must contain at least one special character (!@#$%^&*?).",
   })
-  .openapi({
+  .openapi("UserPasswordDefinition", {
     example: "Password123!",
+  });
+
+export const usernameDefinition = z
+  .string()
+  .nonempty({ message: "Epithet cannot be empty." })
+  .min(3, { message: "Username must be at least 3 characters long." })
+  .max(20, { message: "Username cannot exceed 20 characters." })
+  .regex(/^[a-zA-Z0-9_]+$/, {
+    message: "Username can only contain letters, numbers, and underscores.",
+  })
+  .openapi("UsernameDefinition", {
+    example: "j_doe",
+  });
+
+export const nameDefinition = z
+  .string()
+  .nonempty({ message: "Epithet cannot be empty." })
+  .min(1, { message: "Name must be at least 1 character long." })
+  .max(50, { message: "Name cannot exceed 50 characters." })
+  .regex(/^[a-zA-Z\s]+$/, {
+    message: "Name can only contain letters and spaces.",
+  })
+  .openapi("NameDefinition", {
+    example: "John Doe",
+  });
+
+export const epithetDefinition = z
+  .string()
+  .min(1, { message: "Epithet must be at least 1 character long." })
+  .max(50, { message: "Epithet cannot exceed 50 characters." })
+  .regex(/^[a-zA-Z\s]+$/, {
+    message: "Epithet can only contain letters and spaces.",
+  })
+  .openapi("EpithetDefinition", {
+    example: "The Brave",
   });
 
 export const UserSchema = z
   .object({
     id: z.string().openapi({ example: "123456" }),
-    username: z.string().openapi({ example: "j_doe" }),
-    name: z.string().openapi({ example: "John Doe" }),
+    username: usernameDefinition,
+    name: nameDefinition,
     email: z.email().openapi({ example: "email@gmail.com" }),
     password: UserPasswordDefinition,
-    epithet: z.string().nullable().openapi({ example: "The Brave" }),
+    epithet: epithetDefinition.nullable(),
     role: z.enum(["USER", "ADMIN"]).openapi({ example: "USER" }),
     profileImage: z.string().nullable().openapi({ example: "https://example.com/profile.jpg" }),
     backgroundImage: z
