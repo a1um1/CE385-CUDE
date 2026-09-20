@@ -38,7 +38,7 @@ export default class UserStatController {
   async spendEnergy({ amount = 1, reason }: spendEnergyProps): Promise<void> {
     const currentEnergy = await this.calculateCurrentEnergy();
 
-    if (currentEnergy < amount) {
+    if (currentEnergy < amount || amount <= 0) {
       throw new UserError(403, "Not enough energy to perform this action.");
     }
 

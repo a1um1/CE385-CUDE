@@ -68,4 +68,27 @@ describe("Spend Energy in UserStat Controller", () => {
     expect(mockDB.$transaction).toHaveBeenCalled();
     expect(userStatController.JSON.energy).toEqual(0); // After spending 1 energy, it should be 0
   });
+
+  it("should throw an error if trying to spend zero or negative energy", async () => {
+    const initialEnergy = 5;
+    const energyToSpend = 0; // Trying to spend zero energy
+
+    mockDB.userStat.findUnique.mockResolvedValueOnce({
+      ...fakeUserStat,
+      energy: initialEnergy,
+      energyUpdatedAt: new Date(), // Current time
+    });
+
+    const userStatController = await UserStatController.getByUserId(fakeUserStat.userID);
+
+    await expect(
+      userStatController.spendEnergy({ amount: energyToSpend, reason: "Test spend" }),
+    ).rejects.toThrow("Not enough energy to perform this action.");
+
+    const negativeEnergyToSpend = -1; // Trying to spend negative energy
+
+    await expect(
+      userStatController.spendEnergy({ amount: negativeEnergyToSpend, reason: "Test spend" }),
+    ).rejects.toThrow("Not enough energy to perform this action.");
+  });
 });
