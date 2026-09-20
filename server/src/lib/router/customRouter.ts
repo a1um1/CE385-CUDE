@@ -61,12 +61,18 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
         });
       }
 
-      console.error("Unhandled error in route handler:", err);
-      const unhandledErrorMessage =
-        (err instanceof Error ? err.message : undefined) || "Internal Server Error";
+      if (process.env.NODE_ENV === "development") {
+        console.error("Unhandled error in route handler:", err);
+        const unhandledErrorMessage =
+          (err instanceof Error ? err.message : undefined) || "Internal Server Error";
+
+        return res.status(500).json({
+          message: unhandledErrorMessage,
+        });
+      }
 
       return res.status(500).json({
-        message: unhandledErrorMessage,
+        message: "Internal Server Error",
       });
     };
   }
