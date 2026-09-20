@@ -1,4 +1,4 @@
-import AdminLessonsController from "#/controller/admin/lesson/lesson"; 
+import AdminLessonsController from "#/controller/admin/lesson/lesson";
 import {
   AdminLessonCreateSchema,
   AdminLessonUpdateSchema,
