@@ -54,7 +54,6 @@ function RouteComponent() {
         body,
       });
       if (error) throw error;
-      if (!data) throw new Error("Failed to retrive data");
       return data;
     },
   });
