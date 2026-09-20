@@ -1,4 +1,4 @@
-export const BASE_URL = "http://localhost:3000";
+import { BASE_URL } from "#/data/base/baseURL";
 
 let refreshPromise: Promise<string> | null = null;
 
