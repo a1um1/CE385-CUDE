@@ -85,7 +85,7 @@ export default class UserStatController {
 				FROM "UserStat"
 				WHERE "userID" = ${this.data.userID}
 				FOR UPDATE
-			`;
+			`; // Lock the row for update to prevent race conditions
 
       const [row] = rows;
       if (!row) {
