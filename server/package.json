@@ -10,7 +10,7 @@
     "lint": "oxlint",
     "format:check": "oxfmt --check",
     "db:migrate": "prisma migrate dev --name auto && prisma generate",
-    "db:generate": "prisma generate --sql",
+    "db:generate": "prisma generate",
     "db:deploy": "prisma migrate deploy",
     "ts:check": "npm run db:generate && tsc --noEmit",
     "test": "vitest run",
