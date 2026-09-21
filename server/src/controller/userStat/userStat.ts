@@ -75,7 +75,7 @@ export default class UserStatController {
   }
 
   private async calculateCurrentEnergy(): Promise<number> {
-    return db.$transaction(async (tx) => {
+    return await db.$transaction(async (tx) => {
       const rows = await tx.$queryRawTyped(queryAndLockEnergy(this.data.userID));
 
       const [row] = rows;
