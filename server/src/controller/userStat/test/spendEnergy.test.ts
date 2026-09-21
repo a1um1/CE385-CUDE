@@ -1,20 +1,35 @@
 import UserStatController from "#/controller/userStat";
 import { fakeUserStat } from "#/controller/userStat/test/userStat.mock";
 import { mockDB } from "#/test/setup";
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
+
+function mockTransactionToInvokeCallback(): void {
+  mockDB.$transaction.mockImplementation(((callback: unknown) => {
+    if (typeof callback === "function") {
+      return callback(mockDB);
+    }
+    return undefined;
+  }) as never);
+}
 
 describe("Spend Energy in UserStat Controller", () => {
+  beforeEach(() => {
+    mockTransactionToInvokeCallback();
+  });
+
   it("should correctly spend energy and update the database", async () => {
     const initialEnergy = 5;
     const energyToSpend = 1;
     const expectedEnergyAfterSpend = initialEnergy - energyToSpend;
+    const energyUpdatedAt = new Date(Date.now() - 10 * 60 * 1000); // 10 minutes ago
 
     mockDB.userStat.findUnique.mockResolvedValueOnce({
       ...fakeUserStat,
       energy: initialEnergy,
-      energyUpdatedAt: new Date(Date.now() - 10 * 60 * 1000), // 10 minutes ago
+      energyUpdatedAt,
     });
 
+    mockDB.$queryRaw.mockResolvedValue([{ energy: initialEnergy, energyUpdatedAt }]);
     mockDB.userStat.update.mockResolvedValueOnce({
       ...fakeUserStat,
       energy: expectedEnergyAfterSpend,
@@ -31,12 +46,15 @@ describe("Spend Energy in UserStat Controller", () => {
   it("should throw an error if trying to spend more energy than available", async () => {
     const initialEnergy = 0;
     const energyToSpend = 1;
+    const energyUpdatedAt = new Date();
 
     mockDB.userStat.findUnique.mockResolvedValueOnce({
       ...fakeUserStat,
       energy: initialEnergy,
-      energyUpdatedAt: new Date(), // 10 minutes ago
+      energyUpdatedAt,
     });
+
+    mockDB.$queryRaw.mockResolvedValue([{ energy: initialEnergy, energyUpdatedAt }]);
 
     const userStatController = await UserStatController.getByUserId(fakeUserStat.userID);
 
@@ -48,18 +66,20 @@ describe("Spend Energy in UserStat Controller", () => {
   it("should be able to spend energy when ran out but time has passed for regeneration", async () => {
     const initialEnergy = 0;
     const energyToSpend = 1;
-    const expectedEnergyAfterSpend = initialEnergy - energyToSpend;
+    const regenIntervalMs = UserStatController.ENERGY_REGEN_RATE * 60 * 1000;
+    const energyUpdatedAt = new Date(Date.now() - regenIntervalMs); // 10 minutes ago
 
     mockDB.userStat.findUnique.mockResolvedValueOnce({
       ...fakeUserStat,
       energy: initialEnergy,
-      energyUpdatedAt: new Date(Date.now() - UserStatController.ENERGY_REGEN_RATE * 60 * 1000), // 10 minutes ago
+      energyUpdatedAt,
     });
 
-    mockDB.userStat.update.mockResolvedValueOnce({
+    mockDB.$queryRaw.mockResolvedValue([{ energy: initialEnergy, energyUpdatedAt }]);
+    mockDB.userStat.update.mockResolvedValue({
       ...fakeUserStat,
-      energy: expectedEnergyAfterSpend,
-      energyUpdatedAt: new Date(),
+      energy: 0,
+      energyUpdatedAt,
     });
 
     const userStatController = await UserStatController.getByUserId(fakeUserStat.userID);
@@ -72,12 +92,15 @@ describe("Spend Energy in UserStat Controller", () => {
   it("should throw an error if trying to spend zero or negative energy", async () => {
     const initialEnergy = 5;
     const energyToSpend = 0; // Trying to spend zero energy
+    const energyUpdatedAt = new Date(); // Current time
 
     mockDB.userStat.findUnique.mockResolvedValueOnce({
       ...fakeUserStat,
       energy: initialEnergy,
-      energyUpdatedAt: new Date(), // Current time
+      energyUpdatedAt,
     });
+
+    mockDB.$queryRaw.mockResolvedValue([{ energy: initialEnergy, energyUpdatedAt }]);
 
     const userStatController = await UserStatController.getByUserId(fakeUserStat.userID);
 
