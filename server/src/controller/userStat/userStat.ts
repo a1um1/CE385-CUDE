@@ -8,7 +8,6 @@ import {
 import { db } from "#/lib/prisma";
 import UserError from "#/lib/router/http/userError";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
-import { queryAndLockEnergy } from "#/generated/prisma/sql";
 
 export default class UserStatController {
   private data: userStatsQueryPayload;
@@ -76,7 +75,17 @@ export default class UserStatController {
 
   private async calculateCurrentEnergy(): Promise<number> {
     return await db.$transaction(async (tx) => {
-      const rows = await tx.$queryRawTyped(queryAndLockEnergy(this.data.userID));
+      const rows = await tx.$queryRaw<
+        {
+          energy: number;
+          energyUpdatedAt: Date;
+        }[]
+      >`
+				SELECT energy, energyUpdatedAt
+				FROM "UserStat"
+				WHERE "userID" = ${this.data.userID}
+				FOR UPDATE
+			`;
 
       const [row] = rows;
       if (!row) {
