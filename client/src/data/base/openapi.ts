@@ -1113,6 +1113,120 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/unit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List units (paginated), optionally filtered by courseID */
+        get: {
+            parameters: {
+                query?: {
+                    perPage?: number;
+                    cursor?: string;
+                    direction?: "forward" | "backward";
+                    sortBy?: "name" | "createdAt" | "updatedAt" | "id";
+                    sortOrder?: "asc" | "desc";
+                    courseID?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminUnitListResponse"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/unit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List units (paginated), optionally filtered by courseID */
+        get: {
+            parameters: {
+                query?: {
+                    perPage?: number;
+                    cursor?: string;
+                    direction?: "forward" | "backward";
+                    sortBy?: "name" | "createdAt" | "updatedAt" | "id";
+                    sortOrder?: "asc" | "desc";
+                    courseID?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminUnitListResponse"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin": {
         parameters: {
             query?: never;
@@ -1197,6 +1311,7 @@ export interface paths {
                     };
                     content: {
                         "application/json": components["schemas"]["AuthenticationResponseData"];
+                        "application/json": components["schemas"]["AuthenticationResponseData"];
                     };
                 };
                 /** @description Validation error */
@@ -1247,6 +1362,56 @@ export interface paths {
                     "application/json": components["schemas"]["UserValidationData"];
                 };
             };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AuthenticationResponseData"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Refresh authentication token */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
             responses: {
                 /** @description Successful response */
                 200: {
@@ -1611,18 +1776,14 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content: {
-                        "application/json": components["schemas"]["ValidationError"];
-                    };
+                    content?: never;
                 };
                 /** @description Internal server error */
                 500: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content: {
-                        "application/json": components["schemas"]["ServerError"];
-                    };
+                    content?: never;
                 };
             };
         };
@@ -1777,12 +1938,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-09-20T06:46:14.198Z
+             * @example 2026-09-22T04:31:33.182Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-09-20T06:46:14.199Z
+             * @example 2026-09-22T04:31:33.182Z
              */
             updatedAt: string;
         };
@@ -1862,10 +2023,39 @@ export interface components {
             /** @example user_id */
             id: string;
         };
-        AuthenticationResponseData: {
-            message: components["schemas"]["SuccessMessage"];
+        AdminUnitListResponse: {
+            /** @example [] */
+            data: components["schemas"]["AdminUnitObject"][];
+            /** @example next_cursor_id */
+            nextCursor?: string;
+            /** @example prev_cursor_id */
+            prevCursor?: string;
         };
-        SuccessMessage: string;
+        AdminUnitObject: {
+            /** @example unit_id */
+            id: string;
+            /** @example Unit Name */
+            name: string;
+            /**
+             * Format: uuid
+             * @example course_id
+             */
+            courseID: string;
+            /**
+             * Format: date-time
+             * @example 2023-01-01T00:00:00Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @example 2023-01-01T00:00:00Z
+             */
+            updatedAt: string;
+        };
+        AuthenticationResponseData: {
+            token: components["schemas"]["AuthenticationData"];
+        };
+        AuthenticationData: string;
         UserCreationData: {
             name: components["schemas"]["NameDefinition"];
             username: components["schemas"]["UsernameDefinition"];
@@ -1933,6 +2123,19 @@ export interface components {
             output: components["schemas"]["Hello world"];
         }[];
         "Hello world": string;
+        publicCourseResponseSchema: {
+            data: components["schemas"]["publicCourseSchema"][];
+        };
+        publicCourseSchema: {
+            /** @example course_id */
+            id: string;
+            /** @example Course_Name */
+            name: string;
+            /** @example #FFFFF */
+            color: string;
+            /** @example icon_name */
+            icon: string;
+        };
         publicCourseResponseSchema: {
             data: components["schemas"]["publicCourseSchema"][];
         };

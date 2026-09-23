@@ -23,16 +23,13 @@ jobs:
 
       - name: Compute cache key
         id: cache-key
-        run:           echo "key=node_modules-v2-${{ runner.os }}-${{ hashFiles('package-lock.json') }}" >> "$GITHUB_OUTPUT"
+        run: echo "key=node_modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}" >> "$GITHUB_OUTPUT"
 
       - name: Cache node_modules
         id: cache-node-modules
         uses: actions/cache@v4
         with:
-          path: |
-            node_modules
-            client/node_modules
-            server/node_modules
+          path: node_modules
           key: ${{ steps.cache-key.outputs.key }}
 
       - name: Install dependencies
@@ -64,10 +61,7 @@ jobs:
       - name: Restore node_modules
         uses: actions/cache@v4
         with:
-          path: |
-            node_modules
-            client/node_modules
-            server/node_modules
+          path: node_modules
           key: ${{ needs.setup.outputs.cache-key }}
 
       - name: Run ${{ matrix.task.label }}
@@ -87,10 +81,7 @@ jobs:
       - name: Restore node_modules
         uses: actions/cache@v4
         with:
-          path: |
-            node_modules
-            client/node_modules
-            server/node_modules
+          path: node_modules
           key: ${{ needs.setup.outputs.cache-key }}
 
       - name: Run Vitest with coverage
