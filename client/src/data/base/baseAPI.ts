@@ -1,14 +1,12 @@
 import createClient, { type Middleware } from "openapi-fetch";
 import type { paths } from "./openapi";
-import refreshToken, { BASE_URL } from "./refreshToken";
+import refreshToken from "./refreshToken";
+import { BASE_URL } from "#/data/base/baseURL";
 
 const clonedRequests = new Map<string, Request>();
 
 const authMiddleware: Middleware = {
   async onRequest({ request, id }) {
-    const token = localStorage.getItem("token");
-    if (token) request.headers.set("Authorization", `Bearer ${token}`);
-
     try {
       clonedRequests.set(id, request.clone());
     } catch {
@@ -33,13 +31,9 @@ const authMiddleware: Middleware = {
     if (isAuthRoute) return response;
 
     try {
-      const newToken = await refreshToken();
+      await refreshToken();
       const retryRequestSource = cloned ?? request;
-      const headers = new Headers(retryRequestSource.headers);
-      headers.set("Authorization", `Bearer ${newToken}`);
-
       const retryRequest = new Request(retryRequestSource, {
-        headers,
         credentials: "include",
       });
 

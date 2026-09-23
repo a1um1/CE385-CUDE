@@ -2,7 +2,7 @@ name: Checker
 
 on:
   push:
-    branches: [feat/*, bug/*, dev/*, develop]
+    branches: [feat/*, bug/*, dev/*, chore/*, develop]
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true

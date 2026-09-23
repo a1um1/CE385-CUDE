@@ -23,15 +23,15 @@ model Unit {
 }
 
 model Lesson {
-  id           String   @id @default(uuid(7)) @db.Uuid
-  name         String
-  unitID       String   @db.Uuid
-  unit         Unit     @relation(fields: [unitID], references: [id])
-  passTheshold Float
-  XPgiven      Int
-  gemsGiven    Int
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id            String   @id @default(uuid(7)) @db.Uuid
+  name          String
+  unitID        String   @db.Uuid
+  unit          Unit     @relation(fields: [unitID], references: [id])
+  passThreshold Decimal  @db.Decimal(3, 2) // 0.00 to 1.00 eg 0.75 = 75% pass threshold
+  XPgiven       Int
+  gemsGiven     Int
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   exercises Exercise[]
 
