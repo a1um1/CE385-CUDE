@@ -25,11 +25,15 @@ export default class AdminUnitsController {
     let prevCursor: string | undefined = undefined;
 
     if (isBackward) {
-      if (data.length > query.perPage) prevCursor = data.pop()?.id;
+      const hasExtra = data.length > query.perPage;
+      if (hasExtra) data.pop(); //ตัดตัวเกินทิ้ง ไม่เอา id มาใช้
       data.reverse();
+      if (hasExtra) prevCursor = data[0]?.id; // เอา id ของตัวแรกที่ "โชว์จริง" แทน
       nextCursor = query.cursor;
     } else {
-      if (data.length > query.perPage) nextCursor = data.pop()?.id;
+      const hasEtra = data.length > query.perPage;
+      if (hasEtra) data.pop(); //ตัดตัวเกินทิ้ง ไม่เอา id มาใช้
+      if (hasEtra) nextCursor = data[data.length - 1]?.id; // เอา id ของตัวสุดท้ายที่ "โชว์จริง" แทน
       if (query.cursor) prevCursor = query.cursor;
     }
 
