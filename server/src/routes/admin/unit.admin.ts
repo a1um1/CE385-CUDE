@@ -2,9 +2,9 @@ import AdminUnitsController from "#/controller/admin/unit";
 import {
   AdminUnitListResponseSchema,
   AdminUnitQuerySchema,
-  adminUnitSchema, // 🆕 เพิ่ม import นี้ - ใช้เป็น response schema ของ getById
+  adminUnitSchema,
 } from "#/controller/admin/unit/unit.schema";
-import { z } from "#/lib/extendZod"; // 🆕 เพิ่ม import นี้ - ใช้ประกาศ params schema
+import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 
 const adminUnitRouter = new CustomRouter({
