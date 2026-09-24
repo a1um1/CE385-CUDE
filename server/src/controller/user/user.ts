@@ -15,6 +15,7 @@ import {
 import UserStatController from "#/controller/userStat";
 import TransactionsController from "#/controller/transactions";
 import type { TransactionQuerySchema } from "#/controller/transactions/transactions.schema";
+import { Prisma } from "#/generated/prisma/client";
 
 export default class UserController {
   private user: userSafeSchema;
@@ -102,16 +103,23 @@ export default class UserController {
   }
 
   static async create(userData: userCreationSchema): Promise<UserController> {
-    const hashedPassword = await bcrypt.hash(userData.password, 12);
-    const created = await db.user.create({
-      data: {
-        name: userData.name,
-        username: userData.username,
-        email: userData.email,
-        password: hashedPassword,
-      },
-    });
-    return await UserController.getById(created.id);
+    try {
+      const hashedPassword = await bcrypt.hash(userData.password, 12);
+      const created = await db.user.create({
+        data: {
+          name: userData.name,
+          username: userData.username,
+          email: userData.email,
+          password: hashedPassword,
+        },
+      });
+      return await UserController.getById(created.id);
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+        throw new UserError(400, "Email or Username already exists");
+      }
+      throw error;
+    }
   }
 
   getUserStat(): Promise<UserStatController> {

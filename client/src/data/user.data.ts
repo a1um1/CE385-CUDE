@@ -1,4 +1,5 @@
-import { APIclient, type ExtractRequestBody, type ExtractRequestQuery } from "#/data/base/baseAPI";
+import type { ExtractRequestBody, ExtractRequestQuery } from "#/data/base/apiUtils.type";
+import { APIclient } from "#/data/base/baseAPI";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useUser = () =>
@@ -6,22 +7,30 @@ export const useUser = () =>
     queryKey: ["user"],
     queryFn: async () => {
       const { data, error } = await APIclient.GET("/user");
-      if (error || !data) throw error;
+      if (error) throw error;
       return data;
     },
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    refetchOnWindowFocus: false,
   });
 
-export const useSignUp = () =>
-  useMutation({
+export const useSignUp = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
     mutationKey: ["signup"],
     mutationFn: async (body: ExtractRequestBody<"/auth/signup", "post">) => {
       const { data, error } = await APIclient.POST("/auth/signup", {
         body,
       });
-      if (error || !data) throw error;
+      if (error) throw error;
       return data;
     },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["user"] });
+    },
   });
+};
 
 export const useSignIn = () => {
   const queryClient = useQueryClient();
@@ -32,10 +41,12 @@ export const useSignIn = () => {
       const { data, error } = await APIclient.POST("/auth/signin", {
         body,
       });
-      if (error || !data) throw error;
-      if (data.token) localStorage.setItem("token", data.token);
+      if (error) throw error;
       await queryClient.resetQueries({ queryKey: ["user"] });
       return data;
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["user"] });
     },
   });
 };
@@ -45,7 +56,8 @@ export const useSignOut = () => {
   return useMutation({
     mutationKey: ["signout"],
     mutationFn: async () => {
-      localStorage.removeItem("token");
+      const { error } = await APIclient.POST("/auth/logout");
+      if (error) throw error;
       await queryClient.resetQueries({ queryKey: ["user"] });
       return { message: "Signed out successfully" };
     },
@@ -61,7 +73,7 @@ export const useUpdateAvatar = () => {
       const { data, error } = await APIclient.POST("/user/avatar", {
         body,
       });
-      if (error || !data) throw error;
+      if (error) throw error;
       await queryClient.invalidateQueries({ queryKey: ["user"] });
       return data;
     },
@@ -77,7 +89,7 @@ export const useUpdateBackground = () => {
       const { data, error } = await APIclient.POST("/user/background", {
         body,
       });
-      if (error || !data) throw error;
+      if (error) throw error;
       await queryClient.invalidateQueries({ queryKey: ["user"] });
       return data;
     },
@@ -91,7 +103,7 @@ export const useUpdatePassword = () =>
       const { data, error } = await APIclient.POST("/user/password", {
         body,
       });
-      if (error || !data) throw error;
+      if (error) throw error;
       return data;
     },
   });
@@ -101,7 +113,7 @@ export const useUserStats = () =>
     queryKey: ["userStats"],
     queryFn: async () => {
       const { data, error } = await APIclient.GET("/user/current-stat");
-      if (error || !data) throw error;
+      if (error) throw error;
       return data;
     },
   });
@@ -115,7 +127,7 @@ export const useUserTransactions = (query: ExtractRequestQuery<"/user/transactio
           query,
         },
       });
-      if (error || !data) throw error;
+      if (error) throw error;
       return data;
     },
   });

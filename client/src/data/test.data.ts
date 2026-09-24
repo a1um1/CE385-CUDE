@@ -13,9 +13,7 @@ export const useTestData = () =>
             },
           },
         });
-      if (error || !data) {
-        throw error;
-      }
+      if (error) throw error;
       return data;
     },
   });
@@ -28,9 +26,7 @@ export const useTestSpendEnergy = () => {
       const { data, error } = await APIclient.POST("/test/spend-enegry", {
         authentication: true,
       });
-      if (error || !data) {
-        throw error;
-      }
+      if (error) throw error;
       return data;
     },
     onSuccess() {

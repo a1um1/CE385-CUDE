@@ -19,7 +19,22 @@ model User {
   updatedAt        DateTime @updatedAt
   courses          Course[]
 
-  submissions  Submission[]
-  userStats    UserStat[]
-  transactions Transactions[]
+  submissions   Submission[]
+  userStats     UserStat[]
+  transactions  Transactions[]
+  refreshTokens refreshToken[]
+  sessions      Sessions[]
+}
+
+model refreshToken {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  userID    String   @db.Uuid
+  user      User     @relation(fields: [userID], references: [id])
+  token     String   @unique
+  userAgent String?
+  ipAddress String?
+  expiresAt DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

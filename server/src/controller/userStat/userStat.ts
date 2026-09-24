@@ -38,7 +38,7 @@ export default class UserStatController {
   async spendEnergy({ amount = 1, reason }: spendEnergyProps): Promise<void> {
     const currentEnergy = await this.calculateCurrentEnergy();
 
-    if (currentEnergy < amount) {
+    if (currentEnergy < amount || amount <= 0) {
       throw new UserError(403, "Not enough energy to perform this action.");
     }
 
@@ -86,7 +86,8 @@ export default class UserStatController {
     const ticks = Math.floor(elapsedTime * (1 / regenRateInSeconds)); // energy regenerated since last update
     if (ticks <= 0) return energy;
 
-    this.data.energy = Math.min(energy + ticks, UserStatController.MAX_ENERGY);
+    const incrementBy = Math.min(ticks, UserStatController.MAX_ENERGY - energy);
+    this.data.energy = Math.min(energy + incrementBy, UserStatController.MAX_ENERGY);
 
     this.data.energyUpdatedAt = new Date(
       energyUpdatedAt.getTime() + ticks * regenRateInSeconds * 1000,
@@ -95,7 +96,9 @@ export default class UserStatController {
     await db.userStat.update({
       where: { userID: this.data.userID },
       data: {
-        energy: this.data.energy,
+        energy: {
+          increment: incrementBy,
+        },
         energyUpdatedAt: this.data.energyUpdatedAt,
       },
     });

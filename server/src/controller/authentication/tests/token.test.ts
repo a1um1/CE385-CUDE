@@ -27,8 +27,7 @@ describe("Token Tests", () => {
   it("should generate a valid token", async () => {
     const controller = new AuthenticationController();
     const tokenData = controller.generateToken(mockAuthenticationBody);
-    expect(tokenData).toHaveProperty("token");
-    expect(typeof tokenData.token).toBe("string");
+    expect(typeof tokenData).toBe("string");
   });
 
   it("should throw error when validating token with JWT secret not defined", async () => {
@@ -43,7 +42,7 @@ describe("Token Tests", () => {
     mockDB.user.findUnique.mockResolvedValue(fakeUser);
     const controller = new AuthenticationController();
     const tokenData = controller.generateToken(mockAuthenticationBody);
-    const user = await controller.validateToken(tokenData.token);
+    const user = await controller.validateToken(tokenData);
     expect(user).toHaveProperty("JSON");
     expect(user.JSON).toHaveProperty("id", mockAuthenticationBody.userId);
   });
@@ -57,7 +56,7 @@ describe("Token Tests", () => {
     mockDB.user.findUnique.mockResolvedValue(null);
     const controller = new AuthenticationController();
     const tokenData = controller.generateToken(mockAuthenticationBody);
-    await expect(controller.validateToken(tokenData.token)).rejects.toThrow();
+    await expect(controller.validateToken(tokenData)).rejects.toThrow();
   });
 
   it("should throw error when validating an expired token", async () => {

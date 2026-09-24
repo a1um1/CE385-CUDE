@@ -26,9 +26,11 @@
     "@scalar/express-api-reference": "^0.10.14",
     "@types/bcrypt": "^6.0.0",
     "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.7.0",
     "jsonwebtoken": "^9.0.3",
     "p-limit": "^7.3.1",
     "pg": "^8.23.0",
@@ -37,20 +39,16 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^26.2.0",
     "@types/pg": "^8.21.0",
     "@vitest/ui": "^4.1.11",
-    "openapi-typescript": "^7.13.0",
     "prisma": "^7.9.1",
+    "prisma-dbml-generator": "^0.12.0",
     "tsx": "^4.23.12",
     "vite-tsconfig-paths": "^6.1.1"
-  },
-  "overrides": {
-    "openapi-typescript": {
-      "typescript": "npm:@typescript/typescript6@6.0.2"
-    }
   }
 }
