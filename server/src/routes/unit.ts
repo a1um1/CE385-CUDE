@@ -27,7 +27,7 @@ const unitRouter = new CustomRouter({
   },
   async ({ params }) => {
     await CourseController.getById(params.courseId);
-    const units = await UnitController.getAllById(params.courseId);
+    const units = await UnitController.getAllByCourseId(params.courseId);
     return units.map((unit) => unit.JSON);
   },
 );
