@@ -1,8 +1,8 @@
-import ExerciseController from "#/controller/exercise/base/exercise";
+import BaseExerciseController from "#/controller/exercise/base/exercise";
 import { CodeTestCase } from "#/controller/exercise/codeExercise/codeTestCase";
 import type { CodeExercise, Exercise } from "#/generated/prisma/client";
 
-export class CodeExerciseController extends ExerciseController {
+export class CodeExerciseController extends BaseExerciseController {
   private codeExercise: CodeExercise;
 
   constructor(data: Exercise, codeExercise: CodeExercise) {
