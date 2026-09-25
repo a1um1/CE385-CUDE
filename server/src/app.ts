@@ -7,7 +7,6 @@ import { adminRoute } from "#/routes/admin/index";
 import cors from "cors";
 import { authRoute } from "#/routes/auth";
 import { CodingRoute } from "#/routes/coding";
-import { unitRoute } from "./routes/unit";
 import { courseRoute } from "./routes/course";
 import cookieParser from "cookie-parser";
 import { rateLimit } from "express-rate-limit";
@@ -34,7 +33,6 @@ const app = express()
   .use(CodingRoute)
   .use(testRouter)
   .use(courseRoute)
-  .use(unitRoute)
   .use(adminRoute);
 
 // Docs endpoint — regenerated from the registry above
