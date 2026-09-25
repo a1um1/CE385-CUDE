@@ -17,8 +17,6 @@ const publicCourseResponseSchema = z
   })
   .openapi("publicCourseResponseSchema");
 
-// Client-facing Unit shape - ย้ายมาจาก routes/unit.ts
-// prefix "/course" เดียวกัน จัดรวมไว้ไฟล์เดียวให้ดูแลง่ายขึ้น
 const publicUnitSchema = z
   .object({
     id: z.string().openapi({ example: "unit_id" }),
@@ -47,7 +45,6 @@ const courseRouter = new CustomRouter({
       };
     },
   )
-  //เรียกดูข้อมูล Course ทีละตัวด้วย courseId
   .get(
     "/:courseId",
     {
@@ -66,7 +63,6 @@ const courseRouter = new CustomRouter({
       return { id, name, color, icon };
     },
   )
-  //ย้ายมาจาก routes/unit.ts: ดู Unit ของแต่ละ Course
   .get(
     "/:courseId/unit",
     {
