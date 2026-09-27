@@ -11,14 +11,16 @@ import CustomRouter from "#/lib/router/customRouter";
 const adminUnitRouter = new CustomRouter({
   prefix: "/admin/unit",
   tags: ["Admin Unit Management"],
+  authentication: ["ADMIN"],
 })
   .get(
     "/",
     {
       summary: "List units (paginated), optionally filter by courseID",
+      query: AdminUnitQuerySchema,
       response: AdminUnitListResponseSchema,
     },
-    ({ query }) => AdminUnitsController.getPainateLists(query),
+    ({ query }) => AdminUnitsController.getPaginateLists(query),
   )
   .get(
     "/:id",

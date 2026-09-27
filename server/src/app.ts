@@ -10,6 +10,7 @@ import { CodingRoute } from "#/routes/coding";
 import { courseRoute } from "./routes/course";
 import cookieParser from "cookie-parser";
 import { rateLimit } from "express-rate-limit";
+import { adminUnitRoute } from "./routes/admin/unit.admin";
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -33,6 +34,7 @@ const app = express()
   .use(CodingRoute)
   .use(testRouter)
   .use(courseRoute)
+  .use(adminUnitRoute)
   .use(adminRoute);
 
 // Docs endpoint — regenerated from the registry above
