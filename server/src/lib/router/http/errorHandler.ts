@@ -36,7 +36,10 @@ export const errorHandler: ErrorRequestHandler = (err, _req, res, next) => {
   if (err instanceof z.ZodError) {
     return res.status(400).json({
       message: "Invalid request parameters",
-      details: z.treeifyError(err),
+      details: err.issues.map((issue) => ({
+        path: issue.path.join("."),
+        message: issue.message,
+      })),
     });
   }
 

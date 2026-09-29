@@ -29,12 +29,33 @@ describe("Error Handler Tests", () => {
     expectJson(res);
   });
 
-  it("should return a json 400 with details for zod validation failures", async () => {
+  it("should return a json 400 with a flat issue list for zod validation failures", async () => {
     const res = await request(ErrorHandlerApp).get("/validation?id=not-a-uuid");
     expect(res.status).toBe(400);
     expectJson(res);
     expect(res.body).toHaveProperty("message", "Invalid request parameters");
-    expect(res.body.details).toHaveProperty("properties.id.errors");
+    expect(res.body.details).toEqual([{ path: "id", message: expect.any(String) }]);
+  });
+
+  it("should flatten nested and indexed paths into a single path string", async () => {
+    const res = await request(ErrorHandlerApp)
+      .post("/nested-body")
+      .send({ profile: { age: "not-a-number" }, tags: [{ name: 1 }] });
+    expect(res.status).toBe(400);
+    expectJson(res);
+    expect(res.body.details.map((issue: { path: string }) => issue.path)).toEqual([
+      "profile.age",
+      "tags.0.name",
+    ]);
+  });
+
+  it("should use an empty path for form-level issues", async () => {
+    const res = await request(ErrorHandlerApp)
+      .post("/root-level")
+      .send({ password: "a", confirm: "b" });
+    expect(res.status).toBe(400);
+    expectJson(res);
+    expect(res.body.details).toEqual([{ path: "", message: "Passwords do not match" }]);
   });
 
   it("should preserve the status of a user error", async () => {

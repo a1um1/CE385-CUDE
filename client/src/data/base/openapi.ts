@@ -2910,17 +2910,20 @@ export interface components {
         ErrorResponse: {
             /** @example Invalid request parameters */
             message: string;
+            /**
+             * @example [
+             *       {
+             *         "path": "email",
+             *         "message": "Invalid email address"
+             *       }
+             *     ]
+             */
             details?: {
-                errors: string[];
-                properties?: {
-                    [key: string]: {
-                        errors: string[];
-                    };
-                };
-                items?: {
-                    errors: string[];
-                }[];
-            };
+                /** @example email */
+                path: string;
+                /** @example Invalid email address */
+                message: string;
+            }[];
         };
         GenericResponse: {
             /** @example Operation completed successfully */
@@ -3010,12 +3013,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-09-29T14:10:11.959Z
+             * @example 2026-09-29T14:27:08.598Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-09-29T14:10:11.960Z
+             * @example 2026-09-29T14:27:08.599Z
              */
             updatedAt: string;
         };

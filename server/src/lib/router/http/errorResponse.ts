@@ -1,18 +1,16 @@
 import { z } from "#/lib/extendZod";
 
-const ZodIssueTree = z.object({
-  errors: z.array(z.string()),
-});
-
-export const ZodIssueTreeSchema = z.object({
-  errors: z.array(z.string()),
-  properties: z.record(z.string(), ZodIssueTree).optional(),
-  items: z.array(ZodIssueTree).optional(),
-});
-
 export const ErrorResponseSchema = z
   .object({
     message: z.string().openapi({ example: "Invalid request parameters" }),
-    details: ZodIssueTreeSchema.optional(),
+    details: z
+      .array(
+        z.object({
+          path: z.string().openapi({ example: "email" }),
+          message: z.string().openapi({ example: "Invalid email address" }),
+        }),
+      )
+      .optional()
+      .openapi({ example: [{ path: "email", message: "Invalid email address" }] }),
   })
   .openapi("ErrorResponse");

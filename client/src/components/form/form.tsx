@@ -31,7 +31,7 @@ export const useAppForm: typeof useAppFormBase = (options) =>
   });
 
 type ErrorResponse = components["schemas"]["ErrorResponse"];
-type ZodTreeError = NonNullable<ErrorResponse["details"]>;
+type ValidationIssue = NonNullable<ErrorResponse["details"]>[number];
 
 export function isApiValidationError(error: unknown): error is ErrorResponse {
   if (typeof error !== "object" || error === null) return false;
@@ -39,46 +39,46 @@ export function isApiValidationError(error: unknown): error is ErrorResponse {
   const candidate = error as Partial<ErrorResponse>;
   return (
     typeof candidate.message === "string" &&
-    typeof candidate.details === "object" &&
-    candidate.details !== null &&
-    Array.isArray(candidate.details.errors)
+    Array.isArray(candidate.details) &&
+    candidate.details.length > 0
   );
 }
 
-export function setFormErrorsFromZodTree(form: any, tree: ZodTreeError, prefix = "") {
-  if (prefix === "" && tree.errors && tree.errors.length > 0) {
-    form.setErrorMap({
-      onSubmit: tree.errors,
-    });
-  } else if (tree.errors && tree.errors.length > 0) {
-    form.setFieldMeta(prefix, (prev: any) => ({
+export function setFormErrorsFromIssues(form: any, issues: ValidationIssue[]) {
+  const rootIssues: string[] = [];
+  const fieldIssues = new Map<string, string[]>();
+
+  for (const issue of issues) {
+    if (issue.path === "") {
+      rootIssues.push(issue.message);
+    } else {
+      const existing = fieldIssues.get(issue.path);
+      if (existing) existing.push(issue.message);
+      else fieldIssues.set(issue.path, [issue.message]);
+    }
+  }
+
+  for (const [path, messages] of fieldIssues) {
+    form.setFieldMeta(path, (prev: any) => ({
       ...prev,
       isTouched: true,
       errorMap: {
         ...prev?.errorMap,
-        onSubmit: tree.errors,
+        onSubmit: messages,
       },
     }));
   }
 
-  if (tree.properties) {
-    for (const [key, propTree] of Object.entries(tree.properties)) {
-      const path = prefix ? `${prefix}.${key}` : key;
-      setFormErrorsFromZodTree(form, propTree, path);
-    }
-  }
-
-  if (tree.items) {
-    tree.items.forEach((itemTree, index) => {
-      const path = `${prefix}[${index}]`;
-      setFormErrorsFromZodTree(form, itemTree, path);
+  if (rootIssues.length > 0) {
+    form.setErrorMap({
+      onSubmit: rootIssues,
     });
   }
 }
 
 export function handleFormMutationError(form: any, error: unknown) {
   if (isApiValidationError(error)) {
-    setFormErrorsFromZodTree(form, error.details!);
+    setFormErrorsFromIssues(form, error.details!);
   } else {
     const message =
       typeof error === "object" && error !== null && "message" in error && error.message

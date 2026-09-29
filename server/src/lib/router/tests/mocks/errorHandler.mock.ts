@@ -25,7 +25,28 @@ const errorHandlerRouting = new CustomRouter()
   .get("/validation", { query: z.object({ id: z.uuid() }) }, async () => ({
     message: "ok",
   }))
-  .post("/json-body", {}, async () => ({ message: "ok" }));
+  .post("/json-body", {}, async () => ({ message: "ok" }))
+  .post(
+    "/nested-body",
+    {
+      body: z.object({
+        profile: z.object({ age: z.coerce.number() }),
+        tags: z.array(z.object({ name: z.string() })),
+      }),
+    },
+    async () => ({ message: "ok" }),
+  )
+  .post(
+    "/root-level",
+    {
+      body: z
+        .object({ password: z.string(), confirm: z.string() })
+        .refine((value) => value.password === value.confirm, {
+          message: "Passwords do not match",
+        }),
+    },
+    async () => ({ message: "ok" }),
+  );
 
 const ErrorHandlerApp = createTestApp(errorHandlerRouting.route);
 
