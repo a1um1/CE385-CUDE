@@ -7,7 +7,7 @@ on:
 jobs:
   setup:
     name: Install dependencies
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     outputs:
       cache-key: ${{ steps.cache-key.outputs.key }}
     steps:
@@ -20,7 +20,7 @@ jobs:
 
       - name: Compute cache key
         id: cache-key
-        run:           echo "key=node_modules-v2-${{ runner.os }}-${{ hashFiles('package-lock.json') }}" >> "$GITHUB_OUTPUT"
+        run: echo "key=node_modules-v2-${{ runner.os }}-${{ hashFiles('package-lock.json') }}" >> "$GITHUB_OUTPUT"
 
       - name: Cache node_modules
         id: cache-node-modules
@@ -38,7 +38,7 @@ jobs:
 
   check:
     name: ${{ matrix.workspace }} / ${{ matrix.task.label }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     needs: setup
     strategy:
       fail-fast: false
@@ -73,7 +73,7 @@ jobs:
 
   vitest:
     name: server / Vitest
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     needs: setup
     steps:
       - uses: actions/checkout@v7
