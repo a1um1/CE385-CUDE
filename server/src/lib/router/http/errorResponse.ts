@@ -1,14 +1,18 @@
 import { z } from "#/lib/extendZod";
 
-export const ValidationErrorSchema = z
+const ZodIssueTree = z.object({
+  errors: z.array(z.string()),
+});
+
+export const ZodIssueTreeSchema = z.object({
+  errors: z.array(z.string()),
+  properties: z.record(z.string(), ZodIssueTree).optional(),
+  items: z.array(ZodIssueTree).optional(),
+});
+
+export const ErrorResponseSchema = z
   .object({
     message: z.string().openapi({ example: "Invalid request parameters" }),
-    details: z.string().optional().openapi({ example: "username: Required" }),
+    details: ZodIssueTreeSchema.optional(),
   })
-  .openapi("ValidationError");
-
-export const ServerErrorSchema = z
-  .object({
-    message: z.string().openapi({ example: "Internal Server Error" }),
-  })
-  .openapi("ServerError");
+  .openapi("ErrorResponse");

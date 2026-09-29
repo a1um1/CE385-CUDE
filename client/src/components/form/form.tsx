@@ -1,4 +1,5 @@
 import { createFormHookContexts, createFormHook } from "@tanstack/react-form";
+import type { components } from "#/data/base/openapi";
 import { TextField } from "./input/textInput";
 import { ColorField } from "./input/colorInput";
 import { SubmitButton } from "./input/submitButton";
@@ -29,25 +30,18 @@ export const useAppForm: typeof useAppFormBase = (options) =>
     },
   });
 
-export interface ZodTreeError {
-  errors: string[];
-  properties?: Record<string, ZodTreeError>;
-  items?: ZodTreeError[];
-}
+type ErrorResponse = components["schemas"]["ErrorResponse"];
+type ZodTreeError = NonNullable<ErrorResponse["details"]>;
 
-export interface ApiValidationError {
-  message: string;
-  details: ZodTreeError;
-}
+export function isApiValidationError(error: unknown): error is ErrorResponse {
+  if (typeof error !== "object" || error === null) return false;
 
-export function isApiValidationError(error: any): error is ApiValidationError {
+  const candidate = error as Partial<ErrorResponse>;
   return (
-    error &&
-    typeof error === "object" &&
-    typeof error.message === "string" &&
-    error.details &&
-    typeof error.details === "object" &&
-    Array.isArray(error.details.errors)
+    typeof candidate.message === "string" &&
+    typeof candidate.details === "object" &&
+    candidate.details !== null &&
+    Array.isArray(candidate.details.errors)
   );
 }
 
@@ -82,13 +76,13 @@ export function setFormErrorsFromZodTree(form: any, tree: ZodTreeError, prefix =
   }
 }
 
-export function handleFormMutationError(form: any, error: any) {
+export function handleFormMutationError(form: any, error: unknown) {
   if (isApiValidationError(error)) {
-    setFormErrorsFromZodTree(form, error.details);
+    setFormErrorsFromZodTree(form, error.details!);
   } else {
     const message =
-      error && typeof error === "object" && error.message
-        ? error.message
+      typeof error === "object" && error !== null && "message" in error && error.message
+        ? String(error.message)
         : typeof error === "string"
           ? error
           : "An unexpected error occurred. Please try again.";
