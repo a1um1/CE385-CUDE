@@ -11,6 +11,7 @@ type HttpError = Error & {
 const PRISMA_ERRORS: Record<string, { status: number; message: string }> = {
   P2002: { status: 409, message: "Resource already exists" },
   P2025: { status: 404, message: "Resource not found" },
+  P1001: { status: 503, message: "Database connection error" },
 };
 
 const resolvePrismaError = (err: unknown) => {
@@ -39,14 +40,10 @@ export const errorHandler: ErrorRequestHandler = (err, _req, res, next) => {
     });
   }
 
-  if (err instanceof UserError) {
-    return res.status(err.status).json({ message: err.message });
-  }
+  if (err instanceof UserError) return res.status(err.status).json({ message: err.message });
 
   const prismaError = resolvePrismaError(err);
-  if (prismaError) {
-    return res.status(prismaError.status).json({ message: prismaError.message });
-  }
+  if (prismaError) return res.status(prismaError.status).json({ message: prismaError.message });
 
   const clientErrorStatus = resolveClientErrorStatus(err);
   if (clientErrorStatus) {
