@@ -2,7 +2,6 @@ generator client {
   provider            = "prisma-client"
   output              = "../generated/prisma"
   importFileExtension = "ts"
-  previewFeatures     = ["typedSql"]
 }
 
 datasource db {
