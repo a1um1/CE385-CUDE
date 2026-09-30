@@ -163,11 +163,16 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
           headers: req.headers,
           ip: req.ip,
           user: res.locals.user,
-          cookies: {
-            ...(req.cookies as Record<string, string>),
-            set: res.cookie.bind(res),
-            clear: res.clearCookie.bind(res),
-          } as any,
+          cookies: req.cookies,
+          cookie: {
+            set: (name, value, cookieOptions) => {
+              if (cookieOptions) res.cookie(name, value, cookieOptions);
+              else res.cookie(name, value);
+            },
+            clear: (name, cookieOptions) => {
+              res.clearCookie(name, cookieOptions);
+            },
+          },
           status,
         });
 
