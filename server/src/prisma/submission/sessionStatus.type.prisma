@@ -1,0 +1,6 @@
+enum SubmissionStatus {
+  PENDING
+  SUBMITTED
+  GRADED
+  CANCELLED
+}

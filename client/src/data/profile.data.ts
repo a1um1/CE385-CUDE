@@ -12,7 +12,7 @@ export const useQueryProfile = (username: string) =>
           },
         },
       });
-      if (error || !data) throw error;
+      if (error) throw error;
       return data;
     },
   });

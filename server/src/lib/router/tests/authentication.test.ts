@@ -5,6 +5,7 @@ import { mockDB } from "#/test/setup";
 import { describe, expect, it } from "vitest";
 import request from "supertest";
 import { AuthenticationRoutingApp } from "#/lib/router/tests/mocks/authentication.mock";
+import jwt from "jsonwebtoken";
 
 const mockAuthenticationBody = {
   userId: fakeUser.id,
@@ -12,9 +13,7 @@ const mockAuthenticationBody = {
   email: fakeUser.email,
 } satisfies AuthenticationBody;
 
-const { token: authenticationToken } = new AuthenticationController().generateToken(
-  mockAuthenticationBody,
-);
+const authenticationToken = new AuthenticationController().generateToken(mockAuthenticationBody);
 
 describe("Authentication Tests", () => {
   it("should handle undefined authentication", async () => {
@@ -47,7 +46,7 @@ describe("Authentication Tests", () => {
 
   it("should require authentication", async () => {
     const res = await request(AuthenticationRoutingApp).get("/auth-required");
-    expect(res.status).toBe(401);
+    expect(res.status).toBe(403);
     expect(res.body).toHaveProperty("message", "Unauthorize");
   });
 
@@ -84,20 +83,34 @@ describe("Authentication Tests", () => {
     expect(res.body).toHaveProperty("message", "authentication required route for admin only");
   });
 
-  it("should return 401 for invalid token", async () => {
+  it("should return 403 for invalid token", async () => {
     const res = await request(AuthenticationRoutingApp)
       .get("/auth-required")
       .set("Authorization", `Bearer invalidtoken`);
-    expect(res.status).toBe(401);
+    expect(res.status).toBe(403);
     expect(res.body).toHaveProperty("message", "Invalid token");
   });
 
-  it("should return 401 for valid token but user not found", async () => {
+  it("should return 403 for valid token but user not found", async () => {
     mockDB.user.findUnique.mockResolvedValue(null);
     const res = await request(AuthenticationRoutingApp)
       .get("/auth-required")
       .set("Authorization", `Bearer ${authenticationToken}`);
-    expect(res.status).toBe(401);
+    expect(res.status).toBe(403);
     expect(res.body).toHaveProperty("message", "Token validation failed");
+  });
+
+  it("Should return 401 for expired token", async () => {
+    const expiredToken = jwt.sign(mockAuthenticationBody, process.env.JWT_SECRET!, {
+      expiresIn: "1ms",
+      algorithm: "HS256",
+    });
+    await new Promise((resolve) => setTimeout(resolve, 10)); // Wait for token to expire
+
+    const res = await request(AuthenticationRoutingApp)
+      .get("/auth-required")
+      .set("Authorization", `Bearer ${expiredToken}`);
+    expect(res.status).toBe(401);
+    expect(res.body).toHaveProperty("message", "Token expired");
   });
 });

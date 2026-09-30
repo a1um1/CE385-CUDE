@@ -80,7 +80,6 @@ function PageNavButtons({ buttons }: { buttons: NavButton[] }) {
         <Button
           key={label}
           variant="secondary"
-          size="xs"
           onClick={onClick}
           disabled={disabled}
           aria-label={label}
@@ -119,13 +118,13 @@ export function DataTablePagination<TData extends RowData = RowData>({
     const cursorNavButtons: NavButton[] = [
       {
         label: "Go to previous page",
-        icon: <ChevronLeft size={16} />,
+        icon: <ChevronLeft size={24} />,
         onClick: onPreviousPage ?? (() => {}),
         disabled: !hasPreviousPage,
       },
       {
         label: "Go to next page",
-        icon: <ChevronRight size={16} />,
+        icon: <ChevronRight size={24} />,
         onClick: onNextPage ?? (() => {}),
         disabled: !hasNextPage,
       },
@@ -165,25 +164,25 @@ export function DataTablePagination<TData extends RowData = RowData>({
   const offsetNavButtons: NavButton[] = [
     {
       label: "Go to first page",
-      icon: <ChevronsLeft size={16} />,
+      icon: <ChevronsLeft size={24} />,
       onClick: () => table.setPageIndex(0),
       disabled: !table.getCanPreviousPage(),
     },
     {
       label: "Go to previous page",
-      icon: <ChevronLeft size={16} />,
+      icon: <ChevronLeft size={24} />,
       onClick: () => table.previousPage(),
       disabled: !table.getCanPreviousPage(),
     },
     {
       label: "Go to next page",
-      icon: <ChevronRight size={16} />,
+      icon: <ChevronRight size={24} />,
       onClick: () => table.nextPage(),
       disabled: !table.getCanNextPage(),
     },
     {
       label: "Go to last page",
-      icon: <ChevronsRight size={16} />,
+      icon: <ChevronsRight size={24} />,
       onClick: () => table.setPageIndex(pageCount - 1),
       disabled: !table.getCanNextPage(),
     },

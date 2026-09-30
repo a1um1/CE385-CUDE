@@ -1,4 +1,5 @@
-import { APIclient, type ExtractRequestBody, type ExtractRequestQuery } from "#/data/base/baseAPI";
+import type { ExtractRequestQuery, ExtractRequestBody } from "#/data/base/apiUtils.type";
+import { APIclient } from "#/data/base/baseAPI";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const useAdminUserListQuery = (props: ExtractRequestQuery<"/admin/user", "get">) =>
@@ -10,7 +11,7 @@ export const useAdminUserListQuery = (props: ExtractRequestQuery<"/admin/user", 
           query: props,
         },
       });
-      if (error || !data) throw error;
+      if (error) throw error;
       return data;
     },
   });
@@ -26,7 +27,7 @@ export const useGetAdminUser = (props: { id: string }) =>
           },
         },
       });
-      if (error || !data) throw error;
+      if (error) throw error;
       return data;
     },
   });
@@ -38,7 +39,7 @@ export const useAdminChangeUserPassword = () =>
       const { data, error } = await APIclient.POST("/admin/user/change-password", {
         body,
       });
-      if (error || !data) throw error;
+      if (error) throw error;
       return data;
     },
   });
@@ -50,7 +51,7 @@ export const useAdminDeactivateUser = () =>
       const { data, error } = await APIclient.POST("/admin/user/deactivate", {
         body,
       });
-      if (error || !data) throw error;
+      if (error) throw error;
       return data;
     },
   });
@@ -62,7 +63,7 @@ export const useAdminActivateUser = () =>
       const { data, error } = await APIclient.POST("/admin/user/activate", {
         body,
       });
-      if (error || !data) throw error;
+      if (error) throw error;
       return data;
     },
   });
