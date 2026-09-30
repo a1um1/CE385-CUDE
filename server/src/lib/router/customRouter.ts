@@ -23,6 +23,7 @@ import type {
 } from "#/lib/router/customerRouter.type";
 import type { ZodType } from "zod";
 import { z } from "#/lib/extendZod";
+import { ValidationErrorSchema, ServerErrorSchema } from "#/lib/router/http/errorResponse";
 
 export default class CustomRouter<TDefaultAuth extends AuthenticationObject = undefined> {
   private router = Router();
@@ -61,12 +62,18 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
         });
       }
 
-      console.error("Unhandled error in route handler:", err);
-      const unhandledErrorMessage =
-        (err instanceof Error ? err.message : undefined) || "Internal Server Error";
+      if (process.env.NODE_ENV === "development") {
+        console.error("Unhandled error in route handler:", err);
+        const unhandledErrorMessage =
+          (err instanceof Error ? err.message : undefined) || "Internal Server Error";
+
+        return res.status(500).json({
+          message: unhandledErrorMessage,
+        });
+      }
 
       return res.status(500).json({
-        message: unhandledErrorMessage,
+        message: "Internal Server Error",
       });
     };
   }
@@ -106,8 +113,10 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
           : this.defaultConfig.authentication;
       if (!auth || (Array.isArray(auth) && auth.length === 0)) return next();
       const roleToCheck = (Array.isArray(auth) ? auth : ["USER", "ADMIN"]) as Role[];
-      const token = (req.headers["authorization"] || "")?.split(" ")?.[1];
-      if (!token) throw new UserError(401, "Unauthorize");
+      const token =
+        (req.cookies?.["accessToken"] as string | undefined) ??
+        (req.headers["authorization"] || "")?.split(" ")?.[1];
+      if (!token) throw new UserError(403, "Unauthorize");
 
       const user = await this.authController.validateToken(token);
       if (!roleToCheck.includes(user.JSON.role)) throw new UserError(403, "Forbidden");
@@ -144,8 +153,14 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
           description: config.responseDescription ?? "Successful response",
           content: { "application/json": { schema: config.response } },
         },
-        400: { description: "Validation error" },
-        500: { description: "Internal server error" },
+        400: {
+          description: "Validation error",
+          content: { "application/json": { schema: ValidationErrorSchema } },
+        },
+        500: {
+          description: "Internal server error",
+          content: { "application/json": { schema: ServerErrorSchema } },
+        },
       },
     });
   }
@@ -173,14 +188,22 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
       this.validateAuthentication(mergedConfig),
       async (req, res) => {
         const status = new HTTPstatus();
+
         let handlersResult = await options.handler({
           params: req.ctx?.params as InferOrAny<TParams>,
           query: req.ctx?.query as InferOrAny<TQuery>,
           body: req.ctx?.body as InferOrAny<TBody>,
           headers: req.headers,
-          user: req.ctx?.user as any,
+          ip: req.ip,
+          user: req.ctx?.user,
+          cookies: {
+            ...(req.cookies as Record<string, string>),
+            set: res.cookie.bind(res),
+            clear: res.clearCookie.bind(res),
+          } as any,
           status,
         });
+
         if (options.config.response) {
           handlersResult = options.config.response.parse(handlersResult);
         }

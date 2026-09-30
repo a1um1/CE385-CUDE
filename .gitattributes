@@ -6,3 +6,4 @@ server/package-lock.json linguist-generated=true
 server/package-lock.json linguist-vendored
 client/src/data/base/openapi.ts linguist-generated=true
 client/src/routeTree.gen.ts linguist-generated=true
+dbml/schema.dbml linguist-generated=true

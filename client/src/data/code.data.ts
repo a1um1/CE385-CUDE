@@ -7,7 +7,6 @@ export const useCodeAvailableLanguage = () =>
     queryFn: async () => {
       const { data, error } = await APIclient.GET("/coding/language");
       if (error) throw error;
-      if (!data) throw new Error("Not Found");
       return data;
     },
   });

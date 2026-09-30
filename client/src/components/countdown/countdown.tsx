@@ -5,36 +5,33 @@ interface CountdownTimerProps {
   targetDate?: string; // ISO date string for the target date and time
 }
 
+const calculateTimeLeft = (targetDate?: string) => {
+  if (!targetDate) return { days: 0, hours: 0, minutes: 0, seconds: 0, isExpired: true };
+
+  const difference = new Date(targetDate).getTime() - new Date().getTime();
+  const timeLeft = { days: 0, hours: 0, minutes: 0, seconds: 0, isExpired: difference <= 0 };
+
+  if (difference > 0) {
+    timeLeft["days"] = Math.floor(difference / (1000 * 60 * 60 * 24));
+    timeLeft["hours"] = Math.floor((difference / (1000 * 60 * 60)) % 24);
+    timeLeft["minutes"] = Math.floor((difference / 1000 / 60) % 60);
+    timeLeft["seconds"] = Math.floor((difference / 1000) % 60);
+  }
+  return timeLeft;
+};
+
 export default function CountdownTimer({ targetDate }: CountdownTimerProps) {
-  // Calculates the delta between now and target date
-  const calculateTimeLeft = () => {
-    if (!targetDate) return { days: 0, hours: 0, minutes: 0, seconds: 0, isExpired: true };
-
-    const difference = new Date(targetDate).getTime() - new Date().getTime();
-    const timeLeft = { days: 0, hours: 0, minutes: 0, seconds: 0, isExpired: difference <= 0 };
-
-    if (difference > 0) {
-      timeLeft["days"] = Math.floor(difference / (1000 * 60 * 60 * 24));
-      timeLeft["hours"] = Math.floor((difference / (1000 * 60 * 60)) % 24);
-      timeLeft["minutes"] = Math.floor((difference / 1000 / 60) % 60);
-      timeLeft["seconds"] = Math.floor((difference / 1000) % 60);
-    }
-    return timeLeft;
-  };
-
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(targetDate));
 
   useEffect(() => {
-    calculateTimeLeft();
+    calculateTimeLeft(targetDate);
     const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft());
+      setTimeLeft(calculateTimeLeft(targetDate));
     }, 1000);
 
     // Cleans up the interval subscription on unmount
     return () => clearInterval(timer);
   }, [targetDate]);
-
-  // Helper function to pad single digits with a leading zero
 
   if (timeLeft.isExpired) return null;
 
