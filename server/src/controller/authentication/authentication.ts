@@ -4,7 +4,6 @@ import type {
 } from "#/controller/authentication/authentication.schema";
 import UserController from "#/controller/user";
 import type { userCreationSchema, userValidationSchema } from "#/controller/user/user.schema";
-import { Log } from "#/lib/logger/decorators";
 import { db } from "#/lib/prisma";
 import userError from "#/lib/router/http/userError";
 import UserError from "#/lib/router/http/userError";
@@ -135,7 +134,6 @@ export default class AuthenticationController {
     }
   }
 
-  @Log()
   async signIn(
     credentials: userValidationSchema,
     context?: TokenContext,
@@ -155,7 +153,6 @@ export default class AuthenticationController {
     return { token, user, refreshToken };
   }
 
-  @Log()
   async signUp(
     userData: userCreationSchema,
     context?: TokenContext,

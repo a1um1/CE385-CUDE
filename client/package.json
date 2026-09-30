@@ -14,7 +14,7 @@
     "format:check": "oxfmt --check",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "ts:check": "tsc --noEmit",
+    "ts:check": "npm run css:generate && tsc --noEmit",
     "css:generate": "vite-css-modules",
     "test:github": "echo \"No tests for client\""
   },
@@ -45,7 +45,8 @@
   },
   "devDependencies": {
     "@storybook/addon-a11y": "^10.5.8",
-    "@storybook/addon-docs": "^10.5.8",
+    "@storybook/addon-docs": "^10.6.0",
+    "@storybook/react": "^10.6.0",
     "@storybook/tanstack-react": "^10.5.8",
     "@tanstack/devtools-vite": "latest",
     "@tanstack/router-cli": "^1.132.0",
@@ -54,8 +55,11 @@
     "@types/react-dom": "^19.2.0",
     "playwright": "latest",
     "storybook": "^10.5.8",
-    "typescript": "^6.0.2",
+    "typescript": "^7.0.2",
     "vite": "^8.0.0"
+  },
+  "engines": {
+    "node": ">=24"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

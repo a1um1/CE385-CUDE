@@ -1,6 +1,6 @@
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
-import express from "express";
+import { createTestApp } from "#/lib/router/tests/mocks/testApp.mock";
 
 const postingMockRouter = new CustomRouter()
   .post("/post-with-no-body-validation", {}, async ({ body }) => ({
@@ -21,8 +21,6 @@ const postingMockRouter = new CustomRouter()
     }),
   );
 
-const PostBodyApp = express();
-PostBodyApp.use(express.json());
-PostBodyApp.use(postingMockRouter.route);
+const PostBodyApp = createTestApp(postingMockRouter.route);
 
 export { PostBodyApp };
