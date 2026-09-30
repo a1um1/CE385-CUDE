@@ -41,7 +41,7 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
     TResponse extends ZodType<any> | undefined,
     TAuth extends AuthenticationObject,
   >(config: RouteConfig<TParams, TQuery, TBody, TResponse, TAuth>): RequestHandler {
-    return (req, _res, next) => {
+    return (req, res, next) => {
       const params = (
         config.params ? config.params.parse(req.params) : req.params
       ) as InferOrAny<TParams>;
@@ -50,11 +50,7 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
       ) as InferOrAny<TQuery>;
       const body = (config.body ? config.body.parse(req.body) : req.body) as InferOrAny<TBody>;
 
-      req.ctx = {
-        params,
-        query,
-        body,
-      };
+      Object.assign(res.locals, { params, query, body });
       next();
     };
   }
@@ -62,7 +58,7 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
   private validateAuthentication<TAuth extends AuthenticationObject>(
     config: RouteConfig<any, any, any, any, TAuth>,
   ): RequestHandler {
-    return async (req, _res, next) => {
+    return async (req, res, next) => {
       const auth =
         config.authentication !== undefined
           ? config.authentication
@@ -76,8 +72,7 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
 
       const user = await this.authController.validateToken(token);
       if (!roleToCheck.includes(user.JSON.role)) throw new UserError(403, "Forbidden");
-      req.ctx ||= {};
-      req.ctx.user = user;
+      res.locals.user = user;
       next();
     };
   }
@@ -162,12 +157,12 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
         const status = new HTTPstatus();
 
         let handlersResult = await options.handler({
-          params: req.ctx?.params as InferOrAny<TParams>,
-          query: req.ctx?.query as InferOrAny<TQuery>,
-          body: req.ctx?.body as InferOrAny<TBody>,
+          params: res.locals.params,
+          query: res.locals.query,
+          body: res.locals.body,
           headers: req.headers,
           ip: req.ip,
-          user: req.ctx?.user,
+          user: res.locals.user,
           cookies: {
             ...(req.cookies as Record<string, string>),
             set: res.cookie.bind(res),
