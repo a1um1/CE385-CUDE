@@ -1,4 +1,3 @@
-import { Log } from "#/lib/logger/decorators";
 import { db } from "#/lib/prisma";
 import bcrypt from "bcrypt";
 import UserError from "#/lib/router/http/userError";
@@ -40,7 +39,6 @@ export default class UserController {
     return publicData as userSafePublicSchema;
   }
 
-  @Log()
   async updateAvatar(data: userUpdateAvatarSchema) {
     await db.user.update({
       where: { id: this.user.id },
@@ -50,7 +48,6 @@ export default class UserController {
     return this;
   }
 
-  @Log()
   async updateBackground(data: userUpdateBackgroundSchema) {
     await db.user.update({
       where: { id: this.user.id },
@@ -60,7 +57,6 @@ export default class UserController {
     return this;
   }
 
-  @Log()
   async updatePassword(data: userUpdatePasswordSchema) {
     const userRecord = await db.user.findUniqueOrThrow({
       where: { id: this.user.id },
