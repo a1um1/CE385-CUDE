@@ -74,7 +74,7 @@ export function PasswordField({
       {(showStrength || showRequirements) && (
         <div className={styles.hint}>
           {showStrength && <PasswordStrength value={value} />}
-          {showRequirements && <PasswordRequirements value={value} title="Must contain:" />}
+          {showRequirements && <PasswordRequirements value={value} />}
         </div>
       )}
       {/* {hasError && (
