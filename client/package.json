@@ -14,7 +14,7 @@
     "format:check": "oxfmt --check",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "ts:check": "tsc --noEmit",
+    "ts:check": "npm run css:generate && tsc --noEmit",
     "css:generate": "vite-css-modules",
     "test:github": "echo \"No tests for client\""
   },
