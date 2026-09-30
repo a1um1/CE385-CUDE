@@ -1,5 +1,6 @@
 import { useAppForm, handleFormMutationError } from "#/components/form";
 import { useSignUp } from "#/data/user.data";
+import { getPasswordError } from "#/lib/passwordRules";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/auth/signup")({
@@ -84,11 +85,7 @@ function RouteComponent() {
           <form.AppField
             name="password"
             validators={{
-              onChange: ({ value }) => {
-                if (!value) return "Password is required";
-                if (value.length < 6) return "Password must be at least 6 characters";
-                return undefined;
-              },
+              onChange: ({ value }) => getPasswordError(value),
             }}
           >
             {(field) => (
