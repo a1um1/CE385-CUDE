@@ -74,36 +74,64 @@ export default class UserStatController {
   }
 
   private async calculateCurrentEnergy(): Promise<number> {
-    const { energy, energyUpdatedAt } = this.data;
-    if (!energyUpdatedAt) return energy;
-    if (energy >= UserStatController.MAX_ENERGY) {
-      // If the user is already at max energy, we don't need to calculate regeneration
-      return energy;
-    }
-    const now = new Date();
-    const elapsedTime = (now.getTime() - energyUpdatedAt.getTime()) / 1000; // in seconds
-    const regenRateInSeconds = UserStatController.ENERGY_REGEN_RATE * 60; // convert minutes to seconds
-    const ticks = Math.floor(elapsedTime * (1 / regenRateInSeconds)); // energy regenerated since last update
-    if (ticks <= 0) return energy;
+    return await db.$transaction(async (tx) => {
+      const rows = await tx.$queryRaw<
+        {
+          energy: number;
+          energyUpdatedAt: Date;
+        }[]
+      >`
+				SELECT energy, energyUpdatedAt
+				FROM "UserStat"
+				WHERE "userID" = ${this.data.userID}
+				FOR UPDATE
+			`; // Lock the row for update to prevent race conditions
 
-    const incrementBy = Math.min(ticks, UserStatController.MAX_ENERGY - energy);
-    this.data.energy = Math.min(energy + incrementBy, UserStatController.MAX_ENERGY);
+      const [row] = rows;
+      if (!row) {
+        throw new UserError(404, "User stats not found.");
+      }
 
-    this.data.energyUpdatedAt = new Date(
-      energyUpdatedAt.getTime() + ticks * regenRateInSeconds * 1000,
-    ); // update the last updated time based on regenerated energy
+      const { energy, energyUpdatedAt } = row;
 
-    await db.userStat.update({
-      where: { userID: this.data.userID },
-      data: {
-        energy: {
-          increment: incrementBy,
+      if (energy >= UserStatController.MAX_ENERGY) {
+        // If the user is already at max energy, we don't need to calculate regeneration
+        this.data.energy = energy;
+        this.data.energyUpdatedAt = energyUpdatedAt;
+        return energy;
+      }
+
+      const now = new Date();
+      const elapsedTime = (now.getTime() - energyUpdatedAt.getTime()) / 1000; // in seconds
+      const regenRateInSeconds = UserStatController.ENERGY_REGEN_RATE * 60; // convert minutes to seconds
+      const ticks = Math.floor(elapsedTime * (1 / regenRateInSeconds)); // energy regenerated since last update
+      if (ticks <= 0) {
+        this.data.energy = energy;
+        this.data.energyUpdatedAt = energyUpdatedAt;
+        return energy;
+      }
+
+      const incrementBy = Math.min(ticks, UserStatController.MAX_ENERGY - energy);
+      const newEnergy = Math.min(energy + incrementBy, UserStatController.MAX_ENERGY);
+      const newEnergyUpdatedAt = new Date(
+        energyUpdatedAt.getTime() + ticks * regenRateInSeconds * 1000,
+      ); // update the last updated time based on regenerated energy
+
+      this.data.energy = newEnergy;
+      this.data.energyUpdatedAt = newEnergyUpdatedAt;
+
+      await tx.userStat.update({
+        where: { userID: this.data.userID },
+        data: {
+          energy: {
+            increment: incrementBy,
+          },
+          energyUpdatedAt: newEnergyUpdatedAt,
         },
-        energyUpdatedAt: this.data.energyUpdatedAt,
-      },
-    });
+      });
 
-    return this.data.energy;
+      return newEnergy;
+    });
   }
 
   private static async prepareData(data: userStatsQueryPayload): Promise<UserStatController> {

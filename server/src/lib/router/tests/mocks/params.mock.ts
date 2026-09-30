@@ -1,6 +1,6 @@
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
-import express from "express";
+import { createTestApp } from "#/lib/router/tests/mocks/testApp.mock";
 
 const paramsRouting = new CustomRouter()
   .get("/no-params", {}, async ({ params }) => ({
@@ -33,7 +33,6 @@ const paramsRouting = new CustomRouter()
     }),
   );
 
-const ParamsRoutingApp = express();
-ParamsRoutingApp.use(paramsRouting.route);
+const ParamsRoutingApp = createTestApp(paramsRouting.route);
 
 export { ParamsRoutingApp };

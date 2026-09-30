@@ -12,7 +12,7 @@
     "db:migrate": "prisma migrate dev --name auto && prisma generate",
     "db:generate": "prisma generate",
     "db:deploy": "prisma migrate deploy",
-    "ts:check": "prisma generate && tsc --noEmit",
+    "ts:check": "npm run db:generate && tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
@@ -50,5 +50,8 @@
     "prisma-dbml-generator": "^0.12.0",
     "tsx": "^4.23.12",
     "vite-tsconfig-paths": "^6.1.1"
+  },
+  "engines": {
+    "node": ">=24"
   }
 }

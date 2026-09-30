@@ -23,7 +23,7 @@ export default class UnitController {
     return new UnitController(unit);
   }
 
-  static async getAllById(id: string): Promise<UnitController[]> {
+  static async getAllByCourseId(id: string): Promise<UnitController[]> {
     const units = await db.unit.findMany({
       where: { courseID: id },
     });
