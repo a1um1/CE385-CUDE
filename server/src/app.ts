@@ -10,6 +10,8 @@ import { CodingRoute } from "#/routes/coding";
 import { courseRoute } from "./routes/course";
 import cookieParser from "cookie-parser";
 import { rateLimit } from "express-rate-limit";
+import { httpLogger } from "#/lib/router/logger";
+import { errorHandler, notFoundHandler } from "#/lib/router/http/errorHandler";
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -28,6 +30,7 @@ const app = express()
     }),
   )
   .use(cookieParser())
+  .use(httpLogger)
   .use(authRoute)
   .use(userRouter)
   .use(CodingRoute)
@@ -45,6 +48,8 @@ app
     apiReference({
       spec: { url: "/openapi.json" },
     }),
-  );
+  )
+  .use(notFoundHandler)
+  .use(errorHandler);
 
 export default app;
