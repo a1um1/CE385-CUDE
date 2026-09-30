@@ -77,11 +77,11 @@ export function PasswordField({
           {showRequirements && <PasswordRequirements value={value} title="Must contain:" />}
         </div>
       )}
-      {hasError && (
+      {/* {hasError && (
         <span className={formStyles.error} id={`${field.name}-error`} role="alert">
           {errors.join(", ")}
         </span>
-      )}
+      )} */}
     </div>
   );
 }

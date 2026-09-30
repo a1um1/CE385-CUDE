@@ -89,10 +89,12 @@ function RouteComponent() {
             }}
           >
             {(field) => (
-              <field.TextField
+              <field.PasswordField
                 label="Password"
                 required
-                type="password"
+                autoComplete="new-password"
+                showStrength
+                showRequirements
                 disabled={signUpMutation.isPending}
               />
             )}
