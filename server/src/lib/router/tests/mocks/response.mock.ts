@@ -1,6 +1,6 @@
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
-import express from "express";
+import { createTestApp } from "#/lib/router/tests/mocks/testApp.mock";
 
 const responseRouting = new CustomRouter()
   .get("/no-response-validation", {}, async () => ({
@@ -34,8 +34,6 @@ const responseRouting = new CustomRouter()
     }),
   );
 
-const ResponseRoutingApp = express();
-ResponseRoutingApp.use(express.json());
-ResponseRoutingApp.use(responseRouting.route);
+const ResponseRoutingApp = createTestApp(responseRouting.route);
 
 export { ResponseRoutingApp };
