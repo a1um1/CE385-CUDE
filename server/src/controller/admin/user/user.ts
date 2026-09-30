@@ -3,7 +3,6 @@ import bcrypt from "bcrypt";
 import { buildCursorOrderBy } from "#/lib/pagination.schema";
 import { userQueryPayload, type userSafeSchema } from "#/controller/user/user.schema";
 import UserError from "#/lib/router/http/userError";
-import { Log } from "#/lib/logger/decorators";
 import type {
   AdminUserDeactivateSchema,
   AdminUserListResponseSchema,
@@ -23,7 +22,6 @@ export default class AdminUserController {
     return this.user;
   }
 
-  @Log()
   async forceChangePassword(body: AdminUserUpdatePasswordSchema) {
     if (!this.user) throw new Error("User not found");
     await db.user.update({
@@ -33,7 +31,6 @@ export default class AdminUserController {
     return this;
   }
 
-  @Log()
   async deactivate(body: AdminUserDeactivateSchema) {
     if (!this.user) throw new Error("User not found");
     await db.user.update({
@@ -44,7 +41,6 @@ export default class AdminUserController {
     return this;
   }
 
-  @Log()
   async reactivate() {
     if (!this.user) throw new Error("User not found");
     await db.user.update({
