@@ -1,5 +1,5 @@
 import CustomRouter from "#/lib/router/customRouter";
-import express from "express";
+import { createTestApp } from "#/lib/router/tests/mocks/testApp.mock";
 
 const basicRouting = new CustomRouter({
   prefix: "/api",
@@ -51,7 +51,6 @@ const basicRouting = new CustomRouter({
     }),
   );
 
-const BasicRoutingApp = express();
-BasicRoutingApp.use(basicRouting.route);
+const BasicRoutingApp = createTestApp(basicRouting.route);
 
 export { BasicRoutingApp };

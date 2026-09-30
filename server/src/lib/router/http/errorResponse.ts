@@ -1,14 +1,16 @@
 import { z } from "#/lib/extendZod";
 
-export const ValidationErrorSchema = z
+export const ErrorResponseSchema = z
   .object({
     message: z.string().openapi({ example: "Invalid request parameters" }),
-    details: z.string().optional().openapi({ example: "username: Required" }),
+    details: z
+      .array(
+        z.object({
+          path: z.string().openapi({ example: "email" }),
+          message: z.string().openapi({ example: "Invalid email address" }),
+        }),
+      )
+      .optional()
+      .openapi({ example: [{ path: "email", message: "Invalid email address" }] }),
   })
-  .openapi("ValidationError");
-
-export const ServerErrorSchema = z
-  .object({
-    message: z.string().openapi({ example: "Internal Server Error" }),
-  })
-  .openapi("ServerError");
+  .openapi("ErrorResponse");

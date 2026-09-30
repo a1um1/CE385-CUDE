@@ -1,4 +1,5 @@
 import { createFormHookContexts, createFormHook } from "@tanstack/react-form";
+import type { components } from "#/data/base/openapi";
 import { TextField } from "./input/textInput";
 import { ColorField } from "./input/colorInput";
 import { SubmitButton } from "./input/submitButton";
@@ -29,66 +30,59 @@ export const useAppForm: typeof useAppFormBase = (options) =>
     },
   });
 
-export interface ZodTreeError {
-  errors: string[];
-  properties?: Record<string, ZodTreeError>;
-  items?: ZodTreeError[];
-}
+type ErrorResponse = components["schemas"]["ErrorResponse"];
+type ValidationIssue = NonNullable<ErrorResponse["details"]>[number];
 
-export interface ApiValidationError {
-  message: string;
-  details: ZodTreeError;
-}
+export function isApiValidationError(error: unknown): error is ErrorResponse {
+  if (typeof error !== "object" || error === null) return false;
 
-export function isApiValidationError(error: any): error is ApiValidationError {
+  const candidate = error as Partial<ErrorResponse>;
   return (
-    error &&
-    typeof error === "object" &&
-    typeof error.message === "string" &&
-    error.details &&
-    typeof error.details === "object" &&
-    Array.isArray(error.details.errors)
+    typeof candidate.message === "string" &&
+    Array.isArray(candidate.details) &&
+    candidate.details.length > 0
   );
 }
 
-export function setFormErrorsFromZodTree(form: any, tree: ZodTreeError, prefix = "") {
-  if (prefix === "" && tree.errors && tree.errors.length > 0) {
-    form.setErrorMap({
-      onSubmit: tree.errors,
-    });
-  } else if (tree.errors && tree.errors.length > 0) {
-    form.setFieldMeta(prefix, (prev: any) => ({
+export function setFormErrorsFromIssues(form: any, issues: ValidationIssue[]) {
+  const rootIssues: string[] = [];
+  const fieldIssues = new Map<string, string[]>();
+
+  for (const issue of issues) {
+    if (issue.path === "") {
+      rootIssues.push(issue.message);
+    } else {
+      const existing = fieldIssues.get(issue.path);
+      if (existing) existing.push(issue.message);
+      else fieldIssues.set(issue.path, [issue.message]);
+    }
+  }
+
+  for (const [path, messages] of fieldIssues) {
+    form.setFieldMeta(path, (prev: any) => ({
       ...prev,
       isTouched: true,
       errorMap: {
         ...prev?.errorMap,
-        onSubmit: tree.errors,
+        onSubmit: messages,
       },
     }));
   }
 
-  if (tree.properties) {
-    for (const [key, propTree] of Object.entries(tree.properties)) {
-      const path = prefix ? `${prefix}.${key}` : key;
-      setFormErrorsFromZodTree(form, propTree, path);
-    }
-  }
-
-  if (tree.items) {
-    tree.items.forEach((itemTree, index) => {
-      const path = `${prefix}[${index}]`;
-      setFormErrorsFromZodTree(form, itemTree, path);
+  if (rootIssues.length > 0) {
+    form.setErrorMap({
+      onSubmit: rootIssues,
     });
   }
 }
 
-export function handleFormMutationError(form: any, error: any) {
+export function handleFormMutationError(form: any, error: unknown) {
   if (isApiValidationError(error)) {
-    setFormErrorsFromZodTree(form, error.details);
+    setFormErrorsFromIssues(form, error.details!);
   } else {
     const message =
-      error && typeof error === "object" && error.message
-        ? error.message
+      typeof error === "object" && error !== null && "message" in error && error.message
+        ? String(error.message)
         : typeof error === "string"
           ? error
           : "An unexpected error occurred. Please try again.";
