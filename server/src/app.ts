@@ -10,6 +10,7 @@ import { CodingRoute } from "#/routes/coding";
 import { courseRoute } from "./routes/course";
 import cookieParser from "cookie-parser";
 import { rateLimit } from "express-rate-limit";
+import { adminUnitRoute } from "./routes/admin/unit.admin";
 import { httpLogger } from "#/lib/router/logger";
 import { errorHandler, notFoundHandler } from "#/lib/router/http/errorHandler";
 
@@ -36,6 +37,7 @@ const app = express()
   .use(CodingRoute)
   .use(testRouter)
   .use(courseRoute)
+  .use(adminUnitRoute)
   .use(adminRoute);
 
 // Docs endpoint — regenerated from the registry above
