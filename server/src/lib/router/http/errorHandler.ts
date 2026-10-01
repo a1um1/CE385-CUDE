@@ -30,7 +30,7 @@ const resolveClientErrorStatus = (err: unknown) => {
   );
 };
 
-export const errorHandler: ErrorRequestHandler = (err, _req, res, next) => {
+export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   if (res.headersSent) return next(err);
 
   if (err instanceof z.ZodError) {
@@ -55,7 +55,16 @@ export const errorHandler: ErrorRequestHandler = (err, _req, res, next) => {
     });
   }
 
-  console.error("Unhandled error:", err);
+  console.error(
+    "Unhandled error:",
+    {
+      method: req.method,
+      path: req.originalUrl,
+      userId: res.locals.user?.JSON.id,
+      role: res.locals.user?.JSON.role,
+    },
+    err,
+  );
   return res.status(500).json({ message: "Internal Server Error" });
 };
 

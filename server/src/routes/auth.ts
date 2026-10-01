@@ -1,6 +1,7 @@
 import { UserCreationSchema, UserValidationSchema } from "#/controller/user/user.schema";
 import AuthenticationController, { type TokenContext } from "#/controller/authentication";
 import CustomRouter from "#/lib/router/customRouter";
+import type { RouteCookieOps } from "#/lib/router/customerRouter.type";
 import { authenticationResponseSchema } from "#/controller/authentication/authentication.schema";
 import UserError from "#/lib/router/http/userError";
 import type { CookieOptions } from "express";
@@ -23,18 +24,12 @@ function tokenContextFrom(headers: IncomingHttpHeaders, ip: string | undefined):
   };
 }
 
-function setAuthCookies(
-  cookies: {
-    set: (name: string, value: string, options: CookieOptions) => any;
-  },
-  accessToken: string,
-  refreshToken: string,
-) {
-  cookies.set("accessToken", accessToken, {
+function setAuthCookies(cookie: RouteCookieOps, accessToken: string, refreshToken: string) {
+  cookie.set("accessToken", accessToken, {
     ...authCookieOptions,
     maxAge: AuthenticationController.REFRESH_TOKEN_EXPIRATION_MS,
   });
-  cookies.set("refreshToken", refreshToken, {
+  cookie.set("refreshToken", refreshToken, {
     ...authCookieOptions,
     maxAge: AuthenticationController.REFRESH_TOKEN_EXPIRATION_MS,
   });
@@ -51,9 +46,9 @@ const authRouter = new CustomRouter({
       body: UserCreationSchema,
       response: authenticationResponseSchema,
     },
-    async ({ body, headers, ip, cookies }) => {
+    async ({ body, headers, ip, cookie }) => {
       const result = await authController.signUp(body, tokenContextFrom(headers, ip));
-      setAuthCookies(cookies, result.token, result.refreshToken);
+      setAuthCookies(cookie, result.token, result.refreshToken);
       return { message: "Signed up successfully" };
     },
   )
@@ -64,9 +59,9 @@ const authRouter = new CustomRouter({
       body: UserValidationSchema,
       response: authenticationResponseSchema,
     },
-    async ({ body, headers, ip, cookies }) => {
+    async ({ body, headers, ip, cookie }) => {
       const result = await authController.signIn(body, tokenContextFrom(headers, ip));
-      setAuthCookies(cookies, result.token, result.refreshToken);
+      setAuthCookies(cookie, result.token, result.refreshToken);
       return { message: "Signed in successfully" };
     },
   )
@@ -76,11 +71,11 @@ const authRouter = new CustomRouter({
       summary: "Refresh authentication token",
       response: authenticationResponseSchema,
     },
-    async ({ headers, ip, cookies }) => {
+    async ({ headers, ip, cookies, cookie }) => {
       const { refreshToken } = cookies;
       if (!refreshToken) throw new UserError(400, "Refresh token is required");
       const result = await authController.refreshToken(refreshToken, tokenContextFrom(headers, ip));
-      setAuthCookies(cookies, result.accessToken, result.refreshToken);
+      setAuthCookies(cookie, result.accessToken, result.refreshToken);
       return { message: "Token refreshed successfully" };
     },
   )
@@ -90,11 +85,11 @@ const authRouter = new CustomRouter({
       summary: "Sign out and revoke the refresh token",
       response: authenticationResponseSchema,
     },
-    async ({ cookies }) => {
+    async ({ cookies, cookie }) => {
       const { refreshToken } = cookies;
       if (refreshToken) await authController.revokeRefreshToken(refreshToken);
-      cookies.clear("accessToken");
-      cookies.clear("refreshToken");
+      cookie.clear("accessToken");
+      cookie.clear("refreshToken");
       return { message: "Signed out successfully" };
     },
   );
