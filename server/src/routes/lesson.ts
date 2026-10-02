@@ -1,36 +1,37 @@
 import LessonController from "#/controller/lesson";
-import UnitController from "#/controller/unit";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 
-const publicLessonSchema = z.object({
-  id: z.string().openapi({ example: "lesson_id" }),
-  name: z.string().openapi({ example: "lesson_name" }),
-  unitID: z.uuid().openapi({ example: "unit_id" }),
-  passTheshold: z.number().openapi({ example: 0.8 }),
-  XPgiven: z.number().int().openapi({ example: 10 }),
-  gemsGiven: z.number().int().openapi({ example: 5 }),
-});
+export const LessonSchema = z
+  .object({
+    id: z.string().openapi({ example: "lesson_id" }),
+    name: z.string().openapi({ example: "lesson_name" }),
+    unitID: z.uuid().openapi({ example: "unit_id" }),
+    passThreshold: z.number().openapi({ example: 0.8 }),
+    XPgiven: z.number().int().openapi({ example: 10 }),
+    gemsGiven: z.number().int().openapi({ example: 5 }),
+  })
+  .openapi("Lesson");
 
-const publicLessonListSchema = z.array(publicLessonSchema);
-
-const lessonRoute = new CustomRouter({
-  prefix: "/unit",
+const lessonRouterInstance = new CustomRouter({
+  prefix: "/lesson",
   tags: ["Lesson"],
 }).get(
-  "/:unitId/lesson",
+  "/:lessonId",
   {
-    summary: "List lessons of a unit",
+    summary: "Get lessons by ID",
     params: z.object({
-      unitId: z.uuid().openapi({ example: "unit_id" }),
+      lessonId: z.uuid().openapi({ example: "lesson_id" }),
     }),
-    response: publicLessonListSchema,
+    response: LessonSchema,
   },
   async ({ params }) => {
-    await UnitController.getById(params.unitId);
-    const lessons = await LessonController.getByUnitId(params.unitId);
-    return lessons.map((lesson) => lesson.JSON);
+    const result = await LessonController.getById(params.lessonId);
+    // แปลง Decimal -> number (passThreshold) และกรอง field ที่ไม่
+    // ต้องการ (createdAt, updatedAt) ออกไป ให้ตรงกับ LessonSchema เป๊ะ
+    const { id, name, unitID, passThreshold, XPgiven, gemsGiven } = result.JSON;
+    return { id, name, unitID, passThreshold: Number(passThreshold), XPgiven, gemsGiven };
   },
 );
 
-export const lessonRouter = lessonRoute.route;
+export const lessonRouter = lessonRouterInstance.route;

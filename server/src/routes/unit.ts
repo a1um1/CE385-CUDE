@@ -1,5 +1,7 @@
+import UnitController from "#/controller/unit";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
+import { LessonSchema } from "#/routes/lesson"; // 👈 แก้ path ให้มี /
 
 export const UnitSchema = z
   .object({
@@ -9,11 +11,43 @@ export const UnitSchema = z
   })
   .openapi("Unit");
 
-export const UnitListResponseSchema = z.array(UnitSchema).openapi("UnitListResponse");
+export const LessonListSchema = z.array(LessonSchema);
 
 const unitRouter = new CustomRouter({
   prefix: "/unit",
   tags: ["Unit"],
-});
+})
+  .get(
+    "/:unitId",
+    {
+      summary: "Get unit by ID",
+      params: z.object({
+        unitId: z.string().openapi({ example: "unit_id" }),
+      }),
+      response: UnitSchema,
+    },
+    async ({ params }) => {
+      const unit = await UnitController.getById(params.unitId);
+      return unit!.JSON;
+    },
+  )
+  .get(
+    "/:unitId/lesson",
+    {
+      summary: "List lessons of a unit",
+      params: z.object({
+        unitId: z.string().openapi({ example: "unit_id" }),
+      }),
+      response: LessonListSchema,
+    },
+    async ({ params }) => {
+      const unit = await UnitController.getById(params.unitId);
+      const lessons = await unit.getAllLesson();
+      return lessons.map((lesson) => {
+        const { id, name, unitID, passThreshold, XPgiven, gemsGiven } = lesson.JSON;
+        return { id, name, unitID, passThreshold: Number(passThreshold), XPgiven, gemsGiven };
+      });
+    },
+  );
 
 export const unitRoute = unitRouter.route;

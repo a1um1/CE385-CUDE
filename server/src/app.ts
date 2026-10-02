@@ -12,7 +12,8 @@ import cookieParser from "cookie-parser";
 import { rateLimit } from "express-rate-limit";
 import { httpLogger } from "#/lib/router/logger";
 import { errorHandler, notFoundHandler } from "#/lib/router/http/errorHandler";
-
+import { unitRoute } from "./routes/unit";
+import { lessonRouter } from "./routes/lesson";
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   limit: 200, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
@@ -38,6 +39,8 @@ const app = express()
   .use(testRouter)
   .use(courseRoute)
   .use(lessonRouter)
+  .use(lessonRouter)
+  .use(unitRoute)
   .use(adminRoute);
 
 // Docs endpoint — regenerated from the registry above
