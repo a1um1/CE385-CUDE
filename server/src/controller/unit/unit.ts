@@ -15,7 +15,7 @@ export default class UnitController {
     return this.data;
   }
 
-  static async getById(id: string): Promise<UnitController | null> {
+  static async getById(id: string): Promise<UnitController> {
     const unit = await db.unit.findUnique({
       where: { id },
     });

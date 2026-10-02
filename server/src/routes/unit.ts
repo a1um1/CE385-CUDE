@@ -1,7 +1,6 @@
 import UnitController from "#/controller/unit";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
-import UserError from "#/lib/router/http/userError";
 import { LessonSchema } from "#/routes/lesson";
 
 export const UnitSchema = z
@@ -29,7 +28,7 @@ const unitRouter = new CustomRouter({
     },
     async ({ params }) => {
       const unit = await UnitController.getById(params.unitId);
-      return unit!.JSON;
+      return unit.JSON;
     },
   )
   .get(
@@ -43,9 +42,6 @@ const unitRouter = new CustomRouter({
     },
     async ({ params }) => {
       const unit = await UnitController.getById(params.unitId);
-      if (!unit) {
-        throw new UserError(404, "Unit not found");
-      }
       const lessons = await unit.getAllLesson();
       return lessons.map((lesson) => {
         const { id, name, unitID, passThreshold, XPgiven, gemsGiven } = lesson.JSON;
