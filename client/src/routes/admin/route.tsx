@@ -1,25 +1,22 @@
 import Sidebar from "#/components/sidebar";
-import { useUser } from "#/data/user.data";
-import { createFileRoute, Outlet, useMatches } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { userQueryOptions } from "#/data/user.data";
+import { createFileRoute, Outlet, redirect, useMatches } from "@tanstack/react-router";
 import style from "./layout.module.css";
 import UserMenu from "#/components/userMenu";
 export const Route = createFileRoute("/admin")({
+  ssr: false,
+  beforeLoad: async ({ context }) => {
+    const user = await context.queryClient.query(userQueryOptions);
+
+    if (!user) throw redirect({ to: "/auth/signin" });
+    if (user.role !== "ADMIN") throw redirect({ to: "/" });
+  },
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { data: user, isLoading } = useUser();
-  const isAdmin = user?.role === "ADMIN";
-  const navigate = Route.useNavigate();
   const matches = useMatches();
   const pageTitle = matches[matches.length - 1]?.staticData?.pageTitle;
-
-  useEffect(() => {
-    if (!isLoading && !isAdmin) navigate({ to: "/" });
-  }, [isLoading, isAdmin]);
-
-  if (isLoading || !isAdmin) return <div>Loading...</div>;
 
   return (
     <div className={style["admin-layout"]}>

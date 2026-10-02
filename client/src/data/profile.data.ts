@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 
 export const useQueryProfile = (username: string) =>
   useQuery({
-    queryKey: ["user", username],
+    queryKey: ["profile", username],
     queryFn: async () => {
       const { data, error } = await APIclient.GET(`/user/get-profile/{username}`, {
         params: {

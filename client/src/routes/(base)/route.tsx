@@ -1,20 +1,18 @@
 import Navbar from "#/components/navbar";
-import { useSuspenseUser } from "#/data/user.data";
-import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { userQueryOptions } from "#/data/user.data";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/(base)")({
+  ssr: false,
+  beforeLoad: async ({ context }) => {
+    const user = await context.queryClient.query(userQueryOptions);
+
+    if (!user) throw redirect({ to: "/auth/signin" });
+  },
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const navigate = Route.useNavigate();
-  const { data: user } = useSuspenseUser();
-
-  useEffect(() => {
-    if (!user) navigate({ to: "/auth/signin" });
-  }, [user]);
-
   return (
     <>
       <Navbar />
