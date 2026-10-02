@@ -1,7 +1,7 @@
 import { APIclient } from "#/data/base/baseAPI";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 
-const fetchLessonFromUnitQuery = (unitId?: string | null) =>
+export const fetchLessonFromUnitQuery = (unitId?: string | null) =>
   queryOptions({
     queryKey: ["lessons_from_unit", unitId],
     queryFn: async () => {
@@ -22,8 +22,8 @@ const fetchLessonFromUnitQuery = (unitId?: string | null) =>
 export const useLessonFromUnitQuery = (unitId?: string | null) =>
   useQuery(fetchLessonFromUnitQuery(unitId));
 
-export const useLesson = (lessonId?: string | null) =>
-  useQuery({
+export const lessonQueryOptions = (lessonId?: string | null) =>
+  queryOptions({
     queryKey: ["lesson", lessonId],
     queryFn: async () => {
       if (!lessonId) throw new Error("Lesson ID is required to fetch lesson.");
@@ -39,3 +39,5 @@ export const useLesson = (lessonId?: string | null) =>
     },
     enabled: Boolean(lessonId),
   });
+
+export const useLesson = (lessonId?: string | null) => useQuery(lessonQueryOptions(lessonId));
