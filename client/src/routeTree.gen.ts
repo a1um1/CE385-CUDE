@@ -23,6 +23,7 @@ import { Route as AuthSignupRouteImport } from './routes/auth/signup'
 import { Route as baseAccountIndexRouteImport } from './routes/(base)/account/index'
 import { Route as baseAccountSecurityRouteImport } from './routes/(base)/account/security'
 import { Route as baseAccountTransactionsRouteImport } from './routes/(base)/account/transactions'
+import { Route as baseLessonLessonIdRouteImport } from './routes/(base)/lesson/$lessonId'
 import { Route as baseProfileUsernameRouteImport } from './routes/(base)/profile/$username'
 import { Route as AdminCourseIndexRouteImport } from './routes/admin/course/index'
 import { Route as AdminCourseIdRouteImport } from './routes/admin/course/$id'
@@ -99,6 +100,11 @@ const baseAccountTransactionsRoute = baseAccountTransactionsRouteImport.update({
   path: '/transactions',
   getParentRoute: () => baseAccountRouteRoute,
 } as any)
+const baseLessonLessonIdRoute = baseLessonLessonIdRouteImport.update({
+  id: '/lesson/$lessonId',
+  path: '/lesson/$lessonId',
+  getParentRoute: () => baseRouteRoute,
+} as any)
 const baseProfileUsernameRoute = baseProfileUsernameRouteImport.update({
   id: '/profile/$username',
   path: '/profile/$username',
@@ -143,6 +149,7 @@ export interface FileRoutesByFullPath {
   '/auth/': typeof AuthIndexRoute
   '/account/security': typeof baseAccountSecurityRoute
   '/account/transactions': typeof baseAccountTransactionsRoute
+  '/lesson/$lessonId': typeof baseLessonLessonIdRoute
   '/profile/$username': typeof baseProfileUsernameRoute
   '/admin/course/$id': typeof AdminCourseIdRoute
   '/admin/course/create': typeof AdminCourseCreateRoute
@@ -161,6 +168,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthIndexRoute
   '/account/security': typeof baseAccountSecurityRoute
   '/account/transactions': typeof baseAccountTransactionsRoute
+  '/lesson/$lessonId': typeof baseLessonLessonIdRoute
   '/profile/$username': typeof baseProfileUsernameRoute
   '/admin/course/$id': typeof AdminCourseIdRoute
   '/admin/course/create': typeof AdminCourseCreateRoute
@@ -184,6 +192,7 @@ export interface FileRoutesById {
   '/auth/': typeof AuthIndexRoute
   '/(base)/account/security': typeof baseAccountSecurityRoute
   '/(base)/account/transactions': typeof baseAccountTransactionsRoute
+  '/(base)/lesson/$lessonId': typeof baseLessonLessonIdRoute
   '/(base)/profile/$username': typeof baseProfileUsernameRoute
   '/admin/course/$id': typeof AdminCourseIdRoute
   '/admin/course/create': typeof AdminCourseCreateRoute
@@ -207,6 +216,7 @@ export interface FileRouteTypes {
     | '/auth/'
     | '/account/security'
     | '/account/transactions'
+    | '/lesson/$lessonId'
     | '/profile/$username'
     | '/admin/course/$id'
     | '/admin/course/create'
@@ -225,6 +235,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/account/security'
     | '/account/transactions'
+    | '/lesson/$lessonId'
     | '/profile/$username'
     | '/admin/course/$id'
     | '/admin/course/create'
@@ -247,6 +258,7 @@ export interface FileRouteTypes {
     | '/auth/'
     | '/(base)/account/security'
     | '/(base)/account/transactions'
+    | '/(base)/lesson/$lessonId'
     | '/(base)/profile/$username'
     | '/admin/course/$id'
     | '/admin/course/create'
@@ -362,6 +374,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof baseAccountTransactionsRouteImport
       parentRoute: typeof baseAccountRouteRoute
     }
+    '/(base)/lesson/$lessonId': {
+      id: '/(base)/lesson/$lessonId'
+      path: '/lesson/$lessonId'
+      fullPath: '/lesson/$lessonId'
+      preLoaderRoute: typeof baseLessonLessonIdRouteImport
+      parentRoute: typeof baseRouteRoute
+    }
     '/(base)/profile/$username': {
       id: '/(base)/profile/$username'
       path: '/profile/$username'
@@ -427,6 +446,7 @@ interface baseRouteRouteChildren {
   basePlayRoute: typeof basePlayRoute
   basePlayGraderRoute: typeof basePlayGraderRoute
   baseIndexRoute: typeof baseIndexRoute
+  baseLessonLessonIdRoute: typeof baseLessonLessonIdRoute
   baseProfileUsernameRoute: typeof baseProfileUsernameRoute
 }
 
@@ -435,6 +455,7 @@ const baseRouteRouteChildren: baseRouteRouteChildren = {
   basePlayRoute: basePlayRoute,
   basePlayGraderRoute: basePlayGraderRoute,
   baseIndexRoute: baseIndexRoute,
+  baseLessonLessonIdRoute: baseLessonLessonIdRoute,
   baseProfileUsernameRoute: baseProfileUsernameRoute,
 }
 
