@@ -12,6 +12,7 @@ import cookieParser from "cookie-parser";
 import { rateLimit } from "express-rate-limit";
 import { httpLogger } from "#/lib/router/logger";
 import { errorHandler, notFoundHandler } from "#/lib/router/http/errorHandler";
+import { unitRoute } from "./routes/unit";
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -19,6 +20,7 @@ const limiter = rateLimit({
   standardHeaders: "draft-8", // draft-6: `RateLimit-*` headers; draft-7 & draft-8: combined `RateLimit` header
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
 });
+import { lessonRouter } from "./routes/lesson";
 
 const app = express()
   .use(limiter)
@@ -36,6 +38,8 @@ const app = express()
   .use(CodingRoute)
   .use(testRouter)
   .use(courseRoute)
+  .use(lessonRouter)
+  .use(unitRoute)
   .use(adminRoute);
 
 // Docs endpoint — regenerated from the registry above
