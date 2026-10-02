@@ -29,7 +29,7 @@ Table Lesson {
   name String [not null]
   unitID String [not null]
   unit Unit [not null]
-  passTheshold Float [not null]
+  passThreshold Decimal [not null]
   XPgiven Int [not null]
   gemsGiven Int [not null]
   createdAt DateTime [default: `now()`, not null]
@@ -157,6 +157,8 @@ Table refreshToken {
   userID String [not null]
   user User [not null]
   token String [unique, not null]
+  userAgent String
+  ipAddress String
   expiresAt DateTime [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]

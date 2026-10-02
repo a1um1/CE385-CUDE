@@ -1,5 +1,6 @@
 import { handleFormMutationError, useAppForm } from "#/components/form";
 import { useUpdatePassword } from "#/data/user.data";
+import { getPasswordError } from "#/lib/passwordRules";
 
 export default function UpdatePasswordForm() {
   const updateMutation = useUpdatePassword();
@@ -40,11 +41,18 @@ export default function UpdatePasswordForm() {
               )}
             </form.AppField>
 
-            <form.AppField name="newPassword">
+            <form.AppField
+              name="newPassword"
+              validators={{
+                onChange: ({ value }) => getPasswordError(value),
+              }}
+            >
               {(field) => (
-                <field.TextField
+                <field.PasswordField
                   label="New Password"
-                  type="password"
+                  autoComplete="new-password"
+                  showStrength
+                  showRequirements
                   disabled={updateMutation.isPending}
                 />
               )}

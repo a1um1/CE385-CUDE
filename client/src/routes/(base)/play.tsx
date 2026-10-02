@@ -20,7 +20,7 @@ function RouteComponent() {
       const { data, error } = await APIclient.POST("/coding/run", {
         body,
       });
-      if (error || !data) throw error;
+      if (error) throw error;
       return data;
     },
   });

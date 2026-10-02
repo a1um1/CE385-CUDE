@@ -1,6 +1,6 @@
 import CustomRouter from "#/lib/router/customRouter";
 import UserError from "#/lib/router/http/userError";
-import express from "express";
+import { createTestApp } from "#/lib/router/tests/mocks/testApp.mock";
 
 const errorRouting = new CustomRouter()
   .get("/handled-error", {}, async () => {
@@ -17,7 +17,6 @@ const errorRouting = new CustomRouter()
     throw "This is an unhandled error but not an instance of Error";
   });
 
-const ErrorRoutingApp = express();
-ErrorRoutingApp.use(errorRouting.route);
+const ErrorRoutingApp = createTestApp(errorRouting.route);
 
 export { ErrorRoutingApp };

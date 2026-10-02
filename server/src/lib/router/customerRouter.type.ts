@@ -26,6 +26,13 @@ export type Method =
   | "trace"
   | "query";
 
+export type RouteCookieValues = Record<string, string | undefined>;
+
+export interface RouteCookieOps {
+  set: (name: string, value: string, options?: CookieOptions) => void;
+  clear: (name: string, options?: CookieOptions) => void;
+}
+
 export type RouteHandler<
   TParams extends RequestObject = undefined,
   TQuery extends RequestObject = undefined,
@@ -37,11 +44,10 @@ export type RouteHandler<
   params: InferOrAny<TParams>;
   query: InferOrAny<TQuery>;
   headers: IncomingHttpHeaders;
+  ip: string | undefined;
   user: TAuth extends true | Role[] ? UserController : undefined;
-  cookies: { set: (name: string, value: string, options: CookieOptions) => any } & Record<
-    string,
-    string
-  >;
+  cookies: RouteCookieValues;
+  cookie: RouteCookieOps;
   status: HTTPstatus;
 }) => Promise<InferOrAny<TResponse>> | InferOrAny<TResponse>;
 

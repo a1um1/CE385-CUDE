@@ -12,7 +12,7 @@
     "db:migrate": "prisma migrate dev --name auto && prisma generate",
     "db:generate": "prisma generate",
     "db:deploy": "prisma migrate deploy",
-    "ts:check": "prisma generate && tsc --noEmit",
+    "ts:check": "npm run db:generate && tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
@@ -30,6 +30,7 @@
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.7.0",
     "jsonwebtoken": "^9.0.3",
     "p-limit": "^7.3.1",
     "pg": "^8.23.0",
@@ -45,14 +46,11 @@
     "@types/node": "^26.2.0",
     "@types/pg": "^8.21.0",
     "@vitest/ui": "^4.1.11",
-    "openapi-typescript": "^7.13.0",
     "prisma": "^7.9.1",
     "prisma-dbml-generator": "^0.12.0",
     "tsx": "^4.23.12"
   },
-  "overrides": {
-    "openapi-typescript": {
-      "typescript": "npm:@typescript/typescript6@6.0.2"
-    }
+  "engines": {
+    "node": ">=24"
   }
 }

@@ -12,7 +12,7 @@ describe("Error Handling Tests", () => {
   it("should handle unhandled errors correctly", async () => {
     const res = await request(ErrorRoutingApp).get("/unhandled-error");
     expect(res.status).toBe(500);
-    expect(res.body).toHaveProperty("message", "This is an unhandled error");
+    expect(res.body).toHaveProperty("message", "Internal Server Error");
   });
 
   it("should handle unhandled errors without messages correctly", async () => {

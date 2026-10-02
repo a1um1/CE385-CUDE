@@ -31,6 +31,6 @@ export default class CourseController {
   }
 
   async getAllUnit() {
-    return await UnitController.getAllById(this.data.id);
+    return await UnitController.getAllByCourseId(this.data.id);
   }
 }

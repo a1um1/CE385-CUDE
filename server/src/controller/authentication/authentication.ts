@@ -4,20 +4,24 @@ import type {
 } from "#/controller/authentication/authentication.schema";
 import UserController from "#/controller/user";
 import type { userCreationSchema, userValidationSchema } from "#/controller/user/user.schema";
-import { Log } from "#/lib/logger/decorators";
 import { db } from "#/lib/prisma";
 import userError from "#/lib/router/http/userError";
 import UserError from "#/lib/router/http/userError";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 
+export interface TokenContext {
+  userAgent?: string;
+  ipAddress?: string;
+}
+
 export default class AuthenticationController {
   private secret?: string = process.env.JWT_SECRET;
   private static REFRESH_TOKEN_EXPIRATION: jwt.SignOptions["expiresIn"] = "7d"; // 7 days in ms
-  private static REFRESH_TOKEN_EXPIRATION_MS: number = 7 * 24 * 60 * 60 * 1000; // 7 days in ms
+  public static REFRESH_TOKEN_EXPIRATION_MS: number = 7 * 24 * 60 * 60 * 1000; // 7 days in ms
   private static TOKEN_EXPIRATION: jwt.SignOptions["expiresIn"] = "15m"; // 15 minutes in ms
 
-  async createRefreshToken(userId: string): Promise<string> {
+  async createRefreshToken(userId: string, context?: TokenContext): Promise<string> {
     if (!this.secret) throw new Error("JWT secret is not defined");
     const refreshToken = jwt.sign(
       { userId, salt: crypto.randomBytes(32).toString("hex") },
@@ -32,6 +36,8 @@ export default class AuthenticationController {
       data: {
         token: refreshToken,
         userID: userId,
+        userAgent: context?.userAgent,
+        ipAddress: context?.ipAddress,
         expiresAt: new Date(Date.now() + AuthenticationController.REFRESH_TOKEN_EXPIRATION_MS),
       },
     });
@@ -41,7 +47,7 @@ export default class AuthenticationController {
 
   async revokeRefreshToken(refreshToken: string) {
     if (!this.secret) throw new Error("JWT secret is not defined");
-    await db.refreshToken.delete({
+    await db.refreshToken.deleteMany({
       where: {
         token: refreshToken,
       },
@@ -85,19 +91,19 @@ export default class AuthenticationController {
     };
   }
 
-  async refreshToken(refreshToken: string) {
+  async refreshToken(
+    refreshToken: string,
+    context?: TokenContext,
+  ): Promise<{
+    accessToken: authenticationSchema;
+    refreshToken: string;
+  }> {
     const refreshTokenData = await this.validateRefreshToken(refreshToken);
-    const token = await this.generateToken(refreshTokenData);
+    await this.revokeRefreshToken(refreshToken);
+    const newRefreshToken = await this.createRefreshToken(refreshTokenData.userId, context);
+    const accessToken = await this.generateToken(refreshTokenData);
 
-    await db.refreshToken.update({
-      where: {
-        token: refreshToken,
-      },
-      data: {
-        expiresAt: new Date(Date.now() + AuthenticationController.REFRESH_TOKEN_EXPIRATION_MS),
-      },
-    });
-    return token;
+    return { accessToken, refreshToken: newRefreshToken };
   }
 
   generateToken(user: AuthenticationBody): authenticationSchema {
@@ -128,14 +134,16 @@ export default class AuthenticationController {
     }
   }
 
-  @Log()
-  async signIn(credentials: userValidationSchema): Promise<{
+  async signIn(
+    credentials: userValidationSchema,
+    context?: TokenContext,
+  ): Promise<{
     token: ReturnType<AuthenticationController["generateToken"]>;
     user: UserController;
     refreshToken: string;
   }> {
     const user = await UserController.validateCredentials(credentials);
-    const refreshToken = await this.createRefreshToken(user.JSON.id);
+    const refreshToken = await this.createRefreshToken(user.JSON.id, context);
 
     const token = this.generateToken({
       userId: user.JSON.id,
@@ -145,14 +153,16 @@ export default class AuthenticationController {
     return { token, user, refreshToken };
   }
 
-  @Log()
-  async signUp(userData: userCreationSchema): Promise<{
+  async signUp(
+    userData: userCreationSchema,
+    context?: TokenContext,
+  ): Promise<{
     token: ReturnType<AuthenticationController["generateToken"]>;
     user: UserController;
     refreshToken: string;
   }> {
     const user = await UserController.create(userData);
-    const refreshToken = await this.createRefreshToken(user.JSON.id);
+    const refreshToken = await this.createRefreshToken(user.JSON.id, context);
     const token = this.generateToken({
       userId: user.JSON.id,
       name: user.JSON.name,
