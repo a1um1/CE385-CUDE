@@ -3,7 +3,6 @@ import { Router } from "express";
 import type { RequestHandler } from "express-serve-static-core";
 import { registry } from "#/openapi";
 import AuthenticationController from "#/controller/authentication";
-import { ServerErrorSchema, ValidationErrorSchema } from "#/lib/router/http/errorResponse";
 import { HTTPstatus } from "#/lib/router/http/httpStatus";
 import UserError from "#/lib/router/http/userError";
 import { mergePath } from "#/lib/mergePath";
