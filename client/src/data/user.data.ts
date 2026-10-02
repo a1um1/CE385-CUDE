@@ -1,18 +1,27 @@
 import type { ExtractRequestBody, ExtractRequestQuery } from "#/data/base/apiUtils.type";
 import { APIclient } from "#/data/base/baseAPI";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  queryOptions,
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 
-export const useUser = () =>
-  useQuery({
-    queryKey: ["user"],
-    queryFn: async () => {
-      const { data, error } = await APIclient.GET("/user");
-      if (error) throw error;
-      return data;
-    },
-    staleTime: 1000 * 60 * 5, // 5 minutes
-    refetchOnWindowFocus: false,
-  });
+const userQuery = queryOptions({
+  queryKey: ["user"],
+  queryFn: async () => {
+    const { data, error } = await APIclient.GET("/user");
+    if (error) throw error;
+    return data;
+  },
+  staleTime: 1000 * 60 * 5, // 5 minutes
+  refetchOnWindowFocus: false,
+});
+
+export const useUser = () => useQuery(userQuery);
+
+export const useSuspenseUser = () => useSuspenseQuery(userQuery);
 
 export const useSignUp = () => {
   const queryClient = useQueryClient();

@@ -1,10 +1,10 @@
-import Button from "#/components/button/button";
 import ButtonLink from "#/components/buttonLink";
 import Select from "#/components/select";
 import { useCourses } from "#/data/course.data";
 import { useLessonFromUnitQuery } from "#/data/lesson.data";
 import { useUnitFromCourseQuery } from "#/data/unit.data";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { BookTextIcon, FaceSlightlyFrowning } from "lucide-react";
 import { useState } from "react";
 
 export const Route = createFileRoute("/(base)/")({ component: Home });
@@ -27,14 +27,6 @@ function Home() {
 
   return (
     <>
-      <div>
-        <ButtonLink variant="secondary" to="/play">
-          Code Playground
-        </ButtonLink>
-        <ButtonLink variant="secondary" to="/play-grader">
-          Code Grader
-        </ButtonLink>
-      </div>
       <div className="flex flex-wrap gap-4">
         <Select.Root
           value={selectedCourse}
@@ -70,7 +62,22 @@ function Home() {
             ))}
           </Select.Content>
         </Select.Root>
+
+        <div className="flex gap-2 ml-auto">
+          <ButtonLink variant="secondary" to="/play">
+            Code Playground
+          </ButtonLink>
+          <ButtonLink variant="secondary" to="/play-grader">
+            Code Grader
+          </ButtonLink>
+        </div>
       </div>
+      {(lessons.data || []).length === 0 && (
+        <div className="flex flex-col items-center justify-center gap-2">
+          <FaceSlightlyFrowning className="size-24" />
+          <p>No lessons found for the selected unit.</p>
+        </div>
+      )}
       {lessons.data?.map((lesson) => (
         <Link
           key={lesson.id}
@@ -78,9 +85,10 @@ function Home() {
           params={{
             lessonId: lesson.id,
           }}
-          className="flex items-center justify-between gap-4"
+          className="flex items-center gap-4 p-4 hover:bg-gray-500/10"
         >
-          <h3>{lesson.name}</h3>
+          <BookTextIcon />
+          <p>{lesson.name}</p>
         </Link>
       ))}
     </>
