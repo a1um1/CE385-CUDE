@@ -26,10 +26,7 @@ jobs:
         id: cache-node-modules
         uses: actions/cache@v6
         with:
-          path: |
-            node_modules
-            client/node_modules
-            server/node_modules
+          path: node_modules
           key: ${{ steps.cache-key.outputs.key }}
 
       - name: Install dependencies
@@ -62,10 +59,7 @@ jobs:
       - name: Restore node_modules
         uses: actions/cache@v6
         with:
-          path: |
-            node_modules
-            client/node_modules
-            server/node_modules
+          path: node_modules
           key: ${{ needs.setup.outputs.cache-key }}
 
       - name: Run ${{ matrix.task.label }}
@@ -86,10 +80,7 @@ jobs:
       - name: Restore node_modules
         uses: actions/cache@v6
         with:
-          path: |
-            node_modules
-            client/node_modules
-            server/node_modules
+          path: node_modules
           key: ${{ needs.setup.outputs.cache-key }}
 
       - name: Run Vitest with coverage
