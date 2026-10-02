@@ -7,7 +7,6 @@ export const UnitSchema = z
   .object({
     id: z.string().openapi({ example: "unit_id" }),
     name: z.string().openapi({ example: "unit_name" }),
-    courseID: z.uuid().openapi({ example: "course_id" }),
   })
   .openapi("Unit");
 

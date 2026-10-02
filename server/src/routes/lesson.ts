@@ -23,8 +23,6 @@ const lessonRouterInstance = new CustomRouter({
   },
   async ({ params }) => {
     const result = await LessonController.getById(params.lessonId);
-    // แปลง Decimal -> number (passThreshold) และกรอง field ที่ไม่
-    // ต้องการ (createdAt, updatedAt) ออกไป ให้ตรงกับ LessonSchema เป๊ะ
     const { id, name } = result.JSON;
     return { id, name };
   },
