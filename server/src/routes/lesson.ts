@@ -6,10 +6,6 @@ export const LessonSchema = z
   .object({
     id: z.string().openapi({ example: "lesson_id" }),
     name: z.string().openapi({ example: "lesson_name" }),
-    unitID: z.uuid().openapi({ example: "unit_id" }),
-    passThreshold: z.number().openapi({ example: 0.8 }),
-    XPgiven: z.number().int().openapi({ example: 10 }),
-    gemsGiven: z.number().int().openapi({ example: 5 }),
   })
   .openapi("Lesson");
 
@@ -29,8 +25,8 @@ const lessonRouterInstance = new CustomRouter({
     const result = await LessonController.getById(params.lessonId);
     // แปลง Decimal -> number (passThreshold) และกรอง field ที่ไม่
     // ต้องการ (createdAt, updatedAt) ออกไป ให้ตรงกับ LessonSchema เป๊ะ
-    const { id, name, unitID, passThreshold, XPgiven, gemsGiven } = result.JSON;
-    return { id, name, unitID, passThreshold: Number(passThreshold), XPgiven, gemsGiven };
+    const { id, name } = result.JSON;
+    return { id, name };
   },
 );
 

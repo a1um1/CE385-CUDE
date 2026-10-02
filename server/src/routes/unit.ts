@@ -44,8 +44,8 @@ const unitRouter = new CustomRouter({
       const unit = await UnitController.getById(params.unitId);
       const lessons = await unit.getAllLesson();
       return lessons.map((lesson) => {
-        const { id, name, unitID, passThreshold, XPgiven, gemsGiven } = lesson.JSON;
-        return { id, name, unitID, passThreshold: Number(passThreshold), XPgiven, gemsGiven };
+        const { id, name } = lesson.JSON;
+        return { id, name };
       });
     },
   );
