@@ -5,7 +5,6 @@ export interface CourseFormValues {
   name: string;
   color: string;
   icon: string;
-  position: number;
 }
 
 export interface CourseFormProps {
@@ -19,7 +18,6 @@ const defaultFormValues: CourseFormValues = {
   name: "",
   color: "",
   icon: "",
-  position: 0,
 };
 
 export function CourseForm({
@@ -58,9 +56,6 @@ export function CourseForm({
             <field.TextField label="Course Icon" type="text" required disabled={isPending} />
           )}
         </form.AppField>
-        <form.AppField name="position">
-          {(field) => <field.NumberField label="Position" required disabled={isPending} />}
-        </form.AppField>
         <div style={{ display: "flex", gap: "0.75rem", alignItems: "center", marginTop: "1rem" }}>
           <form.SubmitButton label={submitLabel} isPending={isPending} />
           <ButtonLink
@@ -69,6 +64,8 @@ export function CourseForm({
               cursor: undefined,
               perPage: 20,
               direction: "forward",
+              sortBy: "position",
+              sortOrder: "asc",
             }}
             variant="secondary"
           >

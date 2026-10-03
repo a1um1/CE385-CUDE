@@ -7,7 +7,7 @@ Table Course {
   name String [not null]
   color String [not null]
   icon String [not null]
-  position Int [not null, default: 0]
+  position Int [not null]
   createdByID String [not null]
   createdBy User [not null]
   createdAt DateTime [default: `now()`, not null]

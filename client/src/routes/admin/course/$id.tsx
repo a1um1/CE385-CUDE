@@ -27,7 +27,6 @@ function RouteComponent() {
         name: data.name,
         color: data.color,
         icon: data.icon,
-        position: data.position,
       }}
       submitLabel="Save Changes"
       isPending={updateMutation.isPending}
@@ -38,7 +37,13 @@ function RouteComponent() {
         });
         navigate({
           to: "/admin/course",
-          search: { cursor: undefined, perPage: 20, direction: "forward" },
+          search: {
+            cursor: undefined,
+            perPage: 20,
+            direction: "forward",
+            sortBy: "position",
+            sortOrder: "asc",
+          },
         });
       }}
     />

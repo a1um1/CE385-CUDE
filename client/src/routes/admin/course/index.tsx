@@ -1,14 +1,22 @@
 import * as React from "react";
+import Button from "#/components/button";
 import ButtonLink from "#/components/buttonLink";
 import DataTable from "#/components/table";
 import { createTableColumnHelper } from "#/components/table/features";
-import { useAdminCourseListQuery } from "#/data/admin/course.data";
+import { useAdminCourseListQuery, useAdminReorderCourse } from "#/data/admin/course.data";
 import { basicPaginationSchema } from "#/lib/pagination.schema";
 import { createFileRoute } from "@tanstack/react-router";
 import type { OnChangeFn, SortingState } from "@tanstack/react-table";
+import { ArrowDown, ArrowUp } from "lucide-react";
+import { z } from "zod";
+
+const courseListSearchSchema = basicPaginationSchema.extend({
+  sortBy: z.string().optional().default("position"),
+  sortOrder: z.enum(["asc", "desc"]).optional().default("asc"),
+});
 
 export const Route = createFileRoute("/admin/course/")({
-  validateSearch: (search) => basicPaginationSchema.parse(search),
+  validateSearch: (search) => courseListSearchSchema.parse(search),
   component: RouteComponent,
   staticData: {
     pageTitle: "All Courses",
@@ -19,6 +27,59 @@ export const Route = createFileRoute("/admin/course/")({
 type AdminCourse = NonNullable<ReturnType<typeof useAdminCourseListQuery>["data"]>["data"][number];
 
 const columnHelper = createTableColumnHelper<AdminCourse>();
+
+interface OrderControlsProps {
+  courseId: string;
+  index: number;
+  isFirst: boolean;
+  isLast: boolean;
+}
+
+interface CourseTableMeta {
+  canReorder: boolean;
+  isLastPage: boolean;
+}
+
+function getOrderMeta(meta: unknown): CourseTableMeta {
+  const order = meta as Partial<CourseTableMeta> | undefined;
+  return {
+    canReorder: order?.canReorder ?? false,
+    isLastPage: order?.isLastPage ?? true,
+  };
+}
+
+/**
+ * Each row owns its own mutation instance, so the pending state disables only
+ * the row being moved instead of the whole table.
+ */
+function OrderControls({ courseId, index, isFirst, isLast }: OrderControlsProps) {
+  const { isPending, mutate } = useAdminReorderCourse();
+
+  return (
+    <div style={{ display: "flex", gap: "0.25rem" }}>
+      <Button
+        size="xs"
+        variant="secondary"
+        icon
+        aria-label="Move course up"
+        disabled={isFirst || isPending}
+        onClick={() => mutate({ id: courseId, position: index - 1 })}
+      >
+        <ArrowUp size={14} />
+      </Button>
+      <Button
+        size="xs"
+        variant="secondary"
+        icon
+        aria-label="Move course down"
+        disabled={isLast || isPending}
+        onClick={() => mutate({ id: courseId, position: index + 1 })}
+      >
+        <ArrowDown size={14} />
+      </Button>
+    </div>
+  );
+}
 
 const typedColumns = columnHelper.columns([
   columnHelper.text("name", {
@@ -33,24 +94,45 @@ const typedColumns = columnHelper.columns([
     header: "Icon",
     sortable: false,
   }),
+  columnHelper.number("position", {
+    header: "Position",
+    decimals: 0,
+  }),
   columnHelper.datetime("createdAt", {
     header: "Created At",
   }),
   columnHelper.display({
+    id: "order",
+    header: "Order",
+    cell: (info) => {
+      const { canReorder, isLastPage } = getOrderMeta(info.table.options.meta);
+      if (!canReorder) return null;
+
+      const { index, original } = info.row;
+      const { rows } = info.table.getRowModel();
+      return (
+        <OrderControls
+          courseId={original.id}
+          index={index}
+          isFirst={index === 0}
+          isLast={index === rows.length - 1 && isLastPage}
+        />
+      );
+    },
+  }),
+  columnHelper.display({
     id: "actions",
     header: "Actions",
-    cell: (_info) => (
-      <div style={{ display: "flex", gap: "0.5rem" }}>
-        <ButtonLink
-          size="xs"
-          variant="secondary"
-          to="/admin/course/$id"
-          params={{ id: _info.row.original.id }}
-        >
-          Edit
-        </ButtonLink>
-      </div>
-    ),
+    cell: (info) => {
+      const { id } = info.row.original;
+      return (
+        <div style={{ display: "flex", gap: "0.5rem" }}>
+          <ButtonLink size="xs" variant="secondary" to="/admin/course/$id" params={{ id }}>
+            Edit
+          </ButtonLink>
+        </div>
+      );
+    },
   }),
 ]);
 
@@ -70,8 +152,10 @@ function RouteComponent() {
     navigate({
       search: (prev) => ({
         ...prev,
-        sortBy: firstSort?.id,
-        sortOrder: firstSort ? (firstSort.desc ? "desc" : "asc") : undefined,
+        // Clearing the sort returns to the catalog order rather than an
+        // undefined sort, which the server would otherwise read as "newest first".
+        sortBy: firstSort?.id ?? "position",
+        sortOrder: firstSort ? (firstSort.desc ? "desc" : "asc") : "asc",
         cursor: undefined,
         direction: "forward",
       }),
@@ -119,6 +203,12 @@ function RouteComponent() {
     sortOrder: search.sortOrder,
   });
 
+  const isFirstPage = !search.cursor && search.direction === "forward";
+  // "Up" and "down" only mean adjacent rows while the table is in catalog
+  // order, and only rows on the first page are part of a contiguous window.
+  const canReorder = isFirstPage && search.sortBy === "position" && search.sortOrder === "asc";
+  const isLastPage = !data?.nextCursor;
+
   return (
     <>
       <ButtonLink to="/admin/course/create" variant="primary">
@@ -131,6 +221,7 @@ function RouteComponent() {
         sorting={sorting}
         onSortingChange={handleSortingChange}
         manualSorting
+        tableOptions={{ meta: { canReorder, isLastPage } }}
         cursorPagination={{
           hasNextPage: Boolean(data?.nextCursor),
           hasPreviousPage: Boolean(data?.prevCursor),

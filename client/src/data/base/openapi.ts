@@ -1363,6 +1363,100 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/course/reorder": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Move a course one position up or down the list */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["AdminCourseReorder"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminCourseObject"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/user": {
         parameters: {
             query?: never;
@@ -3289,12 +3383,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-03T09:08:04.257Z
+             * @example 2026-10-03T10:18:49.037Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-03T09:08:04.259Z
+             * @example 2026-10-03T10:18:49.038Z
              */
             updatedAt: string;
         };
@@ -3344,11 +3438,6 @@ export interface components {
             color: string;
             /** @example icon_name */
             icon: string;
-            /**
-             * @default 0
-             * @example 0
-             */
-            position: number;
         };
         AdminCourseUpdate: {
             /** @example Course Name */
@@ -3357,8 +3446,15 @@ export interface components {
             color: string;
             /** @example icon_name */
             icon: string;
+        };
+        AdminCourseReorder: {
             /**
-             * @default 0
+             * Format: uuid
+             * @example course_id
+             */
+            id: string;
+            /**
+             * @description Target index in the catalog order
              * @example 0
              */
             position: number;

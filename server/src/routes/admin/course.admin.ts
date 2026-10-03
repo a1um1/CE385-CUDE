@@ -4,6 +4,7 @@ import {
   AdminCourseUpdateSchema,
   AdminCourseListResponseSchema,
   AdminCourseQuerySchema,
+  AdminCourseReorderSchema,
   adminCourseSchema,
 } from "#/controller/admin/courses/courses.schema";
 import { z } from "#/lib/extendZod";
@@ -65,6 +66,18 @@ const adminCourseRouter = new CustomRouter({
     },
     async ({ params, body }) => {
       const controller = await AdminCoursesController.update(params.id, body);
+      return controller.JSON;
+    },
+  )
+  .post(
+    "/reorder",
+    {
+      summary: "Move a course one position up or down the list",
+      body: AdminCourseReorderSchema,
+      response: adminCourseSchema,
+    },
+    async ({ body }) => {
+      const controller = await AdminCoursesController.reorder(body);
       return controller.JSON;
     },
   );

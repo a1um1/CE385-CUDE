@@ -50,7 +50,7 @@ export type AdminCourseListResponseSchema = zod.infer<typeof AdminCourseListResp
 
 export type adminCourseCreatePayload = Omit<
   AdminCourseSchema,
-  "id" | "createdAt" | "updatedAt" | "createdByID"
+  "id" | "createdAt" | "updatedAt" | "createdByID" | "position"
 >;
 
 export const AdminCourseCreateSchema = z
@@ -58,7 +58,6 @@ export const AdminCourseCreateSchema = z
     name: z.string().openapi({ example: "Course Name" }),
     color: z.string().openapi({ example: "#FFFFFF" }),
     icon: z.string().openapi({ example: "icon_name" }),
-    position: z.number().int().min(0).default(0).openapi({ example: 0 }),
   })
   .openapi("AdminCourseCreate") satisfies zod.ZodType<adminCourseCreatePayload>;
 
@@ -71,8 +70,20 @@ export const AdminCourseUpdateSchema = z
     name: z.string().openapi({ example: "Course Name" }),
     color: z.string().openapi({ example: "#FFFFFF" }),
     icon: z.string().openapi({ example: "icon_name" }),
-    position: z.number().int().min(0).default(0).openapi({ example: 0 }),
   })
   .openapi("AdminCourseUpdate") satisfies zod.ZodType<adminCourseUpdatePayload>;
 
 export type AdminCourseUpdateSchema = zod.infer<typeof AdminCourseUpdateSchema>;
+
+export const AdminCourseReorderSchema = z
+  .object({
+    id: z.uuid().openapi({ example: "course_id" }),
+    position: z
+      .number()
+      .int()
+      .min(0)
+      .openapi({ example: 0, description: "Target index in the catalog order" }),
+  })
+  .openapi("AdminCourseReorder");
+
+export type AdminCourseReorderSchema = zod.infer<typeof AdminCourseReorderSchema>;

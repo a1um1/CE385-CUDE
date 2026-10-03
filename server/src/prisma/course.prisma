@@ -3,7 +3,11 @@ model Course {
   name        String
   color       String
   icon        String
-  position    Int      @default(0)
+  // No default: every insert must supply a position, which is what keeps the
+  // column dense. Reordering shifts a range of rows by +/-1 and writes the
+  // target index directly, so a stray insert defaulting to 0 would silently
+  // desynchronise position from row index.
+  position    Int
   createdByID String   @db.Uuid
   createdBy   User     @relation(fields: [createdByID], references: [id])
   createdAt   DateTime @default(now())

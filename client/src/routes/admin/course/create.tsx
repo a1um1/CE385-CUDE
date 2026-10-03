@@ -22,7 +22,13 @@ function RouteComponent() {
         await createMutation.mutateAsync(value);
         navigate({
           to: "/admin/course",
-          search: { cursor: undefined, perPage: 20, direction: "forward" },
+          search: {
+            cursor: undefined,
+            perPage: 20,
+            direction: "forward",
+            sortBy: "position",
+            sortOrder: "asc",
+          },
         });
       }}
     />

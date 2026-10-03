@@ -19,16 +19,19 @@ export const queryClient = new QueryClient({
   },
   mutationCache: new MutationCache({
     onMutate: (_vars, mutation) => {
+      if (mutation.meta?.silent) return;
       toast.loading("Processing...", {
         id: mutation.mutationId,
       });
     },
     onSuccess: (data: unknown, _vars, _onMutateResult, mutation) => {
+      if (mutation.meta?.silent) return;
       toast.success(getMessage(data, "Operation completed successfully"), {
         id: mutation.mutationId,
       });
     },
     onError: (error: unknown, _vars, _onMutateResult, mutation) => {
+      if (mutation.meta?.silent) return;
       toast.error(getMessage(error, "An error occurred"), {
         id: mutation.mutationId,
       });
