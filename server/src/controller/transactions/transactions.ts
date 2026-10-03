@@ -5,6 +5,7 @@ import type {
 } from "#/controller/transactions/transactions.schema";
 import { TransactionQueryPayload } from "#/controller/transactions/transactions.schema";
 import { db } from "#/lib/prisma";
+import { buildCursorOrderBy } from "#/lib/pagination.schema";
 import type { Prisma } from "@prisma/client/extension";
 
 export default class TransactionsController {
@@ -40,28 +41,29 @@ export default class TransactionsController {
   ): Promise<TransactionListResponseSchema> {
     const isBackward = query.direction === "backward" && Boolean(query.cursor);
 
-    const users = await db.transactions.findMany({
+    const transactions = await db.transactions.findMany({
       take: query.perPage + 1,
       skip: query.cursor ? 1 : 0,
-      cursor: query.cursor ? { id: query.cursor, userID } : undefined,
-      orderBy: { createdAt: isBackward ? "asc" : "desc" },
+      cursor: query.cursor ? { id: query.cursor } : undefined,
+      orderBy: buildCursorOrderBy(undefined, "desc", isBackward),
       select: TransactionQueryPayload,
+      where: { userID },
     });
 
     let nextCursor: string | undefined = undefined;
     let prevCursor: string | undefined = undefined;
 
     if (isBackward) {
-      if (users.length > query.perPage) prevCursor = users.pop()?.id;
-      users.reverse();
+      if (transactions.length > query.perPage) prevCursor = transactions.pop()?.id;
+      transactions.reverse();
       nextCursor = query.cursor || undefined;
     } else {
-      if (users.length > query.perPage) nextCursor = users.pop()?.id;
+      if (transactions.length > query.perPage) nextCursor = transactions.pop()?.id;
       if (query.cursor) prevCursor = query.cursor;
     }
 
     return {
-      data: users,
+      data: transactions,
       nextCursor: nextCursor || undefined,
       prevCursor: prevCursor || undefined,
     };

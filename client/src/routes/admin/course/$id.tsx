@@ -27,6 +27,7 @@ function RouteComponent() {
         name: data.name,
         color: data.color,
         icon: data.icon,
+        position: data.position,
       }}
       submitLabel="Save Changes"
       isPending={updateMutation.isPending}

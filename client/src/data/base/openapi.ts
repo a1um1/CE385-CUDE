@@ -1031,7 +1031,7 @@ export interface paths {
                     perPage?: number;
                     cursor?: string;
                     direction?: "forward" | "backward";
-                    sortBy?: "name" | "createdAt" | "updatedAt" | "id";
+                    sortBy?: "name" | "position" | "createdAt" | "updatedAt" | "id";
                     sortOrder?: "asc" | "desc";
                 };
                 header?: never;
@@ -3289,12 +3289,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-02T11:04:49.027Z
+             * @example 2026-10-03T09:08:04.257Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-02T11:04:49.029Z
+             * @example 2026-10-03T09:08:04.259Z
              */
             updatedAt: string;
         };
@@ -3319,6 +3319,8 @@ export interface components {
             color: string;
             /** @example icon_name */
             icon: string;
+            /** @example 0 */
+            position: number;
             /**
              * Format: uuid
              * @example user_id
@@ -3342,6 +3344,11 @@ export interface components {
             color: string;
             /** @example icon_name */
             icon: string;
+            /**
+             * @default 0
+             * @example 0
+             */
+            position: number;
         };
         AdminCourseUpdate: {
             /** @example Course Name */
@@ -3350,6 +3357,11 @@ export interface components {
             color: string;
             /** @example icon_name */
             icon: string;
+            /**
+             * @default 0
+             * @example 0
+             */
+            position: number;
         };
         AdminUserListResponse: {
             /** @example [] */

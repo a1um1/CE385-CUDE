@@ -2,6 +2,7 @@ import { ExerciseSelection, type ExercisePayload } from "./base/exercise.schema"
 import BaseExerciseController from "./base/exercise";
 import { CodeExerciseController } from "./codeExercise/codeExercise";
 import { db } from "#/lib/prisma";
+import { BY_POSITION } from "#/lib/orderBy";
 import UserError from "#/lib/router/http/userError";
 
 export default class ExerciseController extends BaseExerciseController {
@@ -28,6 +29,7 @@ export default class ExerciseController extends BaseExerciseController {
 
   static async getByLessonId(lessonID: string): Promise<BaseExerciseController[]> {
     const exercises = await db.exercise.findMany({
+      orderBy: BY_POSITION,
       select: ExerciseSelection,
       where: { lessonID },
     });

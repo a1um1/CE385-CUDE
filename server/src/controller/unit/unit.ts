@@ -2,6 +2,7 @@ import CourseController from "#/controller/course";
 import lesson from "#/controller/lesson";
 import type { Unit } from "#/generated/prisma/client";
 import { db } from "#/lib/prisma";
+import { BY_POSITION } from "#/lib/orderBy";
 import UserError from "#/lib/router/http/userError";
 
 export default class UnitController {
@@ -25,6 +26,7 @@ export default class UnitController {
 
   static async getAllByCourseId(id: string): Promise<UnitController[]> {
     const units = await db.unit.findMany({
+      orderBy: BY_POSITION,
       where: { courseID: id },
     });
     return units.map((unit) => new UnitController(unit));

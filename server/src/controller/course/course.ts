@@ -1,6 +1,7 @@
 import UnitController from "#/controller/unit";
 import type { Course } from "#/generated/prisma/client";
 import { db } from "#/lib/prisma";
+import { BY_POSITION } from "#/lib/orderBy";
 import UserError from "#/lib/router/http/userError";
 import { courseQueryPayload } from "../admin/courses/courses.schema";
 
@@ -25,6 +26,7 @@ export default class CourseController {
 
   static async getAll(): Promise<{ data: courseQueryPayload[] }> {
     const data = await db.course.findMany({
+      orderBy: BY_POSITION,
       select: courseQueryPayload,
     });
     return { data };

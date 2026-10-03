@@ -1,5 +1,6 @@
 import type { TestCase } from "#/generated/prisma/client";
 import { db } from "#/lib/prisma";
+import { NEWEST_FIRST } from "#/lib/orderBy";
 import UserError from "#/lib/router/http/userError";
 
 export class CodeTestCase {
@@ -25,6 +26,7 @@ export class CodeTestCase {
 
   static async getAllByExerciseID(codeExerciseID: string) {
     const allTestCases = await db.testCase.findMany({
+      orderBy: NEWEST_FIRST,
       where: {
         codeExerciseID,
       },

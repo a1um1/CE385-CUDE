@@ -12,6 +12,7 @@ export const adminCourseSchema = z
     name: z.string().openapi({ example: "Course Name" }),
     color: z.string().openapi({ example: "#FFFFFF" }),
     icon: z.string().openapi({ example: "icon_name" }),
+    position: z.number().int().openapi({ example: 0 }),
     createdByID: z.uuid().openapi({ example: "user_id" }),
     createdAt: z.date().openapi({ example: "2023-01-01T00:00:00Z" }),
     updatedAt: z.date().openapi({ example: "2023-01-01T00:00:00Z" }),
@@ -25,6 +26,7 @@ export const courseQueryPayload = {
   name: true,
   color: true,
   icon: true,
+  position: true,
   createdByID: true,
   createdAt: true,
   updatedAt: true,
@@ -33,7 +35,7 @@ export const courseQueryPayload = {
 export type courseQueryPayload = Prisma.CourseGetPayload<{ select: typeof courseQueryPayload }>;
 
 export const AdminCourseQuerySchema = createCursorPaginationQuerySchema(
-  ["name", "createdAt", "updatedAt", "id"],
+  ["name", "position", "createdAt", "updatedAt", "id"],
   "AdminCourseQuery",
 );
 
@@ -56,6 +58,7 @@ export const AdminCourseCreateSchema = z
     name: z.string().openapi({ example: "Course Name" }),
     color: z.string().openapi({ example: "#FFFFFF" }),
     icon: z.string().openapi({ example: "icon_name" }),
+    position: z.number().int().min(0).default(0).openapi({ example: 0 }),
   })
   .openapi("AdminCourseCreate") satisfies zod.ZodType<adminCourseCreatePayload>;
 
@@ -68,6 +71,7 @@ export const AdminCourseUpdateSchema = z
     name: z.string().openapi({ example: "Course Name" }),
     color: z.string().openapi({ example: "#FFFFFF" }),
     icon: z.string().openapi({ example: "icon_name" }),
+    position: z.number().int().min(0).default(0).openapi({ example: 0 }),
   })
   .openapi("AdminCourseUpdate") satisfies zod.ZodType<adminCourseUpdatePayload>;
 

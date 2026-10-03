@@ -16,8 +16,9 @@ model TestCase {
   codeExercise   CodeExercise @relation(fields: [codeExerciseID], references: [id])
   input          String
   output         String
-  order          Int          @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([codeExerciseID, id])
 }
