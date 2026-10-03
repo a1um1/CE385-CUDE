@@ -2,19 +2,22 @@
 
 .avatar {
   --size: 3rem;
+  --font-ratio: 0.4;
 
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   background-color: var(--color-primary);
-  width: var(--size);
-  padding: var(--size);
+  box-sizing: border-box;
+  inline-size: var(--size);
+  block-size: var(--size);
+  font-size: max(0.5rem, calc(var(--size) * var(--font-ratio)));
+  line-height: 1;
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
   border: none;
-  aspect-ratio: 1 / 1;
 }
 
 .fallback {
@@ -26,7 +29,6 @@
   font-weight: 600;
   text-transform: uppercase;
   user-select: none;
-  font-size: var(--size);
   color: var(--color-primary-text);
 }
 
