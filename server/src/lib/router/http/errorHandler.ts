@@ -12,6 +12,7 @@ const PRISMA_ERRORS: Record<string, { status: number; message: string }> = {
   P2002: { status: 409, message: "Resource already exists" },
   P2025: { status: 404, message: "Resource not found" },
   P1001: { status: 503, message: "Database connection error" },
+  P2007: { status: 400, message: "Invalid data provided" },
 };
 
 const resolvePrismaError = (err: unknown) => {

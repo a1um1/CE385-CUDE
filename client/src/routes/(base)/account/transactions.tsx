@@ -69,7 +69,7 @@ function RouteComponent() {
   });
   const testSpend = useTestSpendEnergy();
 
-  const handleSpendEnergy = async () => {
+  const handleSpendEnergy = () => {
     testSpend.mutate();
   };
 
@@ -91,7 +91,6 @@ function RouteComponent() {
     setDirection("forward"); // Reset direction to forward when changing page size
   };
 
-  if (isLoading) return <div>Loading transactions...</div>;
   return (
     <>
       <Button onClick={handleSpendEnergy} disabled={testSpend.isPending}>

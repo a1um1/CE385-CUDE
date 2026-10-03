@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./select.module.css";
-import type { Menu } from "@base-ui/react/menu";
+import type { Select as SelectPrimitive } from "@base-ui/react/select";
 
 export const SelectSizes = {
   xs: styles["size-xs"],
@@ -18,8 +18,8 @@ export type SelectSize = keyof typeof SelectSizes;
 export type SelectRadiusType = keyof typeof SelectRadius;
 
 export interface SelectContextValue {
-  value?: string;
-  onValueChange?: (value: string) => void;
+  value?: string | null;
+  onValueChange?: (value: string | null) => void;
   disabled?: boolean;
   size?: SelectSize;
   radius?: SelectRadiusType;
@@ -27,11 +27,12 @@ export interface SelectContextValue {
 
 export const SelectContext = React.createContext<SelectContextValue | null>(null);
 
-export interface SelectValueProps extends React.HTMLAttributes<HTMLSpanElement> {
-  placeholder?: string;
-}
+export type SelectValueProps = React.ComponentProps<typeof SelectPrimitive.Value>;
 
-export interface SelectContentProps extends Omit<React.ComponentProps<typeof Menu.Popup>, "dir"> {
+export interface SelectContentProps extends Omit<
+  React.ComponentProps<typeof SelectPrimitive.Popup>,
+  "dir"
+> {
   align?: "start" | "center" | "end";
   side?: "top" | "right" | "bottom" | "left";
   sideOffset?: number;
@@ -40,21 +41,22 @@ export interface SelectContentProps extends Omit<React.ComponentProps<typeof Men
 }
 
 export interface SelectRootProps extends Omit<
-  React.ComponentProps<typeof Menu.Root>,
-  "onOpenChange"
+  React.ComponentProps<typeof SelectPrimitive.Root<string>>,
+  "onOpenChange" | "onValueChange" | "value" | "defaultValue" | "items" | "children"
 > {
-  value?: string;
-  defaultValue?: string;
-  onValueChange?: (value: string) => void;
+  value?: string | null;
+  defaultValue?: string | null;
+  onValueChange?: (value: string | null) => void;
   size?: SelectSize;
   radius?: SelectRadiusType;
   disabled?: boolean;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   children?: React.ReactNode;
+  items?: { value: string; label: string }[];
 }
 
-export interface SelectTriggerProps extends React.ComponentProps<typeof Menu.Trigger> {
+export interface SelectTriggerProps extends React.ComponentProps<typeof SelectPrimitive.Trigger> {
   size?: SelectSize;
   radius?: SelectRadiusType;
   showChevron?: boolean;

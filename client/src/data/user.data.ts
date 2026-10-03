@@ -1,18 +1,25 @@
 import type { ExtractRequestBody, ExtractRequestQuery } from "#/data/base/apiUtils.type";
 import { APIclient } from "#/data/base/baseAPI";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 
-export const useUser = () =>
-  useQuery({
-    queryKey: ["user"],
-    queryFn: async () => {
-      const { data, error } = await APIclient.GET("/user");
-      if (error) throw error;
-      return data;
-    },
-    staleTime: 1000 * 60 * 5, // 5 minutes
-    refetchOnWindowFocus: false,
-  });
+const UNAUTHENTICATED_STATUSES = new Set([401, 403]);
+
+export const userQueryOptions = queryOptions({
+  queryKey: ["session"],
+  queryFn: async () => {
+    const { data, error, response } = await APIclient.GET("/user");
+
+    if (error) {
+      if (UNAUTHENTICATED_STATUSES.has(response.status)) return null;
+      throw error;
+    }
+
+    return data;
+  },
+});
+
+export const useUser = () => useQuery(userQueryOptions);
 
 export const useSignUp = () => {
   const queryClient = useQueryClient();
@@ -26,8 +33,8 @@ export const useSignUp = () => {
       if (error) throw error;
       return data;
     },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["user"] });
+    onSuccess: () => {
+      queryClient.removeQueries({ queryKey: ["session"] });
     },
   });
 };
@@ -42,24 +49,27 @@ export const useSignIn = () => {
         body,
       });
       if (error) throw error;
-      await queryClient.resetQueries({ queryKey: ["user"] });
       return data;
     },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["user"] });
+    onSuccess: () => {
+      queryClient.removeQueries({ queryKey: ["session"] });
     },
   });
 };
 
 export const useSignOut = () => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   return useMutation({
     mutationKey: ["signout"],
     mutationFn: async () => {
       const { error } = await APIclient.POST("/auth/logout");
       if (error) throw error;
-      await queryClient.resetQueries({ queryKey: ["user"] });
       return { message: "Signed out successfully" };
+    },
+    onSuccess: () => {
+      queryClient.setQueryData(["session"], null);
+      navigate({ to: "/auth/signin" });
     },
   });
 };
@@ -74,7 +84,7 @@ export const useUpdateAvatar = () => {
         body,
       });
       if (error) throw error;
-      await queryClient.invalidateQueries({ queryKey: ["user"] });
+      await queryClient.invalidateQueries({ queryKey: ["session"] });
       return data;
     },
   });
@@ -90,7 +100,7 @@ export const useUpdateBackground = () => {
         body,
       });
       if (error) throw error;
-      await queryClient.invalidateQueries({ queryKey: ["user"] });
+      await queryClient.invalidateQueries({ queryKey: ["session"] });
       return data;
     },
   });
@@ -108,15 +118,19 @@ export const useUpdatePassword = () =>
     },
   });
 
-export const useUserStats = () =>
-  useQuery({
+export const useUserStats = () => {
+  const { data: user } = useUser();
+
+  return useQuery({
     queryKey: ["userStats"],
     queryFn: async () => {
       const { data, error } = await APIclient.GET("/user/current-stat");
       if (error) throw error;
       return data;
     },
+    enabled: Boolean(user),
   });
+};
 
 export const useUserTransactions = (query: ExtractRequestQuery<"/user/transactions", "get">) =>
   useQuery({
