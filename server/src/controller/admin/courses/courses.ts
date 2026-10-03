@@ -11,12 +11,6 @@ import { buildCursorOrderBy } from "#/lib/pagination.schema";
 import { db } from "#/lib/prisma";
 import UserError from "#/lib/router/http/userError";
 
-/**
- * Advisory-lock key for catalog reordering. Serialises reorder transactions
- * against each other: without it two of them read the same source position and
- * apply overlapping shift ranges, leaving duplicate positions behind.
- * Released automatically on commit or rollback.
- */
 const COURSE_ORDER_LOCK = "course:reorder";
 
 export default class AdminCoursesController {
