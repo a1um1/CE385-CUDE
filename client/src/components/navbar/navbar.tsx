@@ -16,9 +16,6 @@ export default function Navbar() {
 
   const { data: userStats, isLoading: isUserStatsLoading } = useUserStats();
 
-  // `isLoading` is false while a query with cached data refetches, so a session
-  // refresh (401 -> refresh -> retry, all inside the queryFn) would flash "Sign In".
-  // Keep the skeleton until we actually know we are signed out.
   const isLoading = isUserLoading || (!user && isUserFetching) || isUserStatsLoading;
   return (
     <nav className={navbarStyles.navbar}>
