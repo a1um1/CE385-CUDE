@@ -3,7 +3,6 @@ import type { components } from "#/data/base/openapi";
 import { TextField } from "./input/textInput";
 import { ColorField } from "./input/colorInput";
 import { PasswordField } from "./input/passwordInput";
-import { NumberField } from "./input/numberInput";
 import { SubmitButton } from "./input/submitButton";
 import { FormError } from "./input/formError";
 
@@ -17,7 +16,6 @@ const { useAppForm: useAppFormBase } = createFormHook({
     TextField,
     ColorField,
     PasswordField,
-    NumberField,
   },
   formComponents: {
     SubmitButton,

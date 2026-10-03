@@ -1,7 +1,6 @@
 import type { ExtractRequestQuery, ExtractRequestBody } from "#/data/base/apiUtils.type";
 import { APIclient } from "#/data/base/baseAPI";
 import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
 
 export const useAdminCourseListQuery = (props: ExtractRequestQuery<"/admin/course", "get">) =>
   useQuery({
@@ -84,7 +83,6 @@ export const useAdminReorderCourse = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ["admin", "course", "reorder"],
-    meta: { silent: true },
     mutationFn: async (body: ExtractRequestBody<"/admin/course/reorder", "post">) => {
       const { data, error } = await APIclient.POST("/admin/course/reorder", {
         body,
@@ -94,11 +92,6 @@ export const useAdminReorderCourse = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin", "course", "list"] });
-    },
-    onError: (error) => {
-      toast.error("Could not reorder course", {
-        description: error.message,
-      });
     },
   });
 };

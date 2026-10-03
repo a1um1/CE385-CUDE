@@ -40,14 +40,6 @@ interface CourseTableMeta {
   isLastPage: boolean;
 }
 
-function getOrderMeta(meta: unknown): CourseTableMeta {
-  const order = meta as Partial<CourseTableMeta> | undefined;
-  return {
-    canReorder: order?.canReorder ?? false,
-    isLastPage: order?.isLastPage ?? true,
-  };
-}
-
 /**
  * Each row owns its own mutation instance, so the pending state disables only
  * the row being moved instead of the whole table.
@@ -105,7 +97,7 @@ const typedColumns = columnHelper.columns([
     id: "order",
     header: "Order",
     cell: (info) => {
-      const { canReorder, isLastPage } = getOrderMeta(info.table.options.meta);
+      const { canReorder, isLastPage } = (info.table.options.meta ?? {}) as CourseTableMeta;
       if (!canReorder) return null;
 
       const { index, original } = info.row;
