@@ -16,7 +16,7 @@ export default function UserMenu() {
   return (
     <Dropdown.Root>
       <Dropdown.Trigger>
-        <Avatar name={user?.name || ""} avatarUrl={user?.profileImage} />
+        <Avatar name={user?.name || ""} avatarUrl={user?.profileImage} size="3rem" />
       </Dropdown.Trigger>
       <Dropdown.Content align="end" sideOffset={8} className={style["dropdown-content"]}>
         <div className={style["dropdown-header"]}>

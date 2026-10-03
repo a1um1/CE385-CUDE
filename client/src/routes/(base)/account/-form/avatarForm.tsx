@@ -21,7 +21,7 @@ export default function AvatarForm() {
   return (
     <>
       <div className="flex gap-6 flex-wrap">
-        <Avatar avatarUrl={form.getFieldValue("profileImageURL")} name={user?.name} size="12rem" />
+        <Avatar avatarUrl={form.getFieldValue("profileImageURL")} name={user?.name} size="8rem" />
         <form
           onSubmit={(e) => {
             e.preventDefault();
