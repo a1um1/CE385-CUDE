@@ -35,9 +35,9 @@ export default function Navbar() {
           </div>
         </div>
         <div className={navbarStyles["user-profile"]}>
-          {isLoading ? (
+          {isLoading || !user ? (
             <Skeleton className="h-20 min-w-64" />
-          ) : user ? (
+          ) : (
             <>
               <span className={clsx(navbarStyles["badge"], "text-gem")}>
                 <Gem /> {userStats?.currentGems || 0}
@@ -55,8 +55,6 @@ export default function Navbar() {
               </span>
               <UserMenu />
             </>
-          ) : (
-            <ButtonLink to="/auth/signin">Sign In</ButtonLink>
           )}
         </div>
       </div>
