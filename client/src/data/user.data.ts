@@ -17,7 +17,6 @@ export const userQueryOptions = queryOptions({
 
     return data;
   },
-  staleTime: "static",
 });
 
 export const useUser = () => useQuery(userQueryOptions);

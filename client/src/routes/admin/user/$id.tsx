@@ -4,6 +4,7 @@ import {
   useGetAdminUser,
   useAdminDeactivateUser,
   useAdminActivateUser,
+  getAdminUserQueryOptions,
 } from "#/data/admin/user.data";
 import { useQueryClient } from "@tanstack/react-query";
 import Button from "#/components/button";
@@ -15,6 +16,10 @@ export const Route = createFileRoute("/admin/user/$id")({
   staticData: {
     pageKey: "admin-user-detail",
     pageTitle: "Edit User",
+  },
+  loader: async ({ params, context }) => {
+    const user = await context.queryClient.query(getAdminUserQueryOptions(params.id));
+    return user;
   },
 });
 
@@ -49,7 +54,7 @@ function UserField({ label, value }: { label: string; value: string | null | und
 function RouteComponent() {
   const { id } = Route.useParams();
   const queryClient = useQueryClient();
-  const { data, isLoading } = useGetAdminUser({ id });
+  const data = Route.useLoaderData();
 
   const [deactivateOpen, setDeactivateOpen] = useState(false);
   const [activateOpen, setActivateOpen] = useState(false);
@@ -69,10 +74,6 @@ function RouteComponent() {
     await queryClient.invalidateQueries({ queryKey: ["admin", "user", "info", { id }] });
     setActivateOpen(false);
   };
-
-  if (isLoading) return <div>Loading...</div>;
-
-  if (!data) return <div>User not found.</div>;
 
   return (
     <div

@@ -1,5 +1,5 @@
 import CourseForm from "./-form/courseForm";
-import { useGetAdminCourse, useAdminUpdateCourse } from "#/data/admin/course.data";
+import { useAdminUpdateCourse, getAdminCourseQueryOptions } from "#/data/admin/course.data";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/admin/course/$id")({
@@ -8,16 +8,17 @@ export const Route = createFileRoute("/admin/course/$id")({
     pageTitle: "Edit Course",
     pageKey: "admin-course-edit",
   },
+  loader: async ({ params, context }) => {
+    const course = await context.queryClient.query(getAdminCourseQueryOptions(params.id));
+    return course;
+  },
 });
 
 function RouteComponent() {
   const { id } = Route.useParams();
   const navigate = Route.useNavigate();
-  const { data, isLoading, error } = useGetAdminCourse({ id });
   const updateMutation = useAdminUpdateCourse();
-
-  if (isLoading) return <div>Loading...</div>;
-  if (error || !data) return <div>Course not found.</div>;
+  const data = Route.useLoaderData();
 
   return (
     <CourseForm

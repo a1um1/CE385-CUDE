@@ -6,7 +6,7 @@
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  min-height: 100dvh;
+  flex: 1;
   padding: 1rem;
   text-align: center;
 }

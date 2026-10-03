@@ -1,16 +1,18 @@
 import Avatar from "#/components/avatar";
 import UserBackground from "#/components/userBackground";
-import { useQueryProfile } from "#/data/profile.data";
+import { profileQueryOptions } from "#/data/profile.data";
 import { createFileRoute } from "@tanstack/react-router";
 import styles from "./profile.module.css";
 export const Route = createFileRoute("/(base)/profile/$username")({
   component: RouteComponent,
+  loader: async ({ params, context }) => {
+    const profile = await context.queryClient.query(profileQueryOptions(params.username));
+    return profile;
+  },
 });
 
 function RouteComponent() {
-  const { username } = Route.useParams();
-  const { data, isLoading } = useQueryProfile(username);
-  if (isLoading) return <div>Loading...</div>;
+  const data = Route.useLoaderData();
   return (
     <>
       <div className={styles["breakout"]}>

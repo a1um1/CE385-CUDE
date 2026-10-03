@@ -33,7 +33,7 @@ export default function Navbar() {
         </div>
         <div className={navbarStyles["user-profile"]}>
           {isLoading ? (
-            <Skeleton />
+            <Skeleton className="h-20 min-w-64" />
           ) : user ? (
             <>
               <span className={clsx(navbarStyles["badge"], "text-gem")}>
