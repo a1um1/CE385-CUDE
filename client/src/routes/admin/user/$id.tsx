@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import {
-  useGetAdminUser,
   useAdminDeactivateUser,
   useAdminActivateUser,
   getAdminUserQueryOptions,
