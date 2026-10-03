@@ -12,11 +12,14 @@ import Skeleton from "#/components/skeleton";
 import CountdownTimer from "#/components/countdown";
 
 export default function Navbar() {
-  const { data: user, isLoading: isUserLoading } = useUser();
+  const { data: user, isLoading: isUserLoading, isFetching: isUserFetching } = useUser();
 
   const { data: userStats, isLoading: isUserStatsLoading } = useUserStats();
 
-  const isLoading = isUserLoading || isUserStatsLoading;
+  // `isLoading` is false while a query with cached data refetches, so a session
+  // refresh (401 -> refresh -> retry, all inside the queryFn) would flash "Sign In".
+  // Keep the skeleton until we actually know we are signed out.
+  const isLoading = isUserLoading || (!user && isUserFetching) || isUserStatsLoading;
   return (
     <nav className={navbarStyles.navbar}>
       <div className={navbarStyles.container}>
