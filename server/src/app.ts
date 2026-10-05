@@ -21,6 +21,7 @@ const limiter = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
 });
 import { lessonRouter } from "./routes/lesson";
+import { learnSessionRoute } from "#/routes/session";
 
 const app = express()
   .use(limiter)
@@ -40,7 +41,8 @@ const app = express()
   .use(courseRoute)
   .use(lessonRouter)
   .use(unitRoute)
-  .use(adminRoute);
+  .use(adminRoute)
+  .use(learnSessionRoute);
 
 // Docs endpoint — regenerated from the registry above
 app
