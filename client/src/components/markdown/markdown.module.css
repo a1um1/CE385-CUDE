@@ -26,8 +26,13 @@
   font-size: 1.1em;
 }
 
-.markdown :is(p, ul, ol, pre, blockquote, table, .code-block) {
+/* no `pre` here: it would outrank `.code-block pre` via :is(.code-block) specificity */
+.markdown :is(p, ul, ol, blockquote, table, .code-block) {
   margin: 0 0 1em;
+}
+
+.markdown > :first-child {
+  margin-top: 0;
 }
 
 .markdown ul,
