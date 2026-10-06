@@ -1,4 +1,5 @@
 import SessionController from "#/controller/learnSession";
+import { enrollmentAvailabilitySchema } from "#/controller/learnSession/session";
 import LessonController from "#/controller/lesson";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
@@ -37,16 +38,14 @@ const lessonRouterInstance = new CustomRouter({
       params: z.object({
         lessonId: z.uuid().openapi({ example: "lesson_id" }),
       }),
-      response: z.object({
-        isAvailable: z.boolean().openapi({ example: true }),
-      }),
+      response: enrollmentAvailabilitySchema,
     },
     async ({ params, user }) => {
       const isAvailable = await SessionController.enrollmentCheck({
         LessonID: params.lessonId,
         UserID: user.JSON.id,
       });
-      return { isAvailable };
+      return isAvailable;
     },
   );
 

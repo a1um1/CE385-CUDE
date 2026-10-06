@@ -3,6 +3,24 @@ import { db } from "#/lib/prisma";
 import UserError from "#/lib/router/http/userError";
 import lessonController from "#/controller/lesson";
 import type { Sessions } from "#/generated/prisma/client";
+import { z } from "#/lib/extendZod";
+import type { z as zod } from "zod";
+type enrollmentStatus = "AVAILABLE" | "PENDING" | "NOT_AVAILABLE";
+
+export const enrollmentStatusSchema = z
+  .enum(["AVAILABLE", "PENDING", "NOT_AVAILABLE"])
+  .openapi("EnrollmentStatus");
+interface enrollmentAvailability {
+  status: enrollmentStatus;
+  isAvailable: boolean;
+}
+
+export const enrollmentAvailabilitySchema = z
+  .object({
+    status: enrollmentStatusSchema,
+    isAvailable: z.boolean(),
+  })
+  .openapi("EnrollmentAvailability") as zod.ZodType<enrollmentAvailability>;
 
 export default class SessionController {
   private data: Sessions;
@@ -25,20 +43,32 @@ export default class SessionController {
     return session ? new SessionController(session) : null;
   }
 
-  static async enrollmentCheck(props: { UserID: string; LessonID: string }): Promise<boolean> {
+  static async enrollmentCheck(props: {
+    UserID: string;
+    LessonID: string;
+  }): Promise<enrollmentAvailability> {
     // ตรวจสอบว่าผู้ใช้มีการลงทะเบียนในบทเรียนหรือไม่
     // 1. ต้องไม่มี Session ที่กำลังเรียนอยู่
     const lesson = await lessonController.getById(props.LessonID);
     if (!lesson) throw new UserError(404, "Lesson not found.");
     const pendingSession = await this.findUserPendingSession({ UserID: props.UserID });
-    if (pendingSession) return false;
+    if (pendingSession) {
+      return {
+        status: pendingSession.JSON.LessonID === props.LessonID ? "PENDING" : "NOT_AVAILABLE",
+        isAvailable: false,
+      };
+    }
 
-    return true;
+    return {
+      status: "AVAILABLE",
+      isAvailable: true,
+    };
   }
 
   static async createSession(props: { UserID: string; LessonID: string }): Promise<SessionObject> {
-    if (!(await this.enrollmentCheck(props))) {
-      throw new UserError(400, "User already has a pending session for this lesson.");
+    const check = await this.enrollmentCheck(props);
+    if (!check.isAvailable) {
+      throw new UserError(400, "User already has a pending session.");
     }
 
     const lesson = await lessonController.getById(props.LessonID);

@@ -5,31 +5,39 @@ import { useLessonFromUnitQuery } from "#/data/lesson.data";
 import { useUnitFromCourseQuery } from "#/data/unit.data";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { BookTextIcon, FaceSlightlyFrowning } from "lucide-react";
-import { useState } from "react";
 
-export const Route = createFileRoute("/(base)/")({ component: Home });
+export const Route = createFileRoute("/(base)/")({
+  component: Home,
+  validateSearch: (search: Record<string, unknown>) => {
+    const { courseId, unitId } = search;
+
+    return { courseId: (courseId as string) || undefined, unitId: (unitId as string) || undefined };
+  },
+});
 
 function Home() {
-  const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
-  const [selectedUnit, setSelectedUnit] = useState<string | null>(null);
+  const { courseId, unitId } = Route.useSearch();
+  const navigate = Route.useNavigate();
   const courses = useCourses();
-  const units = useUnitFromCourseQuery(selectedCourse);
-  const lessons = useLessonFromUnitQuery(selectedUnit);
+  const units = useUnitFromCourseQuery(courseId);
+  const lessons = useLessonFromUnitQuery(unitId);
 
-  const handleCourseChange = (courseId: string | null) => {
-    setSelectedCourse(courseId);
-    setSelectedUnit(null);
+  const handleCourseChange = (selectedCourseId: string | null | undefined) => {
+    navigate({
+      search: { courseId: selectedCourseId || undefined, unitId: undefined },
+      replace: true,
+    });
   };
 
-  const handleUnitChange = (unitId: string | null) => {
-    setSelectedUnit(unitId);
+  const handleUnitChange = (selectedUnitId: string | null | undefined) => {
+    navigate({ search: { courseId, unitId: selectedUnitId || undefined }, replace: true });
   };
 
   return (
     <>
       <div className="flex flex-wrap gap-4">
         <Select.Root
-          value={selectedCourse}
+          value={courseId}
           onValueChange={handleCourseChange}
           items={
             courses.data?.data.map((course) => ({ value: course.id, label: course.name })) || []
@@ -47,7 +55,7 @@ function Home() {
           </Select.Content>
         </Select.Root>
         <Select.Root
-          value={selectedUnit}
+          value={unitId}
           onValueChange={handleUnitChange}
           items={units.data?.map((unit) => ({ value: unit.id, label: unit.name })) || []}
         >

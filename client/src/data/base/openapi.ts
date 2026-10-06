@@ -2979,10 +2979,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
-                            /** @example true */
-                            isAvailable: boolean;
-                        };
+                        "application/json": components["schemas"]["EnrollmentAvailability"];
                     };
                 };
                 /** @description Validation error */
@@ -3451,6 +3448,118 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/session/pending-session": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get the pending session for the authenticated user */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @example session_id */
+                            id: string;
+                            /** @example lesson_id */
+                            LessonID: string;
+                            /** @example user_id */
+                            userID: string;
+                            /**
+                             * @example PENDING
+                             * @enum {string}
+                             */
+                            status: "PENDING" | "SUBMITTED" | "GRADED" | "CANCELLED";
+                            /**
+                             * Format: date-time
+                             * @example 2023-01-01T00:00:00.000Z
+                             */
+                            createdAt: string;
+                            /**
+                             * Format: date-time
+                             * @example 2023-01-01T00:00:00.000Z
+                             */
+                            updatedAt: string;
+                        } | null;
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/session/{SessionID}": {
         parameters: {
             query?: never;
@@ -3641,118 +3750,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/session/pending-session": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get the pending session for the authenticated user */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @example session_id */
-                            id: string;
-                            /** @example lesson_id */
-                            LessonID: string;
-                            /** @example user_id */
-                            userID: string;
-                            /**
-                             * @example PENDING
-                             * @enum {string}
-                             */
-                            status: "PENDING" | "SUBMITTED" | "GRADED" | "CANCELLED";
-                            /**
-                             * Format: date-time
-                             * @example 2023-01-01T00:00:00.000Z
-                             */
-                            createdAt: string;
-                            /**
-                             * Format: date-time
-                             * @example 2023-01-01T00:00:00.000Z
-                             */
-                            updatedAt: string;
-                        } | null;
-                    };
-                };
-                /** @description Validation error */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Forbidden */
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Conflict */
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Internal server error */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -3904,12 +3901,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-06T06:49:32.037Z
+             * @example 2026-10-06T07:54:33.166Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-06T06:49:32.037Z
+             * @example 2026-10-06T07:54:33.167Z
              */
             updatedAt: string;
         };
@@ -4087,6 +4084,12 @@ export interface components {
             /** @example lesson_name */
             name: string;
         };
+        EnrollmentAvailability: {
+            status: components["schemas"]["EnrollmentStatus"];
+            isAvailable: boolean;
+        };
+        /** @enum {string} */
+        EnrollmentStatus: "AVAILABLE" | "PENDING" | "NOT_AVAILABLE";
         Unit: {
             /** @example unit_id */
             id: string;
