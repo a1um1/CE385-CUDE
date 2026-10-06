@@ -3,34 +3,36 @@ import Select from "#/components/select";
 import { useCourses } from "#/data/course.data";
 import { useLessonFromUnitQuery } from "#/data/lesson.data";
 import { useUnitFromCourseQuery } from "#/data/unit.data";
+import { useHomeSelection } from "#/store/homeSelection";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { BookTextIcon, FaceSlightlyFrowning } from "lucide-react";
+import { useEffect } from "react";
 
 export const Route = createFileRoute("/(base)/")({
   component: Home,
-  validateSearch: (search: Record<string, unknown>) => {
-    const { courseId, unitId } = search;
-
-    return { courseId: (courseId as string) || undefined, unitId: (unitId as string) || undefined };
-  },
 });
 
 function Home() {
-  const { courseId, unitId } = Route.useSearch();
-  const navigate = Route.useNavigate();
+  const { courseId, unitId, setCourse, setUnit } = useHomeSelection();
   const courses = useCourses();
   const units = useUnitFromCourseQuery(courseId);
   const lessons = useLessonFromUnitQuery(unitId);
 
+  // drop persisted ids that no longer exist (deleted course/unit)
+  useEffect(() => {
+    if (courseId && courses.data && !courses.data.data.some((c) => c.id === courseId)) {
+      setCourse(undefined);
+    } else if (unitId && units.data && !units.data.some((u) => u.id === unitId)) {
+      setUnit(undefined);
+    }
+  }, [courseId, unitId, courses.data, units.data, setCourse, setUnit]);
+
   const handleCourseChange = (selectedCourseId: string | null | undefined) => {
-    navigate({
-      search: { courseId: selectedCourseId || undefined, unitId: undefined },
-      replace: true,
-    });
+    setCourse(selectedCourseId || undefined);
   };
 
   const handleUnitChange = (selectedUnitId: string | null | undefined) => {
-    navigate({ search: { courseId, unitId: selectedUnitId || undefined }, replace: true });
+    setUnit(selectedUnitId || undefined);
   };
 
   return (

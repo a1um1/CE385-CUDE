@@ -1,7 +1,7 @@
 import Navbar from "#/components/navbar";
-import { userQueryOptions } from "#/data/user.data";
+import { userQueryOptions, useUser } from "#/data/user.data";
 import { PendingSessionBanner } from "#/routes/(base)/-pendingSessionBanner";
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import { createFileRoute, Navigate, Outlet, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/(base)")({
   ssr: false,
@@ -14,6 +14,8 @@ export const Route = createFileRoute("/(base)")({
 });
 
 function RouteComponent() {
+  const user = useUser();
+  if (!(user.data || user.isLoading)) return <Navigate to="/auth/signin" />;
   return (
     <>
       <Navbar />
