@@ -1,12 +1,12 @@
 import Navbar from "#/components/navbar";
-import { userQueryOptions, useUser } from "#/data/user.data";
+import { resolveSession, useUser } from "#/data/user.data";
 import { PendingSessionBanner } from "#/routes/(base)/-pendingSessionBanner";
 import { createFileRoute, Navigate, Outlet, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/(base)")({
   ssr: false,
   beforeLoad: async ({ context }) => {
-    const user = await context.queryClient.query(userQueryOptions);
+    const user = await resolveSession(context.queryClient);
 
     if (!user) throw redirect({ to: "/auth/signin" });
   },

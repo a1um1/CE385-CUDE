@@ -1,6 +1,12 @@
 import type { ExtractRequestBody, ExtractRequestQuery } from "#/data/base/apiUtils.type";
 import { APIclient } from "#/data/base/baseAPI";
-import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  queryOptions,
+  useMutation,
+  useQuery,
+  useQueryClient,
+  type QueryClient,
+} from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 
 const UNAUTHENTICATED_STATUSES = new Set([401, 403]);
@@ -21,6 +27,15 @@ export const userQueryOptions = queryOptions({
 });
 
 export const useUser = () => useQuery(userQueryOptions);
+
+// Guards use queryClient.query() (ensureQueryData): a cached `null` is treated as valid
+// data and NEVER revalidated — one transient refresh failure poisons the whole SPA session
+// while a page reload (empty cache) recovers fine. Revalidate when null to match reload.
+export const resolveSession = async (queryClient: QueryClient) => {
+  const cached = await queryClient.query(userQueryOptions);
+  if (cached) return cached;
+  return queryClient.query({ ...userQueryOptions, staleTime: 0 });
+};
 
 export const useSignUp = () => {
   const queryClient = useQueryClient();
