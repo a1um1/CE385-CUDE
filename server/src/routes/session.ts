@@ -8,6 +8,37 @@ const learnSessionRouter = new CustomRouter({
   tags: ["Learn Session"],
   authentication: true,
 })
+  .get(
+    "/",
+    {
+      summary: "Get all sessions for the authenticated user",
+      response: z.array(SessionObjectSchema),
+    },
+    async ({ user }) => {
+      const sessions = await SessionController.getByUserId({
+        UserID: user.JSON.id,
+      });
+      return sessions;
+    },
+  )
+  .get(
+    "/:SessionID",
+    {
+      summary: "Get a specific session by ID for the authenticated user",
+      params: z.object({
+        SessionID: z.uuidv7().openapi({ example: "session_id" }),
+      }),
+      response: SessionObjectSchema,
+    },
+    async ({ params, user }) => {
+      const session = await SessionController.getById({
+        SessionID: params.SessionID,
+        userId: user.JSON.id,
+      });
+      return session.JSON;
+    },
+  )
+
   .post(
     "/",
     {
@@ -34,10 +65,11 @@ const learnSessionRouter = new CustomRouter({
       }),
     },
     async ({ params, user }) => {
-      await SessionController.cancelSession({
-        UserID: user.JSON.id,
+      const session = await SessionController.getById({
         SessionID: params.SessionID,
+        userId: user.JSON.id,
       });
+      await session.cancel();
       return { message: "Session cancelled successfully." };
     },
   );

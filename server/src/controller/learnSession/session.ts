@@ -2,8 +2,19 @@ import type { SessionObject } from "#/controller/learnSession/session.schema";
 import { db } from "#/lib/prisma";
 import UserError from "#/lib/router/http/userError";
 import lessonController from "#/controller/lesson";
+import type { Sessions } from "#/generated/prisma/client";
 
 export default class SessionController {
+  private data: Sessions;
+
+  constructor(data: Sessions) {
+    this.data = data;
+  }
+
+  get JSON() {
+    return this.data;
+  }
+
   static async checkIfUserHasPendingSession(props: { UserID: string }) {
     const session = await db.sessions.findFirst({
       where: {
@@ -31,25 +42,36 @@ export default class SessionController {
     return created;
   }
 
-  static async cancelSession(props: { UserID: string; SessionID: string }): Promise<void> {
-    const session = await db.sessions.findUnique({
-      where: {
-        id: props.SessionID,
-        userID: props.UserID,
-        status: "PENDING",
-      },
-    });
-
-    if (!session) throw new UserError(404, "Session not found.");
-
+  async cancel(): Promise<void> {
     await db.sessions.update({
       where: {
-        id: props.SessionID,
-        userID: props.UserID,
+        id: this.data.id,
+        userID: this.data.userID,
+        status: "PENDING",
       },
       data: {
         status: "CANCELLED",
       },
     });
+  }
+
+  static async getByUserId(props: { UserID: string }): Promise<SessionObject[]> {
+    const sessions = await db.sessions.findMany({
+      where: {
+        userID: props.UserID,
+      },
+    });
+    return sessions;
+  }
+
+  static async getById(props: { SessionID: string; userId: string }): Promise<SessionController> {
+    const session = await db.sessions.findUnique({
+      where: {
+        id: props.SessionID,
+        userID: props.userId,
+      },
+    });
+    if (!session) throw new UserError(404, "Session not found.");
+    return new SessionController(session);
   }
 }
