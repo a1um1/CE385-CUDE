@@ -1,5 +1,5 @@
 import { APIclient } from "#/data/base/baseAPI";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { queryOptions, useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 
 export const usePendingLearnSessionQuery = () =>
@@ -56,3 +56,21 @@ export const useAbortLearnSessionMutation = () => {
     },
   });
 };
+
+export const sessionByIdQuery = (sessionId?: string | null) =>
+  queryOptions({
+    queryKey: ["session", sessionId],
+    queryFn: async () => {
+      if (!sessionId) throw new Error("Session ID is required to fetch session.");
+      const { data, error } = await APIclient.GET("/session/{SessionID}", {
+        params: {
+          path: {
+            SessionID: sessionId,
+          },
+        },
+      });
+      if (error) throw error;
+      return data;
+    },
+    enabled: Boolean(sessionId),
+  });
