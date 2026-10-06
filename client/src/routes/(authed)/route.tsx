@@ -13,6 +13,6 @@ export const Route = createFileRoute("/(authed)")({
 
 function RouteComponent() {
   const user = useUser();
-  if (!(user.data || user.isLoading)) return <Navigate to="/auth/signin" />;
+  if (!(user.data || user.isFetching)) return <Navigate to="/auth/signin" />;
   return <Outlet />;
 }
