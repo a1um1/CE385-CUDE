@@ -1,5 +1,6 @@
 import Button from "#/components/button";
 import ButtonLink from "#/components/buttonLink";
+import Markdown from "#/components/markdown";
 import UserTrigger from "#/components/userTrigger";
 import { useCourseById } from "#/data/course.data";
 import { sessionByIdQuery, useAbortLearnSessionMutation } from "#/data/learnSession.data";
@@ -15,6 +16,34 @@ export const Route = createFileRoute("/(authed)/session/$id")({
     return lesson;
   },
 });
+
+const DEMO_CONTENT = `# Welcome to the Demo Lesson
+
+This is a sample lesson content. You can use **Markdown** to format your text.
+
+- Item 1
+- Item 2
+- Item 3
+
+## Subheading
+
+You can also include code snippets:
+
+\`\`\`javascript
+console.log("Hello, world!");
+\`\`\`
+
+> [!note]
+> This is note. You can use notes to highlight important information.
+
+## Images
+
+You can add images as well:
+
+![Sample Image](https://github.com/vyrx-dev/Wallpapers/raw/master/nord/a_cartoon_of_a_woman_with_her_arms_out.png)
+
+Enjoy your learning experience!
+`;
 
 function RouteComponent() {
   const data = Route.useLoaderData();
@@ -47,12 +76,12 @@ function RouteComponent() {
           <UserTrigger showFullInfo />
         </div>
       </div>
-      <div className="container p-4">
+      <div className="container p-4 h-full overflow-y-auto">
         <Link to="/lesson/$lessonId" params={{ lessonId: lesson?.data?.id || "" }}>
           {course?.data?.name} | {unit?.data?.name} | {lesson?.data?.name}
         </Link>
         <hr className="my-4" />
-        <h1 className="text-3xl font-semibold">Session Content Here</h1>
+        <Markdown content={DEMO_CONTENT} />
       </div>
     </div>
   );
