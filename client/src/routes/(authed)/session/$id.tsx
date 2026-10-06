@@ -19,26 +19,19 @@ export const Route = createFileRoute("/(authed)/session/$id")({
 
 const DEMO_CONTENT = `# Welcome to the Demo Lesson
 
-This is a sample lesson content. You can use **Markdown** to format your text.
+เนื้อหาชั่วคราวนี้เป็นเพียงตัวอย่างเพื่อแสดงการทำงานของระบบเรียนรู้ของเรา คุณสามารถใช้เนื้อหานี้เพื่อทดลองฟีเจอร์ต่าง ๆ ของแพลตฟอร์ม
 
-- Item 1
-- Item 2
-- Item 3
-
-## Subheading
-
-You can also include code snippets:
+## Code Snippets สามารถแสดงโค้ดได้เช่นกัน
 
 \`\`\`javascript
 console.log("Hello, world!");
 \`\`\`
 
 > [!note]
-> This is note. You can use notes to highlight important information.
+> This is note. You can use notes to highlight important information.\\
+> Note เพิ่มเติมความสำคัญให้กับเนื้อหาที่คุณต้องการเน้น
 
-## Images
-
-You can add images as well:
+## Images เพิ่มรูปได้นะ
 
 ![Sample Image](https://github.com/vyrx-dev/Wallpapers/raw/master/nord/a_cartoon_of_a_woman_with_her_arms_out.png)
 
@@ -76,12 +69,14 @@ function RouteComponent() {
           <UserTrigger showFullInfo />
         </div>
       </div>
-      <div className="container p-4 h-full overflow-y-auto">
-        <Link to="/lesson/$lessonId" params={{ lessonId: lesson?.data?.id || "" }}>
-          {course?.data?.name} | {unit?.data?.name} | {lesson?.data?.name}
-        </Link>
-        <hr className="my-4" />
-        <Markdown content={DEMO_CONTENT} />
+      <div className="h-full overflow-y-auto flex-1">
+        <div className="container p-4">
+          <Link to="/lesson/$lessonId" params={{ lessonId: lesson?.data?.id || "" }}>
+            {course?.data?.name} | {unit?.data?.name} | {lesson?.data?.name}
+          </Link>
+          <hr className="my-4" />
+          <Markdown content={DEMO_CONTENT} />
+        </div>
       </div>
     </div>
   );
