@@ -1,5 +1,6 @@
 import ButtonLink from "#/components/buttonLink";
 import Select from "#/components/select";
+import Skeleton from "#/components/skeleton";
 import { useCourses } from "#/data/course.data";
 import { useLessonFromUnitQuery } from "#/data/lesson.data";
 import { useUnitFromCourseQuery } from "#/data/unit.data";
@@ -38,40 +39,49 @@ function Home() {
   return (
     <>
       <div className="flex flex-wrap gap-4">
-        <Select.Root
-          value={courseId}
-          onValueChange={handleCourseChange}
-          items={
-            courses.data?.data.map((course) => ({ value: course.id, label: course.name })) || []
-          }
-        >
-          <Select.Trigger>
-            <Select.Value placeholder="Select a course" />
-          </Select.Trigger>
-          <Select.Content>
-            {courses.data?.data.map((course) => (
-              <Select.Item key={course.id} value={course.id}>
-                {course.name}
-              </Select.Item>
-            ))}
-          </Select.Content>
-        </Select.Root>
-        <Select.Root
-          value={unitId}
-          onValueChange={handleUnitChange}
-          items={units.data?.map((unit) => ({ value: unit.id, label: unit.name })) || []}
-        >
-          <Select.Trigger>
-            <Select.Value placeholder="Select a unit" />
-          </Select.Trigger>
-          <Select.Content>
-            {units.data?.map((unit) => (
-              <Select.Item key={unit.id} value={unit.id}>
-                {unit.name}
-              </Select.Item>
-            ))}
-          </Select.Content>
-        </Select.Root>
+        {courses.isLoading ? (
+          <Skeleton className="h-6 w-32" />
+        ) : (
+          <Select.Root
+            value={courseId}
+            onValueChange={handleCourseChange}
+            items={
+              courses.data?.data.map((course) => ({ value: course.id, label: course.name })) || []
+            }
+          >
+            <Select.Trigger>
+              <Select.Value placeholder="Select a course" />
+            </Select.Trigger>
+            <Select.Content>
+              {courses.data?.data.map((course) => (
+                <Select.Item key={course.id} value={course.id}>
+                  {course.name}
+                </Select.Item>
+              ))}
+            </Select.Content>
+          </Select.Root>
+        )}
+
+        {units.isLoading ? (
+          <Skeleton className="h-6 w-32" />
+        ) : (
+          <Select.Root
+            value={unitId}
+            onValueChange={handleUnitChange}
+            items={units.data?.map((unit) => ({ value: unit.id, label: unit.name })) || []}
+          >
+            <Select.Trigger>
+              <Select.Value placeholder="Select a unit" />
+            </Select.Trigger>
+            <Select.Content>
+              {units.data?.map((unit) => (
+                <Select.Item key={unit.id} value={unit.id}>
+                  {unit.name}
+                </Select.Item>
+              ))}
+            </Select.Content>
+          </Select.Root>
+        )}
 
         <div className="flex gap-2 ml-auto">
           <ButtonLink variant="secondary" to="/play">

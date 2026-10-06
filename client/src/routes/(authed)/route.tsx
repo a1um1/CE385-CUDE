@@ -1,5 +1,5 @@
 import { resolveSession, useUser } from "#/data/user.data";
-import { createFileRoute, Navigate, redirect } from "@tanstack/react-router";
+import { createFileRoute, Navigate, Outlet, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/(authed)")({
   ssr: false,
