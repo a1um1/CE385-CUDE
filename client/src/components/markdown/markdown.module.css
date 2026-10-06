@@ -1,0 +1,156 @@
+.markdown {
+  line-height: 1.6;
+}
+
+.markdown :is(h1, h2, h3, h4, h5, h6) {
+  margin: 1.5em 0 0.6em;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.markdown h1 {
+  font-size: 2em;
+}
+
+.markdown h2 {
+  font-size: 1.5em;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 0.3em;
+}
+
+.markdown h3 {
+  font-size: 1.25em;
+}
+
+.markdown h4 {
+  font-size: 1.1em;
+}
+
+.markdown :is(p, ul, ol, pre, blockquote, table, .code-block) {
+  margin: 0 0 1em;
+}
+
+.markdown ul,
+.markdown ol {
+  padding-left: 1.5em;
+}
+
+.markdown li {
+  margin: 0.25em 0;
+}
+
+.markdown a {
+  color: var(--color-primary);
+}
+
+.markdown img {
+  max-width: 100%;
+  border-radius: var(--radius);
+}
+
+.markdown blockquote {
+  border-left: 4px solid var(--color-border);
+  padding-left: 1em;
+  color: rgb(255 255 255 / 0.7);
+}
+
+.markdown table {
+  border-collapse: collapse;
+  width: 100%;
+  display: block;
+  overflow-x: auto;
+}
+
+.markdown :is(th, td) {
+  border: 1px solid var(--color-border);
+  padding: 0.4em 0.8em;
+  text-align: left;
+}
+
+.markdown th {
+  background: rgb(255 255 255 / 0.05);
+}
+
+.markdown hr {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 2em 0;
+}
+
+.markdown :not(pre) > code {
+  background: rgb(255 255 255 / 0.08);
+  padding: 0.15em 0.4em;
+  border-radius: var(--radius);
+}
+
+.code-block {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.code-block .code-lang {
+  font-size: var(--size-xs-font-size);
+  padding: 0.2rem 0.5rem;
+  background: rgb(255 255 255 / 0.06);
+  border-bottom: 1px solid var(--color-border);
+  text-align: right;
+  opacity: 0.7;
+}
+
+.code-block pre {
+  margin: 0;
+  padding: 1em;
+  overflow-x: auto;
+}
+
+.code-block pre code {
+  background: transparent;
+  padding: 0;
+}
+
+/* GitHub alert package follows OS color scheme; app is always dark, so pin colors. */
+.markdown :global(.markdown-alert) {
+  background: rgb(255 255 255 / 0.04);
+  border-radius: var(--radius);
+}
+
+.markdown :global(.markdown-alert.markdown-alert-note) {
+  border-left-color: var(--color-primary);
+}
+
+.markdown :global(.markdown-alert.markdown-alert-note) :global(.markdown-alert-title) {
+  color: var(--color-primary);
+}
+
+.markdown :global(.markdown-alert.markdown-alert-tip) {
+  border-left-color: var(--color-success);
+}
+
+.markdown :global(.markdown-alert.markdown-alert-tip) :global(.markdown-alert-title) {
+  color: var(--color-success);
+}
+
+.markdown :global(.markdown-alert.markdown-alert-important) {
+  border-left-color: var(--color-gem);
+}
+
+.markdown :global(.markdown-alert.markdown-alert-important) :global(.markdown-alert-title) {
+  color: var(--color-gem);
+}
+
+.markdown :global(.markdown-alert.markdown-alert-warning) {
+  border-left-color: var(--color-warning);
+}
+
+.markdown :global(.markdown-alert.markdown-alert-warning) :global(.markdown-alert-title) {
+  color: var(--color-warning);
+}
+
+.markdown :global(.markdown-alert.markdown-alert-caution) {
+  border-left-color: var(--color-danger);
+}
+
+.markdown :global(.markdown-alert.markdown-alert-caution) :global(.markdown-alert-title) {
+  color: var(--color-danger);
+}
