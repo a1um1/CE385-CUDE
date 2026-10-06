@@ -2,13 +2,15 @@ import Button from "#/components/button";
 import ButtonLink from "#/components/buttonLink";
 import { Scoring } from "#/components/scoring";
 import Skeleton from "#/components/skeleton";
+import { useCourseById } from "#/data/course.data";
 import {
   usePendingLearnSessionQuery,
   useStartLearnSessionMutation,
 } from "#/data/learnSession.data";
 import { lessonQueryOptions, useEnrollmentAvailability } from "#/data/lesson.data";
+import { useUnitById } from "#/data/unit.data";
 import { createFileRoute } from "@tanstack/react-router";
-import { Book, XIcon } from "lucide-react";
+import { Book, ChevronLeft, XIcon } from "lucide-react";
 
 export const Route = createFileRoute("/(authed)/(base)/lesson/$lessonId")({
   component: RouteComponent,
@@ -80,15 +82,30 @@ const LessonStart = () => {
 
 function RouteComponent() {
   const lesson = Route.useLoaderData();
+  // const course = useCourseById(lesson?.courseId);
+  const unit = useUnitById(lesson?.unitID);
+  const course = useCourseById(unit?.data?.courseID);
 
   return (
-    <div className="flex gap-4">
-      <LessonAvailability />
-      <div className="flex flex-col gap-4">
-        <h1 className="text-2xl">{lesson?.name}</h1>
-
-        <LessonStart />
+    <>
+      <div>
+        <ButtonLink variant="secondary" to="/" params={{ courseId: course?.data?.id || "" }}>
+          <ChevronLeft />
+          เนื้อหาทั้งหมด
+        </ButtonLink>
       </div>
-    </div>
+      <div className="flex gap-4">
+        <LessonAvailability />
+        <div className="flex flex-col">
+          {/* <p>{course?.data?.name}</p> */}
+          <p>
+            {course?.data?.name} | {unit?.data?.name}
+          </p>
+          <h1 className="text-2xl mb-4">{lesson?.name}</h1>
+
+          <LessonStart />
+        </div>
+      </div>
+    </>
   );
 }

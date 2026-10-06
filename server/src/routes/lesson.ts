@@ -8,6 +8,7 @@ export const LessonSchema = z
   .object({
     id: z.string().openapi({ example: "lesson_id" }),
     name: z.string().openapi({ example: "lesson_name" }),
+    unitID: z.uuidv7().openapi({ example: "unit_id" }),
   })
   .openapi("Lesson");
 
@@ -27,8 +28,8 @@ const lessonRouterInstance = new CustomRouter({
     },
     async ({ params }) => {
       const result = await LessonController.getById(params.lessonId);
-      const { id, name } = result.JSON;
-      return { id, name };
+      const { id, name, unitID } = result.JSON;
+      return { id, name, unitID };
     },
   )
   .get(
