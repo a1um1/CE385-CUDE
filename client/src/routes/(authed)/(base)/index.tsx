@@ -8,7 +8,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { BookTextIcon, FaceSlightlyFrowning } from "lucide-react";
 import { useEffect } from "react";
 
-export const Route = createFileRoute("/(base)/")({
+export const Route = createFileRoute("/(authed)/(base)/")({
   component: Home,
 });
 

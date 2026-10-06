@@ -2,7 +2,7 @@ import { createFileRoute, Outlet, useMatches, type LinkProps } from "@tanstack/r
 import styles from "./settingLayout.module.css";
 import ButtonLink from "#/components/buttonLink";
 import { ShieldIcon, UserIcon, type LucideIcon, RotateCcwIcon } from "lucide-react";
-export const Route = createFileRoute("/(base)/account")({
+export const Route = createFileRoute("/(authed)/(base)/account")({
   component: RouteComponent,
 });
 

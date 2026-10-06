@@ -10,7 +10,7 @@ import { lessonQueryOptions, useEnrollmentAvailability } from "#/data/lesson.dat
 import { createFileRoute } from "@tanstack/react-router";
 import { Book, XIcon } from "lucide-react";
 
-export const Route = createFileRoute("/(base)/lesson/$lessonId")({
+export const Route = createFileRoute("/(authed)/(base)/lesson/$lessonId")({
   component: RouteComponent,
   loader: async ({ params, context }) => {
     const lesson = await context.queryClient.query(lessonQueryOptions(params.lessonId));

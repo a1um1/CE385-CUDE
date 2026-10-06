@@ -7,7 +7,7 @@ import { useUserTransactions } from "#/data/user.data";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 
-export const Route = createFileRoute("/(base)/account/transactions")({
+export const Route = createFileRoute("/(authed)/(base)/account/transactions")({
   component: RouteComponent,
   staticData: {
     pageKey: "transactions",

@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 
-export const Route = createFileRoute("/(base)/play")({
+export const Route = createFileRoute("/(authed)/(base)/play")({
   component: RouteComponent,
 });
 

@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/(base)/session/$id")({
+export const Route = createFileRoute("/(authed)/session/$id")({
   component: RouteComponent,
 });
 
