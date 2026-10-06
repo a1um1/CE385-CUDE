@@ -1,5 +1,6 @@
 import Button from "#/components/button";
 import ButtonLink from "#/components/buttonLink";
+import CodeEditor from "#/components/codeEditor";
 import Markdown from "#/components/markdown";
 import UserTrigger from "#/components/userTrigger";
 import { useCourseById } from "#/data/course.data";
@@ -7,7 +8,8 @@ import { sessionByIdQuery, useAbortLearnSessionMutation } from "#/data/learnSess
 import { useLesson } from "#/data/lesson.data";
 import { useUnitById } from "#/data/unit.data";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { DoorOpenIcon, XIcon } from "lucide-react";
+import { BookIcon, DoorOpenIcon, XIcon } from "lucide-react";
+import { useState } from "react";
 
 export const Route = createFileRoute("/(authed)/session/$id")({
   component: RouteComponent,
@@ -38,12 +40,38 @@ console.log("Hello, world!");
 Enjoy your learning experience!
 `;
 
+const exampleCode = `#include <stdio.h>
+int main() {
+		printf("Hello, World!\\n");
+		return 0;
+}
+`;
+
+const exampleExercises = [
+  {
+    id: "exercise0",
+    title: "Welcome to the Demo Lesson",
+  },
+  {
+    id: "exercise1",
+    title: "Exercise 1",
+  },
+  {
+    id: "exercise2",
+    title: "Exercise 2",
+  },
+];
+
 function RouteComponent() {
   const data = Route.useLoaderData();
   const lesson = useLesson(data?.LessonID);
   const unit = useUnitById(lesson?.data?.unitID);
   const course = useCourseById(unit?.data?.courseID);
 
+  const [codeContent, setCodeContent] = useState(exampleCode);
+  const handleCodeChange = (newCode: string) => {
+    setCodeContent(newCode);
+  };
   const abortSession = useAbortLearnSessionMutation();
   const handleAbortSession = async () => {
     await abortSession.mutateAsync(data.id);
@@ -52,7 +80,7 @@ function RouteComponent() {
   return (
     <div className="flex h-dvh">
       <div className="w-64 shrink-0 border-r-2 p-4 flex flex-col gap-4">
-        <ButtonLink to="/" variant="secondary" block>
+        <ButtonLink to="/" variant="secondary" block align="start">
           <DoorOpenIcon />
           ออกจากเนื้อหาชั่วคราว
         </ButtonLink>
@@ -61,10 +89,17 @@ function RouteComponent() {
           block
           onClick={handleAbortSession}
           disabled={abortSession.isPending}
+          align="start"
         >
           <XIcon />
           ละทิ้ง
         </Button>
+        {exampleExercises.map((exercise) => (
+          <Button key={exercise.id} variant="secondary" block align="start">
+            <BookIcon />
+            {exercise.title}
+          </Button>
+        ))}
         <div className="mt-auto">
           <UserTrigger showFullInfo />
         </div>
@@ -77,6 +112,9 @@ function RouteComponent() {
           <hr className="my-4" />
           <Markdown content={DEMO_CONTENT} />
         </div>
+      </div>
+      <div className="flex-1">
+        <CodeEditor value={codeContent} onChange={handleCodeChange} language="c" />
       </div>
     </div>
   );
