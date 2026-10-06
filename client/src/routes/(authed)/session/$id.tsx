@@ -2,6 +2,7 @@ import Button from "#/components/button";
 import ButtonLink from "#/components/buttonLink";
 import CodeEditor from "#/components/codeEditor";
 import Markdown from "#/components/markdown";
+import Skeleton from "#/components/skeleton";
 import UserTrigger from "#/components/userTrigger";
 import { useCourseById } from "#/data/course.data";
 import { sessionByIdQuery, useAbortLearnSessionMutation } from "#/data/learnSession.data";
@@ -79,36 +80,44 @@ function RouteComponent() {
 
   return (
     <div className="flex h-dvh">
-      <div className="w-64 shrink-0 border-r-2 p-4 flex flex-col gap-4">
+      <div className="w-64 shrink-0 border-r-2 flex flex-col">
         <ButtonLink to="/" variant="secondary" block align="start">
           <DoorOpenIcon />
           ออกจากเนื้อหาชั่วคราว
         </ButtonLink>
-        <Button
-          variant="danger"
-          block
-          onClick={handleAbortSession}
-          disabled={abortSession.isPending}
-          align="start"
-        >
-          <XIcon />
-          ละทิ้ง
-        </Button>
-        {exampleExercises.map((exercise) => (
-          <Button key={exercise.id} variant="secondary" block align="start">
-            <BookIcon />
-            {exercise.title}
+        <div className="border-t-2">
+          {exampleExercises.map((exercise) => (
+            <Button key={exercise.id} variant="ghost" block align="start">
+              <BookIcon />
+              {exercise.title}
+            </Button>
+          ))}
+        </div>
+        <div className="mt-auto flex flex-col">
+          <Button
+            variant="danger"
+            block
+            onClick={handleAbortSession}
+            disabled={abortSession.isPending}
+            align="start"
+          >
+            <XIcon />
+            ละทิ้ง
           </Button>
-        ))}
-        <div className="mt-auto">
-          <UserTrigger showFullInfo />
+          <div className="p-4">
+            <UserTrigger showFullInfo />
+          </div>
         </div>
       </div>
       <div className="h-full overflow-y-auto flex-1">
         <div className="container p-4">
-          <Link to="/lesson/$lessonId" params={{ lessonId: lesson?.data?.id || "" }}>
-            {course?.data?.name} | {unit?.data?.name} | {lesson?.data?.name}
-          </Link>
+          {lesson?.data?.id ? (
+            <Link to="/lesson/$lessonId" params={{ lessonId: lesson?.data?.id || "" }}>
+              {course?.data?.name} | {unit?.data?.name} | {lesson?.data?.name}
+            </Link>
+          ) : (
+            <Skeleton className="w-48 h-6" />
+          )}
           <hr className="my-4" />
           <Markdown content={DEMO_CONTENT} />
         </div>
