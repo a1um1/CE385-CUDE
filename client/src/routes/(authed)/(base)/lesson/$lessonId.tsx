@@ -1,5 +1,6 @@
 import Button from "#/components/button";
 import ButtonLink from "#/components/buttonLink";
+import { PieChart } from "#/components/pie-chart";
 import { Scoring } from "#/components/scoring";
 import Skeleton from "#/components/skeleton";
 import { useCourseById } from "#/data/course.data";
@@ -82,7 +83,6 @@ const LessonStart = () => {
 
 function RouteComponent() {
   const lesson = Route.useLoaderData();
-  // const course = useCourseById(lesson?.courseId);
   const unit = useUnitById(lesson?.unitID);
   const course = useCourseById(unit?.data?.courseID);
 
@@ -105,6 +105,28 @@ function RouteComponent() {
 
           <LessonStart />
         </div>
+      </div>
+      <div>
+        <h3 className="text-lg text-center">สถิติการเรียน (DEMO)</h3>
+        <PieChart
+          data={[
+            {
+              name: "Completed",
+              value: 30,
+              fill: "var(--color-success)",
+            },
+            {
+              name: "In Progress",
+              value: 50,
+              fill: "#8884d8",
+            },
+            {
+              name: "Failed",
+              value: 20,
+              fill: "var(--color-danger)",
+            },
+          ]}
+        />
       </div>
     </>
   );

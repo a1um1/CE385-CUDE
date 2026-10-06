@@ -34,3 +34,25 @@ export const useStartLearnSessionMutation = () => {
     },
   });
 };
+
+export const useAbortLearnSessionMutation = () => {
+  const navigate = useNavigate();
+  return useMutation({
+    mutationFn: async (sessionId: string) => {
+      const { data, error } = await APIclient.DELETE("/session/{SessionID}", {
+        params: {
+          path: {
+            SessionID: sessionId,
+          },
+        },
+      });
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: async () => {
+      navigate({
+        to: "/",
+      });
+    },
+  });
+};
