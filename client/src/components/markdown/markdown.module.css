@@ -120,6 +120,10 @@
   border-radius: var(--radius);
 }
 
+.markdown :global(.markdown-alert-title) {
+  margin-bottom: 0;
+}
+
 .markdown :global(.markdown-alert.markdown-alert-note) {
   border-left-color: var(--color-primary);
 }
