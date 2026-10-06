@@ -15,6 +15,7 @@ export const LessonListSchema = z.array(LessonSchema);
 const unitRouter = new CustomRouter({
   prefix: "/unit",
   tags: ["Unit"],
+  authentication: true,
 })
   .get(
     "/:unitId",

@@ -15,18 +15,29 @@ export default class SessionController {
     return this.data;
   }
 
-  static async checkIfUserHasPendingSession(props: { UserID: string }) {
+  static async findUserPendingSession(props: { UserID: string }) {
     const session = await db.sessions.findFirst({
       where: {
         userID: props.UserID,
         status: "PENDING",
       },
     });
-    return Boolean(session);
+    return session ? new SessionController(session) : null;
+  }
+
+  static async enrollmentCheck(props: { UserID: string; LessonID: string }): Promise<boolean> {
+    // ตรวจสอบว่าผู้ใช้มีการลงทะเบียนในบทเรียนหรือไม่
+    // 1. ต้องไม่มี Session ที่กำลังเรียนอยู่
+    const lesson = await lessonController.getById(props.LessonID);
+    if (!lesson) throw new UserError(404, "Lesson not found.");
+    const pendingSession = await this.findUserPendingSession({ UserID: props.UserID });
+    if (pendingSession) return false;
+
+    return true;
   }
 
   static async createSession(props: { UserID: string; LessonID: string }): Promise<SessionObject> {
-    if (await this.checkIfUserHasPendingSession(props)) {
+    if (!(await this.enrollmentCheck(props))) {
       throw new UserError(400, "User already has a pending session for this lesson.");
     }
 

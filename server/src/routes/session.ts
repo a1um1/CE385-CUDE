@@ -22,23 +22,18 @@ const learnSessionRouter = new CustomRouter({
     },
   )
   .get(
-    "/:SessionID",
+    "/pending-session",
     {
-      summary: "Get a specific session by ID for the authenticated user",
-      params: z.object({
-        SessionID: z.uuidv7().openapi({ example: "session_id" }),
-      }),
-      response: SessionObjectSchema,
+      summary: "Get the pending session for the authenticated user",
+      response: SessionObjectSchema.nullable(),
     },
-    async ({ params, user }) => {
-      const session = await SessionController.getById({
-        SessionID: params.SessionID,
-        userId: user.JSON.id,
+    async ({ user }) => {
+      const pendingSession = await SessionController.findUserPendingSession({
+        UserID: user.JSON.id,
       });
-      return session.JSON;
+      return pendingSession ? pendingSession.JSON : null;
     },
   )
-
   .post(
     "/",
     {
@@ -56,6 +51,24 @@ const learnSessionRouter = new CustomRouter({
       return createdSession;
     },
   )
+  .get(
+    "/:SessionID",
+    {
+      summary: "Get a specific session by ID for the authenticated user",
+      params: z.object({
+        SessionID: z.uuidv7().openapi({ example: "session_id" }),
+      }),
+      response: SessionObjectSchema,
+    },
+    async ({ params, user }) => {
+      const session = await SessionController.getById({
+        SessionID: params.SessionID,
+        userId: user.JSON.id,
+      });
+      return session.JSON;
+    },
+  )
+
   .delete(
     "/:SessionID",
     {

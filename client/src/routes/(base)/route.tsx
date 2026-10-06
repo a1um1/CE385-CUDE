@@ -1,5 +1,6 @@
 import Navbar from "#/components/navbar";
 import { userQueryOptions } from "#/data/user.data";
+import { PendingSessionBanner } from "#/routes/(base)/-pendingSessionBanner";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/(base)")({
@@ -17,6 +18,7 @@ function RouteComponent() {
     <>
       <Navbar />
       <div className="container p-4 flex flex-col gap-6">
+        <PendingSessionBanner />
         <Outlet />
       </div>
     </>
