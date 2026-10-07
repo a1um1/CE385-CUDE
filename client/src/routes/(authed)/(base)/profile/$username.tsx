@@ -30,18 +30,18 @@ function RouteComponent() {
       <div className={styles["profile-header"]}>
         <Avatar avatarUrl={data?.profileImage} name={data?.name} size="8rem" />
         <div>
+          <span>@{data?.username}</span>
           <div className="flex items-center gap-3">
-            <span>@{data?.username}</span>
+            <h1 className="text-3xl font-semibold">
+              {data?.name}{" "}
+              {data?.epithet && <span className={styles["epihet"]}>{data?.epithet}</span>}
+            </h1>
             {isSelf && (
               <ButtonLink to="/account" variant="secondary">
                 Edit profile
               </ButtonLink>
             )}
           </div>
-          <h1 className="text-3xl font-semibold">
-            {data?.name}{" "}
-            {data?.epithet && <span className={styles["epihet"]}>{data?.epithet}</span>}
-          </h1>
         </div>
       </div>
     </>
