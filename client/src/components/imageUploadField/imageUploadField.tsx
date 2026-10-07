@@ -2,7 +2,7 @@ import Button from "#/components/button";
 import Dialog from "#/components/dialog";
 import { usePresignUpload, type PresignPurpose } from "#/data/storage.data";
 import { cropToBlob } from "#/lib/image";
-import { useRef, useState, type SyntheticEvent } from "react";
+import { useRef, useState, type ReactNode, type SyntheticEvent } from "react";
 import ReactCrop, { centerCrop, makeAspectCrop, type PercentCrop } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 
@@ -26,7 +26,10 @@ export interface ImageUploadFieldProps {
   targetBytes: number;
   value?: string | null;
   disabled?: boolean;
-  onUploaded: (url: string) => void;
+  /** called with the uploaded URL; rejection is shown in the dialog */
+  onUploaded: (url: string) => void | Promise<void>;
+  /** replaces the default buttons — trigger opens the file picker */
+  renderTrigger?: (trigger: { onClick: () => void; busy: boolean }) => ReactNode;
 }
 
 function ImageUploadField({
@@ -37,14 +40,19 @@ function ImageUploadField({
   value,
   disabled,
   onUploaded,
+  renderTrigger,
 }: ImageUploadFieldProps) {
-  const fileRef = useRef<HTMLInputElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
   const upload = usePresignUpload();
+
+  // state instead of a ref: renderTrigger needs a click handler that survives
+  // the react(refs) lint rule (no .current reads outside event handlers)
+  const [fileInput, setFileInput] = useState<HTMLInputElement | null>(null);
 
   const [src, setSrc] = useState<string | null>(null);
   const [crop, setCrop] = useState<PercentCrop>();
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
   const reset = () => {
     if (src) URL.revokeObjectURL(src);
@@ -80,21 +88,25 @@ function ImageUploadField({
       height: (crop.height / 100) * img.naturalHeight,
     };
     try {
+      setSaving(true);
       const blob = await cropToBlob(src, area, maxDim, targetBytes);
       const accessUrl = await upload.mutateAsync({ purpose, blob });
-      onUploaded(accessUrl);
+      await onUploaded(accessUrl);
       reset();
     } catch (error) {
       setUploadError(errorMessage(error));
+    } finally {
+      setSaving(false);
     }
   };
 
-  const busy = upload.isPending;
+  const busy = upload.isPending || saving;
+  const openPicker = () => fileInput?.click();
 
   return (
-    <div className="flex items-center gap-3 flex-wrap">
+    <div className={renderTrigger ? "contents" : "flex items-center gap-3 flex-wrap"}>
       <input
-        ref={fileRef}
+        ref={setFileInput}
         type="file"
         accept={ACCEPTED_TYPES}
         className="hidden"
@@ -104,25 +116,31 @@ function ImageUploadField({
           e.target.value = "";
         }}
       />
-      <Button
-        type="button"
-        variant="secondary"
-        size="sm"
-        disabled={disabled || busy}
-        onClick={() => fileRef.current?.click()}
-      >
-        {busy ? "Uploading…" : value ? "Change image" : "Upload image"}
-      </Button>
-      {value && (
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          disabled={disabled || busy}
-          onClick={() => onUploaded("")}
-        >
-          Remove
-        </Button>
+      {renderTrigger ? (
+        renderTrigger({ onClick: openPicker, busy })
+      ) : (
+        <>
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            disabled={disabled || busy}
+            onClick={openPicker}
+          >
+            {busy ? "Uploading…" : value ? "Change image" : "Upload image"}
+          </Button>
+          {value && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              disabled={disabled || busy}
+              onClick={() => onUploaded("")}
+            >
+              Remove
+            </Button>
+          )}
+        </>
       )}
 
       <Dialog

@@ -71,6 +71,7 @@ const meta = {
     value: { control: "text" },
     disabled: { control: "boolean" },
     onUploaded: { control: false },
+    renderTrigger: { control: false },
   },
 } satisfies Meta<typeof ImageUploadField>;
 
