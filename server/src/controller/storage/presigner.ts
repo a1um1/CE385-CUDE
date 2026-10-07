@@ -4,20 +4,15 @@ import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 export interface UploadConstraint {
-  /** Maximum file size in bytes. */
-  maxBytes: number;
-  /** Allowed MIME types. */
-  contentTypes: readonly string[];
+  maxBytes: number; // Maximum allowed file size in bytes
+  contentTypes: readonly string[]; // Allowed MIME types for the upload
 }
 
 export interface PresignUploadInput {
-  /** Full object key, e.g. `avatars/<userId>/<id>.png` — caller owns the path. */
-  key: string;
-  contentType: string;
-  /** Exact file size in bytes, signed into the URL. */
+  key: string; // The S3 object key (path) where the file will be stored
+  contentType: string; // The MIME type of the file being uploaded
   size: number;
-  /** Public content gets a `publicUrl` back; private content omits it. */
-  public: boolean;
+  public: boolean; // Whether the uploaded file should be publicly accessible
   constraint: UploadConstraint;
 }
 
@@ -25,8 +20,7 @@ export interface PresignUploadResult {
   presignedUrl: string;
   publicUrl?: string;
   expiresIn: number;
-  /** Echoed back so callers can surface limits to the client. */
-  constraint: UploadConstraint;
+  constraint: UploadConstraint; // The constraints that were applied to the upload, useful for client-side validation
 }
 
 /**
