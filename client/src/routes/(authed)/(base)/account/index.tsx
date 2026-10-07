@@ -16,7 +16,7 @@ export const Route = createFileRoute("/(authed)/(base)/account/")({
 
 function InfoRow({ label, value }: { label: string; value?: string }) {
   return (
-    <div className="flex items-center justify-between border-b border-[var(--color-border)] py-3 last:border-b-0">
+    <div className="flex items-center justify-between border-b border-(--color-border) py-3 last:border-b-0">
       <span className="text-sm opacity-70">{label}</span>
       <span className="font-medium">{value}</span>
     </div>
@@ -64,7 +64,7 @@ function RouteComponent() {
           />
         </div>
 
-        <div className={styles["profile-header"]}>
+        <div className="mt-4 flex items-end gap-4 px-4 max-md:flex-col max-md:items-center max-md:text-center">
           <div className="relative">
             <Avatar avatarUrl={user?.profileImage} name={user?.name} size="8rem" />
             <ImageUploadField
@@ -83,9 +83,10 @@ function RouteComponent() {
                   onClick={onClick}
                   disabled={busy}
                   aria-label="Change avatar image"
-                  className="group absolute inset-0 rounded-full"
+                  className="group absolute inset-0 flex cursor-pointer items-end justify-center rounded-full pb-3"
                 >
-                  <span className="absolute -bottom-1 -right-1 flex rounded-full bg-black/60 p-2 text-white opacity-60 transition-opacity group-hover:opacity-100">
+                  {/* icon-only: a labeled pill would be clipped by the circle */}
+                  <span className="flex rounded-full bg-black/60 p-2 text-white opacity-60 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
                     <CameraIcon size="0.875rem" />
                   </span>
                 </button>
