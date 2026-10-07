@@ -85,9 +85,8 @@ function RouteComponent() {
                   aria-label="Change avatar image"
                   className="absolute inset-0 z-10 cursor-pointer"
                 >
-                  <span className="absolute inset-x-0 bottom-0 flex items-center justify-center gap-1.5 bg-black/60 py-2 text-xs text-white opacity-60 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+                  <span className="absolute inset-x-0 bottom-0 flex items-center justify-center bg-black/60 py-2 text-white opacity-60 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
                     <CameraIcon size="0.75rem" />
-                    Change avatar
                   </span>
                 </button>
               )}
