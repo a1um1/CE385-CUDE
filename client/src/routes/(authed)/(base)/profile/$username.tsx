@@ -1,6 +1,8 @@
 import Avatar from "#/components/avatar";
+import ButtonLink from "#/components/buttonLink";
 import UserBackground from "#/components/userBackground";
 import { profileQueryOptions } from "#/data/profile.data";
+import { useUser } from "#/data/user.data";
 import { createFileRoute } from "@tanstack/react-router";
 import styles from "./profile.module.css";
 export const Route = createFileRoute("/(authed)/(base)/profile/$username")({
@@ -13,6 +15,8 @@ export const Route = createFileRoute("/(authed)/(base)/profile/$username")({
 
 function RouteComponent() {
   const data = Route.useLoaderData();
+  const { data: me } = useUser();
+  const isSelf = me != null && data?.id === me.id;
   return (
     <>
       <div className={styles["breakout"]}>
@@ -32,6 +36,16 @@ function RouteComponent() {
             {data?.epithet && <span className={styles["epihet"]}>{data?.epithet}</span>}
           </h1>
         </div>
+        {isSelf && (
+          <ButtonLink
+            to="/account"
+            variant="secondary"
+            size="sm"
+            className="ml-auto self-center max-md:ml-0"
+          >
+            Edit profile
+          </ButtonLink>
+        )}
       </div>
     </>
   );
