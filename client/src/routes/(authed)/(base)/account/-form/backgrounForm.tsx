@@ -1,4 +1,5 @@
 import { handleFormMutationError, useAppForm } from "#/components/form";
+import ImageUploadField from "#/components/imageUploadField";
 import UserBackground from "#/components/userBackground";
 import { useUpdateBackground, useUser } from "#/data/user.data";
 
@@ -39,10 +40,14 @@ export default function BackgroundForm() {
             <form.FormError />
             <form.AppField name="backgroundImageURL">
               {(field) => (
-                <field.TextField
-                  label="Background Image URL"
-                  type="text"
+                <ImageUploadField
+                  purpose="background"
+                  aspect={32 / 9}
+                  maxDim={1600}
+                  targetBytes={400 * 1024}
+                  value={field.state.value}
                   disabled={updateMutation.isPending}
+                  onUploaded={(url) => field.handleChange(url)}
                 />
               )}
             </form.AppField>

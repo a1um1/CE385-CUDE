@@ -1,5 +1,6 @@
 import Avatar from "#/components/avatar";
 import { handleFormMutationError, useAppForm } from "#/components/form";
+import ImageUploadField from "#/components/imageUploadField";
 import { useUpdateAvatar, useUser } from "#/data/user.data";
 
 export default function AvatarForm() {
@@ -34,10 +35,14 @@ export default function AvatarForm() {
             <form.FormError />
             <form.AppField name="profileImageURL">
               {(field) => (
-                <field.TextField
-                  label="Profile Image URL"
-                  type="text"
+                <ImageUploadField
+                  purpose="avatar"
+                  aspect={1}
+                  maxDim={512}
+                  targetBytes={150 * 1024}
+                  value={field.state.value}
                   disabled={updateMutation.isPending}
+                  onUploaded={(url) => field.handleChange(url)}
                 />
               )}
             </form.AppField>
