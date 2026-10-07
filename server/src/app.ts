@@ -22,6 +22,7 @@ const limiter = rateLimit({
 });
 import { lessonRouter } from "./routes/lesson";
 import { learnSessionRoute } from "#/routes/session";
+import { fileRouter } from "#/routes/file";
 
 const app = express()
   .use(limiter)
@@ -42,7 +43,8 @@ const app = express()
   .use(lessonRouter)
   .use(unitRoute)
   .use(adminRoute)
-  .use(learnSessionRoute);
+  .use(learnSessionRoute)
+  .use(fileRouter);
 
 // Docs endpoint — regenerated from the registry above
 app

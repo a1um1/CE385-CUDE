@@ -3755,6 +3755,100 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/file/presign": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Presign a file upload (PUT url + public access url) */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["PresignUploadRequest"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PresignUploadResponse"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -3906,12 +4000,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-06T13:26:50.947Z
+             * @example 2026-10-07T15:02:14.660Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-06T13:26:50.947Z
+             * @example 2026-10-07T15:02:14.661Z
              */
             updatedAt: string;
         };
@@ -4108,6 +4202,28 @@ export interface components {
         };
         /** @enum {string} */
         EnrollmentStatus: "AVAILABLE" | "PENDING" | "NOT_AVAILABLE";
+        PresignUploadResponse: {
+            /** @example avatars/user_id/0f1e2d3c-....png */
+            key: string;
+            /** @example http://localhost:3900/cude/avatars/....png?X-Amz-Algorithm=... */
+            uploadUrl: string;
+            /** @example http://cude.localhost:3902/avatars/....png */
+            accessUrl: string;
+            /** @example 300 */
+            expiresIn: number;
+        };
+        PresignUploadRequest: {
+            purpose: components["schemas"]["StoragePurpose"];
+            /** @example image/png */
+            contentType: string;
+            /**
+             * @description Exact file size in bytes, signed into the PUT
+             * @example 512000
+             */
+            size: number;
+        };
+        /** @enum {string} */
+        StoragePurpose: "avatar" | "thumbnail";
     };
     responses: never;
     parameters: never;
