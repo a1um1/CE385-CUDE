@@ -1,8 +1,8 @@
-import AvatarForm from "#/routes/(base)/account/-form/avatarForm";
-import BackgroundForm from "#/routes/(base)/account/-form/backgrounForm";
+import AvatarForm from "#/routes/(authed)/(base)/account/-form/avatarForm";
+import BackgroundForm from "#/routes/(authed)/(base)/account/-form/backgrounForm";
 import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/(base)/account/")({
+export const Route = createFileRoute("/(authed)/(base)/account/")({
   component: RouteComponent,
   staticData: {
     pageKey: "profile",

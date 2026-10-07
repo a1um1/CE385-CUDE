@@ -1,20 +1,26 @@
 import UnitController from "#/controller/unit";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
-import { LessonSchema } from "#/routes/lesson";
 
 export const UnitSchema = z
   .object({
     id: z.string().openapi({ example: "unit_id" }),
     name: z.string().openapi({ example: "unit_name" }),
+    courseID: z.string().openapi({ example: "course_id" }),
   })
   .openapi("Unit");
 
-export const LessonListSchema = z.array(LessonSchema);
+export const LessonListSchema = z.array(
+  z.object({
+    id: z.string().openapi({ example: "lesson_id" }),
+    name: z.string().openapi({ example: "lesson_name" }),
+  }),
+);
 
 const unitRouter = new CustomRouter({
   prefix: "/unit",
   tags: ["Unit"],
+  authentication: true,
 })
   .get(
     "/:unitId",

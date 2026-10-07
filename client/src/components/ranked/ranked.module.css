@@ -1,5 +1,3 @@
-@reference "../../styles.css";
-
 .hexagonWrapper {
   --hex-size: 120px;
   --bg-color: #99ffff;

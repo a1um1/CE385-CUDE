@@ -3,7 +3,7 @@ import UserBackground from "#/components/userBackground";
 import { profileQueryOptions } from "#/data/profile.data";
 import { createFileRoute } from "@tanstack/react-router";
 import styles from "./profile.module.css";
-export const Route = createFileRoute("/(base)/profile/$username")({
+export const Route = createFileRoute("/(authed)/(base)/profile/$username")({
   component: RouteComponent,
   loader: async ({ params, context }) => {
     const profile = await context.queryClient.query(profileQueryOptions(params.username));

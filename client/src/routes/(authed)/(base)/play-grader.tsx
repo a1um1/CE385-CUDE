@@ -10,7 +10,7 @@ import clsx from "clsx";
 import { CheckIcon, XIcon } from "lucide-react";
 import { useState } from "react";
 
-export const Route = createFileRoute("/(base)/play-grader")({
+export const Route = createFileRoute("/(authed)/(base)/play-grader")({
   component: RouteComponent,
 });
 

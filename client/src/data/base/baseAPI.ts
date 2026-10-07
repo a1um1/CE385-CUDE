@@ -2,6 +2,7 @@ import createClient, { type Middleware } from "openapi-fetch";
 import type { paths } from "./openapi";
 import refreshToken from "./refreshToken";
 import { BASE_URL } from "#/data/base/baseURL";
+import { queryClient } from "#/data/queryClient";
 
 const clonedRequests = new Map<string, Request>();
 
@@ -39,6 +40,8 @@ const authMiddleware: Middleware = {
 
       return await options.fetch(retryRequest);
     } catch {
+      // Refresh failed → session is dead; revalidate so guards/UI see signed-out state
+      queryClient.setQueryData(["session"], null);
       return response;
     }
   },
