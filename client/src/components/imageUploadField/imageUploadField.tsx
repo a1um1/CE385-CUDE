@@ -5,6 +5,7 @@ import { cropToBlob } from "#/lib/image";
 import { useRef, useState, type ReactNode, type SyntheticEvent } from "react";
 import ReactCrop, { centerCrop, makeAspectCrop, type PercentCrop } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
+import styles from "./imageUploadField.module.css";
 
 const ACCEPTED_TYPES = "image/png,image/jpeg,image/webp";
 
@@ -104,12 +105,12 @@ function ImageUploadField({
   const openPicker = () => fileInput?.click();
 
   return (
-    <div className={renderTrigger ? "contents" : "flex items-center gap-3 flex-wrap"}>
+    <div className={renderTrigger ? styles["field-contents"] : styles.field}>
       <input
         ref={setFileInput}
         type="file"
         accept={ACCEPTED_TYPES}
-        className="hidden"
+        className={styles["file-input"]}
         disabled={disabled || busy}
         onChange={(e) => {
           handleFile(e.target.files?.[0]);
@@ -159,7 +160,7 @@ function ImageUploadField({
           </>
         }
       >
-        <div className="flex justify-center">
+        <div className={styles["crop-area"]}>
           {src && (
             <ReactCrop
               crop={crop}
@@ -172,12 +173,12 @@ function ImageUploadField({
                 src={src}
                 alt="Crop preview"
                 onLoad={handleImageLoad}
-                className="block max-h-96 max-w-full"
+                className={styles["crop-preview"]}
               />
             </ReactCrop>
           )}
         </div>
-        {uploadError && <p className="mt-3 text-sm text-red-500">{uploadError}</p>}
+        {uploadError && <p className={styles["upload-error"]}>{uploadError}</p>}
       </Dialog>
     </div>
   );

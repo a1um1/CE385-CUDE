@@ -4,6 +4,7 @@ import UserBackground from "#/components/userBackground";
 import { useUpdateAvatar, useUpdateBackground, useUser } from "#/data/user.data";
 import { createFileRoute } from "@tanstack/react-router";
 import { CameraIcon } from "lucide-react";
+import accountStyles from "./account.module.css";
 import styles from "../profile/profile.module.css";
 
 export const Route = createFileRoute("/(authed)/(base)/account/")({
@@ -16,9 +17,9 @@ export const Route = createFileRoute("/(authed)/(base)/account/")({
 
 function InfoRow({ label, value }: { label: string; value?: string }) {
   return (
-    <div className="flex items-center justify-between border-b border-(--color-border) py-3 last:border-b-0">
-      <span className="text-sm opacity-70">{label}</span>
-      <span className="font-medium">{value}</span>
+    <div className={accountStyles["info-row"]}>
+      <span className={accountStyles["info-label"]}>{label}</span>
+      <span className={accountStyles["info-value"]}>{value}</span>
     </div>
   );
 }
@@ -29,9 +30,9 @@ function RouteComponent() {
   const updateBackground = useUpdateBackground();
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className={accountStyles.page}>
       <div>
-        <div className="relative overflow-hidden rounded-lg">
+        <div className={accountStyles.banner}>
           <UserBackground
             backgroundUrl={user?.backgroundImage}
             name={user?.name}
@@ -53,9 +54,9 @@ function RouteComponent() {
                 onClick={onClick}
                 disabled={busy}
                 aria-label="Change background image"
-                className="group absolute inset-0 flex cursor-pointer items-end justify-end p-3"
+                className={accountStyles["banner-trigger"]}
               >
-                <span className="flex items-center gap-1.5 rounded-full bg-black/60 px-3 py-1.5 text-xs text-white opacity-60 transition-opacity group-hover:opacity-100">
+                <span className={accountStyles["banner-badge"]}>
                   <CameraIcon size="0.875rem" />
                   Change background
                 </span>
@@ -64,8 +65,8 @@ function RouteComponent() {
           />
         </div>
 
-        <div className="mt-4 flex items-center gap-4 px-4 max-md:flex-col max-md:items-center max-md:text-center">
-          <div className="group relative overflow-hidden rounded-full">
+        <div className={accountStyles["profile-row"]}>
+          <div className={accountStyles.avatar}>
             <Avatar avatarUrl={user?.profileImage} name={user?.name} size="8rem" />
             <ImageUploadField
               purpose="avatar"
@@ -83,9 +84,9 @@ function RouteComponent() {
                   onClick={onClick}
                   disabled={busy}
                   aria-label="Change avatar image"
-                  className="absolute inset-0 z-10 cursor-pointer"
+                  className={accountStyles["avatar-trigger"]}
                 >
-                  <span className="absolute inset-x-0 bottom-0 flex items-center justify-center bg-black/60 py-2 text-white opacity-60 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+                  <span className={accountStyles["avatar-badge"]}>
                     <CameraIcon size="0.75rem" />
                   </span>
                 </button>
@@ -94,7 +95,7 @@ function RouteComponent() {
           </div>
           <div>
             <span>@{user?.username}</span>
-            <h2 className="text-3xl font-semibold">
+            <h2 className={styles["page-title"]}>
               {user?.name}{" "}
               {user?.epithet && <span className={styles["epihet"]}>{user.epithet}</span>}
             </h2>
@@ -102,7 +103,7 @@ function RouteComponent() {
         </div>
       </div>
 
-      <section className="flex flex-col">
+      <section className={accountStyles.details}>
         <InfoRow label="Name" value={user?.name} />
         <InfoRow label="Username" value={user?.username && `@${user.username}`} />
         <InfoRow label="Email" value={user?.email} />
