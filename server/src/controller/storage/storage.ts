@@ -1,11 +1,11 @@
-import "dotenv/config";
+import { bucket, getS3, publicUrl } from "#/controller/storage/s3";
 import type {
   PresignUploadRequestSchema,
   PresignUploadResponseSchema,
   StoragePurposeSchema,
 } from "#/controller/storage/storage.schema";
 import UserError from "#/lib/router/http/userError";
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { randomUUID } from "node:crypto";
 
@@ -31,27 +31,6 @@ const PURPOSES: Record<StoragePurposeSchema, StoragePurpose> = {
     contentTypes: ["image/png", "image/jpeg", "image/webp"],
   },
 };
-
-let client: S3Client | undefined = undefined;
-
-function getS3(): S3Client {
-  client ??= new S3Client({
-    region: process.env.S3_REGION ?? "garage",
-    endpoint: process.env.S3_ENDPOINT ?? "http://localhost:3900",
-    forcePathStyle: true,
-    // SDK default injects x-amz-checksum-crc32 into presigned URLs; Garage
-    // validates it against the body and always fails. No checksum = no problem.
-    requestChecksumCalculation: "WHEN_REQUIRED",
-    credentials: {
-      accessKeyId: process.env.S3_ACCESS_KEY ?? "",
-      secretAccessKey: process.env.S3_SECRET_KEY ?? "",
-    },
-  });
-  return client;
-}
-
-const bucket = () => process.env.S3_BUCKET ?? "cude";
-const publicUrl = () => process.env.S3_PUBLIC_URL ?? "http://cude.localhost:3902";
 
 // controllers here are classes by convention
 // oxlint-disable-next-line no-extraneous-class
