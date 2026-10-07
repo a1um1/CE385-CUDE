@@ -29,7 +29,7 @@ function RouteComponent() {
       </div>
       <div className={styles["profile-header"]}>
         <Avatar avatarUrl={data?.profileImage} name={data?.name} size="8rem" />
-        <div>
+        <div className="flex-1">
           <span>@{data?.username}</span>
           <div className="flex items-center gap-3">
             <h1 className="text-3xl font-semibold">
@@ -37,7 +37,7 @@ function RouteComponent() {
               {data?.epithet && <span className={styles["epihet"]}>{data?.epithet}</span>}
             </h1>
             {isSelf && (
-              <ButtonLink to="/account" variant="secondary">
+              <ButtonLink to="/account" variant="secondary" className="ml-auto max-md:ml-0">
                 Edit profile
               </ButtonLink>
             )}
