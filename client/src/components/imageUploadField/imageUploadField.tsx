@@ -2,9 +2,9 @@ import Button from "#/components/button";
 import Dialog from "#/components/dialog";
 import { usePresignUpload, type PresignPurpose } from "#/data/storage.data";
 import { cropToBlob } from "#/lib/image";
-import { useRef, useState } from "react";
-import Cropper from "react-easy-crop";
-import type { Area } from "react-easy-crop";
+import { useRef, useState, type SyntheticEvent } from "react";
+import ReactCrop, { centerCrop, makeAspectCrop, type PercentCrop } from "react-image-crop";
+import "react-image-crop/dist/ReactCrop.css";
 
 const ACCEPTED_TYPES = "image/png,image/jpeg,image/webp";
 
@@ -39,21 +39,18 @@ function ImageUploadField({
   onUploaded,
 }: ImageUploadFieldProps) {
   const fileRef = useRef<HTMLInputElement>(null);
-  const croppedPixels = useRef<Area | null>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
   const upload = usePresignUpload();
 
   const [src, setSrc] = useState<string | null>(null);
-  const [crop, setCrop] = useState({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState(1);
+  const [crop, setCrop] = useState<PercentCrop>();
   const [uploadError, setUploadError] = useState<string | null>(null);
 
   const reset = () => {
     if (src) URL.revokeObjectURL(src);
     setSrc(null);
-    setCrop({ x: 0, y: 0 });
-    setZoom(1);
+    setCrop(undefined);
     setUploadError(null);
-    croppedPixels.current = null;
   };
 
   const handleFile = (file: File | undefined) => {
@@ -66,9 +63,22 @@ function ImageUploadField({
     setSrc(URL.createObjectURL(file));
   };
 
+  // Initial aspect-locked frame covering ~90% of the image, centered.
+  const handleImageLoad = (e: SyntheticEvent<HTMLImageElement>) => {
+    const { naturalWidth: w, naturalHeight: h } = e.currentTarget;
+    setCrop(centerCrop(makeAspectCrop({ unit: "%", width: 90 }, aspect, w, h), w, h));
+  };
+
   const handleConfirm = async () => {
-    const area = croppedPixels.current;
-    if (!src || !area) return;
+    const img = imgRef.current;
+    if (!src || !img || !crop) return;
+    // percent crop → natural pixels (cropToBlob draws from the full image)
+    const area = {
+      x: (crop.x / 100) * img.naturalWidth,
+      y: (crop.y / 100) * img.naturalHeight,
+      width: (crop.width / 100) * img.naturalWidth,
+      height: (crop.height / 100) * img.naturalHeight,
+    };
     try {
       const blob = await cropToBlob(src, area, maxDim, targetBytes);
       const accessUrl = await upload.mutateAsync({ purpose, blob });
@@ -119,7 +129,7 @@ function ImageUploadField({
         open={src !== null}
         onOpenChange={(open) => !open && !busy && reset()}
         title="Crop image"
-        description="Drag to reposition, scroll or pinch to zoom."
+        description="Drag the corner handles to adjust the frame."
         footer={
           <>
             <Button type="button" variant="secondary" disabled={busy} onClick={reset}>
@@ -131,17 +141,22 @@ function ImageUploadField({
           </>
         }
       >
-        <div className="relative h-72 w-full">
+        <div className="flex justify-center">
           {src && (
-            <Cropper
-              image={src}
+            <ReactCrop
               crop={crop}
-              zoom={zoom}
+              onChange={(_, percentCrop) => setCrop(percentCrop)}
               aspect={aspect}
-              onCropChange={setCrop}
-              onZoomChange={setZoom}
-              onCropComplete={(_cropped, pixels) => (croppedPixels.current = pixels)}
-            />
+              keepSelection
+            >
+              <img
+                ref={imgRef}
+                src={src}
+                alt="Crop preview"
+                onLoad={handleImageLoad}
+                className="block max-h-96 max-w-full"
+              />
+            </ReactCrop>
           )}
         </div>
         {uploadError && <p className="mt-3 text-sm text-red-500">{uploadError}</p>}

@@ -1,6 +1,12 @@
 // Sequential awaits are the point: each encode depends on the previous result.
 /* oxlint-disable no-await-in-loop */
-import type { Area } from "react-easy-crop";
+
+export interface CropRect {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
 
 const MIN_QUALITY = 0.05;
 const MAX_QUALITY = 0.9;
@@ -36,7 +42,7 @@ async function searchQuality(encode: Encode, targetBytes: number): Promise<Blob 
 // target is unreachable — server presign enforces the hard size limit.
 export async function cropToBlob(
   src: string,
-  crop: Area,
+  crop: CropRect,
   maxDim: number,
   targetBytes: number,
 ): Promise<Blob> {
