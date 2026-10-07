@@ -3906,12 +3906,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-06T13:26:50.947Z
+             * @example 2026-10-07T15:07:16.746Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-06T13:26:50.947Z
+             * @example 2026-10-07T15:07:16.747Z
              */
             updatedAt: string;
         };
