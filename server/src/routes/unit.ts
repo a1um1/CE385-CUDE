@@ -1,21 +1,11 @@
+import { LessonSchema } from "#/controller/lesson/lesson.schema";
 import UnitController from "#/controller/unit";
+import { UnitSchema } from "#/controller/unit/unit.schema";
+import { includeQuerySchema } from "#/lib/include";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 
-export const UnitSchema = z
-  .object({
-    id: z.string().openapi({ example: "unit_id" }),
-    name: z.string().openapi({ example: "unit_name" }),
-    courseID: z.string().openapi({ example: "course_id" }),
-  })
-  .openapi("Unit");
-
-export const LessonListSchema = z.array(
-  z.object({
-    id: z.string().openapi({ example: "lesson_id" }),
-    name: z.string().openapi({ example: "lesson_name" }),
-  }),
-);
+const LessonListSchema = z.array(LessonSchema);
 
 const unitRouter = new CustomRouter({
   prefix: "/unit",
@@ -29,10 +19,11 @@ const unitRouter = new CustomRouter({
       params: z.object({
         unitId: z.string().openapi({ example: "unit_id" }),
       }),
+      query: includeQuerySchema,
       response: UnitSchema,
     },
-    async ({ params }) => {
-      const unit = await UnitController.getById(params.unitId);
+    async ({ params, query }) => {
+      const unit = await UnitController.getById(params.unitId, query.include);
       return unit.JSON;
     },
   )
@@ -43,15 +34,13 @@ const unitRouter = new CustomRouter({
       params: z.object({
         unitId: z.string().openapi({ example: "unit_id" }),
       }),
+      query: includeQuerySchema,
       response: LessonListSchema,
     },
-    async ({ params }) => {
+    async ({ params, query }) => {
       const unit = await UnitController.getById(params.unitId);
-      const lessons = await unit.getAllLesson();
-      return lessons.map((lesson) => {
-        const { id, name } = lesson.JSON;
-        return { id, name };
-      });
+      const lessons = await unit.getAllLesson(query.include);
+      return lessons.map((lesson) => lesson.JSON);
     },
   );
 

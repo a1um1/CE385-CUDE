@@ -1,16 +1,10 @@
 import SessionController from "#/controller/learnSession";
 import { enrollmentAvailabilitySchema } from "#/controller/learnSession/session";
 import LessonController from "#/controller/lesson";
+import { LessonSchema } from "#/controller/lesson/lesson.schema";
+import { includeQuerySchema } from "#/lib/include";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
-
-export const LessonSchema = z
-  .object({
-    id: z.string().openapi({ example: "lesson_id" }),
-    name: z.string().openapi({ example: "lesson_name" }),
-    unitID: z.uuidv7().openapi({ example: "unit_id" }),
-  })
-  .openapi("Lesson");
 
 const lessonRouterInstance = new CustomRouter({
   prefix: "/lesson",
@@ -20,16 +14,16 @@ const lessonRouterInstance = new CustomRouter({
   .get(
     "/:lessonId",
     {
-      summary: "Get lessons by ID",
+      summary: "Get lesson by ID",
       params: z.object({
         lessonId: z.uuid().openapi({ example: "lesson_id" }),
       }),
+      query: includeQuerySchema,
       response: LessonSchema,
     },
-    async ({ params }) => {
-      const result = await LessonController.getById(params.lessonId);
-      const { id, name, unitID } = result.JSON;
-      return { id, name, unitID };
+    async ({ params, query }) => {
+      const result = await LessonController.getById(params.lessonId, query.include);
+      return result.JSON;
     },
   )
   .get(
