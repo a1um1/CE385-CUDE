@@ -27,10 +27,7 @@ export default async function refreshToken(): Promise<void> {
     });
 
     if (!response.ok) {
-      // A definitive auth rejection (400 missing cookie, 401/403 invalid or expired
-      // refresh token) means the session is really dead — refreshing again cannot help.
-      // Everything else (network error, 408/429/5xx) is transient: the session is still
-      // alive, so callers must NOT treat it as a logout.
+      // use new error class to indicate fatality of the refresh failure
       const fatal = response.status === 400 || response.status === 401 || response.status === 403;
       throw new TokenRefreshError(fatal, `Token refresh failed with status ${response.status}`);
     }

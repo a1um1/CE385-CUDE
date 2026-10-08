@@ -41,13 +41,8 @@ const authMiddleware: Middleware = {
       const { fetch: fetchFn } = options;
       return await fetchFn(retryRequest);
     } catch (error) {
-      // Only a fatal refresh rejection (400/401/403: refresh token really dead) is a
-      // logout. Every other failure (network blip, 408/429/5xx from the refresh endpoint,
-      // retry fetch error) is transient — the session is still alive. Rethrow so the queryFn
-      // rejects and TanStack Query keeps the last-known user data: no redirect, and the
-      // request is retried on the next refetch.
+      // if token refresh fails, clear session data and return response otherwise throw the error
       if (error instanceof TokenRefreshError && error.fatal) {
-        // Refresh token is dead → session is dead; revalidate so guards/UI see signed-out state
         queryClient.setQueryData(["session"], null);
         return response;
       }
