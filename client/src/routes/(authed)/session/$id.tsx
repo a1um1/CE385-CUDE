@@ -20,32 +20,54 @@ export const Route = createFileRoute("/(authed)/session/$id")({
   },
 });
 
-const DEMO_CONTENT = `# Welcome to the Demo Lesson
+// const _DEMO_CONTENT = `# Welcome to the Demo Lesson
 
-เนื้อหาชั่วคราวนี้เป็นเพียงตัวอย่างเพื่อแสดงการทำงานของระบบเรียนรู้ของเรา คุณสามารถใช้เนื้อหานี้เพื่อทดลองฟีเจอร์ต่าง ๆ ของแพลตฟอร์ม
+// เนื้อหาชั่วคราวนี้เป็นเพียงตัวอย่างเพื่อแสดงการทำงานของระบบเรียนรู้ของเรา คุณสามารถใช้เนื้อหานี้เพื่อทดลองฟีเจอร์ต่าง ๆ ของแพลตฟอร์ม
 
-## Code Snippets สามารถแสดงโค้ดได้เช่นกัน
+// ## Code Snippets สามารถแสดงโค้ดได้เช่นกัน
 
-\`\`\`javascript
-console.log("Hello, world!");
+// \`\`\`javascript
+// console.log("Hello, world!");
+// \`\`\`
+
+// > [!note]
+// > This is note. You can use notes to highlight important information.\\
+// > Note เพิ่มเติมความสำคัญให้กับเนื้อหาที่คุณต้องการเน้น
+
+// ## Images เพิ่มรูปได้นะ
+
+// ![Sample Image](https://github.com/vyrx-dev/Wallpapers/raw/master/nord/a_cartoon_of_a_woman_with_her_arms_out.png)
+
+// Enjoy your learning experience!
+// `;
+
+const DEMO_CONTENT_2 = `# Exercise 0 Hello World
+
+This is a simple exercise to get you started with coding. Your task is to write a program that prints "Hello, World!" to the console.
+
+## Instructions
+
+1. Open the code editor on the right.
+2. Write your code in the editor.
+3. Click the "Run" button to execute your code and see the output.
+
+
+## Allowed Functions
+\`Print\`
+
+
+## Expected Output
+\`\`\`
+Hello, World!
 \`\`\`
 
 > [!note]
-> This is note. You can use notes to highlight important information.\\
-> Note เพิ่มเติมความสำคัญให้กับเนื้อหาที่คุณต้องการเน้น
-
-## Images เพิ่มรูปได้นะ
-
-![Sample Image](https://github.com/vyrx-dev/Wallpapers/raw/master/nord/a_cartoon_of_a_woman_with_her_arms_out.png)
-
-Enjoy your learning experience!
+> Make sure that output matches exactly, including capitalization and punctuation.
+ 
+Good luck!
 `;
 
-const exampleCode = `#include <stdio.h>
-int main() {
-		printf("Hello, World!\\n");
-		return 0;
-}
+const exampleCode = `# Write your code here
 `;
 
 const exampleExercises = [
@@ -123,11 +145,16 @@ function RouteComponent() {
             <Skeleton className="w-48 h-6" />
           )}
           <hr className="my-4" />
-          <Markdown content={DEMO_CONTENT} />
+          <Markdown content={DEMO_CONTENT_2} />
         </div>
       </div>
       <div className="flex-1">
-        <CodeEditor value={codeContent} onChange={handleCodeChange} language="c" />
+        <CodeEditor
+          value={codeContent}
+          onChange={handleCodeChange}
+          language="python"
+          disableLanguageSwitch
+        />
       </div>
     </div>
   );

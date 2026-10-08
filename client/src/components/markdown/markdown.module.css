@@ -40,6 +40,15 @@
   margin-top: 0;
 }
 
+/* Tailwind preflight strips markers from every list — restore them here */
+.markdown ul {
+  list-style: disc;
+}
+
+.markdown ol {
+  list-style: decimal;
+}
+
 .markdown ul,
 .markdown ol {
   padding-left: 1.5em;
