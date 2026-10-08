@@ -1,6 +1,7 @@
 import express from "express";
 import { generateOpenApiDocument } from "#/openapi";
 import { userRouter } from "#/routes/user";
+import { storageRouter } from "#/routes/storage";
 import { testRouter } from "#/routes/test";
 import { apiReference } from "@scalar/express-api-reference";
 import { adminRoute } from "#/routes/admin/index";
@@ -36,6 +37,7 @@ const app = express()
   .use(httpLogger)
   .use(authRoute)
   .use(userRouter)
+  .use(storageRouter)
   .use(CodingRoute)
   .use(testRouter)
   .use(courseRoute)

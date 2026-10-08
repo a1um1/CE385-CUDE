@@ -1,6 +1,8 @@
 import Avatar from "#/components/avatar";
+import ButtonLink from "#/components/buttonLink";
 import UserBackground from "#/components/userBackground";
 import { profileQueryOptions } from "#/data/profile.data";
+import { useUser } from "#/data/user.data";
 import { createFileRoute } from "@tanstack/react-router";
 import styles from "./profile.module.css";
 export const Route = createFileRoute("/(authed)/(base)/profile/$username")({
@@ -13,6 +15,8 @@ export const Route = createFileRoute("/(authed)/(base)/profile/$username")({
 
 function RouteComponent() {
   const data = Route.useLoaderData();
+  const { data: me } = useUser();
+  const isSelf = me != null && data?.id === me.id;
   return (
     <>
       <div className={styles["breakout"]}>
@@ -25,12 +29,19 @@ function RouteComponent() {
       </div>
       <div className={styles["profile-header"]}>
         <Avatar avatarUrl={data?.profileImage} name={data?.name} size="8rem" />
-        <div>
+        <div className={styles["header-main"]}>
           <span>@{data?.username}</span>
-          <h1 className="text-3xl font-semibold">
-            {data?.name}{" "}
-            {data?.epithet && <span className={styles["epihet"]}>{data?.epithet}</span>}
-          </h1>
+          <div className={styles["name-row"]}>
+            <h1 className={styles["page-title"]}>
+              {data?.name}{" "}
+              {data?.epithet && <span className={styles["epihet"]}>{data?.epithet}</span>}
+            </h1>
+            {isSelf && (
+              <ButtonLink to="/account" variant="secondary" className={styles["edit-button"]}>
+                Edit profile
+              </ButtonLink>
+            )}
+          </div>
         </div>
       </div>
     </>

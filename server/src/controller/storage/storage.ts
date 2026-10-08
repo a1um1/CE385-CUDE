@@ -30,6 +30,11 @@ const PURPOSES: Record<StoragePurposeSchema, StoragePurpose> = {
     maxBytes: 5 * 1024 * 1024,
     contentTypes: ["image/png", "image/jpeg", "image/webp"],
   },
+  background: {
+    prefix: "backgrounds",
+    maxBytes: 5 * 1024 * 1024,
+    contentTypes: ["image/png", "image/jpeg", "image/webp"],
+  },
 };
 
 // controllers here are classes by convention
