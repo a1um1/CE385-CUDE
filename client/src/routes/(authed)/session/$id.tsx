@@ -92,6 +92,10 @@ function RouteComponent() {
               {exercise.title}
             </Button>
           ))}
+          <Button variant="ghost" block align="start">
+            <BookIcon />
+            Summary
+          </Button>
         </div>
         <div className="mt-auto flex flex-col">
           <Button
