@@ -38,9 +38,6 @@ const authMiddleware: Middleware = {
         credentials: "include",
       });
 
-      // Call fetch as a plain reference: invoking options.fetch() as a method passes the
-      // frozen `options` object as `this`, which native fetch rejects with
-      // "Failed to execute 'fetch' on 'Window': Illegal invocation".
       const { fetch: fetchFn } = options;
       return await fetchFn(retryRequest);
     } catch (error) {
