@@ -20,48 +20,47 @@ export default function UpdatePasswordForm() {
 
   return (
     <>
-      <div className="flex gap-6 flex-wrap">
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            form.handleSubmit();
-          }}
-          className="flex flex-col gap-4 flex-1"
-        >
-          <form.AppForm>
-            <form.FormError />
-            <form.AppField name="currentPassword">
-              {(field) => (
-                <field.TextField
-                  label="Current Password"
-                  type="password"
-                  disabled={updateMutation.isPending}
-                />
-              )}
-            </form.AppField>
+      <h2 className="text-xl font-bold mb-4">Update Password</h2>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          form.handleSubmit();
+        }}
+        className="flex flex-col gap-4 flex-1"
+      >
+        <form.AppForm>
+          <form.FormError />
+          <form.AppField name="currentPassword">
+            {(field) => (
+              <field.TextField
+                label="Current Password"
+                type="password"
+                disabled={updateMutation.isPending}
+              />
+            )}
+          </form.AppField>
 
-            <form.AppField
-              name="newPassword"
-              validators={{
-                onChange: ({ value }) => getPasswordError(value),
-              }}
-            >
-              {(field) => (
-                <field.PasswordField
-                  label="New Password"
-                  autoComplete="new-password"
-                  showStrength
-                  showRequirements
-                  disabled={updateMutation.isPending}
-                />
-              )}
-            </form.AppField>
+          <form.AppField
+            name="newPassword"
+            validators={{
+              onChange: ({ value }) => getPasswordError(value),
+            }}
+          >
+            {(field) => (
+              <field.PasswordField
+                label="New Password"
+                autoComplete="new-password"
+                showStrength
+                showRequirements
+                disabled={updateMutation.isPending}
+              />
+            )}
+          </form.AppField>
 
-            <form.SubmitButton label="Update Password" isPending={updateMutation.isPending} />
-          </form.AppForm>
-        </form>
-      </div>
+          <form.SubmitButton label="Update Password" isPending={updateMutation.isPending} />
+        </form.AppForm>
+      </form>
     </>
   );
 }

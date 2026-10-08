@@ -26,15 +26,14 @@
   gap: 0.375rem;
   padding: 0.375rem 0.75rem;
   border-radius: 9999px;
-  background: rgb(0 0 0 / 0.6);
+  background-color: rgb(0 0 0 / 0.6);
   font-size: 0.75rem;
   color: #fff;
-  opacity: 0.6;
-  transition: opacity 150ms;
+  transition: background-color 150ms;
 }
 
 .banner-trigger:hover .banner-badge {
-  opacity: 1;
+  background-color: rgb(0 0 0 / 0.8);
 }
 
 .profile-row {
@@ -54,6 +53,9 @@
 }
 
 .avatar {
+  /* flex, not block: inline-flex Avatar sits on the text baseline and adds a
+     descender gap below the circle — badge would overhang */
+  display: flex;
   position: relative;
   overflow: hidden;
   border-radius: 9999px;

@@ -1,12 +1,7 @@
-@import url("https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
-/* @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:ital,wght@0,100..900;1,100..900&display=swap'); */
-
+@import "#/styles/font.css";
 @import "tailwindcss";
 @import "#/styles/color.css";
 @theme {
-  --font-web: "Space Mono", "Google Sans", system-ui, sans-serif;
-  /* --font-web: "Geist Mono", "Google Sans", system-ui, sans-serif; */
-
   --radius: 0.25rem;
 
   --size-xs-padding-y: 0.1rem;
@@ -50,5 +45,8 @@ body {
   margin: 0;
   background-color: var(--color-background);
   font-family: var(--font-web);
+  font-optical-sizing: auto;
+
+  font-style: normal;
   color: var(--color-background-text);
 }
