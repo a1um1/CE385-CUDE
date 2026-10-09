@@ -9,6 +9,7 @@ export const ExerciseSelection = {
   lessonID: true,
   type: true,
   content: true,
+  position: true,
   codeExercises: true,
 } satisfies Prisma.ExerciseSelect;
 

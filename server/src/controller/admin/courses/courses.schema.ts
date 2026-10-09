@@ -12,6 +12,7 @@ export const adminCourseSchema = z
     name: z.string().openapi({ example: "Course Name" }),
     color: z.string().openapi({ example: "#FFFFFF" }),
     icon: z.string().openapi({ example: "icon_name" }),
+    position: z.number().int().openapi({ example: 0 }),
     createdByID: z.uuid().openapi({ example: "user_id" }),
     createdAt: z.date().openapi({ example: "2023-01-01T00:00:00Z" }),
     updatedAt: z.date().openapi({ example: "2023-01-01T00:00:00Z" }),
@@ -25,6 +26,7 @@ export const courseQueryPayload = {
   name: true,
   color: true,
   icon: true,
+  position: true,
   createdByID: true,
   createdAt: true,
   updatedAt: true,
@@ -48,7 +50,7 @@ export type AdminCourseListResponseSchema = zod.infer<typeof AdminCourseListResp
 
 export type adminCourseCreatePayload = Omit<
   AdminCourseSchema,
-  "id" | "createdAt" | "updatedAt" | "createdByID"
+  "id" | "createdAt" | "updatedAt" | "createdByID" | "position"
 >;
 
 export const AdminCourseCreateSchema = z
