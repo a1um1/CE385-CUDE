@@ -1,3 +1,3 @@
 ---
-title: Lesson 05 Algorithms
+title: Lesson 05 Dictionaries & Sets
 ---
