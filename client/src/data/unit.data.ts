@@ -22,23 +22,3 @@ const fetchUnitFromCourseQuery = (courseId?: string | null) =>
 
 export const useUnitFromCourseQuery = (courseId?: string | null) =>
   useQuery(fetchUnitFromCourseQuery(courseId));
-
-export const unitQueryOptions = (unitId?: string | null) =>
-  queryOptions({
-    queryKey: ["unit", unitId],
-    queryFn: async () => {
-      if (!unitId) throw new Error("Unit ID is required to fetch unit.");
-      const { data, error } = await APIclient.GET(`/unit/{unitId}`, {
-        params: {
-          path: {
-            unitId,
-          },
-        },
-      });
-      if (error) throw error;
-      return data;
-    },
-    enabled: Boolean(unitId),
-  });
-
-export const useUnitById = (unitId?: string | null) => useQuery(unitQueryOptions(unitId));

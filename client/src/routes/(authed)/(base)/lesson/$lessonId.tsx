@@ -3,23 +3,49 @@ import ButtonLink from "#/components/buttonLink";
 import { PieChart } from "#/components/pie-chart";
 import { Scoring } from "#/components/scoring";
 import Skeleton from "#/components/skeleton";
-import { useCourseById } from "#/data/course.data";
+import type { components } from "#/data/base/openapi";
 import {
   usePendingLearnSessionQuery,
   useStartLearnSessionMutation,
 } from "#/data/learnSession.data";
 import { lessonQueryOptions, useEnrollmentAvailability } from "#/data/lesson.data";
-import { useUnitById } from "#/data/unit.data";
 import { createFileRoute } from "@tanstack/react-router";
-import { Book, ChevronLeft, XIcon } from "lucide-react";
+import { Book, ChevronLeft, XIcon, type LucideIcon } from "lucide-react";
 
 export const Route = createFileRoute("/(authed)/(base)/lesson/$lessonId")({
   component: RouteComponent,
   loader: async ({ params, context }) => {
-    const lesson = await context.queryClient.query(lessonQueryOptions(params.lessonId));
+    const lesson = await context.queryClient.query(
+      lessonQueryOptions(params.lessonId, ["unit", "unit.course"]),
+    );
     return lesson;
   },
 });
+
+const availableStatuses = {
+  AVAILABLE: {
+    label: "Available",
+    status: "inProgress",
+    icon: Book,
+  },
+  PENDING: {
+    label: "In Progress",
+    status: "inProgress",
+    icon: undefined,
+  },
+  NOT_AVAILABLE: {
+    label: "Not Available",
+    status: "fail",
+    icon: XIcon,
+  },
+} as const satisfies Record<
+  components["schemas"]["EnrollmentStatus"],
+  {
+    label: string;
+    status: "inProgress" | "fail";
+    icon: LucideIcon | undefined;
+  }
+>;
 
 const LessonAvailability = () => {
   const lesson = Route.useLoaderData();
@@ -29,15 +55,14 @@ const LessonAvailability = () => {
     return <Scoring status="inProgress" label="Loading..." />;
   }
 
-  if (enrollmentAvailability.data?.status === "AVAILABLE") {
-    return <Scoring status="inProgress" label="Available" icon={<Book className="size-12" />} />;
-  }
-
-  if (enrollmentAvailability.data?.status === "PENDING") {
-    return <Scoring status="inProgress" label="Pending" />;
-  }
-
-  return <Scoring status="fail" label="Not Available" icon={<XIcon className="size-12" />} />;
+  const status = availableStatuses[enrollmentAvailability.data?.status || "NOT_AVAILABLE"];
+  return (
+    <Scoring
+      status={status.status}
+      label={status.label}
+      icon={status?.icon ? <status.icon size="3rem" /> : undefined}
+    />
+  );
 };
 
 const LessonStart = () => {
@@ -83,13 +108,11 @@ const LessonStart = () => {
 
 function RouteComponent() {
   const lesson = Route.useLoaderData();
-  const unit = useUnitById(lesson?.unitID);
-  const course = useCourseById(unit?.data?.courseID);
 
   return (
     <>
       <div>
-        <ButtonLink variant="secondary" to="/" params={{ courseId: course?.data?.id || "" }}>
+        <ButtonLink variant="secondary" to="/">
           <ChevronLeft />
           เนื้อหาทั้งหมด
         </ButtonLink>
@@ -97,9 +120,8 @@ function RouteComponent() {
       <div className="flex gap-4">
         <LessonAvailability />
         <div className="flex flex-col">
-          {/* <p>{course?.data?.name}</p> */}
           <p>
-            {course?.data?.name} | {unit?.data?.name}
+            {lesson?.unit?.course?.name} / {lesson?.unit?.name}
           </p>
           <h1 className="text-2xl mb-4">{lesson?.name}</h1>
 

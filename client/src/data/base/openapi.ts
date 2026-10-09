@@ -2692,7 +2692,10 @@ export interface paths {
         /** List all available courses */
         get: {
             parameters: {
-                query?: never;
+                query?: {
+                    /** @description Relations to include. Allowed: units, units.lessons */
+                    include?: ("units" | "units.lessons") | ("units" | "units.lessons")[];
+                };
                 header?: never;
                 path?: never;
                 cookie?: never;
@@ -2782,7 +2785,10 @@ export interface paths {
         /** Get course by ID */
         get: {
             parameters: {
-                query?: never;
+                query?: {
+                    /** @description Relations to include. Allowed: units, units.lessons */
+                    include?: ("units" | "units.lessons") | ("units" | "units.lessons")[];
+                };
                 header?: never;
                 path: {
                     courseId: string;
@@ -2874,7 +2880,10 @@ export interface paths {
         /** List unit of a course */
         get: {
             parameters: {
-                query?: never;
+                query?: {
+                    /** @description Relations to include. Allowed: course, lessons */
+                    include?: ("course" | "lessons") | ("course" | "lessons")[];
+                };
                 header?: never;
                 path: {
                     courseId: string;
@@ -2889,7 +2898,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["publicUnitSchema"][];
+                        "application/json": components["schemas"]["Unit"][];
                     };
                 };
                 /** @description Validation error */
@@ -2966,7 +2975,10 @@ export interface paths {
         /** Get unit by ID */
         get: {
             parameters: {
-                query?: never;
+                query?: {
+                    /** @description Relations to include. Allowed: course, lessons */
+                    include?: ("course" | "lessons") | ("course" | "lessons")[];
+                };
                 header?: never;
                 path: {
                     unitId: string;
@@ -3058,7 +3070,10 @@ export interface paths {
         /** List lessons of a unit */
         get: {
             parameters: {
-                query?: never;
+                query?: {
+                    /** @description Relations to include. Allowed: unit, unit.course */
+                    include?: ("unit" | "unit.course") | ("unit" | "unit.course")[];
+                };
                 header?: never;
                 path: {
                     unitId: string;
@@ -3073,12 +3088,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
-                            /** @example lesson_id */
-                            id: string;
-                            /** @example lesson_name */
-                            name: string;
-                        }[];
+                        "application/json": components["schemas"]["Lesson"][];
                     };
                 };
                 /** @description Validation error */
@@ -3152,10 +3162,13 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get lessons by ID */
+        /** Get lesson by ID */
         get: {
             parameters: {
-                query?: never;
+                query?: {
+                    /** @description Relations to include. Allowed: unit, unit.course */
+                    include?: ("unit" | "unit.course") | ("unit" | "unit.course")[];
+                };
                 header?: never;
                 path: {
                     lessonId: string;
@@ -3339,7 +3352,10 @@ export interface paths {
         /** Get all sessions for the authenticated user */
         get: {
             parameters: {
-                query?: never;
+                query?: {
+                    /** @description Relations to include. Allowed: lesson, lesson.unit, lesson.unit.course */
+                    include?: ("lesson" | "lesson.unit" | "lesson.unit.course") | ("lesson" | "lesson.unit" | "lesson.unit.course")[];
+                };
                 header?: never;
                 path?: never;
                 cookie?: never;
@@ -3374,6 +3390,47 @@ export interface paths {
                              * @example 2023-01-01T00:00:00.000Z
                              */
                             updatedAt: string;
+                            lesson?: {
+                                /**
+                                 * Format: uuid
+                                 * @example lesson_id
+                                 */
+                                id: string;
+                                /** @example lesson_name */
+                                name: string;
+                                /**
+                                 * Format: uuid
+                                 * @example unit_id
+                                 */
+                                unitID: string;
+                                unit?: {
+                                    /**
+                                     * Format: uuid
+                                     * @example unit_id
+                                     */
+                                    id: string;
+                                    /** @example unit_name */
+                                    name: string;
+                                    /**
+                                     * Format: uuid
+                                     * @example course_id
+                                     */
+                                    courseID: string;
+                                    course?: {
+                                        /**
+                                         * Format: uuid
+                                         * @example course_id
+                                         */
+                                        id: string;
+                                        /** @example Course_Name */
+                                        name: string;
+                                        /** @example #FFFFF */
+                                        color: string;
+                                        /** @example icon_name */
+                                        icon: string;
+                                    };
+                                };
+                            };
                         }[];
                     };
                 };
@@ -3482,6 +3539,47 @@ export interface paths {
                              * @example 2023-01-01T00:00:00.000Z
                              */
                             updatedAt: string;
+                            lesson?: {
+                                /**
+                                 * Format: uuid
+                                 * @example lesson_id
+                                 */
+                                id: string;
+                                /** @example lesson_name */
+                                name: string;
+                                /**
+                                 * Format: uuid
+                                 * @example unit_id
+                                 */
+                                unitID: string;
+                                unit?: {
+                                    /**
+                                     * Format: uuid
+                                     * @example unit_id
+                                     */
+                                    id: string;
+                                    /** @example unit_name */
+                                    name: string;
+                                    /**
+                                     * Format: uuid
+                                     * @example course_id
+                                     */
+                                    courseID: string;
+                                    course?: {
+                                        /**
+                                         * Format: uuid
+                                         * @example course_id
+                                         */
+                                        id: string;
+                                        /** @example Course_Name */
+                                        name: string;
+                                        /** @example #FFFFF */
+                                        color: string;
+                                        /** @example icon_name */
+                                        icon: string;
+                                    };
+                                };
+                            };
                         };
                     };
                 };
@@ -3592,6 +3690,47 @@ export interface paths {
                              * @example 2023-01-01T00:00:00.000Z
                              */
                             updatedAt: string;
+                            lesson?: {
+                                /**
+                                 * Format: uuid
+                                 * @example lesson_id
+                                 */
+                                id: string;
+                                /** @example lesson_name */
+                                name: string;
+                                /**
+                                 * Format: uuid
+                                 * @example unit_id
+                                 */
+                                unitID: string;
+                                unit?: {
+                                    /**
+                                     * Format: uuid
+                                     * @example unit_id
+                                     */
+                                    id: string;
+                                    /** @example unit_name */
+                                    name: string;
+                                    /**
+                                     * Format: uuid
+                                     * @example course_id
+                                     */
+                                    courseID: string;
+                                    course?: {
+                                        /**
+                                         * Format: uuid
+                                         * @example course_id
+                                         */
+                                        id: string;
+                                        /** @example Course_Name */
+                                        name: string;
+                                        /** @example #FFFFF */
+                                        color: string;
+                                        /** @example icon_name */
+                                        icon: string;
+                                    };
+                                };
+                            };
                         } | null;
                     };
                 };
@@ -3669,7 +3808,10 @@ export interface paths {
         /** Get a specific session by ID for the authenticated user */
         get: {
             parameters: {
-                query?: never;
+                query?: {
+                    /** @description Relations to include. Allowed: lesson, lesson.unit, lesson.unit.course */
+                    include?: ("lesson" | "lesson.unit" | "lesson.unit.course") | ("lesson" | "lesson.unit" | "lesson.unit.course")[];
+                };
                 header?: never;
                 path: {
                     SessionID: string;
@@ -3706,6 +3848,47 @@ export interface paths {
                              * @example 2023-01-01T00:00:00.000Z
                              */
                             updatedAt: string;
+                            lesson?: {
+                                /**
+                                 * Format: uuid
+                                 * @example lesson_id
+                                 */
+                                id: string;
+                                /** @example lesson_name */
+                                name: string;
+                                /**
+                                 * Format: uuid
+                                 * @example unit_id
+                                 */
+                                unitID: string;
+                                unit?: {
+                                    /**
+                                     * Format: uuid
+                                     * @example unit_id
+                                     */
+                                    id: string;
+                                    /** @example unit_name */
+                                    name: string;
+                                    /**
+                                     * Format: uuid
+                                     * @example course_id
+                                     */
+                                    courseID: string;
+                                    course?: {
+                                        /**
+                                         * Format: uuid
+                                         * @example course_id
+                                         */
+                                        id: string;
+                                        /** @example Course_Name */
+                                        name: string;
+                                        /** @example #FFFFF */
+                                        color: string;
+                                        /** @example icon_name */
+                                        icon: string;
+                                    };
+                                };
+                            };
                         };
                     };
                 };
@@ -4000,12 +4183,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-07T16:04:45.031Z
+             * @example 2026-10-08T21:48:55.347Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-07T16:04:45.032Z
+             * @example 2026-10-08T21:48:55.352Z
              */
             updatedAt: string;
         };
@@ -4182,7 +4365,10 @@ export interface components {
             data: components["schemas"]["publicCourseSchema"][];
         };
         publicCourseSchema: {
-            /** @example course_id */
+            /**
+             * Format: uuid
+             * @example course_id
+             */
             id: string;
             /** @example Course_Name */
             name: string;
@@ -4190,25 +4376,81 @@ export interface components {
             color: string;
             /** @example icon_name */
             icon: string;
-        };
-        publicUnitSchema: {
-            /** @example unit_id */
-            id: string;
-            /** @example unit_name */
-            name: string;
-            /** @example course_id */
-            courseID: string;
+            units?: {
+                /**
+                 * Format: uuid
+                 * @example unit_id
+                 */
+                id: string;
+                /** @example unit_name */
+                name: string;
+                /**
+                 * Format: uuid
+                 * @example course_id
+                 */
+                courseID: string;
+                lessons?: {
+                    /**
+                     * Format: uuid
+                     * @example lesson_id
+                     */
+                    id: string;
+                    /** @example lesson_name */
+                    name: string;
+                    /**
+                     * Format: uuid
+                     * @example unit_id
+                     */
+                    unitID: string;
+                }[];
+            }[];
         };
         Unit: {
-            /** @example unit_id */
+            /**
+             * Format: uuid
+             * @example unit_id
+             */
             id: string;
             /** @example unit_name */
             name: string;
-            /** @example course_id */
+            /**
+             * Format: uuid
+             * @example course_id
+             */
             courseID: string;
+            course?: {
+                /**
+                 * Format: uuid
+                 * @example course_id
+                 */
+                id: string;
+                /** @example Course_Name */
+                name: string;
+                /** @example #FFFFF */
+                color: string;
+                /** @example icon_name */
+                icon: string;
+            };
+            lessons?: {
+                /**
+                 * Format: uuid
+                 * @example lesson_id
+                 */
+                id: string;
+                /** @example lesson_name */
+                name: string;
+                /**
+                 * Format: uuid
+                 * @example unit_id
+                 */
+                unitID: string;
+            }[];
         };
         Lesson: {
-            /** @example lesson_id */
+            /**
+             * Format: uuid
+             * @example lesson_id
+             */
             id: string;
             /** @example lesson_name */
             name: string;
@@ -4217,6 +4459,33 @@ export interface components {
              * @example unit_id
              */
             unitID: string;
+            unit?: {
+                /**
+                 * Format: uuid
+                 * @example unit_id
+                 */
+                id: string;
+                /** @example unit_name */
+                name: string;
+                /**
+                 * Format: uuid
+                 * @example course_id
+                 */
+                courseID: string;
+                course?: {
+                    /**
+                     * Format: uuid
+                     * @example course_id
+                     */
+                    id: string;
+                    /** @example Course_Name */
+                    name: string;
+                    /** @example #FFFFF */
+                    color: string;
+                    /** @example icon_name */
+                    icon: string;
+                };
+            };
         };
         EnrollmentAvailability: {
             status: components["schemas"]["EnrollmentStatus"];

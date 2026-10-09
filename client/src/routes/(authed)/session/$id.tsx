@@ -4,10 +4,7 @@ import CodeEditor from "#/components/codeEditor";
 import Markdown from "#/components/markdown";
 import Skeleton from "#/components/skeleton";
 import UserTrigger from "#/components/userTrigger";
-import { useCourseById } from "#/data/course.data";
 import { sessionByIdQuery, useAbortLearnSessionMutation } from "#/data/learnSession.data";
-import { useLesson } from "#/data/lesson.data";
-import { useUnitById } from "#/data/unit.data";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { BookIcon, DoorOpenIcon, XIcon } from "lucide-react";
 import { useState } from "react";
@@ -15,8 +12,10 @@ import { useState } from "react";
 export const Route = createFileRoute("/(authed)/session/$id")({
   component: RouteComponent,
   loader: async ({ params, context }) => {
-    const lesson = await context.queryClient.query(sessionByIdQuery(params.id));
-    return lesson;
+    const session = await context.queryClient.query(
+      sessionByIdQuery(params.id, ["lesson", "lesson.unit", "lesson.unit.course"]),
+    );
+    return session;
   },
 });
 
@@ -65,9 +64,7 @@ const exampleExercises = [
 
 function RouteComponent() {
   const data = Route.useLoaderData();
-  const lesson = useLesson(data?.LessonID);
-  const unit = useUnitById(lesson?.data?.unitID);
-  const course = useCourseById(unit?.data?.courseID);
+  const lesson = data?.lesson;
 
   const [codeContent, setCodeContent] = useState(exampleCode);
   const handleCodeChange = (newCode: string) => {
@@ -111,9 +108,9 @@ function RouteComponent() {
       </div>
       <div className="h-full overflow-y-auto flex-1">
         <div className="container p-4">
-          {lesson?.data?.id ? (
-            <Link to="/lesson/$lessonId" params={{ lessonId: lesson?.data?.id || "" }}>
-              {course?.data?.name} | {unit?.data?.name} | {lesson?.data?.name}
+          {lesson?.id ? (
+            <Link to="/lesson/$lessonId" params={{ lessonId: lesson?.id || "" }}>
+              {lesson?.unit?.course?.name} | {lesson?.unit?.name} | {lesson?.name}
             </Link>
           ) : (
             <Skeleton className="w-48 h-6" />
