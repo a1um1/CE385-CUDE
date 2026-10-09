@@ -1,5 +1,8 @@
 import SessionController from "#/controller/learnSession";
-import { SessionObjectSchema } from "#/controller/learnSession/session.schema";
+import {
+  SessionIncludeQuerySchema,
+  SessionObjectSchema,
+} from "#/controller/learnSession/session.schema";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 
@@ -12,12 +15,16 @@ const learnSessionRouter = new CustomRouter({
     "/",
     {
       summary: "Get all sessions for the authenticated user",
+      query: SessionIncludeQuerySchema,
       response: z.array(SessionObjectSchema),
     },
-    async ({ user }) => {
-      const sessions = await SessionController.getByUserId({
-        UserID: user.JSON.id,
-      });
+    async ({ user, query }) => {
+      const sessions = await SessionController.getByUserId(
+        {
+          UserID: user.JSON.id,
+        },
+        query.include,
+      );
       return sessions;
     },
   )
@@ -58,13 +65,17 @@ const learnSessionRouter = new CustomRouter({
       params: z.object({
         SessionID: z.uuidv7().openapi({ example: "session_id" }),
       }),
+      query: SessionIncludeQuerySchema,
       response: SessionObjectSchema,
     },
-    async ({ params, user }) => {
-      const session = await SessionController.getById({
-        SessionID: params.SessionID,
-        userId: user.JSON.id,
-      });
+    async ({ params, user, query }) => {
+      const session = await SessionController.getById(
+        {
+          SessionID: params.SessionID,
+          userId: user.JSON.id,
+        },
+        query.include,
+      );
       return session.JSON;
     },
   )

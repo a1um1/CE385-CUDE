@@ -1,8 +1,10 @@
-import type { SessionObject } from "#/controller/learnSession/session.schema";
+import type { SessionData, SessionObject } from "#/controller/learnSession/session.schema";
+import { sessionIncludes } from "#/controller/learnSession/session.schema";
 import { db } from "#/lib/prisma";
 import UserError from "#/lib/router/http/userError";
 import lessonController from "#/controller/lesson";
-import type { Sessions } from "#/generated/prisma/client";
+import type { Prisma } from "#/generated/prisma/client";
+import { resolveInclude } from "#/lib/include";
 import { z } from "#/lib/extendZod";
 import type { z as zod } from "zod";
 type enrollmentStatus = "AVAILABLE" | "PENDING" | "NOT_AVAILABLE";
@@ -23,9 +25,9 @@ export const enrollmentAvailabilitySchema = z
   .openapi("EnrollmentAvailability") as zod.ZodType<enrollmentAvailability>;
 
 export default class SessionController {
-  private data: Sessions;
+  private data: SessionData;
 
-  constructor(data: Sessions) {
+  constructor(data: SessionData) {
     this.data = data;
   }
 
@@ -96,23 +98,31 @@ export default class SessionController {
     });
   }
 
-  static async getByUserId(props: { UserID: string }): Promise<SessionObject[]> {
+  static async getByUserId(
+    props: { UserID: string },
+    include?: string | string[],
+  ): Promise<SessionData[]> {
     const sessions = await db.sessions.findMany({
       where: {
         userID: props.UserID,
       },
+      include: resolveInclude<Prisma.SessionsInclude>(include, sessionIncludes),
     });
-    return sessions;
+    return sessions as SessionData[];
   }
 
-  static async getById(props: { SessionID: string; userId: string }): Promise<SessionController> {
+  static async getById(
+    props: { SessionID: string; userId: string },
+    include?: string | string[],
+  ): Promise<SessionController> {
     const session = await db.sessions.findUnique({
       where: {
         id: props.SessionID,
         userID: props.userId,
       },
+      include: resolveInclude<Prisma.SessionsInclude>(include, sessionIncludes),
     });
     if (!session) throw new UserError(404, "Session not found.");
-    return new SessionController(session);
+    return new SessionController(session as SessionData);
   }
 }

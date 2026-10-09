@@ -1,7 +1,6 @@
-import { LessonSchema } from "#/controller/lesson/lesson.schema";
+import { LessonIncludeQuerySchema, LessonSchema } from "#/controller/lesson/lesson.schema";
 import UnitController from "#/controller/unit";
-import { UnitSchema } from "#/controller/unit/unit.schema";
-import { includeQuerySchema } from "#/lib/include";
+import { UnitIncludeQuerySchema, UnitSchema } from "#/controller/unit/unit.schema";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 
@@ -19,7 +18,7 @@ const unitRouter = new CustomRouter({
       params: z.object({
         unitId: z.string().openapi({ example: "unit_id" }),
       }),
-      query: includeQuerySchema,
+      query: UnitIncludeQuerySchema,
       response: UnitSchema,
     },
     async ({ params, query }) => {
@@ -34,7 +33,7 @@ const unitRouter = new CustomRouter({
       params: z.object({
         unitId: z.string().openapi({ example: "unit_id" }),
       }),
-      query: includeQuerySchema,
+      query: LessonIncludeQuerySchema,
       response: LessonListSchema,
     },
     async ({ params, query }) => {

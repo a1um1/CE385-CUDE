@@ -1,8 +1,7 @@
 import SessionController from "#/controller/learnSession";
 import { enrollmentAvailabilitySchema } from "#/controller/learnSession/session";
 import LessonController from "#/controller/lesson";
-import { LessonSchema } from "#/controller/lesson/lesson.schema";
-import { includeQuerySchema } from "#/lib/include";
+import { LessonIncludeQuerySchema, LessonSchema } from "#/controller/lesson/lesson.schema";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 
@@ -18,7 +17,7 @@ const lessonRouterInstance = new CustomRouter({
       params: z.object({
         lessonId: z.uuid().openapi({ example: "lesson_id" }),
       }),
-      query: includeQuerySchema,
+      query: LessonIncludeQuerySchema,
       response: LessonSchema,
     },
     async ({ params, query }) => {

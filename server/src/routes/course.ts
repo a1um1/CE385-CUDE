@@ -1,7 +1,6 @@
 import CourseController from "#/controller/course";
-import { CourseSchema } from "#/controller/course/course.schema";
-import { UnitSchema } from "#/controller/unit/unit.schema";
-import { includeQuerySchema } from "#/lib/include";
+import { CourseIncludeQuerySchema, CourseSchema } from "#/controller/course/course.schema";
+import { UnitIncludeQuerySchema, UnitSchema } from "#/controller/unit/unit.schema";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 
@@ -22,7 +21,7 @@ const courseRouter = new CustomRouter({
     "/",
     {
       summary: "List all available courses",
-      query: includeQuerySchema,
+      query: CourseIncludeQuerySchema,
       response: CourseListSchema,
     },
     async ({ query }) => {
@@ -37,7 +36,7 @@ const courseRouter = new CustomRouter({
       params: z.object({
         courseId: z.uuid().openapi({ example: "course_id" }),
       }),
-      query: includeQuerySchema,
+      query: CourseIncludeQuerySchema,
       response: CourseSchema,
     },
     async ({ params, query }) => {
@@ -52,7 +51,7 @@ const courseRouter = new CustomRouter({
       params: z.object({
         courseId: z.uuid().openapi({ example: "course_id" }),
       }),
-      query: includeQuerySchema,
+      query: UnitIncludeQuerySchema,
       response: UnitListSchema,
     },
     async ({ params, query }) => {

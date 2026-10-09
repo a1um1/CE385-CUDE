@@ -1,4 +1,5 @@
 import type { Course, Lesson, Unit } from "#/generated/prisma/client";
+import { createIncludeQuerySchema } from "#/lib/include";
 import { z } from "#/lib/extendZod";
 import type zod from "zod";
 
@@ -37,3 +38,5 @@ export type UnitData = Unit & {
 
 /** Allow-list of `?include=` paths for a unit. */
 export const unitIncludes = ["course", "lessons"] as const;
+
+export const UnitIncludeQuerySchema = createIncludeQuerySchema(unitIncludes, "UnitIncludeQuery");

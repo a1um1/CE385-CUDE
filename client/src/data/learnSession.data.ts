@@ -1,6 +1,11 @@
 import { APIclient } from "#/data/base/baseAPI";
+import type { paths } from "#/data/base/openapi";
 import { queryOptions, useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
+
+type SessionInclude = NonNullable<
+  paths["/session/{SessionID}"]["get"]["parameters"]["query"]
+>["include"];
 
 export const usePendingLearnSessionQuery = () =>
   useQuery({
@@ -57,15 +62,18 @@ export const useAbortLearnSessionMutation = () => {
   });
 };
 
-export const sessionByIdQuery = (sessionId?: string | null) =>
+export const sessionByIdQuery = (sessionId?: string | null, include?: SessionInclude) =>
   queryOptions({
-    queryKey: ["session", sessionId],
+    queryKey: ["session", sessionId, include],
     queryFn: async () => {
       if (!sessionId) throw new Error("Session ID is required to fetch session.");
       const { data, error } = await APIclient.GET("/session/{SessionID}", {
         params: {
           path: {
             SessionID: sessionId,
+          },
+          query: {
+            include,
           },
         },
       });

@@ -1,19 +1,28 @@
-import type { z as ZodType } from "zod";
 import { z } from "#/lib/extendZod";
 import UserError from "#/lib/router/http/userError";
 
-/** Shared `?include=` query schema: comma-separated string or repeated keys. */
-export const includeQuerySchema = z.object({
-  include: z
-    .union([z.string(), z.array(z.string())])
-    .optional()
-    .openapi({
-      description: "Comma-separated relations to include, e.g. unit.course",
-      example: "unit.course",
-    }),
-});
-
-export type IncludeQuery = ZodType.infer<typeof includeQuerySchema>;
+/**
+ * Build a per-entity `?include=` query schema from its allow-list.
+ *
+ * Accepts a single path or repeated keys, so the generated OpenAPI type is
+ * `"unit" | "unit.course" | ("unit" | "unit.course")[]`.
+ */
+export function createIncludeQuerySchema<T extends readonly [string, ...string[]]>(
+  paths: T,
+  title: string,
+) {
+  return z
+    .object({
+      include: z
+        .union([z.enum(paths), z.array(z.enum(paths))])
+        .optional()
+        .openapi({
+          description: `Relations to include. Allowed: ${paths.join(", ")}`,
+          example: paths[0],
+        }),
+    })
+    .openapi(title);
+}
 
 /**
  * Build a nested Prisma include object from dotted paths.
@@ -65,9 +74,7 @@ export function resolveInclude<T>(
   if (keys.length === 0) return undefined;
 
   for (const key of keys) {
-    if (!allowed.includes(key)) {
-      throw new UserError(400, `Invalid include "${key}". Allowed: ${allowed.join(", ")}`);
-    }
+    if (!allowed.includes(key)) throw new UserError(400, `Invalid include "${key}"`);
   }
 
   return buildInclude(keys) as T;
