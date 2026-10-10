@@ -1,9 +1,10 @@
 @import "https://cdn.jsdelivr.net/gh/bitmaks/cm-web-fonts@latest/fonts.css";
+@import url("https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@100..900&display=swap");
 
 .markdown {
   line-height: 1.6;
   font-size: 1.15rem;
-  font-family: "Computer Modern Serif", "Google Sans", serif;
+  font-family: "Computer Modern Serif", "Noto Serif Thai", serif;
   /* font-family: "Google Sans", serif; */
 }
 
@@ -87,6 +88,10 @@
   margin: 2em 0;
 }
 
+.markdown :is(pre, code) {
+  font-family: var(--font-mono);
+}
+
 .markdown :not(pre) > code {
   background: rgb(255 255 255 / 0.08);
   padding: 0.15em 0.4em;
@@ -112,7 +117,7 @@
   right: 0.25rem;
   top: 0.25rem;
   z-index: 1;
-  font-family: "Computer Modern Mono", monospace;
+  font-family: var(--font-mono);
 }
 
 .code-block pre {
