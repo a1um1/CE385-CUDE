@@ -14,6 +14,7 @@ import { rateLimit } from "express-rate-limit";
 import { httpLogger } from "#/lib/router/logger";
 import { errorHandler, notFoundHandler } from "#/lib/router/http/errorHandler";
 import { unitRoute } from "./routes/unit";
+import { exerciseRoute } from "./routes/exercise";
 
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minutes
@@ -43,6 +44,7 @@ const app = express()
   .use(courseRoute)
   .use(lessonRouter)
   .use(unitRoute)
+  .use(exerciseRoute)
   .use(adminRoute)
   .use(learnSessionRoute);
 

@@ -3344,6 +3344,98 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/exercise/{exerciseId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get exercise by ID */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    exerciseId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Exercise"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/lesson/{lessonId}": {
         parameters: {
             query?: never;
@@ -3465,6 +3557,98 @@ export interface paths {
                     };
                     content: {
                         "application/json": components["schemas"]["EnrollmentAvailability"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/lesson/{lessonId}/exercise": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List exercises of a lesson */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    lessonId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Exercise"][];
                     };
                 };
                 /** @description Validation error */
@@ -4372,12 +4556,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-10T16:25:10.950Z
+             * @example 2026-10-10T18:28:21.026Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-10T16:25:10.950Z
+             * @example 2026-10-10T18:28:21.027Z
              */
             updatedAt: string;
         };
@@ -4707,6 +4891,37 @@ export interface components {
                     /** @example icon_name */
                     icon: string;
                 };
+            };
+        };
+        Exercise: {
+            /**
+             * Format: uuid
+             * @example exercise_id
+             */
+            id: string;
+            /** @example exercise_name */
+            name: string;
+            /**
+             * Format: uuid
+             * @example lesson_id
+             */
+            lessonID: string;
+            /**
+             * @example CODE
+             * @enum {string}
+             */
+            type: "NONE" | "CODE";
+            /** @example 0 */
+            position: number;
+            /** @example exercise content */
+            content: string;
+            codeExercise?: {
+                /** @example print('hello') */
+                starterCode: string | null;
+                /** @example 2000 */
+                timeLimitMs: number;
+                /** @example 256 */
+                memoryLimitMb: number;
             };
         };
         EnrollmentAvailability: {
