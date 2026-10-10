@@ -1,11 +1,6 @@
-import Button from "#/components/button";
-import ButtonLink from "#/components/buttonLink";
-import Skeleton from "#/components/skeleton";
-import UserTrigger from "#/components/userTrigger";
-import { useExerciseFromLessonQuery } from "#/data/exercise.data";
 import { sessionByIdQuery, useAbortLearnSessionMutation } from "#/data/learnSession.data";
-import { createFileRoute, Outlet, useParams } from "@tanstack/react-router";
-import { BookIcon, DoorOpenIcon, XIcon } from "lucide-react";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
+import SessionSidebar from "./-sessionSidebar";
 
 export const Route = createFileRoute("/(authed)/session/$id")({
   component: RouteComponent,
@@ -19,54 +14,16 @@ export const Route = createFileRoute("/(authed)/session/$id")({
 
 function RouteComponent() {
   const data = Route.useLoaderData();
-  const lesson = data?.lesson;
-  const exercises = useExerciseFromLessonQuery(lesson?.id);
-  const { exerciseId } = useParams({ strict: false }) as { exerciseId?: string };
-
   const abortSession = useAbortLearnSessionMutation();
-  const handleAbortSession = async () => {
-    await abortSession.mutateAsync(data.id);
-  };
 
   return (
     <div className="flex h-dvh">
-      <div className="w-64 shrink-0 border-r-2 flex flex-col">
-        <ButtonLink to="/" variant="secondary" block align="start">
-          <DoorOpenIcon />
-          ออกจากเนื้อหาชั่วคราว
-        </ButtonLink>
-        <div className="border-t-2">
-          {exercises.isLoading && <Skeleton className="h-10 m-1" />}
-          {exercises.data?.map((exercise) => (
-            <ButtonLink
-              key={exercise.id}
-              to="/session/$id/$exerciseId"
-              params={{ id: data.id, exerciseId: exercise.id }}
-              variant={exerciseId === exercise.id ? "primary" : "ghost"}
-              block
-              align="start"
-            >
-              <BookIcon />
-              {exercise.name}
-            </ButtonLink>
-          ))}
-        </div>
-        <div className="mt-auto flex flex-col">
-          <Button
-            variant="danger"
-            block
-            onClick={handleAbortSession}
-            disabled={abortSession.isPending}
-            align="start"
-          >
-            <XIcon />
-            ละทิ้ง
-          </Button>
-          <div className="p-4">
-            <UserTrigger showFullInfo />
-          </div>
-        </div>
-      </div>
+      <SessionSidebar
+        sessionId={data.id}
+        lessonId={data?.lesson?.id}
+        onAbort={() => abortSession.mutate(data.id)}
+        isAborting={abortSession.isPending}
+      />
       <Outlet />
     </div>
   );

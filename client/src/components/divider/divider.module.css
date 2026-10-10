@@ -1,0 +1,14 @@
+@reference "#/styles/main.css";
+
+/* 1px horizontal line, shadcn Separator-style */
+.divider {
+  flex-shrink: 0;
+  width: 100%;
+  height: 1px;
+  background-color: var(--color-border);
+}
+
+.vertical {
+  width: 1px;
+  height: 100%;
+}
