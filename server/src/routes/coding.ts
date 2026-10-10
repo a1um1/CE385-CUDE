@@ -7,6 +7,7 @@ import { codeGradingSummary } from "#/controller/grader/codeGrader.schema";
 
 const CodingRouter = new CustomRouter({
   prefix: "/coding",
+  tags: ["Coding"],
 })
   .get(
     "/language",

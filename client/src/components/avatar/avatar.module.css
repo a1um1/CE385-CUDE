@@ -2,15 +2,18 @@
 
 .avatar {
   --size: 3rem;
-  --text-size: 1.5rem;
+  --font-ratio: 0.4;
 
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   background-color: var(--color-primary);
-  width: var(--size);
-  height: var(--size);
+  box-sizing: border-box;
+  inline-size: var(--size);
+  block-size: var(--size);
+  font-size: max(0.5rem, calc(var(--size) * var(--font-ratio)));
+  line-height: 1;
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
@@ -26,12 +29,11 @@
   font-weight: 600;
   text-transform: uppercase;
   user-select: none;
-  font-size: var(--text-size);
   color: var(--color-primary-text);
 }
 
 .image {
-  position: relative;
+  position: absolute;
   z-index: 1;
   width: 100%;
   height: 100%;

@@ -83,28 +83,21 @@ describe("Authentication Tests", () => {
     await expect(controller.signUp(userData)).rejects.toThrow();
   });
 
-  it("should rotate the refresh token and issue a new access token", async () => {
+  it("should reuse the refresh token and issue a new access token", async () => {
     const oldToken = "old-refresh-token";
     mockDB.refreshToken.findUnique.mockResolvedValue(makeRefreshTokenRecord(oldToken));
-    mockDB.refreshToken.deleteMany.mockResolvedValue({ count: 1 });
-    mockDB.refreshToken.create.mockResolvedValue(makeRefreshTokenRecord("new-refresh-token"));
 
-    const result = await controller.refreshToken(oldToken, {
-      userAgent: "refresh-agent",
-      ipAddress: "10.0.0.1",
-    });
+    const result = await controller.refreshToken(oldToken);
 
     expect(typeof result.accessToken).toBe("string");
-    expect(typeof result.refreshToken).toBe("string");
-    expect(result.refreshToken).not.toBe(oldToken);
-    expect(mockDB.refreshToken.deleteMany).toHaveBeenCalledWith({
+    expect(result.refreshToken).toBe(oldToken);
+    // No rotation: concurrent refreshes from two tabs must not revoke each other.
+    expect(mockDB.refreshToken.deleteMany).not.toHaveBeenCalled();
+    expect(mockDB.refreshToken.create).not.toHaveBeenCalled();
+    // Sliding expiry: the session window extends instead of being recreated.
+    expect(mockDB.refreshToken.updateMany).toHaveBeenCalledWith({
       where: { token: oldToken },
-    });
-    expect(mockDB.refreshToken.create).toHaveBeenCalledWith({
-      data: expect.objectContaining({
-        userAgent: "refresh-agent",
-        ipAddress: "10.0.0.1",
-      }),
+      data: { expiresAt: expect.any(Date) },
     });
   });
 

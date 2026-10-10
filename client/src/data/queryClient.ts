@@ -4,11 +4,11 @@ import type { components } from "#/data/base/openapi";
 
 type ErrorResponse = components["schemas"]["ErrorResponse"];
 
-const getMessage = (value: unknown) => {
+const getMessage = (value: unknown, fallbackMessage: string) => {
   if (typeof value === "object" && value !== null && "message" in value) {
-    return String((value as ErrorResponse).message ?? "") || "An error occurred";
+    return String((value as ErrorResponse).message ?? "") || fallbackMessage;
   }
-  return "An error occurred";
+  return fallbackMessage;
 };
 
 export const queryClient = new QueryClient({
@@ -24,14 +24,12 @@ export const queryClient = new QueryClient({
       });
     },
     onSuccess: (data: unknown, _vars, _onMutateResult, mutation) => {
-      if (!getMessage(data)) return toast.dismiss(mutation.mutationId);
-
-      toast.success(getMessage(data), {
+      toast.success(getMessage(data, "Operation completed successfully"), {
         id: mutation.mutationId,
       });
     },
     onError: (error: unknown, _vars, _onMutateResult, mutation) => {
-      toast.error(getMessage(error), {
+      toast.error(getMessage(error, "An error occurred"), {
         id: mutation.mutationId,
       });
     },
