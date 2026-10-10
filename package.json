@@ -22,6 +22,7 @@
     "format:check": "npm run format:check --w client && npm run format:check --w server",
     "openapi:generate": "npx openapi-typescript http://localhost:3000/openapi.json --output ./client/src/data/base/openapi.ts",
     "docker:up": "docker-compose -f scripts/docker-compose.yml --env-file scripts/.env.local up -d",
+    "garage:setup": "bash scripts/garage-setup.sh",
     "storybook": "npm run storybook --w client",
     "ts:check": "npm run ts:check --w client && npm run ts:check --w server"
   },

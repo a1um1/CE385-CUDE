@@ -20,6 +20,22 @@ services:
     privileged: true
     ports:
       - "5050:5050"
+  garage:
+    container_name: garage
+    image: dxflrs/garage:v2.4.1
+    command: /garage server --single-node --default-bucket
+    environment:
+      GARAGE_DEFAULT_ACCESS_KEY: ${GARAGE_ACCESS_KEY}
+      GARAGE_DEFAULT_SECRET_KEY: ${GARAGE_SECRET_KEY}
+      GARAGE_DEFAULT_BUCKET: ${GARAGE_BUCKET:-cude}
+    volumes:
+      - ./garage/garage.toml.local:/etc/garage.toml
+      - garage_data:/var/lib/garage
+    ports:
+      - "3900:3900" # S3 API (presigned upload target)
+      - "3902:3902" # S3 website (public read)
+    restart: unless-stopped
 
 volumes:
   db_data:
+  garage_data:

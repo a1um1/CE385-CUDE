@@ -5,6 +5,7 @@ import Dropdown from "#/components/dropdown";
 import { LogOut, Settings, User } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import UserBackground from "#/components/userBackground";
+import UserTrigger from "#/components/userTrigger";
 
 export default function UserMenu() {
   const { data: user } = useUser();
@@ -16,7 +17,7 @@ export default function UserMenu() {
   return (
     <Dropdown.Root>
       <Dropdown.Trigger>
-        <Avatar name={user?.name || ""} avatarUrl={user?.profileImage} />
+        <UserTrigger />
       </Dropdown.Trigger>
       <Dropdown.Content align="end" sideOffset={8} className={style["dropdown-content"]}>
         <div className={style["dropdown-header"]}>

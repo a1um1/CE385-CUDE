@@ -1,0 +1,30 @@
+.legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.bar {
+  width: 4px;
+  height: 16px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.name,
+.percent {
+  color: var(--color-secondary-text);
+}
+
+.percent {
+  font-variant-numeric: tabular-nums;
+}

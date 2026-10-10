@@ -71,10 +71,10 @@ const authRouter = new CustomRouter({
       summary: "Refresh authentication token",
       response: authenticationResponseSchema,
     },
-    async ({ headers, ip, cookies, cookie }) => {
+    async ({ cookies, cookie }) => {
       const { refreshToken } = cookies;
       if (!refreshToken) throw new UserError(400, "Refresh token is required");
-      const result = await authController.refreshToken(refreshToken, tokenContextFrom(headers, ip));
+      const result = await authController.refreshToken(refreshToken);
       setAuthCookies(cookie, result.accessToken, result.refreshToken);
       return { message: "Token refreshed successfully" };
     },
