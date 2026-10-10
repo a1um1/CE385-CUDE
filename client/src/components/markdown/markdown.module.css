@@ -140,18 +140,24 @@
   padding: 0;
 }
 
-/* GitHub alert package follows OS color scheme; app is always dark, so pin colors. */
+/* 42-style alert: flat, square corners, thin coloured bar, monospace label + icon. */
 .markdown :global(.markdown-alert) {
   background: rgb(255 255 255 / 0.04);
-  border-radius: var(--radius);
-  padding: 1rem;
+  border-left-width: 2px;
+  border-radius: 0;
+  padding: 0.75rem 1rem;
 }
 
 .markdown :global(.markdown-alert-title) {
-  margin-bottom: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: var(--size-xs-font-size);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
   font-weight: 600;
 }
 
+/* Alert package follows OS color scheme; app is always dark, so pin colors. */
 .markdown :global(.markdown-alert.markdown-alert-note) {
   border-left-color: var(--color-primary);
 }

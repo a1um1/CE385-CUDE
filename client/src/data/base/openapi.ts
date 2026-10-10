@@ -4556,12 +4556,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-10T18:28:21.026Z
+             * @example 2026-10-10T20:00:53.102Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-10T18:28:21.027Z
+             * @example 2026-10-10T20:00:53.104Z
              */
             updatedAt: string;
         };
@@ -4916,6 +4916,11 @@ export interface components {
             /** @example exercise content */
             content: string;
             codeExercise?: {
+                /**
+                 * @example python
+                 * @enum {string}
+                 */
+                language: "python" | "c";
                 /** @example print('hello') */
                 starterCode: string | null;
                 /** @example 2000 */

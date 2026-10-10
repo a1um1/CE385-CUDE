@@ -23,7 +23,12 @@ function CodeEditorPane({ exercise }: { exercise: Exercise }) {
 
   return (
     <div className="flex-1 min-w-0">
-      <CodeEditor value={code} onChange={setCode} language="c" />
+      <CodeEditor
+        value={code}
+        onChange={setCode}
+        language={exercise.codeExercise?.language}
+        disableLanguageSwitch
+      />
     </div>
   );
 }
@@ -48,7 +53,7 @@ function RouteComponent() {
     <div className="flex flex-col flex-1 min-w-0">
       <div className="flex flex-1 min-h-0">
         <div className="flex-1 min-w-0 flex flex-col">
-          <header className="shrink-0 border-b-2 bg-background">
+          <header className="shrink-0 border-b-2 border-border bg-background">
             <div className="container flex items-center gap-2 px-4 py-2">
               <CollapsibleSidebarToggle iconOnly label="ย่อแถบ" />
               {lesson?.id ? (
@@ -70,7 +75,7 @@ function RouteComponent() {
         </div>
         {exercise.type === "CODE" && <CodeEditorPane key={exercise.id} exercise={exercise} />}
       </div>
-      <div className="border-t-2 p-4 flex justify-end bg-background">
+      <div className="border-t-2 border-border p-4 flex justify-end bg-background">
         <Button variant="primary" onClick={handleContinue} disabled={!next}>
           ดำเนินการต่อ
         </Button>

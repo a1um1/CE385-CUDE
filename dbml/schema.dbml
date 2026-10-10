@@ -82,6 +82,7 @@ Table CodeExercise {
   id String [pk]
   exerciseID String [unique, not null]
   exercise Exercise [not null]
+  language String [not null, default: 'python']
   starterCode String
   testerCode String
   allowedFunctions String[] [not null]
