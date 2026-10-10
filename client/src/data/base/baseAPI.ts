@@ -1,7 +1,8 @@
 import createClient, { type Middleware } from "openapi-fetch";
 import type { paths } from "./openapi";
-import refreshToken from "./refreshToken";
+import refreshToken, { TokenRefreshError } from "./refreshToken";
 import { BASE_URL } from "#/data/base/baseURL";
+import { queryClient } from "#/data/queryClient";
 
 const clonedRequests = new Map<string, Request>();
 
@@ -37,9 +38,15 @@ const authMiddleware: Middleware = {
         credentials: "include",
       });
 
-      return await options.fetch(retryRequest);
-    } catch {
-      return response;
+      const { fetch: fetchFn } = options;
+      return await fetchFn(retryRequest);
+    } catch (error) {
+      // if token refresh fails, clear session data and return response otherwise throw the error
+      if (error instanceof TokenRefreshError && error.fatal) {
+        queryClient.setQueryData(["session"], null);
+        return response;
+      }
+      throw error;
     }
   },
 

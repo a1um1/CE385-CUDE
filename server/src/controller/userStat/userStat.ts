@@ -81,7 +81,7 @@ export default class UserStatController {
           energyUpdatedAt: Date;
         }[]
       >`
-				SELECT energy, energyUpdatedAt
+				SELECT energy, "energyUpdatedAt"
 				FROM "UserStat"
 				WHERE "userID" = ${this.data.userID}
 				FOR UPDATE

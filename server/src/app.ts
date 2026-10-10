@@ -1,6 +1,7 @@
 import express from "express";
 import { generateOpenApiDocument } from "#/openapi";
 import { userRouter } from "#/routes/user";
+import { storageRouter } from "#/routes/storage";
 import { testRouter } from "#/routes/test";
 import { apiReference } from "@scalar/express-api-reference";
 import { adminRoute } from "#/routes/admin/index";
@@ -12,13 +13,16 @@ import cookieParser from "cookie-parser";
 import { rateLimit } from "express-rate-limit";
 import { httpLogger } from "#/lib/router/logger";
 import { errorHandler, notFoundHandler } from "#/lib/router/http/errorHandler";
+import { unitRoute } from "./routes/unit";
 
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 1 * 60 * 1000, // 1 minutes
   limit: 200, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
   standardHeaders: "draft-8", // draft-6: `RateLimit-*` headers; draft-7 & draft-8: combined `RateLimit` header
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
 });
+import { lessonRouter } from "./routes/lesson";
+import { learnSessionRoute } from "#/routes/session";
 
 const app = express()
   .use(limiter)
@@ -33,10 +37,14 @@ const app = express()
   .use(httpLogger)
   .use(authRoute)
   .use(userRouter)
+  .use(storageRouter)
   .use(CodingRoute)
   .use(testRouter)
   .use(courseRoute)
-  .use(adminRoute);
+  .use(lessonRouter)
+  .use(unitRoute)
+  .use(adminRoute)
+  .use(learnSessionRoute);
 
 // Docs endpoint — regenerated from the registry above
 app

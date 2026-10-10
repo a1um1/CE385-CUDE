@@ -76,7 +76,7 @@
   white-space: nowrap;
 }
 
-.placeholder {
+.value[data-placeholder] {
   color: var(--color-placeholder, #888);
 }
 
@@ -104,17 +104,16 @@
     inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
   outline: none;
   z-index: 50;
-  transform-origin: var(--transform-origin);
-  opacity: 0;
-  transform: scale(0.96) translateY(-4px);
+  transform-origin: var(--transform-origin, center top);
   transition:
     opacity 150ms cubic-bezier(0.16, 1, 0.3, 1),
     transform 150ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.popup[data-open] {
-  opacity: 1;
-  transform: scale(1) translateY(0);
+.popup[data-starting-style],
+.popup[data-ending-style] {
+  opacity: 0;
+  transform: scale(0.96) translateY(-4px);
 }
 
 .item {
