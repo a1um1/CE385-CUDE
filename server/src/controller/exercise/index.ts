@@ -14,7 +14,7 @@ export default class ExerciseController extends BaseExerciseController {
     return new BaseExerciseController(data);
   }
 
-  static async getById(id: string): Promise<BaseExerciseController | null> {
+  static async getById(id: string): Promise<BaseExerciseController> {
     const exercise = await db.exercise.findUnique({
       select: ExerciseSelection,
       where: {
@@ -30,6 +30,7 @@ export default class ExerciseController extends BaseExerciseController {
     const exercises = await db.exercise.findMany({
       select: ExerciseSelection,
       where: { lessonID },
+      orderBy: { position: "asc" },
     });
 
     return exercises.map((exercise) => this.getMatchedController(exercise));
