@@ -4372,12 +4372,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-10T07:57:52.348Z
+             * @example 2026-10-10T16:25:10.950Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-10T07:57:52.348Z
+             * @example 2026-10-10T16:25:10.950Z
              */
             updatedAt: string;
         };
@@ -4424,6 +4424,8 @@ export interface components {
             color: string;
             /** @example icon_name */
             icon: string;
+            /** @example 0 */
+            position: number;
             /**
              * Format: uuid
              * @example user_id
@@ -4507,6 +4509,8 @@ export interface components {
              * @example 2023-01-01T00:00:00Z
              */
             updatedAt: string;
+            /** @example 1 */
+            position: number;
         };
         AuthenticationResponseData: {
             message: components["schemas"]["SuccessMessage"];

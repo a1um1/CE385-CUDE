@@ -13,6 +13,7 @@ export const adminUnitSchema = z
     courseID: z.uuid().openapi({ example: "course_id" }),
     createdAt: z.date().openapi({ example: "2023-01-01T00:00:00Z" }),
     updatedAt: z.date().openapi({ example: "2023-01-01T00:00:00Z" }),
+    position: z.number().int().openapi({ example: 1 }),
   })
   .openapi("AdminUnitObject") satisfies zod.ZodType<Unit>;
 
@@ -22,6 +23,7 @@ export const unitQueryPayload = {
   id: true,
   name: true,
   courseID: true,
+  position: true,
   createdAt: true,
   updatedAt: true,
 } satisfies Prisma.UnitSelect;
