@@ -12,6 +12,7 @@
     "db:migrate": "prisma migrate dev --name auto && prisma generate",
     "db:generate": "prisma generate",
     "db:deploy": "prisma migrate deploy",
+    "db:seed": "tsx ../scripts/seeding/seed.ts",
     "ts:check": "npm run db:generate && tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -38,6 +39,7 @@
     "pg": "^8.23.0",
     "supertest": "^7.2.2",
     "typescript": "^7.0.2",
+    "yaml": "^2.9.1",
     "zod": "^4.4.3"
   },
   "devDependencies": {

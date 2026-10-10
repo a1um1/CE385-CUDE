@@ -1,11 +1,12 @@
 model CodeExercise {
-  id            String   @id @default(uuid(7)) @db.Uuid
-  exerciseID    String   @unique @db.Uuid
-  exercise      Exercise @relation(fields: [exerciseID], references: [id])
-  starterCode   String?
-  testerCode    String?
-  timeLimitMs   Int      @default(2000)
-  memoryLimitMb Int      @default(256)
+  id               String   @id @default(uuid(7)) @db.Uuid
+  exerciseID       String   @unique @db.Uuid
+  exercise         Exercise @relation(fields: [exerciseID], references: [id])
+  starterCode      String?
+  testerCode       String?
+  allowedFunctions String[] @default([])
+  timeLimitMs      Int      @default(2000)
+  memoryLimitMb    Int      @default(256)
 
   testCases TestCase[]
 }

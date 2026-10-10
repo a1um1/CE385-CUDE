@@ -84,6 +84,7 @@ Table CodeExercise {
   exercise Exercise [not null]
   starterCode String
   testerCode String
+  allowedFunctions String[] [not null]
   timeLimitMs Int [not null, default: 2000]
   memoryLimitMb Int [not null, default: 256]
   testCases TestCase [not null]
