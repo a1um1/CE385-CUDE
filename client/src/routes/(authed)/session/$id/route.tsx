@@ -1,3 +1,4 @@
+import { CollapsibleSidebarProvider } from "#/components/collapsibleSidebar";
 import { sessionByIdQuery, useAbortLearnSessionMutation } from "#/data/learnSession.data";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import SessionSidebar from "./-sessionSidebar";
@@ -17,14 +18,16 @@ function RouteComponent() {
   const abortSession = useAbortLearnSessionMutation();
 
   return (
-    <div className="flex h-dvh">
-      <SessionSidebar
-        sessionId={data.id}
-        lessonId={data?.lesson?.id}
-        onAbort={() => abortSession.mutate(data.id)}
-        isAborting={abortSession.isPending}
-      />
-      <Outlet />
-    </div>
+    <CollapsibleSidebarProvider>
+      <div className="flex h-dvh">
+        <SessionSidebar
+          sessionId={data.id}
+          lessonId={data?.lesson?.id}
+          onAbort={() => abortSession.mutate(data.id)}
+          isAborting={abortSession.isPending}
+        />
+        <Outlet />
+      </div>
+    </CollapsibleSidebarProvider>
   );
 }

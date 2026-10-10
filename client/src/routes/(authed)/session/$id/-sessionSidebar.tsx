@@ -4,7 +4,6 @@ import {
   CollapsibleSidebar,
   CollapsibleSidebarFooter,
   CollapsibleSidebarLabel,
-  CollapsibleSidebarToggle,
   useCollapsibleSidebar,
 } from "#/components/collapsibleSidebar";
 import Divider from "#/components/divider";
@@ -61,7 +60,6 @@ function SessionSidebarBody({ sessionId, lessonId, onAbort, isAborting }: Sessio
         ))}
       </div>
       <CollapsibleSidebarFooter>
-        <CollapsibleSidebarToggle label="ย่อแถบ" />
         <Button
           variant="danger"
           block

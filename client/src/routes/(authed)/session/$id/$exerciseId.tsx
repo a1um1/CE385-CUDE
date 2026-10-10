@@ -1,5 +1,6 @@
 import Button from "#/components/button";
 import CodeEditor from "#/components/codeEditor";
+import { CollapsibleSidebarToggle } from "#/components/collapsibleSidebar";
 import Markdown from "#/components/markdown";
 import Skeleton from "#/components/skeleton";
 import type { components } from "#/data/base/openapi";
@@ -44,11 +45,12 @@ function RouteComponent() {
   };
 
   return (
-    <div className="flex flex-col flex-1">
+    <div className="flex flex-col flex-1 min-w-0">
       <div className="flex flex-1 min-h-0">
-        <div className="flex-1 min-w-0 flex flex-col overflow-y-auto">
-          <div className="container">
-            <div className="flex-1 p-4">
+        <div className="flex-1 min-w-0 flex flex-col">
+          <header className="shrink-0 border-b-2 bg-background">
+            <div className="container flex items-center gap-2 px-4 py-2">
+              <CollapsibleSidebarToggle iconOnly label="ย่อแถบ" />
               {lesson?.id ? (
                 <Link to="/lesson/$lessonId" params={{ lessonId: lesson.id }}>
                   {lesson.unit?.course?.name} | {lesson.unit?.name} | {lesson.name}
@@ -56,8 +58,13 @@ function RouteComponent() {
               ) : (
                 <Skeleton className="w-48 h-6" />
               )}
-              <hr className="my-4" />
-              <Markdown content={exercise.content} />
+            </div>
+          </header>
+          <div className="flex-1 overflow-y-auto">
+            <div className="container">
+              <div className="p-4">
+                <Markdown content={exercise.content} />
+              </div>
             </div>
           </div>
         </div>
