@@ -4,7 +4,7 @@ import Skeleton from "#/components/skeleton";
 import UserTrigger from "#/components/userTrigger";
 import { useExerciseFromLessonQuery } from "#/data/exercise.data";
 import { sessionByIdQuery, useAbortLearnSessionMutation } from "#/data/learnSession.data";
-import { createFileRoute, Link, Outlet, useParams } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useParams } from "@tanstack/react-router";
 import { BookIcon, DoorOpenIcon, XIcon } from "lucide-react";
 
 export const Route = createFileRoute("/(authed)/session/$id")({
@@ -67,18 +67,7 @@ function RouteComponent() {
           </div>
         </div>
       </div>
-      <div className="flex-1 flex flex-col min-w-0">
-        <div className="container p-4">
-          {lesson?.id ? (
-            <Link to="/lesson/$lessonId" params={{ lessonId: lesson?.id || "" }}>
-              {lesson?.unit?.course?.name} | {lesson?.unit?.name} | {lesson?.name}
-            </Link>
-          ) : (
-            <Skeleton className="w-48 h-6" />
-          )}
-        </div>
-        <Outlet />
-      </div>
+      <Outlet />
     </div>
   );
 }
