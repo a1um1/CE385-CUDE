@@ -1,5 +1,6 @@
 import { APIclient } from "#/data/base/baseAPI";
-import { queryOptions, useQuery } from "@tanstack/react-query";
+import type { ExtractRequestBody } from "#/data/base/apiUtils.type";
+import { queryOptions, useMutation, useQuery } from "@tanstack/react-query";
 
 export const exerciseFromLessonQuery = (lessonId?: string | null) =>
   queryOptions({
@@ -42,3 +43,21 @@ export const exerciseQueryOptions = (exerciseId?: string | null) =>
 
 export const useExercise = (exerciseId?: string | null) =>
   useQuery(exerciseQueryOptions(exerciseId));
+
+/** Runs code against the exercise's public test cases. Nothing is stored. */
+export const useRunExercise = (exerciseId: string) =>
+  useMutation({
+    mutationKey: ["run_exercise", exerciseId],
+    mutationFn: async (body: ExtractRequestBody<"/exercise/{exerciseId}/run", "post">) => {
+      const { data, error } = await APIclient.POST("/exercise/{exerciseId}/run", {
+        params: {
+          path: {
+            exerciseId,
+          },
+        },
+        body,
+      });
+      if (error) throw error;
+      return data;
+    },
+  });

@@ -4,9 +4,13 @@ import { CollapsibleSidebarToggle } from "#/components/collapsibleSidebar";
 import Markdown from "#/components/markdown";
 import Skeleton from "#/components/skeleton";
 import type { components } from "#/data/base/openapi";
-import { exerciseQueryOptions, useExerciseFromLessonQuery } from "#/data/exercise.data";
+import {
+  exerciseQueryOptions,
+  useExerciseFromLessonQuery,
+  useRunExercise,
+} from "#/data/exercise.data";
 import { createFileRoute, Link, useLoaderData, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Exercise = components["schemas"]["Exercise"];
 
@@ -20,6 +24,7 @@ export const Route = createFileRoute("/(authed)/session/$id/$exerciseId")({
 
 function CodeEditorPane({ exercise }: { exercise: Exercise }) {
   const [code, setCode] = useState(exercise.codeExercise?.starterCode ?? "");
+  const runExercise = useRunExercise(exercise.id);
 
   return (
     <div className="flex-1 min-w-0">
@@ -28,6 +33,8 @@ function CodeEditorPane({ exercise }: { exercise: Exercise }) {
         onChange={setCode}
         language={exercise.codeExercise?.language}
         disableLanguageSwitch
+        runCode={() => runExercise.mutate({ code })}
+        testResults={runExercise.data?.testResults}
       />
     </div>
   );
@@ -44,8 +51,36 @@ function RouteComponent() {
   const index = exercises.data?.findIndex((item) => item.id === exerciseId) ?? -1;
   const next = index >= 0 ? exercises.data?.[index + 1] : undefined;
 
+  // Reading exercises stay locked until the markdown is scrolled to the end.
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [scrolledEnd, setScrolledEnd] = useState({ id: exercise.id, atEnd: false });
+  const mustRead = exercise.type !== "CODE";
+  const atEnd = scrolledEnd.id === exercise.id && scrolledEnd.atEnd;
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    const content = el?.firstElementChild;
+    if (!el || !content) return;
+    const check = () =>
+      setScrolledEnd({
+        id: exercise.id,
+        atEnd: el.scrollHeight - el.scrollTop - el.clientHeight <= 8,
+      });
+    check();
+    el.addEventListener("scroll", check, { passive: true });
+    const observer = new ResizeObserver(check);
+    observer.observe(content);
+    return () => {
+      el.removeEventListener("scroll", check);
+      observer.disconnect();
+    };
+  }, [exercise.id]);
+
   const handleContinue = () => {
-    if (!next) return;
+    if (!next) {
+      navigate({ to: "/session/$id/summary", params: { id } });
+      return;
+    }
     navigate({ to: "/session/$id/$exerciseId", params: { id, exerciseId: next.id } });
   };
 
@@ -65,7 +100,7 @@ function RouteComponent() {
               )}
             </div>
           </header>
-          <div className="flex-1 overflow-y-auto">
+          <div ref={scrollRef} className="flex-1 overflow-y-auto">
             <div className="container">
               <div className="p-4">
                 <Markdown content={exercise.content} />
@@ -76,8 +111,8 @@ function RouteComponent() {
         {exercise.type === "CODE" && <CodeEditorPane key={exercise.id} exercise={exercise} />}
       </div>
       <div className="border-t-2 border-border p-4 flex justify-end bg-background">
-        <Button variant="primary" onClick={handleContinue} disabled={!next}>
-          ดำเนินการต่อ
+        <Button variant="primary" onClick={handleContinue} disabled={mustRead && !atEnd}>
+          {next ? "ดำเนินการต่อ" : "สรุปบทเรียน"}
         </Button>
       </div>
     </div>
