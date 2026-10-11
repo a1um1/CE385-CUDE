@@ -5,21 +5,18 @@ import { Scoring } from "#/components/scoring";
 import Skeleton from "#/components/skeleton";
 import type { components } from "#/data/base/openapi";
 import {
+  useLearnSessionsQuery,
   usePendingLearnSessionQuery,
   useStartLearnSessionMutation,
 } from "#/data/learnSession.data";
-import { lessonQueryOptions, useEnrollmentAvailability } from "#/data/lesson.data";
-import { createFileRoute } from "@tanstack/react-router";
+import { useEnrollmentAvailability } from "#/data/lesson.data";
+import { createFileRoute, useLoaderData } from "@tanstack/react-router";
 import { Book, ChevronLeft, XIcon, type LucideIcon } from "lucide-react";
 
-export const Route = createFileRoute("/(authed)/(base)/lesson/$lessonId")({
+const lessonRouteId = "/(authed)/(base)/lesson/$lessonId";
+
+export const Route = createFileRoute("/(authed)/(base)/lesson/$lessonId/")({
   component: RouteComponent,
-  loader: async ({ params, context }) => {
-    const lesson = await context.queryClient.query(
-      lessonQueryOptions(params.lessonId, ["unit", "unit.course"]),
-    );
-    return lesson;
-  },
 });
 
 const availableStatuses = {
@@ -48,7 +45,7 @@ const availableStatuses = {
 >;
 
 const LessonAvailability = () => {
-  const lesson = Route.useLoaderData();
+  const lesson = useLoaderData({ from: lessonRouteId });
   const enrollmentAvailability = useEnrollmentAvailability(lesson.id);
 
   if (enrollmentAvailability.isLoading) {
@@ -66,7 +63,7 @@ const LessonAvailability = () => {
 };
 
 const LessonStart = () => {
-  const lesson = Route.useLoaderData();
+  const lesson = useLoaderData({ from: lessonRouteId });
   const enrollmentAvailability = useEnrollmentAvailability(lesson.id);
   const startLearnSession = useStartLearnSessionMutation();
   const pendingSessionQuery = usePendingLearnSessionQuery();
@@ -106,8 +103,38 @@ const LessonStart = () => {
   );
 };
 
+/** The student's latest finished session of this lesson, so the score stays reachable. */
+const LessonScore = () => {
+  const lesson = useLoaderData({ from: lessonRouteId });
+  const sessions = useLearnSessionsQuery();
+
+  const finished = (sessions.data ?? []).filter(
+    (session) =>
+      session.LessonID === lesson.id &&
+      session.status !== "PENDING" &&
+      session.status !== "CANCELLED",
+  );
+  // ISO timestamps, so a plain string compare finds the newest.
+  const latest = finished.reduce<(typeof finished)[number] | undefined>(
+    (newest, session) => (!newest || session.createdAt > newest.createdAt ? session : newest),
+    undefined,
+  );
+
+  if (!latest) return null;
+
+  return (
+    <ButtonLink
+      variant="secondary"
+      to="/lesson/$lessonId/$sessionId"
+      params={{ lessonId: lesson.id, sessionId: latest.id }}
+    >
+      ดูคะแนน
+    </ButtonLink>
+  );
+};
+
 function RouteComponent() {
-  const lesson = Route.useLoaderData();
+  const lesson = useLoaderData({ from: lessonRouteId });
 
   return (
     <>
@@ -125,7 +152,10 @@ function RouteComponent() {
           </p>
           <h1 className="text-2xl mb-4">{lesson?.name}</h1>
 
-          <LessonStart />
+          <div className="flex items-center gap-2">
+            <LessonStart />
+            <LessonScore />
+          </div>
         </div>
       </div>
       <div>
