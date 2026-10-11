@@ -1,6 +1,8 @@
 import { type CodeLanguage } from "#/components/codeEditor/codeEditor.schema";
 import { useEditorContext } from "#/components/codeEditor/subcomponent/editorContext";
-import { PanelBottomIcon, PanelRightIcon, PlayIcon } from "lucide-react";
+import { PanelBottomIcon, PanelRightIcon, PlayIcon, Code } from "lucide-react";
+import PythonIcon from "#/components/codeEditor/icons/PythonIcon";
+import CIcon from "#/components/codeEditor/icons/CIcon";
 import styles from "../styles/toolbar.module.css";
 import Button from "#/components/button";
 import { useCodeAvailableLanguage } from "#/data/code.data";
@@ -35,26 +37,46 @@ export default function EditorToolbar() {
     ? `${currentLanguageInfo.name} ${currentLanguageInfo.version}`
     : currentLang;
 
+  const hasDisable = disableLanguageSwitch ?? false;
+
+  function renderLanguageIcon() {
+    switch (currentLang) {
+      case "python":
+        return <PythonIcon className={styles.languageIcon} />;
+      case "c":
+        return <CIcon className={styles.languageIcon} />;
+      default:
+        return <Code className={styles.languageIcon} />;
+    }
+  }
+
   return (
     <div className={styles.toolbar}>
-      <Select.Root
-        value={currentLang}
-        onValueChange={handleLanguageChange}
-        disabled={disableLanguageSwitch || isLoading || isError}
-        size="sm"
-        radius="none"
-      >
-        <Select.Trigger className={styles.languageSelect} aria-label="Programming language">
-          <Select.Value>{currentLanguageLabel}</Select.Value>
-        </Select.Trigger>
-        <Select.Content align="start" sideOffset={4}>
-          {Object.entries(langaugeData?.languages || []).map(([lang, props]) => (
-            <Select.Item key={lang} value={lang}>
-              {props.name} {props.version}
-            </Select.Item>
-          ))}
-        </Select.Content>
-      </Select.Root>
+      {hasDisable ? (
+        <div className={styles.languageDisplay}>
+          {renderLanguageIcon()}
+          <span>{currentLanguageLabel}</span>
+        </div>
+      ) : (
+        <Select.Root
+          value={currentLang}
+          onValueChange={handleLanguageChange}
+          disabled={isLoading || isError}
+          size="sm"
+          radius="none"
+        >
+          <Select.Trigger className={styles.languageSelect} aria-label="Programming language">
+            <Select.Value>{currentLanguageLabel}</Select.Value>
+          </Select.Trigger>
+          <Select.Content align="start" sideOffset={4}>
+            {Object.entries(langaugeData?.languages || []).map(([lang, props]) => (
+              <Select.Item key={lang} value={lang}>
+                {props.name} {props.version}
+              </Select.Item>
+            ))}
+          </Select.Content>
+        </Select.Root>
+      )}
       <div className={styles.toolbarActions}>
         <Button
           onClick={toggleLayout}

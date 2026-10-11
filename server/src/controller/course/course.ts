@@ -29,6 +29,7 @@ export default class CourseController {
   static async getAllRaw(include?: string | string[]): Promise<CourseData[]> {
     const courses = await db.course.findMany({
       include: resolveInclude<Prisma.CourseInclude>(include, courseIncludes),
+      orderBy: [{ position: "asc" }, { id: "asc" }],
     });
     return courses as CourseData[];
   }

@@ -34,3 +34,16 @@
 .languageSelect:hover:not(:disabled) {
   border-right-color: var(--color-border);
 }
+
+.languageDisplay {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--color-input-text);
+  font-size: var(--size-sm-font-size);
+}
+
+.languageDisplay .languageIcon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}

@@ -37,6 +37,7 @@ export default class LessonController {
     const lessons = await db.lesson.findMany({
       where: { unitID },
       include: resolveInclude<Prisma.LessonInclude>(include, lessonIncludes),
+      orderBy: [{ position: "asc" }, { id: "asc" }],
     });
     return lessons as LessonData[];
   }
