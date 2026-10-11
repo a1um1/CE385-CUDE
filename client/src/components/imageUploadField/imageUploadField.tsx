@@ -9,6 +9,16 @@ import styles from "./imageUploadField.module.css";
 
 const ACCEPTED_TYPES = "image/png,image/jpeg,image/webp";
 
+function getSafeBlobUrl(url: string): string | null {
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol !== "blob:") return null;
+    return parsed.toString();
+  } catch {
+    return null;
+  }
+}
+
 function errorMessage(error: unknown): string {
   if (error instanceof Error) return error.message;
   if (typeof error === "object" && error !== null && "message" in error) {
@@ -54,7 +64,7 @@ function ImageUploadField({
   const [crop, setCrop] = useState<PercentCrop>();
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
-  const safeSrc = src?.startsWith("blob:") ? src : null;
+  const safeSrc = src ? getSafeBlobUrl(src) : null;
 
   const reset = () => {
     if (src) URL.revokeObjectURL(src);
