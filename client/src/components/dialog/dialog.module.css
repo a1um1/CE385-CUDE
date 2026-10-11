@@ -3,8 +3,8 @@
 .backdrop {
   position: fixed;
   inset: 0;
-  background-color: color-mix(in oklch, var(--color-background) 60%, transparent);
-  backdrop-filter: blur(2px);
+  background-color: color-mix(in oklch, black 55%, transparent);
+  backdrop-filter: blur(6px);
   z-index: 10;
   transition: opacity 0.2s ease-in-out;
 
@@ -23,9 +23,9 @@
 }
 
 .popup {
-  --dialog-bg: var(--color-background);
-  --dialog-border: var(--color-border);
-  --dialog-radius: calc(var(--radius) * 2);
+  --dialog-bg: color-mix(in oklch, var(--color-background) 92%, var(--color-background-text) 8%);
+  --dialog-border: color-mix(in oklch, var(--color-border) 60%, transparent);
+  --dialog-radius: calc(var(--radius) * 4);
 
   position: fixed;
   top: 50%;
@@ -33,18 +33,18 @@
   transform: translate(-50%, -50%);
   z-index: 11;
   min-width: 24rem;
-  max-width: 32rem;
+  max-width: 30rem;
   width: 90vw;
   background-color: var(--dialog-bg);
   border: 1px solid var(--dialog-border);
   border-radius: var(--dialog-radius);
   box-shadow:
-    0 4px 6px -1px color-mix(in oklch, black 30%, transparent),
-    0 2px 4px -2px color-mix(in oklch, black 20%, transparent);
-  padding: 1.5rem;
+    inset 0 1px 0 0 color-mix(in oklch, var(--color-background-text) 8%, transparent),
+    0 24px 56px -16px color-mix(in oklch, black 60%, transparent);
+  padding: 1.75rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.25rem;
   transition:
     opacity 0.2s ease-in-out,
     transform 0.2s ease-in-out;
@@ -56,14 +56,55 @@
 
   &[data-closed] {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0.95);
+    transform: translate(-50%, calc(-50% + 0.5rem)) scale(0.96);
   }
 
   &[data-starting-style],
   &[data-ending-style] {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0.95);
+    transform: translate(-50%, calc(-50% + 0.5rem)) scale(0.96);
   }
+}
+
+/* An icon badge reads best centred, with the close button out of the flow. */
+.popup[data-with-icon] {
+  text-align: center;
+}
+
+.popup[data-with-icon] .header {
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.popup[data-with-icon] .closeButton {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+}
+
+.popup[data-with-icon] .title {
+  font-size: 1.25rem;
+}
+
+.popup[data-with-icon] .footer > * {
+  flex: 1;
+}
+
+.iconBadge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 999px;
+  color: var(--color-primary);
+  background-color: color-mix(in oklch, var(--color-primary) 18%, transparent);
+}
+
+.popup[data-tone="danger"] .iconBadge {
+  color: var(--color-danger);
+  background-color: color-mix(in oklch, var(--color-danger) 20%, transparent);
 }
 
 .header {
@@ -91,6 +132,13 @@
   font-size: 0.875rem;
   color: color-mix(in oklch, var(--color-background-text) 65%, transparent);
   margin: 0;
+}
+
+.quote {
+  font-size: 0.875rem;
+  font-style: italic;
+  color: color-mix(in oklch, var(--color-background-text) 50%, transparent);
+  margin: 0.25rem 0 0;
 }
 
 .closeButton {

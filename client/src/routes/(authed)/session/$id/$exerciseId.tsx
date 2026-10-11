@@ -18,6 +18,12 @@ import { useEffect, useRef, useState } from "react";
 
 type Exercise = components["schemas"]["Exercise"];
 
+/** Most exercises open with a `#` heading; fall back to the exercise name when one is missing. */
+const withHeading = (exercise: Exercise) =>
+  /^#\s/.test(exercise.content.trimStart())
+    ? exercise.content
+    : `# ${exercise.name}\n\n${exercise.content}`;
+
 export const Route = createFileRoute("/(authed)/session/$id/$exerciseId")({
   component: RouteComponent,
   loader: async ({ params, context }) => {
@@ -181,7 +187,7 @@ function RouteComponent() {
           <div ref={scrollRef} className="flex-1 overflow-y-auto">
             <div className="container">
               <div className="p-4">
-                <Markdown content={exercise.content} />
+                <Markdown content={withHeading(exercise)} />
               </div>
             </div>
           </div>

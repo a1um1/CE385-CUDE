@@ -70,7 +70,6 @@ function RouteComponent() {
             {lesson?.unit?.course?.name} / {lesson?.unit?.name}
           </p>
           <h1 className="text-2xl mb-4">{lesson?.name}</h1>
-          <p className="opacity-70">ตรวจกับ test case ทั้งหมดของแบบฝึกหัด รวมข้อที่ซ่อนไว้</p>
         </div>
       </div>
 

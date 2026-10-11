@@ -176,7 +176,7 @@ const LessonHistory = () => {
                     {`${formatRelativeTime(attempt.createdAt)} · ใช้เวลา ${formatElapsedTime(attempt.createdAt, attempt.updatedAt)}`}
                   </span>
                 </span>
-                <Badge>{attempt.cancelled ? "ละทิ้ง" : formatPercent(attempt.passed, total)}</Badge>
+                <Badge>{attempt.cancelled ? "ยอมแพ้" : formatPercent(attempt.passed, total)}</Badge>
               </Link>
             </li>
           ))}
