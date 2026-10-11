@@ -63,12 +63,14 @@ export const useAbortLearnSessionMutation = () => {
   });
 };
 
-/** Every session of the student; used to find their finished run of a lesson. */
-export const useLearnSessionsQuery = () =>
+/** Every session of the student; used for their score history of a lesson. */
+export const useLearnSessionsQuery = (include?: SessionInclude) =>
   useQuery({
-    queryKey: ["learn_sessions"],
+    queryKey: ["learn_sessions", include],
     queryFn: async () => {
-      const { data, error } = await APIclient.GET("/session");
+      const { data, error } = await APIclient.GET("/session", {
+        params: { query: { include } },
+      });
       if (error) throw error;
       return data;
     },
@@ -119,6 +121,7 @@ export const useSaveExerciseSubmission = (sessionId: string, exerciseId: string)
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ["save_submission", sessionId, exerciseId],
+    meta: { silent: true },
     mutationFn: async (
       body: ExtractRequestBody<"/session/{SessionID}/exercise/{exerciseId}", "put">,
     ) => {

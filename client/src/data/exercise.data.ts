@@ -48,6 +48,7 @@ export const useExercise = (exerciseId?: string | null) =>
 export const useRunExercise = (exerciseId: string) =>
   useMutation({
     mutationKey: ["run_exercise", exerciseId],
+    meta: { silent: true },
     mutationFn: async (body: ExtractRequestBody<"/exercise/{exerciseId}/run", "post">) => {
       const { data, error } = await APIclient.POST("/exercise/{exerciseId}/run", {
         params: {

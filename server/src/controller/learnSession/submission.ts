@@ -63,8 +63,9 @@ export default class SubmissionController {
       userId: props.userID,
     });
     if (session.JSON.status !== "PENDING") {
-      throw new UserError(400, "Session is not in progress.");
+      throw new UserError(400, "Session are not available for submission.");
     }
+
     await this.assertExerciseInSession(session, props.exerciseID);
 
     const submission = await db.submission.upsert({
@@ -100,7 +101,7 @@ export default class SubmissionController {
       userId: props.userID,
     });
     if (session.JSON.status !== "PENDING") {
-      throw new UserError(400, "Session is not in progress.");
+      throw new UserError(400, "Session are not available for submission.");
     }
 
     const submissions = await db.submission.findMany({

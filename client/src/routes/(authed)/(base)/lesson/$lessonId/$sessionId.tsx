@@ -1,11 +1,11 @@
-import Badge from "#/components/badge";
 import ButtonLink from "#/components/buttonLink";
+import ExerciseList from "#/components/exerciseList";
 import { Scoring } from "#/components/scoring";
-import Skeleton from "#/components/skeleton";
 import type { components } from "#/data/base/openapi";
 import { useExerciseFromLessonQuery } from "#/data/exercise.data";
 import { sessionByIdQuery } from "#/data/learnSession.data";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { formatPercent } from "#/lib/formatNumber";
+import { createFileRoute } from "@tanstack/react-router";
 import { ChevronLeft } from "lucide-react";
 
 export const Route = createFileRoute("/(authed)/(base)/lesson/$lessonId/$sessionId")({
@@ -22,8 +22,6 @@ export const Route = createFileRoute("/(authed)/(base)/lesson/$lessonId/$session
     return session;
   },
 });
-
-const typeLabel = { CODE: "เขียนโค้ด", NONE: "อ่าน" } as const;
 
 type Exercise = components["schemas"]["Exercise"];
 type SubmissionResult = components["schemas"]["SubmissionResult"];
@@ -65,7 +63,7 @@ function RouteComponent() {
       <div className="flex gap-4">
         <Scoring
           status={codeExercises.length > 0 && passed === codeExercises.length ? "success" : "fail"}
-          label={`${passed}/${codeExercises.length}`}
+          label={formatPercent(passed, codeExercises.length)}
         />
         <div className="flex flex-col">
           <p>
@@ -82,33 +80,17 @@ function RouteComponent() {
         </p>
       )}
 
-      <ol className="flex flex-col gap-2">
-        {exercises.isLoading && <Skeleton className="h-14" />}
-        {exercises.data?.map((exercise, index) => {
+      <ExerciseList
+        isLoading={exercises.isLoading}
+        items={exercises.data?.map((exercise) => {
           const submission = session?.submissions?.find((item) => item.exerciseID === exercise.id);
-          const result = resultOf(exercise, submission);
-
-          return (
-            <li
-              key={exercise.id}
-              className="flex items-center gap-3 border border-border px-4 py-3"
-            >
-              <span className="opacity-50">{index + 1}.</span>
-              <Link
-                className="flex-1"
-                to="/session/$id/$exerciseId"
-                params={{ id: session?.id ?? "", exerciseId: exercise.id }}
-              >
-                {exercise.name}
-              </Link>
-              {result && <Badge color={result.color}>{result.label}</Badge>}
-              <Badge color={exercise.type === "CODE" ? undefined : "var(--color-success)"}>
-                {typeLabel[exercise.type]}
-              </Badge>
-            </li>
-          );
+          return {
+            id: exercise.id,
+            name: exercise.name,
+            badge: resultOf(exercise, submission) ?? undefined,
+          };
         })}
-      </ol>
+      />
     </>
   );
 }

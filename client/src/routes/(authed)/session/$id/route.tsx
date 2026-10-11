@@ -1,13 +1,27 @@
 import { CollapsibleSidebarProvider } from "#/components/collapsibleSidebar";
 import { sessionByIdQuery, useAbortLearnSessionMutation } from "#/data/learnSession.data";
-import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import SessionSidebar from "./-sessionSidebar";
+
+const sessionInclude = ["lesson", "lesson.unit", "lesson.unit.course"] as const;
 
 export const Route = createFileRoute("/(authed)/session/$id")({
   component: RouteComponent,
+  beforeLoad: async ({ params, context }) => {
+    const session = await context.queryClient.query(
+      sessionByIdQuery(params.id, [...sessionInclude]),
+    );
+    // A finished or given-up session is read-only: its result lives on the score page.
+    if (session?.status !== "PENDING") {
+      throw redirect({
+        to: "/lesson/$lessonId/$sessionId",
+        params: { lessonId: session?.lesson?.id ?? "", sessionId: params.id },
+      });
+    }
+  },
   loader: async ({ params, context }) => {
     const session = await context.queryClient.query(
-      sessionByIdQuery(params.id, ["lesson", "lesson.unit", "lesson.unit.course"]),
+      sessionByIdQuery(params.id, [...sessionInclude]),
     );
     return session;
   },
