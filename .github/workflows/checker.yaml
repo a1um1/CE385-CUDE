@@ -2,7 +2,7 @@ name: Checker
 
 on:
   push:
-    branches: [feat/*, bug/*, dev/*, chore/*, develop]
+    branches: [feat/*, bug/*, dev/*, chore/*, docs/*, refactor/*, fix/*, develop]
 
 jobs:
   setup:

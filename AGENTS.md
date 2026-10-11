@@ -40,4 +40,4 @@ CI (`checker.yaml`, any push to `feat/*|bug/*|dev/*|develop`): ts:check + lint +
 
 ## Git workflow
 
-- `develop` is push-protected. Work on feature branches (`feat/*`, `bug/*`, or `dev/*`), one branch per feature/item. PRs require 2 approvals and green CI.
+- `develop` is push-protected. Branch names must be **lowercase** and start with one of `feat/`, `bug/`, `dev/`, `chore/`, `docs/`, `refactor/`, `fix/` (`develop` and `main` are exempt); the `Enforce Branch Naming` ruleset rejects non-conforming branches at push time, and the `Branch Naming` CI check catches the rest (e.g. `feat/MyBranch`). Work on one branch per feature/item. PRs require 2 approvals and green CI.
