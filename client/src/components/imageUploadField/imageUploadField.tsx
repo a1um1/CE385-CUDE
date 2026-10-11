@@ -9,6 +9,16 @@ import styles from "./imageUploadField.module.css";
 
 const ACCEPTED_TYPES = "image/png,image/jpeg,image/webp";
 
+function getSafeBlobUrl(url: string): string | null {
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol !== "blob:") return null;
+    return parsed.toString();
+  } catch {
+    return null;
+  }
+}
+
 function errorMessage(error: unknown): string {
   if (error instanceof Error) return error.message;
   if (typeof error === "object" && error !== null && "message" in error) {
@@ -54,6 +64,7 @@ function ImageUploadField({
   const [crop, setCrop] = useState<PercentCrop>();
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const safeSrc = src ? getSafeBlobUrl(src) : null;
 
   const reset = () => {
     if (src) URL.revokeObjectURL(src);
@@ -161,7 +172,7 @@ function ImageUploadField({
         }
       >
         <div className={styles["crop-area"]}>
-          {src && (
+          {safeSrc && (
             <ReactCrop
               crop={crop}
               onChange={(_, percentCrop) => setCrop(percentCrop)}
@@ -170,7 +181,7 @@ function ImageUploadField({
             >
               <img
                 ref={imgRef}
-                src={src}
+                src={safeSrc}
                 alt="Crop preview"
                 onLoad={handleImageLoad}
                 className={styles["crop-preview"]}
