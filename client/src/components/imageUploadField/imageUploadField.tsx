@@ -54,6 +54,7 @@ function ImageUploadField({
   const [crop, setCrop] = useState<PercentCrop>();
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const safeSrc = src?.startsWith("blob:") ? src : null;
 
   const reset = () => {
     if (src) URL.revokeObjectURL(src);
@@ -161,7 +162,7 @@ function ImageUploadField({
         }
       >
         <div className={styles["crop-area"]}>
-          {src && (
+          {safeSrc && (
             <ReactCrop
               crop={crop}
               onChange={(_, percentCrop) => setCrop(percentCrop)}
@@ -170,7 +171,7 @@ function ImageUploadField({
             >
               <img
                 ref={imgRef}
-                src={src}
+                src={safeSrc}
                 alt="Crop preview"
                 onLoad={handleImageLoad}
                 className={styles["crop-preview"]}
