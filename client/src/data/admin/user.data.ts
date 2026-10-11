@@ -1,6 +1,6 @@
 import type { ExtractRequestQuery, ExtractRequestBody } from "#/data/base/apiUtils.type";
 import { APIclient } from "#/data/base/baseAPI";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { queryOptions, useMutation, useQuery } from "@tanstack/react-query";
 
 export const useAdminUserListQuery = (props: ExtractRequestQuery<"/admin/user", "get">) =>
   useQuery({
@@ -16,14 +16,14 @@ export const useAdminUserListQuery = (props: ExtractRequestQuery<"/admin/user", 
     },
   });
 
-export const useGetAdminUser = (props: { id: string }) =>
-  useQuery({
-    queryKey: ["admin", "user", "info", props],
+export const getAdminUserQueryOptions = (userId: string) =>
+  queryOptions({
+    queryKey: ["admin", "user", "info", userId],
     queryFn: async () => {
       const { data, error } = await APIclient.GET("/admin/user/{id}", {
         params: {
           path: {
-            id: props.id,
+            id: userId,
           },
         },
       });
@@ -31,6 +31,8 @@ export const useGetAdminUser = (props: { id: string }) =>
       return data;
     },
   });
+
+export const useGetAdminUser = (userId: string) => useQuery(getAdminUserQueryOptions(userId));
 
 export const useAdminChangeUserPassword = () =>
   useMutation({

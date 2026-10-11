@@ -1,5 +1,5 @@
 import CustomRouter from "#/lib/router/customRouter";
-import express from "express";
+import { createTestApp } from "#/lib/router/tests/mocks/testApp.mock";
 
 const authenticationRouting = new CustomRouter()
   .get(
@@ -41,7 +41,6 @@ const authenticationRouting = new CustomRouter()
     }),
   );
 
-const AuthenticationRoutingApp = express();
-AuthenticationRoutingApp.use(authenticationRouting.route);
+const AuthenticationRoutingApp = createTestApp(authenticationRouting.route);
 
 export { AuthenticationRoutingApp };

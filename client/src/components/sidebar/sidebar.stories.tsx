@@ -24,7 +24,7 @@ export const Playground: Story = {
   },
   decorators: [
     (Story) => {
-      queryClient.setQueryData(["user"], {
+      queryClient.setQueryData(["session"], {
         id: "xxx",
         name: "tlakchai",
         username: "tlakchai",

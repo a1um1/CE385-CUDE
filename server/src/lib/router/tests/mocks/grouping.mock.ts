@@ -1,5 +1,5 @@
 import CustomRouter from "#/lib/router/customRouter";
-import express from "express";
+import { createTestApp } from "#/lib/router/tests/mocks/testApp.mock";
 
 const groupARouting = new CustomRouter({
   prefix: "/groupA",
@@ -21,8 +21,6 @@ const groupBRouting = new CustomRouter({
   }))
   .use(groupCnestedRouting.route);
 
-const GroupingRoutingApp = express();
-GroupingRoutingApp.use(groupARouting.route);
-GroupingRoutingApp.use(groupBRouting.route);
+const GroupingRoutingApp = createTestApp(groupARouting.route, groupBRouting.route);
 
 export { GroupingRoutingApp };

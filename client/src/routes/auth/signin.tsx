@@ -8,6 +8,7 @@ export const Route = createFileRoute("/auth/signin")({
 
 function RouteComponent() {
   const signInMutation = useSignIn();
+  const navigate = Route.useNavigate();
 
   const form = useAppForm({
     defaultValues: {
@@ -17,6 +18,7 @@ function RouteComponent() {
     onSubmit: async ({ value }) => {
       try {
         await signInMutation.mutateAsync(value);
+        await navigate({ to: "/" });
       } catch (error) {
         handleFormMutationError(form, error);
       }

@@ -14,10 +14,10 @@ const defaultConfig: Record<
   ScoringStatus,
   { style: string; icon: React.ReactNode; label: string }
 > = {
-  success: { style: styles.success!, icon: <Check size={60} strokeWidth={3} />, label: "100%" },
-  fail: { style: styles.fail!, icon: <X size={60} strokeWidth={3} />, label: "100%" },
+  success: { style: styles.success, icon: <Check size={60} strokeWidth={3} />, label: "100%" },
+  fail: { style: styles.fail, icon: <X size={60} strokeWidth={3} />, label: "100%" },
   inProgress: {
-    style: styles.inProgress!,
+    style: styles.inProgress,
     icon: <CircleDashed size={60} strokeWidth={2} />,
     label: "In Progress",
   },

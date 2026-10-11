@@ -1,6 +1,6 @@
 import type { ExtractRequestQuery, ExtractRequestBody } from "#/data/base/apiUtils.type";
 import { APIclient } from "#/data/base/baseAPI";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useAdminCourseListQuery = (props: ExtractRequestQuery<"/admin/course", "get">) =>
   useQuery({
@@ -16,14 +16,14 @@ export const useAdminCourseListQuery = (props: ExtractRequestQuery<"/admin/cours
     },
   });
 
-export const useGetAdminCourse = (props: { id: string }) =>
-  useQuery({
-    queryKey: ["admin", "course", "info", props],
+export const getAdminCourseQueryOptions = (courseId: string) =>
+  queryOptions({
+    queryKey: ["admin", "course", "info", { id: courseId }],
     queryFn: async () => {
       const { data, error } = await APIclient.GET("/admin/course/{id}", {
         params: {
           path: {
-            id: props.id,
+            id: courseId,
           },
         },
       });
@@ -31,6 +31,8 @@ export const useGetAdminCourse = (props: { id: string }) =>
       return data;
     },
   });
+
+export const useGetAdminCourse = (courseId: string) => getAdminCourseQueryOptions(courseId);
 
 export const useAdminCreateCourse = () => {
   const queryClient = useQueryClient();

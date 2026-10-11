@@ -23,7 +23,8 @@ export default function EditorToolbar() {
     layout: { panelLayout, toggleLayout },
   } = useEditorContext();
 
-  function handleLanguageChange(selectedLanguage: string) {
+  function handleLanguageChange(selectedLanguage: string | null) {
+    if (selectedLanguage === null) return;
     onChangeLanguage?.(selectedLanguage as CodeLanguage);
     onChange("");
   }

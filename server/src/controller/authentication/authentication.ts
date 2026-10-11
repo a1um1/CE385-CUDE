@@ -4,7 +4,6 @@ import type {
 } from "#/controller/authentication/authentication.schema";
 import UserController from "#/controller/user";
 import type { userCreationSchema, userValidationSchema } from "#/controller/user/user.schema";
-import { Log } from "#/lib/logger/decorators";
 import { db } from "#/lib/prisma";
 import userError from "#/lib/router/http/userError";
 import UserError from "#/lib/router/http/userError";
@@ -92,19 +91,21 @@ export default class AuthenticationController {
     };
   }
 
-  async refreshToken(
-    refreshToken: string,
-    context?: TokenContext,
-  ): Promise<{
+  async refreshToken(refreshToken: string): Promise<{
     accessToken: authenticationSchema;
     refreshToken: string;
   }> {
     const refreshTokenData = await this.validateRefreshToken(refreshToken);
-    await this.revokeRefreshToken(refreshToken);
-    const newRefreshToken = await this.createRefreshToken(refreshTokenData.userId, context);
     const accessToken = await this.generateToken(refreshTokenData);
 
-    return { accessToken, refreshToken: newRefreshToken };
+    await db.refreshToken.updateMany({
+      where: { token: refreshToken },
+      data: {
+        expiresAt: new Date(Date.now() + AuthenticationController.REFRESH_TOKEN_EXPIRATION_MS),
+      },
+    });
+
+    return { accessToken, refreshToken };
   }
 
   generateToken(user: AuthenticationBody): authenticationSchema {
@@ -135,7 +136,6 @@ export default class AuthenticationController {
     }
   }
 
-  @Log()
   async signIn(
     credentials: userValidationSchema,
     context?: TokenContext,
@@ -155,7 +155,6 @@ export default class AuthenticationController {
     return { token, user, refreshToken };
   }
 
-  @Log()
   async signUp(
     userData: userCreationSchema,
     context?: TokenContext,

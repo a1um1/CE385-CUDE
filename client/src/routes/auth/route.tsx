@@ -1,19 +1,16 @@
-import { useUser } from "#/data/user.data";
-import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { resolveSession } from "#/data/user.data";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/auth")({
+  ssr: false,
+  beforeLoad: async ({ context }) => {
+    const user = await resolveSession(context.queryClient);
+
+    if (user) throw redirect({ to: "/" });
+  },
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const navigate = Route.useNavigate();
-  const { data: user, isLoading } = useUser();
-
-  useEffect(() => {
-    if (user) navigate({ to: "/" });
-  }, [user]);
-
-  if (isLoading || user) return <div>Loading...</div>;
   return <Outlet />;
 }

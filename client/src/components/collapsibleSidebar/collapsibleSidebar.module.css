@@ -1,0 +1,28 @@
+@reference "#/styles/main.css";
+
+.sidebar {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  width: 16rem;
+  background-color: var(--color-background);
+  border-right: 2px solid var(--color-border);
+  transition: width 0.2s ease-in-out;
+}
+
+/* icon-only rail; the buttons keep their padding so icons hold their position */
+.collapsed {
+  width: 4rem;
+}
+
+/* equal row height whether a row shows a label or only an icon */
+.sidebar :global(a),
+.sidebar :global(button) {
+  min-height: 2.5rem;
+}
+
+.footer {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+}

@@ -1,5 +1,6 @@
 import { useAppForm, handleFormMutationError } from "#/components/form";
 import { useAdminChangeUserPassword } from "#/data/admin/user.data";
+import { getPasswordError } from "#/lib/passwordRules";
 import Button from "#/components/button";
 import Dialog from "#/components/dialog";
 
@@ -60,9 +61,19 @@ function ChangePasswordDialog({ open, onOpenChange, userId }: ChangePasswordDial
       >
         <form.AppForm>
           <form.FormError />
-          <form.AppField name="newPassword">
+          <form.AppField
+            name="newPassword"
+            validators={{
+              onChange: ({ value }) => getPasswordError(value),
+            }}
+          >
             {(field) => (
-              <field.TextField label="New Password" type="password" autoComplete="new-password" />
+              <field.PasswordField
+                label="New Password"
+                autoComplete="new-password"
+                showStrength
+                showRequirements
+              />
             )}
           </form.AppField>
 

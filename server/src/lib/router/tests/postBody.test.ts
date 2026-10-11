@@ -127,9 +127,12 @@ describe("Posting Router Tests", () => {
   });
 
   it("should return 400 for POST requests with malformed JSON", async () => {
-    const res = await request(PostBodyApp).post("/posting-with-body").send("{");
+    const res = await request(PostBodyApp)
+      .post("/posting-with-body")
+      .set("Content-Type", "application/json")
+      .send("{");
     expect(res.status).toBe(400);
-    expect(res.body).toHaveProperty("message", "Invalid request parameters");
-    expect(res.body).toHaveProperty("details");
+    expect(res.headers["content-type"]).toMatch(/application\/json/);
+    expect(res.body).not.toHaveProperty("details");
   });
 });

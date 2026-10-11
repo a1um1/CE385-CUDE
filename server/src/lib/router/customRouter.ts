@@ -1,12 +1,6 @@
 import type { Role } from "#/generated/prisma/enums";
 import { Router } from "express";
-import type {
-  NextFunction,
-  RequestHandler,
-  Response,
-  Request,
-  ErrorRequestHandler,
-} from "express-serve-static-core";
+import type { RequestHandler } from "express-serve-static-core";
 import { registry } from "#/openapi";
 import AuthenticationController from "#/controller/authentication";
 import { HTTPstatus } from "#/lib/router/http/httpStatus";
@@ -23,7 +17,7 @@ import type {
 } from "#/lib/router/customerRouter.type";
 import type { ZodType } from "zod";
 import { z } from "#/lib/extendZod";
-import { ValidationErrorSchema, ServerErrorSchema } from "#/lib/router/http/errorResponse";
+import { ErrorResponseSchema } from "#/lib/router/http/errorResponse";
 
 export default class CustomRouter<TDefaultAuth extends AuthenticationObject = undefined> {
   private router = Router();
@@ -40,44 +34,6 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
     return this.router;
   }
 
-  private handleErrorMiddleware<
-    TParams extends RequestObject,
-    TQuery extends RequestObject,
-    TBody extends ZodType<any> | undefined,
-    TResponse extends ZodType<any> | undefined,
-    TAuth extends AuthenticationObject,
-  >(_config: RouteConfig<TParams, TQuery, TBody, TResponse, TAuth>): ErrorRequestHandler {
-    return (err: Error, _req: Request, res: Response, _next: NextFunction) => {
-      if (err instanceof z.ZodError) {
-        const errorString = z.treeifyError(err);
-        return res.status(400).json({
-          message: "Invalid request parameters",
-          details: errorString,
-        });
-      }
-
-      if (err instanceof UserError) {
-        return res.status(err.status).json({
-          message: err.message,
-        });
-      }
-
-      if (process.env.NODE_ENV === "development") {
-        console.error("Unhandled error in route handler:", err);
-        const unhandledErrorMessage =
-          (err instanceof Error ? err.message : undefined) || "Internal Server Error";
-
-        return res.status(500).json({
-          message: unhandledErrorMessage,
-        });
-      }
-
-      return res.status(500).json({
-        message: "Internal Server Error",
-      });
-    };
-  }
-
   private parseRouteParameters<
     TParams extends RequestObject,
     TQuery extends RequestObject,
@@ -85,7 +41,7 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
     TResponse extends ZodType<any> | undefined,
     TAuth extends AuthenticationObject,
   >(config: RouteConfig<TParams, TQuery, TBody, TResponse, TAuth>): RequestHandler {
-    return (req, _res, next) => {
+    return (req, res, next) => {
       const params = (
         config.params ? config.params.parse(req.params) : req.params
       ) as InferOrAny<TParams>;
@@ -94,11 +50,7 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
       ) as InferOrAny<TQuery>;
       const body = (config.body ? config.body.parse(req.body) : req.body) as InferOrAny<TBody>;
 
-      req.ctx = {
-        params,
-        query,
-        body,
-      };
+      Object.assign(res.locals, { params, query, body });
       next();
     };
   }
@@ -106,7 +58,7 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
   private validateAuthentication<TAuth extends AuthenticationObject>(
     config: RouteConfig<any, any, any, any, TAuth>,
   ): RequestHandler {
-    return async (req, _res, next) => {
+    return async (req, res, next) => {
       const auth =
         config.authentication !== undefined
           ? config.authentication
@@ -116,12 +68,11 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
       const token =
         (req.cookies?.["accessToken"] as string | undefined) ??
         (req.headers["authorization"] || "")?.split(" ")?.[1];
-      if (!token) throw new UserError(403, "Unauthorize");
+      if (!token) throw new UserError(401, "Unauthorize");
 
       const user = await this.authController.validateToken(token);
       if (!roleToCheck.includes(user.JSON.role)) throw new UserError(403, "Forbidden");
-      req.ctx ||= {};
-      req.ctx.user = user;
+      res.locals.user = user;
       next();
     };
   }
@@ -155,11 +106,27 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
         },
         400: {
           description: "Validation error",
-          content: { "application/json": { schema: ValidationErrorSchema } },
+          content: { "application/json": { schema: ErrorResponseSchema } },
+        },
+        401: {
+          description: "Unauthorized",
+          content: { "application/json": { schema: ErrorResponseSchema } },
+        },
+        403: {
+          description: "Forbidden",
+          content: { "application/json": { schema: ErrorResponseSchema } },
+        },
+        404: {
+          description: "Not found",
+          content: { "application/json": { schema: ErrorResponseSchema } },
+        },
+        409: {
+          description: "Conflict",
+          content: { "application/json": { schema: ErrorResponseSchema } },
         },
         500: {
           description: "Internal server error",
-          content: { "application/json": { schema: ServerErrorSchema } },
+          content: { "application/json": { schema: ErrorResponseSchema } },
         },
       },
     });
@@ -190,27 +157,35 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
         const status = new HTTPstatus();
 
         let handlersResult = await options.handler({
-          params: req.ctx?.params as InferOrAny<TParams>,
-          query: req.ctx?.query as InferOrAny<TQuery>,
-          body: req.ctx?.body as InferOrAny<TBody>,
+          params: res.locals.params,
+          query: res.locals.query,
+          body: res.locals.body,
           headers: req.headers,
           ip: req.ip,
-          user: req.ctx?.user,
-          cookies: {
-            ...(req.cookies as Record<string, string>),
-            set: res.cookie.bind(res),
-            clear: res.clearCookie.bind(res),
-          } as any,
+          user: res.locals.user,
+          cookies: req.cookies,
+          cookie: {
+            set: (name, value, cookieOptions) => {
+              if (cookieOptions) res.cookie(name, value, cookieOptions);
+              else res.cookie(name, value);
+            },
+            clear: (name, cookieOptions) => {
+              res.clearCookie(name, cookieOptions);
+            },
+          },
           status,
         });
 
         if (options.config.response) {
-          handlersResult = options.config.response.parse(handlersResult);
+          const parsed = options.config.response.safeParse(handlersResult);
+          if (!parsed.success) {
+            throw new Error(`Response validation failed: ${z.prettifyError(parsed.error)}`);
+          }
+          handlersResult = parsed.data;
         }
 
         return res.status(status.value).json(handlersResult);
       },
-      this.handleErrorMiddleware(mergedConfig),
     );
   }
 

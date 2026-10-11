@@ -1,31 +1,16 @@
 import CourseController from "#/controller/course";
+import { CourseIncludeQuerySchema, CourseSchema } from "#/controller/course/course.schema";
+import { UnitIncludeQuerySchema, UnitSchema } from "#/controller/unit/unit.schema";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 
-const publicCourseSchema = z
+const CourseListSchema = z
   .object({
-    id: z.string().openapi({ example: "course_id" }),
-    name: z.string().openapi({ example: "Course_Name" }),
-    color: z.string().openapi({ example: "#FFFFF" }),
-    icon: z.string().openapi({ example: "icon_name" }),
-  })
-  .openapi("publicCourseSchema");
-
-const publicCourseResponseSchema = z
-  .object({
-    data: z.array(publicCourseSchema),
+    data: z.array(CourseSchema),
   })
   .openapi("publicCourseResponseSchema");
 
-const publicUnitSchema = z
-  .object({
-    id: z.string().openapi({ example: "unit_id" }),
-    name: z.string().openapi({ example: "unit_name" }),
-    courseID: z.string().openapi({ example: "course_id" }),
-  })
-  .openapi("publicUnitSchema");
-
-const publicUnitListSchema = z.array(publicUnitSchema);
+const UnitListSchema = z.array(UnitSchema);
 
 const courseRouter = new CustomRouter({
   prefix: "/course",
@@ -36,13 +21,12 @@ const courseRouter = new CustomRouter({
     "/",
     {
       summary: "List all available courses",
-      response: publicCourseResponseSchema,
+      query: CourseIncludeQuerySchema,
+      response: CourseListSchema,
     },
-    async () => {
-      const result = await CourseController.getAll();
-      return {
-        data: result.data.map(({ id, name, color, icon }) => ({ id, name, color, icon })),
-      };
+    async ({ query }) => {
+      const courses = await CourseController.getAll(query.include);
+      return { data: courses.map((course) => course.JSON) };
     },
   )
   .get(
@@ -50,17 +34,14 @@ const courseRouter = new CustomRouter({
     {
       summary: "Get course by ID",
       params: z.object({
-        courseId: z.string().openapi({ example: "course_id" }),
+        courseId: z.uuid().openapi({ example: "course_id" }),
       }),
-      response: publicCourseSchema,
+      query: CourseIncludeQuerySchema,
+      response: CourseSchema,
     },
-    async ({ params }) => {
-      // ใช้ CourseController.getById() เช็คว่า Course มีจริงก่อน (throw 404
-      // อัตโนมัติถ้าไม่เจอ) แล้วเรียก instance method getAllUnit() ที่มีอยู่
-      // แล้วในไฟล์ controller/course/course.ts ต่อได้เลย
-      const course = await CourseController.getById(params.courseId);
-      const { id, name, color, icon } = course.JSON;
-      return { id, name, color, icon };
+    async ({ params, query }) => {
+      const course = await CourseController.getById(params.courseId, query.include);
+      return course.JSON;
     },
   )
   .get(
@@ -68,15 +49,14 @@ const courseRouter = new CustomRouter({
     {
       summary: "List unit of a course",
       params: z.object({
-        courseId: z.string().openapi({ example: "course_id" }),
+        courseId: z.uuid().openapi({ example: "course_id" }),
       }),
-      response: publicUnitListSchema,
+      query: UnitIncludeQuerySchema,
+      response: UnitListSchema,
     },
-    async ({ params }) => {
-      // ใช้ CourseController.getById() เช็คว่า Course มีจริงก่อน (throw 404
-      // อัตโนมัติถ้าไม่เจอ) แล้วเรียก instance method getAllUnit() ต่อได้เลย
+    async ({ params, query }) => {
       const course = await CourseController.getById(params.courseId);
-      const units = await course.getAllUnit();
+      const units = await course.getAllUnit(query.include);
       return units.map((unit) => unit.JSON);
     },
   );

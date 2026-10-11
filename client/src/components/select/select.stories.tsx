@@ -14,7 +14,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {
   render: ({ size = "md", radius = "none", disabled = false }) => {
-    const [value, setValue] = React.useState("c");
+    const [value, setValue] = React.useState<string | null>("c");
 
     const languages: Record<string, string> = {
       c: "C (GCC 13.2.0)",
@@ -42,7 +42,9 @@ export const Playground: Story = {
           disabled={disabled}
         >
           <Select.Trigger style={{ minWidth: "220px" }}>
-            <Select.Value placeholder="Select language">{languages[value]}</Select.Value>
+            <Select.Value placeholder="Select language">
+              {value ? languages[value] : null}
+            </Select.Value>
           </Select.Trigger>
           <Select.Content align="start" sideOffset={6}>
             <Select.Item value="c">C (GCC 13.2.0)</Select.Item>

@@ -11,18 +11,19 @@ import CustomRouter from "#/lib/router/customRouter";
 
 const adminUnitRouter = new CustomRouter({
   prefix: "/admin/unit",
-  tags: ["Admin Unit Manament"],
+  tags: ["Admin Unit Management"],
   authentication: ["ADMIN"],
 })
   .get(
     "/",
     {
-      summary: "List units (paginated), optionally filter by courseID",
+      summary: "List units (paginated), optionally filtered by courseID",
       query: AdminUnitQuerySchema,
       response: AdminUnitListResponseSchema,
     },
     ({ query }) => AdminUnitsController.getPaginateLists(query),
   )
+  //เรียกดูข้อมูล Unit ทีละตัว
   .get(
     "/:id",
     {
@@ -40,7 +41,7 @@ const adminUnitRouter = new CustomRouter({
   .post(
     "/",
     {
-      summary: "Create a new uinit",
+      summary: "Create a new unit",
       body: AdminUnitCreateSchema,
       response: adminUnitSchema,
     },

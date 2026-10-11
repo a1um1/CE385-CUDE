@@ -1,0 +1,31 @@
+.field {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.field-contents {
+  display: contents;
+}
+
+.file-input {
+  display: none;
+}
+
+.crop-area {
+  display: flex;
+  justify-content: center;
+}
+
+.crop-preview {
+  display: block;
+  max-height: 24rem;
+  max-width: 100%;
+}
+
+.upload-error {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--color-danger);
+}

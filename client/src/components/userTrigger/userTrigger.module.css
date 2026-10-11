@@ -1,0 +1,21 @@
+@reference "#/styles/main.css";
+
+.user-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  margin-left: 0.5rem;
+}
+
+.user-name {
+  font-weight: 600;
+  /* ellipsis */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

@@ -25,4 +25,6 @@ model Transactions {
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
   user        User            @relation(fields: [userID], references: [id], onDelete: Cascade)
+
+  @@index([userID, id])
 }
