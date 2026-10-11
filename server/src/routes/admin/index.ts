@@ -12,6 +12,9 @@ const adminRouter = new CustomRouter({
     "/",
     {
       summary: "Admin route",
+      description:
+        "Role check for admins. Requires an `ADMIN` access token; any non-admin is rejected with `403`. " +
+        "Returns `{ ok, randomNumber }`.",
     },
     () => {
       const randomNumber = Math.floor(Math.random() * 100);

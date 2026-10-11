@@ -43,6 +43,12 @@ const authRouter = new CustomRouter({
     "/signup",
     {
       summary: "User signup",
+      description:
+        "Create a new account and sign in in one call.\n\n" +
+        "On success the `accessToken` (15 min) and `refreshToken` (7 days) cookies are set: " +
+        "`HttpOnly`, `Secure`, `SameSite=Strict`. The response body only confirms the signup — " +
+        "read the user from `GET /user` afterwards.\n\n" +
+        "Returns `409` when the email or username is already taken.",
       body: UserCreationSchema,
       response: authenticationResponseSchema,
     },
@@ -56,6 +62,10 @@ const authRouter = new CustomRouter({
     "/signin",
     {
       summary: "User signin",
+      description:
+        "Authenticate with email and password. Sets the same `accessToken` / `refreshToken` cookies as " +
+        "signup. The user-agent and IP address are recorded against the refresh token.\n\n" +
+        "Returns `401` when the credentials are invalid.",
       body: UserValidationSchema,
       response: authenticationResponseSchema,
     },
@@ -69,6 +79,12 @@ const authRouter = new CustomRouter({
     "/refresh",
     {
       summary: "Refresh authentication token",
+      description:
+        "Exchange the `refreshToken` cookie for a fresh `accessToken`.\n\n" +
+        "The refresh token must still exist in the database and not be expired; its expiry slides " +
+        "forward 7 days on each successful call. No request body is needed — the token is read from " +
+        "the cookie.\n\n" +
+        "Returns `400` when the cookie is missing, `403` when the token is unknown or expired.",
       response: authenticationResponseSchema,
     },
     async ({ cookies, cookie }) => {
@@ -83,6 +99,9 @@ const authRouter = new CustomRouter({
     "/logout",
     {
       summary: "Sign out and revoke the refresh token",
+      description:
+        "Revoke the current `refreshToken` in the database and clear both auth cookies. " +
+        "Idempotent: calling it without a session still succeeds.",
       response: authenticationResponseSchema,
     },
     async ({ cookies, cookie }) => {

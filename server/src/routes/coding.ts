@@ -13,6 +13,9 @@ const CodingRouter = new CustomRouter({
     "/language",
     {
       summary: "Return all support language",
+      description:
+        "List the languages the judge currently supports, each with its exact runtime version. " +
+        "No authentication required. Public.",
       response: z
         .object({
           languages: z.record(
@@ -45,6 +48,11 @@ const CodingRouter = new CustomRouter({
     "/run",
     {
       summary: "Run Code",
+      description:
+        "Compile and run a snippet once against the supplied stdin, then return the judge result " +
+        "(stdout / stderr, wall time, peak memory). Stateless — nothing is stored. No authentication " +
+        "required. Public.\n\n" +
+        "Use this for the “Run” button; it does not check correctness against test cases.",
       body: z.object({
         language: zGoJudgeLanguage,
         code: z.string().openapi({ example: 'print("Hello world", input())' }),
@@ -66,6 +74,10 @@ const CodingRouter = new CustomRouter({
     "/judge",
     {
       summary: "Judge code with testCases",
+      description:
+        "Grade a snippet against an explicit list of test cases and return a summary: passed / total, " +
+        "a per-case verdict, and timing. Stateless. No authentication required. Public.\n\n" +
+        "Unlike `POST /exercise/:exerciseId/run`, the caller supplies the test cases.",
       body: z.object({
         code: z.string().openapi({
           example: 'print("Hello World")',
