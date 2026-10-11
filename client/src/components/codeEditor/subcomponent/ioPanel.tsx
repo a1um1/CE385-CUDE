@@ -3,6 +3,7 @@ import { useEditorContext } from "./editorContext";
 import styles from "../styles/ioPanel.module.css";
 import formatNstoMs from "#/lib/formatNs";
 import formatFileSize from "#/lib/formatSize";
+import TestResults from "./testResults";
 
 export default function IOPanel() {
   const {
@@ -13,6 +14,7 @@ export default function IOPanel() {
     runCode,
     layout: { panelLayout, currentIoLayout, handleIoLayoutChange },
     runResult,
+    testResults,
     disableOutput,
   } = useEditorContext();
 
@@ -69,17 +71,23 @@ export default function IOPanel() {
             >
               <label className={styles.editorLabel}>Output</label>
               <div>
-                <pre className={styles.stderr}>{stderr}</pre>
-                <pre>{stdout}</pre>
-                {runResult && (
-                  <pre>
-                    Exit with status {runResult.status} ({runResult.exitCode})<br />
-                    Time usage: {formatNstoMs(runResult.time)} ms
-                    <br />
-                    Memory usage: {formatFileSize(runResult.memory, "Bytes")} Mb
-                    <br />
-                    Peak Process: {runResult.procPeak}
-                  </pre>
+                {testResults ? (
+                  <TestResults results={testResults} />
+                ) : (
+                  <>
+                    <pre className={styles.stderr}>{stderr}</pre>
+                    <pre>{stdout}</pre>
+                    {runResult && (
+                      <pre>
+                        Exit with status {runResult.status} ({runResult.exitCode})<br />
+                        Time usage: {formatNstoMs(runResult.time)} ms
+                        <br />
+                        Memory usage: {formatFileSize(runResult.memory, "Bytes")} Mb
+                        <br />
+                        Peak Process: {runResult.procPeak}
+                      </pre>
+                    )}
+                  </>
                 )}
               </div>
             </Panel>

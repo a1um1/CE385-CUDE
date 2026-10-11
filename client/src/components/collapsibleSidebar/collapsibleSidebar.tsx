@@ -12,32 +12,33 @@ interface CollapsibleSidebarContextValue {
 
 const CollapsibleSidebarContext = createContext<CollapsibleSidebarContextValue | null>(null);
 
-/** Read the sidebar collapse state. Must be used inside `<CollapsibleSidebar>`. */
+/** Read the sidebar collapse state. Must be used inside `<CollapsibleSidebarProvider>`. */
 export function useCollapsibleSidebar() {
   const context = useContext(CollapsibleSidebarContext);
   if (!context) {
-    throw new Error("useCollapsibleSidebar must be used within <CollapsibleSidebar>");
+    throw new Error("useCollapsibleSidebar must be used within <CollapsibleSidebarProvider>");
   }
   return context;
 }
 
-interface CollapsibleSidebarProps {
+interface CollapsibleSidebarProviderProps {
   children: ReactNode;
   /** Controlled collapse state. Omit for uncontrolled. */
   collapsed?: boolean;
   defaultCollapsed?: boolean;
   onCollapsedChange?: (collapsed: boolean) => void;
-  className?: string;
 }
 
-/** Icon-only collapsible sidebar shell. Compose with `CollapsibleSidebarLabel`, `CollapsibleSidebarToggle` and `CollapsibleSidebarFooter`. */
-export function CollapsibleSidebar({
+/**
+ * Owns the collapse state. Wrap the sidebar and anything that toggles it
+ * (e.g. a header button) so they share one state.
+ */
+export function CollapsibleSidebarProvider({
   children,
   collapsed,
   defaultCollapsed = false,
   onCollapsedChange,
-  className,
-}: CollapsibleSidebarProps) {
+}: CollapsibleSidebarProviderProps) {
   const [uncontrolled, setUncontrolled] = useState(defaultCollapsed);
   const isCollapsed = collapsed ?? uncontrolled;
 
@@ -56,10 +57,24 @@ export function CollapsibleSidebar({
 
   return (
     <CollapsibleSidebarContext.Provider value={contextValue}>
-      <aside className={clsx(styles.sidebar, isCollapsed && styles.collapsed, className)}>
-        {children}
-      </aside>
+      {children}
     </CollapsibleSidebarContext.Provider>
+  );
+}
+
+interface CollapsibleSidebarProps {
+  children: ReactNode;
+  className?: string;
+}
+
+/** Icon-only collapsible sidebar rail. Reads its state from `CollapsibleSidebarProvider`. */
+export function CollapsibleSidebar({ children, className }: CollapsibleSidebarProps) {
+  const { collapsed } = useCollapsibleSidebar();
+
+  return (
+    <aside className={clsx(styles.sidebar, collapsed && styles.collapsed, className)}>
+      {children}
+    </aside>
   );
 }
 
@@ -78,13 +93,24 @@ export function CollapsibleSidebarFooter({ children }: { children: ReactNode }) 
 interface CollapsibleSidebarToggleProps {
   /** Text shown when expanded; also used as the tooltip. */
   label?: string;
+  /** Icon-only button, for use outside the rail (e.g. in a header). */
+  iconOnly?: boolean;
 }
 
 /** Button that flips the collapse state. */
 export function CollapsibleSidebarToggle({
   label = "Toggle sidebar",
+  iconOnly = false,
 }: CollapsibleSidebarToggleProps) {
   const { toggle } = useCollapsibleSidebar();
+
+  if (iconOnly) {
+    return (
+      <Button variant="ghost" icon onClick={toggle} title={label}>
+        <PanelLeftIcon />
+      </Button>
+    );
+  }
 
   return (
     <Button variant="ghost" block align="start" onClick={toggle} title={label}>

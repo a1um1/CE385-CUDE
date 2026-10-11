@@ -45,6 +45,7 @@ const lessonMeta = z.object({
 export const exerciseMeta = z.object({
   title: z.string(),
   type: z.enum(["normal", "code"]),
+  language: z.enum(["python", "c"]).default("python"),
   starterCode: z.string().optional(),
   testerCode: z.string().optional(),
   allowedFunctions: z.array(z.string()).default([]),
@@ -202,11 +203,13 @@ async function upsertExercise(
     where: { exerciseID: exercise.id },
     create: {
       exerciseID: exercise.id,
+      language: meta.language,
       starterCode: meta.starterCode,
       testerCode: meta.testerCode,
       allowedFunctions: meta.allowedFunctions,
     },
     update: {
+      language: meta.language,
       starterCode: meta.starterCode,
       testerCode: meta.testerCode,
       allowedFunctions: meta.allowedFunctions,

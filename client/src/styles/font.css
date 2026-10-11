@@ -9,6 +9,8 @@
   /* Style 2 */
   --font-web: "Geist Mono", "Google Sans", system-ui, sans-serif;
 
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
   /* Style 3 */
   /* --font-web: "Google Sans", system-ui, sans-serif; */
 }

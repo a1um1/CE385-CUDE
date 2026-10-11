@@ -13,6 +13,11 @@ const storageRoute = new CustomRouter({
   "/presign",
   {
     summary: "Presign a direct upload to object storage",
+    description:
+      "Create a short-lived presigned URL so the client can upload a file straight to object storage " +
+      "instead of through the API. Requires an authenticated user.\n\n" +
+      "Returns the upload URL and the object key. Send that key back to `POST /user/avatar` or " +
+      "`POST /user/background` to attach the file to the profile.",
     body: PresignUploadRequestSchema,
     response: PresignUploadResponseSchema,
   },
