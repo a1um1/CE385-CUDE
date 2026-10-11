@@ -158,7 +158,7 @@ const LessonHistory = () => {
 
   return (
     <div className="flex flex-col gap-2">
-      <h3 className="text-lg">ประวัติการเข้าเรียน</h3>
+      <h3 className="text-lg">ประวัติการเรียน</h3>
       {attempts.length === 0 ? (
         <p className="opacity-70">ยังไม่มีการส่งงาน</p>
       ) : (
