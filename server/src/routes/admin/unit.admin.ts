@@ -1,6 +1,7 @@
 import AdminUnitsController from "#/controller/admin/unit";
 import {
   AdminUnitCreateSchema,
+  AdminUnitUpdateSchema,
   AdminUnitListResponseSchema,
   AdminUnitQuerySchema,
   adminUnitSchema,
@@ -46,6 +47,21 @@ const adminUnitRouter = new CustomRouter({
     },
     async ({ body }) => {
       const controller = await AdminUnitsController.create(body);
+      return controller.JSON;
+    },
+  )
+  .put(
+    "/:id",
+    {
+      summary: "Update unit by ID",
+      params: z.object({
+        id: z.string().openapi({ example: "unit_id" }),
+      }),
+      body: AdminUnitUpdateSchema,
+      response: adminUnitSchema,
+    },
+    async ({ params, body }) => {
+      const controller = await AdminUnitsController.update(params.id, body);
       return controller.JSON;
     },
   );
