@@ -1,5 +1,6 @@
 import AdminUnitsController from "#/controller/admin/unit";
 import {
+  AdminUnitCreateSchema,
   AdminUnitListResponseSchema,
   AdminUnitQuerySchema,
   adminUnitSchema,
@@ -33,6 +34,18 @@ const adminUnitRouter = new CustomRouter({
     },
     async ({ params }) => {
       const controller = await AdminUnitsController.getById(params.id);
+      return controller.JSON;
+    },
+  )
+  .post(
+    "/",
+    {
+      summary: "Create a new unit",
+      body: AdminUnitCreateSchema,
+      response: adminUnitSchema,
+    },
+    async ({ body }) => {
+      const controller = await AdminUnitsController.create(body);
       return controller.JSON;
     },
   );
