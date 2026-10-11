@@ -3277,7 +3277,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["Lesson"][];
+                        "application/json": components["schemas"]["LessonWithStatus"][];
                     };
                 };
                 /** @description Validation error */
@@ -4928,12 +4928,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-11T07:12:32.508Z
+             * @example 2026-10-11T09:29:04.084Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-11T07:12:32.508Z
+             * @example 2026-10-11T09:29:04.085Z
              */
             updatedAt: string;
         };
@@ -5224,6 +5224,14 @@ export interface components {
                 unitID: string;
             }[];
         };
+        LessonWithStatus: components["schemas"]["Lesson"] & {
+            status: components["schemas"]["LessonStatus"];
+        };
+        /**
+         * @example AVAILABLE
+         * @enum {string}
+         */
+        LessonStatus: "AVAILABLE" | "PENDING" | "PASSED" | "FAILED" | "NOT_AVAILABLE";
         Lesson: {
             /**
              * Format: uuid

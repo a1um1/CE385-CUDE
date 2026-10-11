@@ -8,7 +8,7 @@ const meta: Meta<typeof Course> = {
   argTypes: {
     status: {
       control: "radio",
-      options: ["active", "completed", "locked"],
+      options: ["available", "ongoing", "passed", "failed", "unavailable"],
     },
     label: {
       control: "text",
@@ -21,7 +21,7 @@ type Story = StoryObj<typeof Course>;
 
 export const Default: Story = {
   args: {
-    status: "active",
+    status: "ongoing",
     label: "Subject",
   },
 };

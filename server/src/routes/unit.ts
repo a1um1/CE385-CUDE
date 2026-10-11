@@ -1,10 +1,14 @@
-import { LessonIncludeQuerySchema, LessonSchema } from "#/controller/lesson/lesson.schema";
+import LessonController from "#/controller/lesson";
+import {
+  LessonIncludeQuerySchema,
+  LessonWithStatusSchema,
+} from "#/controller/lesson/lesson.schema";
 import UnitController from "#/controller/unit";
 import { UnitIncludeQuerySchema, UnitSchema } from "#/controller/unit/unit.schema";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 
-const LessonListSchema = z.array(LessonSchema);
+const LessonListSchema = z.array(LessonWithStatusSchema);
 
 const unitRouter = new CustomRouter({
   prefix: "/unit",
@@ -36,10 +40,13 @@ const unitRouter = new CustomRouter({
       query: LessonIncludeQuerySchema,
       response: LessonListSchema,
     },
-    async ({ params, query }) => {
-      const unit = await UnitController.getById(params.unitId);
-      const lessons = await unit.getAllLesson(query.include);
-      return lessons.map((lesson) => lesson.JSON);
+    async ({ params, query, user }) => {
+      const lessons = await LessonController.getByUnitIdWithStatus(
+        params.unitId,
+        user.JSON.id,
+        query.include,
+      );
+      return lessons;
     },
   );
 
