@@ -61,6 +61,14 @@ export default class SessionController {
       };
     }
 
+    // 2. ต้องผ่านบทเรียนที่กำหนดไว้ก่อน และต้องอยู่ในช่วงเวลาที่เปิดให้เรียน
+    if (!(await lesson.meetsRequirements(props.UserID))) {
+      return {
+        status: "NOT_AVAILABLE",
+        isAvailable: false,
+      };
+    }
+
     return {
       status: "AVAILABLE",
       isAvailable: true,
@@ -70,7 +78,7 @@ export default class SessionController {
   static async createSession(props: { UserID: string; LessonID: string }): Promise<SessionObject> {
     const check = await this.enrollmentCheck(props);
     if (!check.isAvailable) {
-      throw new UserError(400, "User already has a pending session.");
+      throw new UserError(400, "Lesson is not available to start.");
     }
 
     const lesson = await lessonController.getById(props.LessonID);

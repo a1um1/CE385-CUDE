@@ -12,16 +12,34 @@ const [A, B, C] = [
   "01a1256e-6301-77ad-885b-0eb5c2a12c82",
 ];
 
-const fakeLesson = (id: string, name: string) =>
-  ({ id, name, unitID: UNIT, position: 0, XPgiven: 0, gemsGiven: 0 }) as unknown as Lesson;
+const fakeLesson = (id: string, name: string, overrides: Partial<Lesson> = {}) =>
+  ({
+    id,
+    name,
+    unitID: UNIT,
+    position: 0,
+    XPgiven: 0,
+    gemsGiven: 0,
+    startAt: null,
+    endAt: null,
+    ...overrides,
+  }) as unknown as Lesson;
 
 const mockLessons = (...ids: string[]) =>
   mockDB.lesson.findMany.mockResolvedValueOnce(ids.map((id) => fakeLesson(id, id)));
+
+/** No lesson requires another unless a test says so. */
+const mockNoPrerequisites = () =>
+  mockDB.lessonPrerequisite.findMany.mockResolvedValueOnce([] as never);
+
+const mockPrerequisites = (rows: { lessonID: string; prerequisiteLessonID: string }[]) =>
+  mockDB.lessonPrerequisite.findMany.mockResolvedValueOnce(rows as never);
 
 describe("Lesson Controller status list", () => {
   it("grades only the latest submitted attempt", async () => {
     mockLessons(A, C);
     mockDB.sessions.findFirst.mockResolvedValueOnce(null);
+    mockNoPrerequisites();
     mockDB.sessions.findMany.mockResolvedValueOnce([
       // A was failed first and passed later, so only the second attempt counts.
       { LessonID: A, submissions: [{ ok: false }] },
@@ -43,6 +61,7 @@ describe("Lesson Controller status list", () => {
   it("keeps an unsubmitted lesson available", async () => {
     mockLessons(A);
     mockDB.sessions.findFirst.mockResolvedValueOnce(null);
+    mockNoPrerequisites();
     mockDB.sessions.findMany.mockResolvedValueOnce([]);
     mockDB.exercise.findMany.mockResolvedValueOnce([]);
 
@@ -54,6 +73,7 @@ describe("Lesson Controller status list", () => {
   it("keeps results and locks only the untouched lessons while a session is open", async () => {
     mockLessons(A, B, C);
     mockDB.sessions.findFirst.mockResolvedValueOnce({ LessonID: B } as never);
+    mockNoPrerequisites();
     mockDB.sessions.findMany.mockResolvedValueOnce([
       { LessonID: A, submissions: [{ ok: true }] },
     ] as never);
@@ -63,5 +83,59 @@ describe("Lesson Controller status list", () => {
 
     // A was submitted, B is open, C was never attempted.
     expect(lessons.map((lesson) => lesson.status)).toEqual(["PASSED", "PENDING", "NOT_AVAILABLE"]);
+  });
+
+  it("locks a lesson until its prerequisite is passed", async () => {
+    mockLessons(A, B);
+    mockDB.sessions.findFirst.mockResolvedValueOnce(null);
+    mockPrerequisites([{ lessonID: B, prerequisiteLessonID: A }]);
+    mockDB.sessions.findMany.mockResolvedValueOnce([]);
+    mockDB.exercise.findMany.mockResolvedValueOnce([{ lessonID: A }] as never);
+
+    const lessons = await LessonController.getByUnitIdWithStatus(UNIT, USER);
+
+    expect(lessons.map((lesson) => lesson.status)).toEqual(["AVAILABLE", "NOT_AVAILABLE"]);
+  });
+
+  it("unlocks a lesson once its prerequisite is passed", async () => {
+    mockLessons(A, B);
+    mockDB.sessions.findFirst.mockResolvedValueOnce(null);
+    mockPrerequisites([{ lessonID: B, prerequisiteLessonID: A }]);
+    mockDB.sessions.findMany.mockResolvedValueOnce([
+      { LessonID: A, submissions: [{ ok: true }] },
+    ] as never);
+    mockDB.exercise.findMany.mockResolvedValueOnce([{ lessonID: A }] as never);
+
+    const lessons = await LessonController.getByUnitIdWithStatus(UNIT, USER);
+
+    expect(lessons.map((lesson) => lesson.status)).toEqual(["PASSED", "AVAILABLE"]);
+  });
+
+  it("locks a lesson before its start time", async () => {
+    mockDB.lesson.findMany.mockResolvedValueOnce([
+      fakeLesson(A, A, { startAt: new Date(Date.now() + 86_400_000) }),
+    ]);
+    mockDB.sessions.findFirst.mockResolvedValueOnce(null);
+    mockNoPrerequisites();
+    mockDB.sessions.findMany.mockResolvedValueOnce([]);
+    mockDB.exercise.findMany.mockResolvedValueOnce([]);
+
+    const lessons = await LessonController.getByUnitIdWithStatus(UNIT, USER);
+
+    expect(lessons.map((lesson) => lesson.status)).toEqual(["NOT_AVAILABLE"]);
+  });
+
+  it("locks a lesson after its end time", async () => {
+    mockDB.lesson.findMany.mockResolvedValueOnce([
+      fakeLesson(A, A, { endAt: new Date(Date.now() - 86_400_000) }),
+    ]);
+    mockDB.sessions.findFirst.mockResolvedValueOnce(null);
+    mockNoPrerequisites();
+    mockDB.sessions.findMany.mockResolvedValueOnce([]);
+    mockDB.exercise.findMany.mockResolvedValueOnce([]);
+
+    const lessons = await LessonController.getByUnitIdWithStatus(UNIT, USER);
+
+    expect(lessons.map((lesson) => lesson.status)).toEqual(["NOT_AVAILABLE"]);
   });
 });

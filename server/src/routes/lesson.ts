@@ -41,10 +41,12 @@ const lessonRouterInstance = new CustomRouter({
       summary: "Check if a lesson is available for enrollment",
       description:
         "Check whether the authenticated user can start (enroll in) this lesson right now.\n\n" +
-        "A student may have **only one open session at a time**. This endpoint reports:\n\n" +
+        "A student may have **only one open session at a time**, and a lesson only opens inside its " +
+        "`startAt`/`endAt` window and after every prerequisite lesson is passed. This endpoint reports:\n\n" +
         "- `AVAILABLE` — no session is open, the student can start this lesson\n" +
         "- `PENDING` — this is the lesson the student is currently working on\n" +
-        "- `NOT_AVAILABLE` — another lesson has an open session and blocks this one\n\n" +
+        "- `NOT_AVAILABLE` — blocked: another lesson has an open session, the time window is closed, " +
+        "or a prerequisite is not passed\n\n" +
         "`isAvailable` is the boolean form of the same answer.",
       params: z.object({
         lessonId: z.uuid().openapi({ example: "lesson_id" }),

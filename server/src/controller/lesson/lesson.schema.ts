@@ -8,6 +8,9 @@ export const LessonSchema = z
     id: z.uuidv7().openapi({ example: "lesson_id" }),
     name: z.string().openapi({ example: "lesson_name" }),
     unitID: z.uuidv7().openapi({ example: "unit_id" }),
+    /** Both null = always open. Used to tell the student when a lesson unlocks. */
+    startAt: z.date().nullable().openapi({ example: "2026-10-11T00:00:00Z" }),
+    endAt: z.date().nullable().openapi({ example: "2026-11-11T00:00:00Z" }),
     unit: z
       .object({
         id: z.uuidv7().openapi({ example: "unit_id" }),
