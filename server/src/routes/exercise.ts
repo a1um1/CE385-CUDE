@@ -49,7 +49,7 @@ const exerciseRouter = new CustomRouter({
       const testCases = await exercise.getAllTestCase(true);
       const codeGrader = new CodeGrader();
       const results = await codeGrader.grade({
-        code: body.code,
+        code: exercise.getRunnableCode(body.code),
         language: language.data,
         testCases: testCases.map((testCase) => testCase.JSON),
       });

@@ -1,7 +1,9 @@
 import Button from "#/components/button";
+import ButtonLink from "#/components/buttonLink";
 import CodeEditor from "#/components/codeEditor";
 import { CollapsibleSidebarToggle } from "#/components/collapsibleSidebar";
 import Markdown from "#/components/markdown";
+import { Scoring } from "#/components/scoring";
 import Skeleton from "#/components/skeleton";
 import type { components } from "#/data/base/openapi";
 import {
@@ -79,12 +81,42 @@ function CodeEditorPane({
   );
 }
 
+/** A closed session no longer shows the saved code, only how the exercise went. */
+function ExerciseResultPane({
+  sessionId,
+  exercise,
+  lessonId,
+}: {
+  sessionId: string;
+  exercise: Exercise;
+  lessonId?: string;
+}) {
+  const { data: submission } = useQuery(exerciseSubmissionQuery(sessionId, exercise.id));
+  const status = submission?.isGraded ? (submission.ok ? "success" : "fail") : "inProgress";
+  const label = submission?.isGraded ? (submission.ok ? "ผ่าน" : "ไม่ผ่าน") : "ยังไม่ได้ส่งคำตอบ";
+
+  return (
+    <div className="flex-1 min-w-0 border-l-2 border-border p-6 flex flex-col items-start gap-4">
+      <Scoring status={status} label={label} />
+      <p className="opacity-70">ส่งงานแล้ว จึงไม่แสดงโค้ดที่บันทึกไว้</p>
+      <ButtonLink
+        variant="secondary"
+        to="/lesson/$lessonId/$sessionId"
+        params={{ lessonId: lessonId ?? "", sessionId }}
+      >
+        ดูคะแนนทั้งหมด
+      </ButtonLink>
+    </div>
+  );
+}
+
 function RouteComponent() {
   const exercise = Route.useLoaderData();
   const { id, exerciseId } = Route.useParams();
   const session = useLoaderData({ from: "/(authed)/session/$id" });
   const lesson = session?.lesson;
   const navigate = useNavigate();
+  const submitted = session?.status !== "PENDING";
 
   const exercises = useExerciseFromLessonQuery(lesson?.id);
   const index = exercises.data?.findIndex((item) => item.id === exerciseId) ?? -1;
@@ -116,6 +148,13 @@ function RouteComponent() {
   }, [exercise.id]);
 
   const handleContinue = () => {
+    if (submitted) {
+      navigate({
+        to: "/lesson/$lessonId/$sessionId",
+        params: { lessonId: lesson?.id ?? "", sessionId: id },
+      });
+      return;
+    }
     if (!next) {
       navigate({ to: "/session/$id/summary", params: { id } });
       return;
@@ -147,18 +186,30 @@ function RouteComponent() {
             </div>
           </div>
         </div>
-        {exercise.type === "CODE" && (
-          <CodeEditorPane
-            key={exercise.id}
-            sessionId={id}
-            exercise={exercise}
-            canSave={session?.status === "PENDING"}
-          />
-        )}
+        {exercise.type === "CODE" &&
+          (submitted ? (
+            <ExerciseResultPane
+              key={exercise.id}
+              sessionId={id}
+              exercise={exercise}
+              lessonId={lesson?.id}
+            />
+          ) : (
+            <CodeEditorPane
+              key={exercise.id}
+              sessionId={id}
+              exercise={exercise}
+              canSave={session?.status === "PENDING"}
+            />
+          ))}
       </div>
       <div className="border-t-2 border-border p-4 flex justify-end bg-background">
-        <Button variant="primary" onClick={handleContinue} disabled={mustRead && !atEnd}>
-          {next ? "ดำเนินการต่อ" : "สรุปบทเรียน"}
+        <Button
+          variant="primary"
+          onClick={handleContinue}
+          disabled={!submitted && mustRead && !atEnd}
+        >
+          {submitted ? "ดูคะแนน" : next ? "ดำเนินการต่อ" : "สรุปบทเรียน"}
         </Button>
       </div>
     </div>

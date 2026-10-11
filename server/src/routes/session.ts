@@ -1,12 +1,10 @@
 import SessionController from "#/controller/learnSession";
-import {
-  getExerciseSubmission,
-  saveExerciseSubmission,
-} from "#/controller/learnSession/submission";
+import SubmissionController from "#/controller/learnSession/submission";
 import {
   SessionIncludeQuerySchema,
   SessionObjectSchema,
   SubmissionSchema,
+  SubmitSessionResponseSchema,
 } from "#/controller/learnSession/session.schema";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
@@ -112,12 +110,14 @@ const learnSessionRouter = new CustomRouter({
       }),
       response: SubmissionSchema.nullable(),
     },
-    async ({ params, user }) =>
-      await getExerciseSubmission({
+    async ({ params, user }) => {
+      const submission = await SubmissionController.getByExercise({
         SessionID: params.SessionID,
         userID: user.JSON.id,
         exerciseID: params.exerciseId,
-      }),
+      });
+      return submission?.JSON ?? null;
+    },
   )
   .put(
     "/:SessionID/exercise/:exerciseId",
@@ -132,12 +132,29 @@ const learnSessionRouter = new CustomRouter({
       }),
       response: SubmissionSchema,
     },
-    async ({ params, body, user }) =>
-      await saveExerciseSubmission({
+    async ({ params, body, user }) => {
+      const submission = await SubmissionController.save({
         SessionID: params.SessionID,
         userID: user.JSON.id,
         exerciseID: params.exerciseId,
         content: { code: body.code },
+      });
+      return submission.JSON;
+    },
+  )
+  .post(
+    "/:SessionID/submit",
+    {
+      summary: "Submit a session: grade every saved answer and close it",
+      params: z.object({
+        SessionID: z.uuidv7().openapi({ example: "session_id" }),
+      }),
+      response: SubmitSessionResponseSchema,
+    },
+    async ({ params, user }) =>
+      await SubmissionController.submitSession({
+        SessionID: params.SessionID,
+        userID: user.JSON.id,
       }),
   );
 

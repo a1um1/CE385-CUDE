@@ -63,6 +63,17 @@ export const useAbortLearnSessionMutation = () => {
   });
 };
 
+/** Every session of the student; used to find their finished run of a lesson. */
+export const useLearnSessionsQuery = () =>
+  useQuery({
+    queryKey: ["learn_sessions"],
+    queryFn: async () => {
+      const { data, error } = await APIclient.GET("/session");
+      if (error) throw error;
+      return data;
+    },
+  });
+
 export const sessionByIdQuery = (sessionId?: string | null, include?: SessionInclude) =>
   queryOptions({
     queryKey: ["session", sessionId, include],
@@ -125,6 +136,29 @@ export const useSaveExerciseSubmission = (sessionId: string, exerciseId: string)
     },
     onSuccess: (data) => {
       queryClient.setQueryData(exerciseSubmissionQuery(sessionId, exerciseId).queryKey, data);
+    },
+  });
+};
+
+export const useSubmitLearnSessionMutation = (sessionId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["submit_learn_session", sessionId],
+    mutationFn: async () => {
+      const { data, error } = await APIclient.POST("/session/{SessionID}/submit", {
+        params: {
+          path: {
+            SessionID: sessionId,
+          },
+        },
+      });
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["session", sessionId] });
+      await queryClient.invalidateQueries({ queryKey: ["pending_learn_session"] });
+      await queryClient.invalidateQueries({ queryKey: ["learn_sessions"] });
     },
   });
 };
