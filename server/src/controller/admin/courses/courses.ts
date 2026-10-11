@@ -62,8 +62,10 @@ export default class AdminCoursesController {
   static async create(
     data: AdminCourseCreateSchema & { createdByID: string },
   ): Promise<AdminCoursesController> {
+    // shortcut: position required by DB (no default); append after max
+    const { _max } = await db.course.aggregate({ _max: { position: true } });
     const course = await db.course.create({
-      data,
+      data: { ...data, position: (_max.position ?? -1) + 1 },
     });
     return new AdminCoursesController(course);
   }

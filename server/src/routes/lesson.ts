@@ -1,9 +1,12 @@
 import SessionController from "#/controller/learnSession";
 import { enrollmentAvailabilitySchema } from "#/controller/learnSession/session";
+import { ExerciseSchema } from "#/controller/exercise";
 import LessonController from "#/controller/lesson";
 import { LessonIncludeQuerySchema, LessonSchema } from "#/controller/lesson/lesson.schema";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
+
+const ExerciseListSchema = z.array(ExerciseSchema);
 
 const lessonRouterInstance = new CustomRouter({
   prefix: "/lesson",
@@ -40,6 +43,21 @@ const lessonRouterInstance = new CustomRouter({
         UserID: user.JSON.id,
       });
       return isAvailable;
+    },
+  )
+  .get(
+    "/:lessonId/exercise",
+    {
+      summary: "List exercises of a lesson",
+      params: z.object({
+        lessonId: z.uuid().openapi({ example: "lesson_id" }),
+      }),
+      response: ExerciseListSchema,
+    },
+    async ({ params }) => {
+      const lesson = await LessonController.getById(params.lessonId);
+      const exercises = await lesson.getAllExercise();
+      return exercises.map((exercise) => exercise.JSON);
     },
   );
 

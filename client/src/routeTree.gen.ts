@@ -21,7 +21,7 @@ import { Route as authedbaseIndexRouteImport } from './routes/(authed)/(base)/in
 import { Route as authedbaseAccountRouteRouteImport } from './routes/(authed)/(base)/account/route'
 import { Route as authedbasePlayRouteImport } from './routes/(authed)/(base)/play'
 import { Route as authedbasePlayGraderRouteImport } from './routes/(authed)/(base)/play-grader'
-import { Route as authedSessionIdRouteImport } from './routes/(authed)/session/$id'
+import { Route as authedSessionIdRouteRouteImport } from './routes/(authed)/session/$id/route'
 import { Route as AdminCourseIndexRouteImport } from './routes/admin/course/index'
 import { Route as AdminCourseIdRouteImport } from './routes/admin/course/$id'
 import { Route as AdminCourseCreateRouteImport } from './routes/admin/course/create'
@@ -32,6 +32,8 @@ import { Route as authedbaseAccountSecurityRouteImport } from './routes/(authed)
 import { Route as authedbaseAccountTransactionsRouteImport } from './routes/(authed)/(base)/account/transactions'
 import { Route as authedbaseLessonLessonIdRouteImport } from './routes/(authed)/(base)/lesson/$lessonId'
 import { Route as authedbaseProfileUsernameRouteImport } from './routes/(authed)/(base)/profile/$username'
+import { Route as authedSessionIdIndexRouteImport } from './routes/(authed)/session/$id/index'
+import { Route as authedSessionIdExerciseIdRouteImport } from './routes/(authed)/session/$id/$exerciseId'
 
 const authedRouteRoute = authedRouteRouteImport.update({
   id: '/(authed)',
@@ -91,7 +93,7 @@ const authedbasePlayGraderRoute = authedbasePlayGraderRouteImport.update({
   path: '/play-grader',
   getParentRoute: () => authedbaseRouteRoute,
 } as any)
-const authedSessionIdRoute = authedSessionIdRouteImport.update({
+const authedSessionIdRouteRoute = authedSessionIdRouteRouteImport.update({
   id: '/session/$id',
   path: '/session/$id',
   getParentRoute: () => authedRouteRoute,
@@ -150,6 +152,17 @@ const authedbaseProfileUsernameRoute =
     path: '/profile/$username',
     getParentRoute: () => authedbaseRouteRoute,
   } as any)
+const authedSessionIdIndexRoute = authedSessionIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => authedSessionIdRouteRoute,
+} as any)
+const authedSessionIdExerciseIdRoute =
+  authedSessionIdExerciseIdRouteImport.update({
+    id: '/$exerciseId',
+    path: '/$exerciseId',
+    getParentRoute: () => authedSessionIdRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteRouteWithChildren
@@ -159,9 +172,9 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/auth/': typeof AuthIndexRoute
   '/account': typeof authedbaseAccountRouteRouteWithChildren
+  '/session/$id': typeof authedSessionIdRouteRouteWithChildren
   '/play': typeof authedbasePlayRoute
   '/play-grader': typeof authedbasePlayGraderRoute
-  '/session/$id': typeof authedSessionIdRoute
   '/admin/course/$id': typeof AdminCourseIdRoute
   '/admin/course/create': typeof AdminCourseCreateRoute
   '/admin/user/$id': typeof AdminUserIdRoute
@@ -172,7 +185,9 @@ export interface FileRoutesByFullPath {
   '/account/transactions': typeof authedbaseAccountTransactionsRoute
   '/lesson/$lessonId': typeof authedbaseLessonLessonIdRoute
   '/profile/$username': typeof authedbaseProfileUsernameRoute
+  '/session/$id/$exerciseId': typeof authedSessionIdExerciseIdRoute
   '/account/': typeof authedbaseAccountIndexRoute
+  '/session/$id/': typeof authedSessionIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/auth/signin': typeof AuthSigninRoute
@@ -181,7 +196,6 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthIndexRoute
   '/play': typeof authedbasePlayRoute
   '/play-grader': typeof authedbasePlayGraderRoute
-  '/session/$id': typeof authedSessionIdRoute
   '/admin/course/$id': typeof AdminCourseIdRoute
   '/admin/course/create': typeof AdminCourseCreateRoute
   '/admin/user/$id': typeof AdminUserIdRoute
@@ -192,7 +206,9 @@ export interface FileRoutesByTo {
   '/account/transactions': typeof authedbaseAccountTransactionsRoute
   '/lesson/$lessonId': typeof authedbaseLessonLessonIdRoute
   '/profile/$username': typeof authedbaseProfileUsernameRoute
+  '/session/$id/$exerciseId': typeof authedSessionIdExerciseIdRoute
   '/account': typeof authedbaseAccountIndexRoute
+  '/session/$id': typeof authedSessionIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -205,9 +221,9 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/auth/': typeof AuthIndexRoute
   '/(authed)/(base)/account': typeof authedbaseAccountRouteRouteWithChildren
+  '/(authed)/session/$id': typeof authedSessionIdRouteRouteWithChildren
   '/(authed)/(base)/play': typeof authedbasePlayRoute
   '/(authed)/(base)/play-grader': typeof authedbasePlayGraderRoute
-  '/(authed)/session/$id': typeof authedSessionIdRoute
   '/admin/course/$id': typeof AdminCourseIdRoute
   '/admin/course/create': typeof AdminCourseCreateRoute
   '/admin/user/$id': typeof AdminUserIdRoute
@@ -218,7 +234,9 @@ export interface FileRoutesById {
   '/(authed)/(base)/account/transactions': typeof authedbaseAccountTransactionsRoute
   '/(authed)/(base)/lesson/$lessonId': typeof authedbaseLessonLessonIdRoute
   '/(authed)/(base)/profile/$username': typeof authedbaseProfileUsernameRoute
+  '/(authed)/session/$id/$exerciseId': typeof authedSessionIdExerciseIdRoute
   '/(authed)/(base)/account/': typeof authedbaseAccountIndexRoute
+  '/(authed)/session/$id/': typeof authedSessionIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -230,9 +248,9 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/auth/'
     | '/account'
+    | '/session/$id'
     | '/play'
     | '/play-grader'
-    | '/session/$id'
     | '/admin/course/$id'
     | '/admin/course/create'
     | '/admin/user/$id'
@@ -243,7 +261,9 @@ export interface FileRouteTypes {
     | '/account/transactions'
     | '/lesson/$lessonId'
     | '/profile/$username'
+    | '/session/$id/$exerciseId'
     | '/account/'
+    | '/session/$id/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/auth/signin'
@@ -252,7 +272,6 @@ export interface FileRouteTypes {
     | '/auth'
     | '/play'
     | '/play-grader'
-    | '/session/$id'
     | '/admin/course/$id'
     | '/admin/course/create'
     | '/admin/user/$id'
@@ -263,7 +282,9 @@ export interface FileRouteTypes {
     | '/account/transactions'
     | '/lesson/$lessonId'
     | '/profile/$username'
+    | '/session/$id/$exerciseId'
     | '/account'
+    | '/session/$id'
   id:
     | '__root__'
     | '/(authed)'
@@ -275,9 +296,9 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/auth/'
     | '/(authed)/(base)/account'
+    | '/(authed)/session/$id'
     | '/(authed)/(base)/play'
     | '/(authed)/(base)/play-grader'
-    | '/(authed)/session/$id'
     | '/admin/course/$id'
     | '/admin/course/create'
     | '/admin/user/$id'
@@ -288,7 +309,9 @@ export interface FileRouteTypes {
     | '/(authed)/(base)/account/transactions'
     | '/(authed)/(base)/lesson/$lessonId'
     | '/(authed)/(base)/profile/$username'
+    | '/(authed)/session/$id/$exerciseId'
     | '/(authed)/(base)/account/'
+    | '/(authed)/session/$id/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -387,7 +410,7 @@ declare module '@tanstack/react-router' {
       id: '/(authed)/session/$id'
       path: '/session/$id'
       fullPath: '/session/$id'
-      preLoaderRoute: typeof authedSessionIdRouteImport
+      preLoaderRoute: typeof authedSessionIdRouteRouteImport
       parentRoute: typeof authedRouteRoute
     }
     '/admin/course/': {
@@ -460,6 +483,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authedbaseProfileUsernameRouteImport
       parentRoute: typeof authedbaseRouteRoute
     }
+    '/(authed)/session/$id/': {
+      id: '/(authed)/session/$id/'
+      path: '/'
+      fullPath: '/session/$id/'
+      preLoaderRoute: typeof authedSessionIdIndexRouteImport
+      parentRoute: typeof authedSessionIdRouteRoute
+    }
+    '/(authed)/session/$id/$exerciseId': {
+      id: '/(authed)/session/$id/$exerciseId'
+      path: '/$exerciseId'
+      fullPath: '/session/$id/$exerciseId'
+      preLoaderRoute: typeof authedSessionIdExerciseIdRouteImport
+      parentRoute: typeof authedSessionIdRouteRoute
+    }
   }
 }
 
@@ -503,14 +540,27 @@ const authedbaseRouteRouteWithChildren = authedbaseRouteRoute._addFileChildren(
   authedbaseRouteRouteChildren,
 )
 
+interface authedSessionIdRouteRouteChildren {
+  authedSessionIdExerciseIdRoute: typeof authedSessionIdExerciseIdRoute
+  authedSessionIdIndexRoute: typeof authedSessionIdIndexRoute
+}
+
+const authedSessionIdRouteRouteChildren: authedSessionIdRouteRouteChildren = {
+  authedSessionIdExerciseIdRoute: authedSessionIdExerciseIdRoute,
+  authedSessionIdIndexRoute: authedSessionIdIndexRoute,
+}
+
+const authedSessionIdRouteRouteWithChildren =
+  authedSessionIdRouteRoute._addFileChildren(authedSessionIdRouteRouteChildren)
+
 interface authedRouteRouteChildren {
   authedbaseRouteRoute: typeof authedbaseRouteRouteWithChildren
-  authedSessionIdRoute: typeof authedSessionIdRoute
+  authedSessionIdRouteRoute: typeof authedSessionIdRouteRouteWithChildren
 }
 
 const authedRouteRouteChildren: authedRouteRouteChildren = {
   authedbaseRouteRoute: authedbaseRouteRouteWithChildren,
-  authedSessionIdRoute: authedSessionIdRoute,
+  authedSessionIdRouteRoute: authedSessionIdRouteRouteWithChildren,
 }
 
 const authedRouteRouteWithChildren = authedRouteRoute._addFileChildren(
