@@ -12,6 +12,7 @@ import {
   useStartLearnSessionMutation,
 } from "#/data/learnSession.data";
 import { useEnrollmentAvailability } from "#/data/lesson.data";
+import formatElapsedTime from "#/lib/elapsedTime";
 import { formatPercent } from "#/lib/formatNumber";
 import formatRelativeTime from "#/lib/relativeTime";
 import { createFileRoute, Link, useLoaderData } from "@tanstack/react-router";
@@ -126,6 +127,7 @@ const useLessonResults = () => {
     .map((session) => ({
       id: session.id,
       createdAt: session.createdAt,
+      updatedAt: session.updatedAt,
       cancelled: session.status === "CANCELLED",
       passed: session.submissions?.filter((submission) => submission.ok).length ?? 0,
     }));
@@ -168,8 +170,12 @@ const LessonHistory = () => {
                 to="/lesson/$lessonId/$sessionId"
                 params={{ lessonId: lesson.id, sessionId: attempt.id }}
               >
-                <span className="flex-1">ครั้งที่ {attempts.length - index}</span>
-                <span className="opacity-70">{formatRelativeTime(attempt.createdAt)}</span>
+                <span className="flex flex-1 flex-col">
+                  <span>ครั้งที่ {attempts.length - index}</span>
+                  <span className="text-sm opacity-70">
+                    {`${formatRelativeTime(attempt.createdAt)} · ใช้เวลา ${formatElapsedTime(attempt.createdAt, attempt.updatedAt)}`}
+                  </span>
+                </span>
                 <Badge>{attempt.cancelled ? "ละทิ้ง" : formatPercent(attempt.passed, total)}</Badge>
               </Link>
             </li>

@@ -20,24 +20,32 @@ export default function ExerciseList({ items, isLoading, sessionId }: ExerciseLi
   if (isLoading) return <Skeleton className="h-14" />;
 
   return (
-    <ol className="flex flex-col gap-2">
-      {items?.map((item, index) => (
-        <li key={item.id} className="flex items-center gap-3 border border-border px-4 py-3">
-          <span className="opacity-50">{index + 1}.</span>
-          {sessionId ? (
-            <Link
-              className="flex-1"
-              to="/session/$id/$exerciseId"
-              params={{ id: sessionId, exerciseId: item.id }}
-            >
-              {item.name}
-            </Link>
-          ) : (
+    <ol className="flex flex-col">
+      {items?.map((item, index) => {
+        const row = (
+          <>
+            <span className="opacity-50">{index + 1}.</span>
             <span className="flex-1">{item.name}</span>
-          )}
-          {item.badge && <Badge color={item.badge.color}>{item.badge.label}</Badge>}
-        </li>
-      ))}
+            {item.badge && <Badge color={item.badge.color}>{item.badge.label}</Badge>}
+          </>
+        );
+
+        return (
+          <li key={item.id} className="border-b border-border">
+            {sessionId ? (
+              <Link
+                className="flex items-center gap-4 p-4 hover:bg-gray-500/10"
+                to="/session/$id/$exerciseId"
+                params={{ id: sessionId, exerciseId: item.id }}
+              >
+                {row}
+              </Link>
+            ) : (
+              <div className="flex items-center gap-4 p-4">{row}</div>
+            )}
+          </li>
+        );
+      })}
     </ol>
   );
 }
