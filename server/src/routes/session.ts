@@ -1,7 +1,12 @@
 import SessionController from "#/controller/learnSession";
 import {
+  getExerciseSubmission,
+  saveExerciseSubmission,
+} from "#/controller/learnSession/submission";
+import {
   SessionIncludeQuerySchema,
   SessionObjectSchema,
+  SubmissionSchema,
 } from "#/controller/learnSession/session.schema";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
@@ -96,6 +101,44 @@ const learnSessionRouter = new CustomRouter({
       await session.cancel();
       return { message: "Session cancelled successfully." };
     },
+  )
+  .get(
+    "/:SessionID/exercise/:exerciseId",
+    {
+      summary: "Get the saved answer for an exercise in a session",
+      params: z.object({
+        SessionID: z.uuidv7().openapi({ example: "session_id" }),
+        exerciseId: z.uuid().openapi({ example: "exercise_id" }),
+      }),
+      response: SubmissionSchema.nullable(),
+    },
+    async ({ params, user }) =>
+      await getExerciseSubmission({
+        SessionID: params.SessionID,
+        userID: user.JSON.id,
+        exerciseID: params.exerciseId,
+      }),
+  )
+  .put(
+    "/:SessionID/exercise/:exerciseId",
+    {
+      summary: "Save the answer for an exercise in a session",
+      params: z.object({
+        SessionID: z.uuidv7().openapi({ example: "session_id" }),
+        exerciseId: z.uuid().openapi({ example: "exercise_id" }),
+      }),
+      body: z.object({
+        code: z.string().openapi({ example: 'print("hello")' }),
+      }),
+      response: SubmissionSchema,
+    },
+    async ({ params, body, user }) =>
+      await saveExerciseSubmission({
+        SessionID: params.SessionID,
+        userID: user.JSON.id,
+        exerciseID: params.exerciseId,
+        content: { code: body.code },
+      }),
   );
 
 export const learnSessionRoute = learnSessionRouter.route;

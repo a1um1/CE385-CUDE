@@ -1,6 +1,7 @@
 import { APIclient } from "#/data/base/baseAPI";
+import type { ExtractRequestBody } from "#/data/base/apiUtils.type";
 import type { paths } from "#/data/base/openapi";
-import { queryOptions, useMutation, useQuery } from "@tanstack/react-query";
+import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 
 type SessionInclude = NonNullable<
@@ -82,3 +83,48 @@ export const sessionByIdQuery = (sessionId?: string | null, include?: SessionInc
     },
     enabled: Boolean(sessionId),
   });
+
+/** The student's saved answer for one exercise of a session (`null` when never saved). */
+export const exerciseSubmissionQuery = (sessionId?: string | null, exerciseId?: string | null) =>
+  queryOptions({
+    queryKey: ["session_submission", sessionId, exerciseId],
+    queryFn: async () => {
+      if (!sessionId || !exerciseId) throw new Error("Session and exercise IDs are required.");
+      const { data, error } = await APIclient.GET("/session/{SessionID}/exercise/{exerciseId}", {
+        params: {
+          path: {
+            SessionID: sessionId,
+            exerciseId,
+          },
+        },
+      });
+      if (error) throw error;
+      return data;
+    },
+    enabled: Boolean(sessionId && exerciseId),
+  });
+
+export const useSaveExerciseSubmission = (sessionId: string, exerciseId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["save_submission", sessionId, exerciseId],
+    mutationFn: async (
+      body: ExtractRequestBody<"/session/{SessionID}/exercise/{exerciseId}", "put">,
+    ) => {
+      const { data, error } = await APIclient.PUT("/session/{SessionID}/exercise/{exerciseId}", {
+        params: {
+          path: {
+            SessionID: sessionId,
+            exerciseId,
+          },
+        },
+        body,
+      });
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(exerciseSubmissionQuery(sessionId, exerciseId).queryKey, data);
+    },
+  });
+};

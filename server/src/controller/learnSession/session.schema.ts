@@ -40,6 +40,21 @@ export const SessionObjectSchema = z.object({
 
 export type SessionObject = zod.infer<typeof SessionObjectSchema>;
 
+/** Shape of `Submission.content`; the only answer a student can save today is code. */
+export const SubmissionContentSchema = z.object({
+  code: z.string().openapi({ example: 'print("hello")' }),
+});
+
+export const SubmissionSchema = z
+  .object({
+    id: z.uuidv7().openapi({ example: "submission_id" }),
+    exerciseID: z.uuidv7().openapi({ example: "exercise_id" }),
+    content: SubmissionContentSchema,
+  })
+  .openapi("Submission");
+
+export type SubmissionResponse = zod.infer<typeof SubmissionSchema>;
+
 /** Session row as stored, plus relations added by `?include=`. */
 export type SessionData = Sessions & {
   lesson?: Lesson & { unit?: Unit & { course?: Course } };

@@ -9,7 +9,9 @@ import {
   useExerciseFromLessonQuery,
   useRunExercise,
 } from "#/data/exercise.data";
+import { exerciseSubmissionQuery, useSaveExerciseSubmission } from "#/data/learnSession.data";
 import { createFileRoute, Link, useLoaderData, useNavigate } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 
 type Exercise = components["schemas"]["Exercise"];
@@ -18,22 +20,59 @@ export const Route = createFileRoute("/(authed)/session/$id/$exerciseId")({
   component: RouteComponent,
   loader: async ({ params, context }) => {
     const exercise = await context.queryClient.query(exerciseQueryOptions(params.exerciseId));
+    // Prefetch the draft so the editor opens on the saved code, not on the starter code.
+    await context.queryClient.query(exerciseSubmissionQuery(params.id, params.exerciseId));
     return exercise;
   },
 });
 
-function CodeEditorPane({ exercise }: { exercise: Exercise }) {
-  const [code, setCode] = useState(exercise.codeExercise?.starterCode ?? "");
+function CodeEditorPane({
+  sessionId,
+  exercise,
+  canSave,
+}: {
+  sessionId: string;
+  exercise: Exercise;
+  canSave: boolean;
+}) {
+  const { data: submission } = useQuery(exerciseSubmissionQuery(sessionId, exercise.id));
+  const [code, setCode] = useState(
+    submission?.content.code ?? exercise.codeExercise?.starterCode ?? "",
+  );
   const runExercise = useRunExercise(exercise.id);
+  const saveSubmission = useSaveExerciseSubmission(sessionId, exercise.id);
+
+  const latestCode = useRef(code);
+  const edited = useRef(false);
+
+  const handleChange = (value: string) => {
+    latestCode.current = value;
+    edited.current = true;
+    setCode(value);
+  };
+
+  const handleRun = () => {
+    if (canSave) saveSubmission.mutate({ code });
+    runExercise.mutate({ code });
+  };
+
+  // The draft is saved when the student leaves the exercise: continue, sidebar or tab close.
+  // Runs on unmount only, hence the empty dependency list.
+  useEffect(
+    () => () => {
+      if (canSave && edited.current) saveSubmission.mutate({ code: latestCode.current });
+    },
+    [],
+  );
 
   return (
     <div className="flex-1 min-w-0">
       <CodeEditor
         value={code}
-        onChange={setCode}
+        onChange={handleChange}
         language={exercise.codeExercise?.language}
         disableLanguageSwitch
-        runCode={() => runExercise.mutate({ code })}
+        runCode={handleRun}
         testResults={runExercise.data?.testResults}
       />
     </div>
@@ -108,7 +147,14 @@ function RouteComponent() {
             </div>
           </div>
         </div>
-        {exercise.type === "CODE" && <CodeEditorPane key={exercise.id} exercise={exercise} />}
+        {exercise.type === "CODE" && (
+          <CodeEditorPane
+            key={exercise.id}
+            sessionId={id}
+            exercise={exercise}
+            canSave={session?.status === "PENDING"}
+          />
+        )}
       </div>
       <div className="border-t-2 border-border p-4 flex justify-end bg-background">
         <Button variant="primary" onClick={handleContinue} disabled={mustRead && !atEnd}>
