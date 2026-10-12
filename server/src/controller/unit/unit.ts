@@ -1,4 +1,3 @@
-import CourseController from "#/controller/course";
 import LessonController from "#/controller/lesson";
 import type { UnitData } from "#/controller/unit/unit.schema";
 import { unitIncludes } from "#/controller/unit/unit.schema";
@@ -52,10 +51,5 @@ export default class UnitController {
       return this.data.lessons.map((lesson) => new LessonController(lesson));
     }
     return LessonController.getByUnitId(this.data.id, include);
-  }
-
-  async getCourse(): Promise<CourseController> {
-    if (this.data.course) return new CourseController(this.data.course);
-    return CourseController.getById(this.data.courseID);
   }
 }

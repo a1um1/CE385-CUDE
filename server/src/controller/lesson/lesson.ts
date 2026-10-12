@@ -143,11 +143,35 @@ export default class LessonController {
     return result;
   }
 
-  async meetsRequirements(userID: string, now = new Date()): Promise<boolean> {
-    const prerequisites = await LessonController.getPrerequisiteIDs([this.data.id]);
-    const required = prerequisites.get(this.data.id) ?? [];
-    const attempts = await LessonController.attemptsByLesson(userID, required);
-    return !LessonController.isLocked(this.data, required, attempts, now);
+  /**
+   * The inputs `statusOf` derives a lesson's status from: the open session, this lesson's own
+   * attempt, and whether it is still locked. Enrollment and the lesson list share this.
+   */
+  static async stateOf(
+    lesson: { id: string; startAt?: Date | null; endAt?: Date | null },
+    userID: string,
+    now = new Date(),
+  ): Promise<{
+    lessonID: string;
+    pendingLessonID?: string;
+    attempt?: LessonAttempt;
+    locked: boolean;
+  }> {
+    const prerequisites = await LessonController.getPrerequisiteIDs([lesson.id]);
+    const required = prerequisites.get(lesson.id) ?? [];
+    const [pending, attempts] = await Promise.all([
+      db.sessions.findFirst({
+        where: { userID, status: "PENDING" },
+        select: { LessonID: true },
+      }),
+      LessonController.attemptsByLesson(userID, [lesson.id, ...required]),
+    ]);
+    return {
+      lessonID: lesson.id,
+      pendingLessonID: pending?.LessonID,
+      attempt: attempts.get(lesson.id),
+      locked: LessonController.isLocked(lesson, required, attempts, now),
+    };
   }
 
   private static isPassed(attempt: LessonAttempt | undefined): boolean {
@@ -191,10 +215,5 @@ export default class LessonController {
   async getUnit(): Promise<UnitController> {
     if (this.data.unit) return new UnitController(this.data.unit);
     return UnitController.getById(this.data.unitID);
-  }
-
-  async getCourse() {
-    const unit = await this.getUnit();
-    return unit.getCourse();
   }
 }

@@ -50,26 +50,15 @@ export default class SessionController {
     LessonID: string;
   }): Promise<enrollmentAvailability> {
     const lesson = await lessonController.getById(props.LessonID);
-    if (!lesson) throw new UserError(404, "Lesson not found.");
-    const pendingSession = await this.findUserPendingSession({ UserID: props.UserID });
-    if (pendingSession) {
-      return {
-        status: pendingSession.JSON.LessonID === props.LessonID ? "PENDING" : "NOT_AVAILABLE",
-        isAvailable: false,
-      };
-    }
+    const state = await lessonController.stateOf(lesson.JSON, props.UserID);
 
-    if (!(await lesson.meetsRequirements(props.UserID))) {
-      return {
-        status: "NOT_AVAILABLE",
-        isAvailable: false,
-      };
+    if (state.pendingLessonID === props.LessonID) {
+      return { status: "PENDING", isAvailable: false };
     }
-
-    return {
-      status: "AVAILABLE",
-      isAvailable: true,
-    };
+    if (state.pendingLessonID || state.locked) {
+      return { status: "NOT_AVAILABLE", isAvailable: false };
+    }
+    return { status: "AVAILABLE", isAvailable: true };
   }
 
   static async createSession(props: { UserID: string; LessonID: string }): Promise<SessionObject> {
