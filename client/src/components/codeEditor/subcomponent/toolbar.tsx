@@ -13,7 +13,7 @@ import Select from "#/components/select";
 
 export default function EditorToolbar() {
   const { data: langaugeData, isLoading, isError } = useCodeAvailableLanguage();
-  const isMutating = useIsMutating();
+  const isMutating = useIsMutating({ mutationKey: ["run_exercise"] });
 
   const isMutatingOrLoading = isLoading || isMutating;
   const {
@@ -106,7 +106,7 @@ export default function EditorToolbar() {
             size="sm"
             title="Run (Shift+Enter)"
             radius="square"
-            disabled={isLoading}
+            disabled={isLoading || Boolean(isMutating)}
           >
             {isMutatingOrLoading ? (
               <>
