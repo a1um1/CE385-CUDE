@@ -49,8 +49,6 @@ export default class SessionController {
     UserID: string;
     LessonID: string;
   }): Promise<enrollmentAvailability> {
-    // ตรวจสอบว่าผู้ใช้มีการลงทะเบียนในบทเรียนหรือไม่
-    // 1. ต้องไม่มี Session ที่กำลังเรียนอยู่
     const lesson = await lessonController.getById(props.LessonID);
     if (!lesson) throw new UserError(404, "Lesson not found.");
     const pendingSession = await this.findUserPendingSession({ UserID: props.UserID });
@@ -61,7 +59,6 @@ export default class SessionController {
       };
     }
 
-    // 2. ต้องผ่านบทเรียนที่กำหนดไว้ก่อน และต้องอยู่ในช่วงเวลาที่เปิดให้เรียน
     if (!(await lesson.meetsRequirements(props.UserID))) {
       return {
         status: "NOT_AVAILABLE",

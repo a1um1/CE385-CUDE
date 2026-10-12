@@ -6,12 +6,9 @@ import type { Prisma } from "#/generated/prisma/client";
 import { resolveInclude } from "#/lib/include";
 import { db } from "#/lib/prisma";
 import UserError from "#/lib/router/http/userError";
-
-/** A graded attempt: how many of the lesson's CODE exercises the student passed. */
 interface LessonAttempt {
   passed: number;
   total: number;
-  /** The student only gave up (cancelled) this lesson; no graded attempt exists. */
   givenUp: boolean;
 }
 
@@ -52,10 +49,6 @@ export default class LessonController {
     return lessons.map((lesson) => new LessonController(lesson));
   }
 
-  /**
-   * Lessons of a unit tagged with the student's status. A bounded number of queries for the
-   * whole unit, so the client does not have to ask per lesson.
-   */
   static async getByUnitIdWithStatus(
     unitID: string,
     userID: string,
@@ -65,13 +58,11 @@ export default class LessonController {
     if (lessons.length === 0) return [];
     const lessonIDs = lessons.map((lesson) => lesson.id);
 
-    // 1. A student can only have one lesson open at a time.
     const pending = await db.sessions.findFirst({
       where: { userID, status: "PENDING" },
       select: { LessonID: true },
     });
-    // 2. What each lesson requires, and whether those requirements are met. Prerequisites are
-    //    always fetched, not only when `?include=prerequisites`; they decide what unlocks.
+
     const prerequisites = await LessonController.getPrerequisiteIDs(lessonIDs);
     const requiredIDs = [...new Set([...prerequisites.values()].flat())];
     const attempts = await LessonController.attemptsByLesson(userID, [
@@ -92,7 +83,6 @@ export default class LessonController {
     });
   }
 
-  /** Prerequisite lesson ids per lesson. Lessons with no prerequisite are absent from the map. */
   static async getPrerequisiteIDs(lessonIDs: string[]): Promise<Map<string, string[]>> {
     if (lessonIDs.length === 0) return new Map();
     const rows = await db.lessonPrerequisite.findMany({
@@ -106,11 +96,6 @@ export default class LessonController {
     return map;
   }
 
-  /**
-   * The best graded attempt of each lesson the student has touched, keyed by lesson id. "Best"
-   * means the most test cases passed, so a lesson passed once stays passed after a later failed
-   * retry. A lesson the student only gave up on is marked `givenUp` instead.
-   */
   static async attemptsByLesson(
     userID: string,
     lessonIDs: string[],
@@ -124,7 +109,7 @@ export default class LessonController {
       },
       select: { LessonID: true, status: true, submissions: { select: { ok: true } } },
     });
-    // Only CODE exercises are graded, so they alone decide pass or fail.
+
     const codeExercises = await db.exercise.findMany({
       where: { lessonID: { in: lessonIDs }, type: "CODE" },
       select: { lessonID: true },
@@ -158,7 +143,6 @@ export default class LessonController {
     return result;
   }
 
-  /** Whether the student may still start this lesson: window open and every prerequisite passed. */
   async meetsRequirements(userID: string, now = new Date()): Promise<boolean> {
     const prerequisites = await LessonController.getPrerequisiteIDs([this.data.id]);
     const required = prerequisites.get(this.data.id) ?? [];
@@ -166,15 +150,10 @@ export default class LessonController {
     return !LessonController.isLocked(this.data, required, attempts, now);
   }
 
-  /**
-   * shortcut: a lesson with no CODE exercise never counts as passed, so it cannot unlock a
-   * dependent lesson. Give it a CODE exercise if it must gate one.
-   */
   private static isPassed(attempt: LessonAttempt | undefined): boolean {
     return attempt !== undefined && attempt.total > 0 && attempt.passed === attempt.total;
   }
 
-  /** A lesson is locked while its time window is closed or a prerequisite is unpassed. */
   private static isLocked(
     lesson: { startAt?: Date | null; endAt?: Date | null },
     prerequisiteIDs: string[],
@@ -186,7 +165,6 @@ export default class LessonController {
     return prerequisiteIDs.some((id) => !LessonController.isPassed(attempts.get(id)));
   }
 
-  /** Mirrors the lesson states the client draws in the lesson list. */
   private static statusOf(props: {
     lessonID: string;
     pendingLessonID?: string;
@@ -194,12 +172,12 @@ export default class LessonController {
     locked: boolean;
   }): LessonStatus {
     if (props.pendingLessonID === props.lessonID) return "PENDING";
-    // A lesson the student already submitted keeps its best result, even while another one is open.
+
     if (props.attempt) {
       if (props.attempt.givenUp) return "GIVE_UP";
       return LessonController.isPassed(props.attempt) ? "PASSED" : "FAILED";
     }
-    // Locked by time or an unpassed prerequisite, or by the open session.
+
     if (props.locked || props.pendingLessonID) return "NOT_AVAILABLE";
     return "AVAILABLE";
   }
