@@ -37,7 +37,13 @@ export default class AdminUnitsController {
     const course = await db.course.findUnique({ where: { id: data.courseID } });
     if (!course) throw new UserError(404, "Course not found");
 
-    const unit = await db.unit.create({ data });
+    const { _max } = await db.unit.aggregate({
+      _max: { position: true },
+      where: { courseID: data.courseID },
+    });
+    const unit = await db.unit.create({
+      data: { ...data, position: (_max.position ?? -1) + 1 },
+    });
     return new AdminUnitsController(unit);
   }
 
