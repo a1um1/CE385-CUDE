@@ -9,6 +9,8 @@ model Sessions {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique([userID], where: raw("status = 'PENDING'"))
 }
 
 model Submission {
