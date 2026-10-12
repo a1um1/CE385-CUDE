@@ -16,6 +16,14 @@ const db = new PrismaClient({
   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL! }),
 });
 
+if (!process.env.DATABASE_URL) {
+  throw new Error("Missing DATABASE_URL in .env");
+}
+
+if (!process.env.SEED_ADMIN_PASSWORD) {
+  throw new Error("Missing SEED_ADMIN_PASSWORD in .env");
+}
+
 const CONTENT_ROOT = path.resolve(import.meta.dirname, "data");
 
 const FRONT_MATTER = /^---\r?\n(?<data>[\s\S]*?)\r?\n---\r?\n?/;
@@ -75,7 +83,7 @@ const SEED_ADMIN = {
   email: process.env.SEED_ADMIN_EMAIL ?? "admin@cude.local",
   username: process.env.SEED_ADMIN_USERNAME ?? "seed_admin",
   name: process.env.SEED_ADMIN_NAME ?? "Seed Admin",
-  password: process.env.SEED_ADMIN_PASSWORD ?? "SeedAdmin1!",
+  password: process.env.SEED_ADMIN_PASSWORD,
 };
 
 async function ensureAdmin() {
