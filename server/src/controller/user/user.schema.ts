@@ -76,7 +76,7 @@ export const UserSchema = z
     createdAt: z.date().openapi({ example: "2023-01-01T00:00:00.000Z" }),
     updatedAt: z.date().openapi({ example: "2023-01-01T00:00:00.000Z" }),
   })
-  .openapi("User") satisfies Zod.ZodType<User>;
+  .openapi("User") satisfies Zod.ZodType<Omit<User, "passwordChangedAt">>;
 
 export const UserUpdateAvatarSchema = z
   .object({

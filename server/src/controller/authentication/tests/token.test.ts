@@ -47,6 +47,19 @@ describe("Token Tests", () => {
     expect(user.JSON).toHaveProperty("id", mockAuthenticationBody.userId);
   });
 
+  it("should reject a token issued before the last password change", async () => {
+    mockDB.user.findUnique.mockResolvedValue({
+      ...fakeUser,
+      // Changed after this token is minted, so its `iat` predates the change.
+      passwordChangedAt: new Date(Date.now() + 10_000),
+    });
+    const controller = new AuthenticationController();
+    const tokenData = controller.generateToken(mockAuthenticationBody);
+    await expect(controller.validateToken(tokenData)).rejects.toThrow(
+      "Token invalidated by a password change",
+    );
+  });
+
   it("should throw error when validating an invalid token", async () => {
     const controller = new AuthenticationController();
     await expect(controller.validateToken("invalid-token")).rejects.toThrow();

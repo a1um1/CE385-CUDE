@@ -302,7 +302,7 @@ export interface paths {
         put?: never;
         /**
          * Update user password
-         * @description Change the authenticated user's password. The current password must be supplied and is verified before the new one is stored. Existing sessions are not revoked; all other refresh tokens are invalidated.
+         * @description Change the authenticated user's password. The current password must be supplied and is verified before the new one is stored. All sessions are signed out: every refresh token for the user (the current one included) is revoked and access tokens issued before the change are rejected immediately. Sign in again afterwards.
          */
         post: {
             parameters: {
@@ -1714,7 +1714,7 @@ export interface paths {
         put?: never;
         /**
          * Force change user password
-         * @description Force-set a user's password without knowing the old one. Requires an `ADMIN` token. Existing refresh tokens for that user are not revoked by this call.
+         * @description Force-set a user's password without knowing the old one. Requires an `ADMIN` token. Every refresh token for that user is revoked and outstanding access tokens are rejected immediately.
          */
         post: {
             parameters: {
@@ -5315,12 +5315,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-12T10:12:16.034Z
+             * @example 2026-10-12T16:40:52.406Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-12T10:12:16.035Z
+             * @example 2026-10-12T16:40:52.406Z
              */
             updatedAt: string;
         };

@@ -65,10 +65,15 @@ export default class UserController {
     const isPasswordValid = await bcrypt.compare(data.currentPassword, userRecord.password);
     if (!isPasswordValid) throw new UserError(400, "Current password is incorrect");
     const hashedPassword = await bcrypt.hash(data.newPassword, 12);
-    await db.user.update({
-      where: { id: this.user.id },
-      data: { password: hashedPassword },
-    });
+    // Bumping passwordChangedAt rejects every access token issued before this
+    // moment; deleting the refresh tokens ends every session, current one included.
+    await db.$transaction([
+      db.user.update({
+        where: { id: this.user.id },
+        data: { password: hashedPassword, passwordChangedAt: new Date() },
+      }),
+      db.refreshToken.deleteMany({ where: { userID: this.user.id } }),
+    ]);
   }
 
   static async getById(userId: string): Promise<UserController> {
@@ -78,6 +83,19 @@ export default class UserController {
     });
     if (!user) throw new UserError(404, "User not found");
     return new UserController(user);
+  }
+
+  /** Like {@link getById}, but also returns the password-change epoch for token invalidation. */
+  static async getByIdWithPasswordEpoch(
+    userId: string,
+  ): Promise<{ user: UserController; passwordChangedAt: Date }> {
+    const record = await db.user.findUnique({
+      where: { id: userId, isActive: true },
+      select: { ...userQueryPayload, passwordChangedAt: true },
+    });
+    if (!record) throw new UserError(404, "User not found");
+    const { passwordChangedAt, ...user } = record;
+    return { user: new UserController(user), passwordChangedAt };
   }
 
   static async getByUsername(username: string): Promise<UserController> {

@@ -51,8 +51,8 @@ const adminUserRouter = new CustomRouter({
     {
       summary: "Force change user password",
       description:
-        "Force-set a user's password without knowing the old one. Requires an `ADMIN` token. Existing " +
-        "refresh tokens for that user are not revoked by this call.",
+        "Force-set a user's password without knowing the old one. Requires an `ADMIN` token. Every " +
+        "refresh token for that user is revoked and outstanding access tokens are rejected immediately.",
       body: AdminUserUpdatePasswordSchema,
       response: GenericResponseSchema,
     },
