@@ -68,7 +68,7 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
       const token =
         (req.cookies?.["accessToken"] as string | undefined) ??
         (req.headers["authorization"] || "")?.split(" ")?.[1];
-      if (!token) throw new UserError(401, "Unauthorize");
+      if (!token) throw new UserError(401, "Unauthorized");
 
       const user = await this.authController.validateToken(token);
       if (!roleToCheck.includes(user.JSON.role)) throw new UserError(403, "Forbidden");
