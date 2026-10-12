@@ -1,6 +1,4 @@
 import ExerciseController, { CodeExerciseController, ExerciseSchema } from "#/controller/exercise";
-import { zGoJudgeLanguage } from "#/controller/go-judge/go-judge.schema";
-import CodeGrader from "#/controller/grader/codeGrader";
 import { codeGradingSummary } from "#/controller/grader/codeGrader.schema";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
@@ -52,17 +50,9 @@ const exerciseRouter = new CustomRouter({
         throw new UserError(400, "Exercise is not a code exercise");
       }
 
-      const grade = await exercise.grade(body.code, true);
-      if (!grade) throw new UserError(400, "Exercise language is not supported");
-
-      const codeGrader = new CodeGrader();
-      const publicTestCases = await exercise.getAllTestCase(true);
-      const results = await codeGrader.grade({
-        code: exercise.getRunnableCode(body.code),
-        language: zGoJudgeLanguage.parse(exercise.language),
-        testCases: publicTestCases.map((testCase) => testCase.JSON),
-      });
-      return codeGrader.gradeSummary(results);
+      const summary = await exercise.grade(body.code, true);
+      if (!summary) throw new UserError(400, "Exercise language is not supported");
+      return summary;
     },
   );
 

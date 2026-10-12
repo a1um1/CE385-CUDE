@@ -11,6 +11,18 @@ const { grade } = vi.hoisted(() => ({ grade: vi.fn() }));
 vi.mock("#/controller/grader/codeGrader", () => ({
   default: class {
     grade = grade;
+    gradeSummary = (results: testResult[]) => {
+      const passed = results.filter((result) => result.ok).length;
+      return {
+        total: results.length,
+        passed,
+        failed: results.length - passed,
+        percentage: results.length === 0 ? 0 : (passed / results.length) * 100,
+        averageTime: 0,
+        averageMemory: 0,
+        testResults: results,
+      };
+    };
   },
 }));
 
@@ -38,10 +50,10 @@ describe("CodeExerciseController.grade", () => {
     mockDB.testCase.findMany.mockResolvedValue([{ input: "1" }, { input: "2" }] as never);
     grade.mockResolvedValue([result(true), result(false)]);
 
-    await expect(controller().grade("print(1)")).resolves.toEqual({
+    await expect(controller().grade("print(1)")).resolves.toMatchObject({
       total: 2,
       passed: 1,
-      ok: false,
+      failed: 1,
     });
   });
 
@@ -49,10 +61,10 @@ describe("CodeExerciseController.grade", () => {
     mockDB.testCase.findMany.mockResolvedValue([{ input: "1" }, { input: "2" }] as never);
     grade.mockResolvedValue([result(true), result(true)]);
 
-    await expect(controller().grade("print(1)")).resolves.toEqual({
+    await expect(controller().grade("print(1)")).resolves.toMatchObject({
       total: 2,
       passed: 2,
-      ok: true,
+      failed: 0,
     });
   });
 
@@ -60,10 +72,10 @@ describe("CodeExerciseController.grade", () => {
     mockDB.testCase.findMany.mockResolvedValue([] as never);
     grade.mockResolvedValue([]);
 
-    await expect(controller().grade("print(1)")).resolves.toEqual({
+    await expect(controller().grade("print(1)")).resolves.toMatchObject({
       total: 0,
       passed: 0,
-      ok: false,
+      failed: 0,
     });
   });
 

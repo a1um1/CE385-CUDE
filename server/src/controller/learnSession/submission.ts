@@ -108,16 +108,17 @@ export default class SubmissionController {
         const grade = await exercise.grade(SubmissionContentSchema.parse(submission.content).code);
         if (!grade) return null;
 
+        const ok = grade.total > 0 && grade.failed === 0;
         await db.submission.update({
           where: { id: submission.id },
-          data: { isGraded: true, ok: grade.ok },
+          data: { isGraded: true, ok },
         });
 
         return {
           exerciseID: submission.exerciseID,
           total: grade.total,
           passed: grade.passed,
-          ok: grade.ok,
+          ok,
         };
       }),
     );
