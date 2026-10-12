@@ -123,10 +123,8 @@ export default class AuthenticationController {
       const decoded = jwt.verify(token, this.secret, {
         algorithms: ["HS256"],
       }) as AuthenticationBody & { iat?: number };
-      const { user, passwordChangedAt } = await UserController.getByIdWithPasswordEpoch(
-        decoded.userId,
-      );
-      const changedAtSecond = Math.floor(passwordChangedAt.getTime() / 1000);
+      const user = await UserController.getById(decoded.userId);
+      const changedAtSecond = Math.floor(user.JSON.passwordChangedAt.getTime() / 1000);
       if (typeof decoded.iat === "number" && decoded.iat < changedAtSecond) {
         throw new UserError(401, "Token invalidated by a password change");
       }

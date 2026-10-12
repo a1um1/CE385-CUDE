@@ -52,9 +52,8 @@ export default class SessionController {
     const lesson = await lessonController.getById(props.LessonID);
     const state = await lessonController.stateOf(lesson.JSON, props.UserID);
 
-    if (state.pendingLessonID === props.LessonID) {
-      return { status: "PENDING", isAvailable: false };
-    }
+    if (state.pendingLessonID === props.LessonID) return { status: "PENDING", isAvailable: false };
+
     if (state.pendingLessonID || state.locked) {
       return { status: "NOT_AVAILABLE", isAvailable: false };
     }
@@ -63,12 +62,9 @@ export default class SessionController {
 
   static async createSession(props: { UserID: string; LessonID: string }): Promise<SessionObject> {
     const check = await this.enrollmentCheck(props);
-    if (!check.isAvailable) {
-      throw new UserError(400, "Lesson is not available to start.");
-    }
+    if (!check.isAvailable) throw new UserError(400, "Lesson is not available to start.");
 
     const lesson = await lessonController.getById(props.LessonID);
-
     const created = await db.sessions.create({
       data: {
         LessonID: lesson.JSON.id,
@@ -80,9 +76,7 @@ export default class SessionController {
   }
 
   async cancel(): Promise<void> {
-    if (this.data.status !== "PENDING") {
-      throw new UserError(400, "Session is not in progress.");
-    }
+    if (this.data.status !== "PENDING") throw new UserError(400, "Session is not in progress.");
     await db.sessions.update({
       where: {
         id: this.data.id,
