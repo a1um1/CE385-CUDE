@@ -22,6 +22,11 @@
   background-color: var(--color-user-background);
 }
 
+.giveUp {
+  background-color: var(--color-warning);
+  color: var(--color-warning-text);
+}
+
 .iconWrapper {
   width: 60px;
   height: 60px;

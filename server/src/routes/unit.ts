@@ -41,7 +41,8 @@ const unitRouter = new CustomRouter({
         "Return every lesson of a unit, each tagged with the authenticated user's progress status:\n\n" +
         "- `AVAILABLE` — not attempted, no other lesson is open\n" +
         "- `PENDING` — this is the lesson the student is currently working on\n" +
-        "- `PASSED` / `FAILED` — the latest graded attempt's result\n" +
+        "- `PASSED` / `FAILED` — the student's best graded attempt\n" +
+        "- `GIVE_UP` — the student gave up (cancelled) without a graded attempt\n" +
         "- `NOT_AVAILABLE` — blocked: another lesson has an open session, the lesson's start/end window " +
         "is closed, or a prerequisite lesson is not passed\n\n" +
         "Use `?include=unit` / `?include=unit.course` to embed relations.",

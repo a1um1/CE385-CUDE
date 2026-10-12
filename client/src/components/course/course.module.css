@@ -94,6 +94,19 @@
     color: var(--color-danger);
   }
 }
+/* --- สถานะ Give up (ยอมแพ้) --- */
+.giveUp {
+  .hexagonSvg {
+    stroke: var(--color-warning);
+    fill: color-mix(in oklch, var(--color-warning) 20%, transparent);
+  }
+  .innerIcon {
+    color: var(--color-warning);
+  }
+  .label {
+    color: var(--color-warning);
+  }
+}
 /* --- สถานะ Unavailable (ยังไม่เปิดให้ทำ) --- */
 .unavailable {
   .hexagonSvg {

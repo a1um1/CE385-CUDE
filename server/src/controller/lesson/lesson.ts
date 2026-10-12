@@ -11,6 +11,8 @@ import UserError from "#/lib/router/http/userError";
 interface LessonAttempt {
   passed: number;
   total: number;
+  /** The student only gave up (cancelled) this lesson; no graded attempt exists. */
+  givenUp: boolean;
 }
 
 export default class LessonController {
@@ -105,18 +107,22 @@ export default class LessonController {
   }
 
   /**
-   * The latest graded attempt of each lesson the student has submitted, keyed by lesson id.
-   * Only the latest attempt counts, same as the score on the lesson page.
+   * The best graded attempt of each lesson the student has touched, keyed by lesson id. "Best"
+   * means the most test cases passed, so a lesson passed once stays passed after a later failed
+   * retry. A lesson the student only gave up on is marked `givenUp` instead.
    */
   static async attemptsByLesson(
     userID: string,
     lessonIDs: string[],
   ): Promise<Map<string, LessonAttempt>> {
     if (lessonIDs.length === 0) return new Map();
-    const attempts = await db.sessions.findMany({
-      where: { userID, LessonID: { in: lessonIDs }, status: "SUBMITTED" },
-      select: { LessonID: true, submissions: { select: { ok: true } } },
-      orderBy: { createdAt: "asc" },
+    const sessions = await db.sessions.findMany({
+      where: {
+        userID,
+        LessonID: { in: lessonIDs },
+        status: { in: ["SUBMITTED", "CANCELLED"] },
+      },
+      select: { LessonID: true, status: true, submissions: { select: { ok: true } } },
     });
     // Only CODE exercises are graded, so they alone decide pass or fail.
     const codeExercises = await db.exercise.findMany({
@@ -128,14 +134,25 @@ export default class LessonController {
       totals.set(exercise.lessonID, (totals.get(exercise.lessonID) ?? 0) + 1);
     }
 
+    const bestPassed = new Map<string, number>();
+    const givenUp = new Set<string>();
+    for (const session of sessions) {
+      if (session.status === "CANCELLED") {
+        givenUp.add(session.LessonID);
+      } else {
+        const passed = session.submissions.filter((submission) => submission.ok).length;
+        bestPassed.set(session.LessonID, Math.max(bestPassed.get(session.LessonID) ?? -1, passed));
+      }
+    }
+
     const result = new Map<string, LessonAttempt>();
     for (const lessonID of lessonIDs) {
-      const latest = attempts.findLast((attempt) => attempt.LessonID === lessonID);
-      if (latest) {
-        result.set(lessonID, {
-          passed: latest.submissions.filter((submission) => submission.ok).length,
-          total: totals.get(lessonID) ?? 0,
-        });
+      const total = totals.get(lessonID) ?? 0;
+      const passed = bestPassed.get(lessonID);
+      if (passed !== undefined) {
+        result.set(lessonID, { passed, total, givenUp: false });
+      } else if (givenUp.has(lessonID)) {
+        result.set(lessonID, { passed: 0, total, givenUp: true });
       }
     }
     return result;
@@ -177,8 +194,9 @@ export default class LessonController {
     locked: boolean;
   }): LessonStatus {
     if (props.pendingLessonID === props.lessonID) return "PENDING";
-    // A lesson the student already submitted keeps its result, even while another one is open.
+    // A lesson the student already submitted keeps its best result, even while another one is open.
     if (props.attempt) {
+      if (props.attempt.givenUp) return "GIVE_UP";
       return LessonController.isPassed(props.attempt) ? "PASSED" : "FAILED";
     }
     // Locked by time or an unpassed prerequisite, or by the open session.

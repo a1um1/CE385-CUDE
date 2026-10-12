@@ -3556,7 +3556,8 @@ export interface paths {
          *
          *     - `AVAILABLE` — not attempted, no other lesson is open
          *     - `PENDING` — this is the lesson the student is currently working on
-         *     - `PASSED` / `FAILED` — the latest graded attempt's result
+         *     - `PASSED` / `FAILED` — the student's best graded attempt
+         *     - `GIVE_UP` — the student gave up (cancelled) without a graded attempt
          *     - `NOT_AVAILABLE` — blocked: another lesson has an open session, the lesson's start/end window is closed, or a prerequisite lesson is not passed
          *
          *     Use `?include=unit` / `?include=unit.course` to embed relations.
@@ -5314,12 +5315,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-11T15:19:02.445Z
+             * @example 2026-10-12T10:12:16.034Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-11T15:19:02.445Z
+             * @example 2026-10-12T10:12:16.035Z
              */
             updatedAt: string;
         };
@@ -5635,7 +5636,7 @@ export interface components {
          * @example AVAILABLE
          * @enum {string}
          */
-        LessonStatus: "AVAILABLE" | "PENDING" | "PASSED" | "FAILED" | "NOT_AVAILABLE";
+        LessonStatus: "AVAILABLE" | "PENDING" | "PASSED" | "FAILED" | "GIVE_UP" | "NOT_AVAILABLE";
         Lesson: {
             /**
              * Format: uuid

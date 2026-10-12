@@ -40,6 +40,8 @@ function RouteComponent() {
   const session = Route.useLoaderData();
   const lesson = session?.lesson;
   const exercises = useExerciseFromLessonQuery(lesson?.id);
+  // A given-up attempt is never graded, so it has no score.
+  const cancelled = session?.status === "CANCELLED";
 
   const codeExercises = exercises.data?.filter((exercise) => exercise.type === "CODE") ?? [];
   const passed = codeExercises.filter((exercise) =>
@@ -62,8 +64,14 @@ function RouteComponent() {
       </div>
       <div className="flex gap-4">
         <Scoring
-          status={codeExercises.length > 0 && passed === codeExercises.length ? "success" : "fail"}
-          label={formatPercent(passed, codeExercises.length)}
+          status={
+            cancelled
+              ? "giveUp"
+              : codeExercises.length > 0 && passed === codeExercises.length
+                ? "success"
+                : "fail"
+          }
+          label={cancelled ? undefined : formatPercent(passed, codeExercises.length)}
         />
         <div className="flex flex-col">
           <p>
@@ -86,7 +94,8 @@ function RouteComponent() {
           return {
             id: exercise.id,
             name: exercise.name,
-            badge: resultOf(exercise, submission) ?? undefined,
+            // A given-up attempt was never graded, so no per-exercise result is shown.
+            badge: cancelled ? undefined : (resultOf(exercise, submission) ?? undefined),
           };
         })}
       />
