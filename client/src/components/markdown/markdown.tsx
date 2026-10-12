@@ -46,7 +46,11 @@ function MarkdownPre({
 }
 
 function MarkdownKbd({ children, ...props }: ComponentProps<"kbd">) {
-  return <kbd className={styles.kbd} {...props}>{children}</kbd>;
+  return (
+    <kbd className={styles.kbd} {...props}>
+      {children}
+    </kbd>
+  );
 }
 
 interface MarkdownProps {

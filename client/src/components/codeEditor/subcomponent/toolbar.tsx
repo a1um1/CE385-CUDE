@@ -39,14 +39,18 @@ export default function EditorToolbar() {
 
   const hasDisable = disableLanguageSwitch ?? false;
 
-  function renderLanguageIcon() {
-    switch (currentLang) {
-      case "python":
+  function renderLanguageIcon(lang: string = currentLang) {
+    switch (lang) {
+      case "python": {
         return <PythonIcon className={styles.languageIcon} />;
+      }
       case "c":
+      case "cpp": {
         return <CIcon className={styles.languageIcon} />;
-      default:
-        return <Code className={styles.languageIcon} />;
+      }
+      default: {
+        return <Code className={styles.languageIcon} size={16} />;
+      }
     }
   }
 
@@ -54,7 +58,7 @@ export default function EditorToolbar() {
     <div className={styles.toolbar}>
       {hasDisable ? (
         <div className={styles.languageDisplay}>
-          {renderLanguageIcon()}
+          {renderLanguageIcon(currentLang)}
           <span>{currentLanguageLabel}</span>
         </div>
       ) : (
@@ -66,12 +70,20 @@ export default function EditorToolbar() {
           radius="none"
         >
           <Select.Trigger className={styles.languageSelect} aria-label="Programming language">
-            <Select.Value>{currentLanguageLabel}</Select.Value>
+            <span className={styles.languageTriggerContent}>
+              {renderLanguageIcon(currentLang)}
+              <Select.Value>{currentLanguageLabel}</Select.Value>
+            </span>
           </Select.Trigger>
           <Select.Content align="start" sideOffset={4}>
             {Object.entries(langaugeData?.languages || []).map(([lang, props]) => (
               <Select.Item key={lang} value={lang}>
-                {props.name} {props.version}
+                <span className={styles.languageOption}>
+                  {renderLanguageIcon(lang)}
+                  <span>
+                    {props.name} {props.version}
+                  </span>
+                </span>
               </Select.Item>
             ))}
           </Select.Content>
