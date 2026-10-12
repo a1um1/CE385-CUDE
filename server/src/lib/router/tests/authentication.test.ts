@@ -47,7 +47,7 @@ describe("Authentication Tests", () => {
   it("should require authentication", async () => {
     const res = await request(AuthenticationRoutingApp).get("/auth-required");
     expect(res.status).toBe(401);
-    expect(res.body).toHaveProperty("message", "Unauthorize");
+    expect(res.body).toHaveProperty("message", "Unauthorized");
   });
 
   it("should require authentication with valid token", async () => {
