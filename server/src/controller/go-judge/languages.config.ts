@@ -2,7 +2,7 @@ import { CompilerType } from "#/controller/go-judge/go-judge.enum";
 import type { LanguageConfig } from "#/controller/go-judge/go-judge.schema";
 export const GoJudgeLanguagesConfig = {
   python: {
-    args: ["/usr/bin/python3", "$tempFile"],
+    args: ["/usr/bin/python3", "-I", "-B", "$tempFile"],
     type: CompilerType.Interprete,
     tempFile: "temp.py",
     safeAttribute: {

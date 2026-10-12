@@ -34,6 +34,7 @@ export default class UnitController {
     const units = await db.unit.findMany({
       where: { courseID },
       include: resolveInclude<Prisma.UnitInclude>(include, unitIncludes),
+      orderBy: [{ position: "asc" }, { id: "asc" }],
     });
     return units as UnitData[];
   }

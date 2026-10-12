@@ -1,9 +1,9 @@
 import React from "react";
-import { Book, Check, Lock, Play, X } from "lucide-react";
+import { Book, Check, Flag, Lock, Play, X } from "lucide-react";
 import styles from "./course.module.css";
 import clsx from "clsx";
 
-export type CourseStatus = "available" | "ongoing" | "passed" | "failed" | "unavailable";
+export type CourseStatus = "available" | "ongoing" | "passed" | "failed" | "giveUp" | "unavailable";
 
 export interface CourseProps {
   status?: CourseStatus;
@@ -26,6 +26,10 @@ const statusConfig: Record<CourseStatus, { className?: string; icon: React.React
   failed: {
     className: styles.failed,
     icon: <X size={40} strokeWidth={4} />,
+  },
+  giveUp: {
+    className: styles.giveUp,
+    icon: <Flag size={32} strokeWidth={2.5} />,
   },
   unavailable: {
     className: styles.unavailable,

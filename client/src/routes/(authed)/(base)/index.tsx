@@ -15,15 +15,14 @@ export const Route = createFileRoute("/(authed)/(base)/")({
   component: Home,
 });
 
-/** Horizontal shift of each hexagon, cycling to make the lesson list a winding path. */
 const pathOffsets = [0, 48, 0, -48];
 
-/** Server lesson status -> hexagon look. */
 const courseStatus: Record<components["schemas"]["LessonStatus"], CourseStatus> = {
   AVAILABLE: "available",
   PENDING: "ongoing",
   PASSED: "passed",
   FAILED: "failed",
+  GIVE_UP: "giveUp",
   NOT_AVAILABLE: "unavailable",
 };
 

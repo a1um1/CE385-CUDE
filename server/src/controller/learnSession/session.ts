@@ -49,14 +49,19 @@ export default class SessionController {
     UserID: string;
     LessonID: string;
   }): Promise<enrollmentAvailability> {
-    // ตรวจสอบว่าผู้ใช้มีการลงทะเบียนในบทเรียนหรือไม่
-    // 1. ต้องไม่มี Session ที่กำลังเรียนอยู่
     const lesson = await lessonController.getById(props.LessonID);
     if (!lesson) throw new UserError(404, "Lesson not found.");
     const pendingSession = await this.findUserPendingSession({ UserID: props.UserID });
     if (pendingSession) {
       return {
         status: pendingSession.JSON.LessonID === props.LessonID ? "PENDING" : "NOT_AVAILABLE",
+        isAvailable: false,
+      };
+    }
+
+    if (!(await lesson.meetsRequirements(props.UserID))) {
+      return {
+        status: "NOT_AVAILABLE",
         isAvailable: false,
       };
     }
@@ -70,7 +75,7 @@ export default class SessionController {
   static async createSession(props: { UserID: string; LessonID: string }): Promise<SessionObject> {
     const check = await this.enrollmentCheck(props);
     if (!check.isAvailable) {
-      throw new UserError(400, "User already has a pending session.");
+      throw new UserError(400, "Lesson is not available to start.");
     }
 
     const lesson = await lessonController.getById(props.LessonID);

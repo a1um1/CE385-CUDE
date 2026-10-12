@@ -1,6 +1,4 @@
 import ExerciseController, { CodeExerciseController } from "#/controller/exercise";
-import { zGoJudgeLanguage } from "#/controller/go-judge/go-judge.schema";
-import CodeGrader from "#/controller/grader/codeGrader";
 import SessionController from "#/controller/learnSession/session";
 import {
   SubmissionContentSchema,
@@ -18,7 +16,6 @@ export default class SubmissionController {
     this.data = data;
   }
 
-  /** `content` is free-form Json in the database; only `{ code }` is ever written today. */
   get JSON(): SubmissionResponse {
     return {
       id: this.data.id,
@@ -29,7 +26,6 @@ export default class SubmissionController {
     };
   }
 
-  /** The student's saved answer for one exercise, or `null` when they never saved one. */
   static async getByExercise(props: {
     SessionID: string;
     userID: string;
@@ -88,10 +84,6 @@ export default class SubmissionController {
     return new SubmissionController(submission);
   }
 
-  /**
-   * Grades every saved answer of the session against all of its test cases (hidden ones included)
-   * and closes the session as `SUBMITTED`.
-   */
   static async submitSession(props: {
     SessionID: string;
     userID: string;
@@ -108,29 +100,25 @@ export default class SubmissionController {
       where: { SessionID: props.SessionID },
     });
 
-    const grader = new CodeGrader();
     const graded = await Promise.all(
       submissions.map(async (submission) => {
         const exercise = await ExerciseController.getById(submission.exerciseID);
         if (!(exercise instanceof CodeExerciseController)) return null;
-        const language = zGoJudgeLanguage.safeParse(exercise.language);
-        if (!language.success) return null;
 
-        const testCases = await exercise.getAllTestCase();
-        const results = await grader.grade({
-          code: exercise.getRunnableCode(SubmissionContentSchema.parse(submission.content).code),
-          language: language.data,
-          testCases: testCases.map((testCase) => testCase.JSON),
-        });
-        const passed = results.filter((result) => result.ok).length;
-        const ok = results.length > 0 && passed === results.length;
+        const grade = await exercise.grade(SubmissionContentSchema.parse(submission.content).code);
+        if (!grade) return null;
 
         await db.submission.update({
           where: { id: submission.id },
-          data: { isGraded: true, ok },
+          data: { isGraded: true, ok: grade.ok },
         });
 
-        return { exerciseID: submission.exerciseID, total: results.length, passed, ok };
+        return {
+          exerciseID: submission.exerciseID,
+          total: grade.total,
+          passed: grade.passed,
+          ok: grade.ok,
+        };
       }),
     );
 
@@ -148,11 +136,8 @@ export default class SubmissionController {
   }
 
   private static async assertExerciseInSession(session: SessionController, exerciseID: string) {
-    const exercise = await db.exercise.findUnique({
-      select: { lessonID: true },
-      where: { id: exerciseID },
-    });
-    if (!exercise || exercise.lessonID !== session.JSON.LessonID) {
+    const exercise = await ExerciseController.getById(exerciseID);
+    if (exercise.JSON.lessonID !== session.JSON.LessonID) {
       throw new UserError(404, "Exercise not found in this session.");
     }
   }
