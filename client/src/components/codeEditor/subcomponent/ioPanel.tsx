@@ -82,9 +82,9 @@ export default function IOPanel() {
                         Exit with status {runResult.status} ({runResult.exitCode})<br />
                         Time usage: {formatNstoMs(runResult.time)} ms
                         <br />
-                        Memory usage: {formatFileSize(runResult.memory, "Bytes")} Mb
+                        Memory usage: {formatFileSize(runResult.memory, "Bytes")}
                         <br />
-                        Peak Process: {runResult.procPeak}
+                        Peak processes: {runResult.procPeak}
                       </pre>
                     )}
                   </>
