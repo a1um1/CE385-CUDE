@@ -35,11 +35,11 @@ export class CodeExerciseController extends BaseExerciseController {
     return await CodeTestCase.getAllByExerciseID(this.codeExercise.id, publicOnly);
   }
 
-  async grade(code: string): Promise<ExerciseGrade | null> {
+  async grade(code: string, publicOnly = false): Promise<ExerciseGrade | null> {
     const language = zGoJudgeLanguage.safeParse(this.language);
     if (!language.success) return null;
 
-    const testCases = await this.getAllTestCase();
+    const testCases = await this.getAllTestCase(publicOnly);
     const results = await grader.grade({
       code: this.getRunnableCode(code),
       language: language.data,
