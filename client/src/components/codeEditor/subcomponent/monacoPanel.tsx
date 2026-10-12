@@ -48,6 +48,7 @@ export default function MonacoPanel() {
           options={{
             minimap: { enabled: false },
             fontSize: 14,
+            fontFamily: '"Geist Mono", monospace',
             scrollBeyondLastLine: false,
             tabSize: 4,
             automaticLayout: true,

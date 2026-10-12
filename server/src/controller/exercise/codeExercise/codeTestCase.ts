@@ -23,10 +23,11 @@ export class CodeTestCase {
     return data;
   }
 
-  static async getAllByExerciseID(codeExerciseID: string) {
+  static async getAllByExerciseID(codeExerciseID: string, publicOnly = false) {
     const allTestCases = await db.testCase.findMany({
       where: {
         codeExerciseID,
+        ...(publicOnly && { isPublic: true }),
       },
     });
     return allTestCases.map((data) => new CodeTestCase(data));

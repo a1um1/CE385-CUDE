@@ -21,6 +21,11 @@ const courseRouter = new CustomRouter({
     "/",
     {
       summary: "List all available courses",
+      description:
+        "Return every course as `{ data: Course[] }`. Requires an authenticated user.\n\n" +
+        "Use `?include=` to embed related rows:\n\n" +
+        "- `units` — the units of each course\n" +
+        "- `units.lessons` — those units and their lessons",
       query: CourseIncludeQuerySchema,
       response: CourseListSchema,
     },
@@ -33,6 +38,9 @@ const courseRouter = new CustomRouter({
     "/:courseId",
     {
       summary: "Get course by ID",
+      description:
+        "Return one course by ID. Requires an authenticated user. Use `?include=units` or " +
+        "`?include=units.lessons` to embed relations. Returns `404` when the course does not exist.",
       params: z.object({
         courseId: z.uuid().openapi({ example: "course_id" }),
       }),
@@ -48,6 +56,9 @@ const courseRouter = new CustomRouter({
     "/:courseId/unit",
     {
       summary: "List unit of a course",
+      description:
+        "Return the units that belong to a course, in display order. Requires an authenticated user. " +
+        "Use `?include=units.lessons` to embed each unit's lessons. Returns `404` when the course does not exist.",
       params: z.object({
         courseId: z.uuid().openapi({ example: "course_id" }),
       }),

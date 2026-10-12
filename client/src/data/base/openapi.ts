@@ -3277,7 +3277,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["Lesson"][];
+                        "application/json": components["schemas"]["LessonWithStatus"][];
                     };
                 };
                 /** @description Validation error */
@@ -3430,6 +3430,105 @@ export interface paths {
         };
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/exercise/{exerciseId}/run": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Run code against the public test cases of an exercise */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    exerciseId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** @example print("Hello world") */
+                        code: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["codeGradingSummary"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
         delete?: never;
         options?: never;
         head?: never;
@@ -3726,8 +3825,8 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Relations to include. Allowed: lesson, lesson.unit, lesson.unit.course */
-                    include?: ("lesson" | "lesson.unit" | "lesson.unit.course") | ("lesson" | "lesson.unit" | "lesson.unit.course")[];
+                    /** @description Relations to include. Allowed: lesson, lesson.unit, lesson.unit.course, submissions */
+                    include?: ("lesson" | "lesson.unit" | "lesson.unit.course" | "submissions") | ("lesson" | "lesson.unit" | "lesson.unit.course" | "submissions")[];
                 };
                 header?: never;
                 path?: never;
@@ -3804,6 +3903,7 @@ export interface paths {
                                     };
                                 };
                             };
+                            submissions?: components["schemas"]["SubmissionResult"][];
                         }[];
                     };
                 };
@@ -3953,6 +4053,7 @@ export interface paths {
                                     };
                                 };
                             };
+                            submissions?: components["schemas"]["SubmissionResult"][];
                         };
                     };
                 };
@@ -4104,6 +4205,7 @@ export interface paths {
                                     };
                                 };
                             };
+                            submissions?: components["schemas"]["SubmissionResult"][];
                         } | null;
                     };
                 };
@@ -4182,8 +4284,8 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Relations to include. Allowed: lesson, lesson.unit, lesson.unit.course */
-                    include?: ("lesson" | "lesson.unit" | "lesson.unit.course") | ("lesson" | "lesson.unit" | "lesson.unit.course")[];
+                    /** @description Relations to include. Allowed: lesson, lesson.unit, lesson.unit.course, submissions */
+                    include?: ("lesson" | "lesson.unit" | "lesson.unit.course" | "submissions") | ("lesson" | "lesson.unit" | "lesson.unit.course" | "submissions")[];
                 };
                 header?: never;
                 path: {
@@ -4262,6 +4364,7 @@ export interface paths {
                                     };
                                 };
                             };
+                            submissions?: components["schemas"]["SubmissionResult"][];
                         };
                     };
                 };
@@ -4400,6 +4503,275 @@ export interface paths {
                 };
             };
         };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/session/{SessionID}/exercise/{exerciseId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get the saved answer for an exercise in a session */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    SessionID: string;
+                    exerciseId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Submission"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        /** Save the answer for an exercise in a session */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    SessionID: string;
+                    exerciseId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** @example print("hello") */
+                        code: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Submission"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/session/{SessionID}/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Submit a session: grade every saved answer and close it */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    SessionID: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SubmitSessionResponse"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -4556,12 +4928,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-10T18:28:21.026Z
+             * @example 2026-10-11T09:29:04.084Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-10T18:28:21.027Z
+             * @example 2026-10-11T09:29:04.085Z
              */
             updatedAt: string;
         };
@@ -4852,6 +5224,14 @@ export interface components {
                 unitID: string;
             }[];
         };
+        LessonWithStatus: components["schemas"]["Lesson"] & {
+            status: components["schemas"]["LessonStatus"];
+        };
+        /**
+         * @example AVAILABLE
+         * @enum {string}
+         */
+        LessonStatus: "AVAILABLE" | "PENDING" | "PASSED" | "FAILED" | "NOT_AVAILABLE";
         Lesson: {
             /**
              * Format: uuid
@@ -4916,6 +5296,11 @@ export interface components {
             /** @example exercise content */
             content: string;
             codeExercise?: {
+                /**
+                 * @example python
+                 * @enum {string}
+                 */
+                language: "python" | "c";
                 /** @example print('hello') */
                 starterCode: string | null;
                 /** @example 2000 */
@@ -4930,6 +5315,59 @@ export interface components {
         };
         /** @enum {string} */
         EnrollmentStatus: "AVAILABLE" | "PENDING" | "NOT_AVAILABLE";
+        SubmissionResult: {
+            /**
+             * Format: uuid
+             * @example submission_id
+             */
+            id: string;
+            /**
+             * Format: uuid
+             * @example exercise_id
+             */
+            exerciseID: string;
+            /** @example true */
+            isGraded: boolean;
+            /** @example false */
+            ok: boolean;
+        };
+        Submission: {
+            /**
+             * Format: uuid
+             * @example submission_id
+             */
+            id: string;
+            /**
+             * Format: uuid
+             * @example exercise_id
+             */
+            exerciseID: string;
+            content: {
+                /** @example print("hello") */
+                code: string;
+            };
+            /** @example true */
+            isGraded: boolean;
+            /** @example false */
+            ok: boolean;
+        } | null;
+        SubmitSessionResponse: {
+            /** @example Submitted 5 exercise(s), 4 passed. */
+            message: string;
+            exercises: {
+                /**
+                 * Format: uuid
+                 * @example exercise_id
+                 */
+                exerciseID: string;
+                /** @example 3 */
+                total: number;
+                /** @example 2 */
+                passed: number;
+                /** @example false */
+                ok: boolean;
+            }[];
+        };
     };
     responses: never;
     parameters: never;

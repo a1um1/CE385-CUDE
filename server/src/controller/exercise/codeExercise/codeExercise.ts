@@ -14,7 +14,17 @@ export class CodeExerciseController extends BaseExerciseController {
     return { ...this.data, codeExercise: this.codeExercise };
   }
 
-  async getAllTestCase() {
-    return await CodeTestCase.getAllByExerciseID(this.data.id);
+  get language() {
+    return this.codeExercise.language;
+  }
+
+  /** The program that really runs: the student's answer followed by the exercise's test harness. */
+  getRunnableCode(code: string) {
+    const { testerCode } = this.codeExercise;
+    return testerCode ? `${code}\n${testerCode}` : code;
+  }
+
+  async getAllTestCase(publicOnly = false) {
+    return await CodeTestCase.getAllByExerciseID(this.codeExercise.id, publicOnly);
   }
 }

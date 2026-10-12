@@ -8,7 +8,7 @@ import EditorToolbar from "./subcomponent/toolbar";
 import MonacoPanel from "./subcomponent/monacoPanel";
 import IOPanel from "./subcomponent/ioPanel";
 
-export type { CodeEditorProps, CodeLanguage, PanelLayout } from "./codeEditor.schema";
+export type { CodeEditorProps, CodeLanguage, PanelLayout, TestResult } from "./codeEditor.schema";
 
 export default function CodeEditor(props: CodeEditorProps) {
   const { className } = props;

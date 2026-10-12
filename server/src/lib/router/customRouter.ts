@@ -91,6 +91,7 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
       path: config.path.toString().replace(/\/:(?<params>\w+)/g, "/{$1}"),
       tags: config.tags,
       summary: config.summary,
+      description: config.description,
       request: {
         ...(config.params && { params: config.params }),
         ...(config.query && { query: config.query }),

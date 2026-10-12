@@ -1,9 +1,10 @@
 @import "https://cdn.jsdelivr.net/gh/bitmaks/cm-web-fonts@latest/fonts.css";
+@import url("https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@100..900&display=swap");
 
 .markdown {
   line-height: 1.6;
   font-size: 1.15rem;
-  font-family: "Computer Modern Serif", "Google Sans", serif;
+  font-family: "Computer Modern Serif", "Noto Serif Thai", serif;
   /* font-family: "Google Sans", serif; */
 }
 
@@ -43,6 +44,15 @@
 .markdown ul,
 .markdown ol {
   padding-left: 1.5em;
+}
+
+/* Tailwind Preflight zeroes list markers; restore them */
+.markdown ul {
+  list-style-type: disc;
+}
+
+.markdown ol {
+  list-style-type: decimal;
 }
 
 .markdown li {
@@ -87,6 +97,10 @@
   margin: 2em 0;
 }
 
+.markdown :is(pre, code) {
+  font-family: var(--font-mono);
+}
+
 .markdown :not(pre) > code {
   background: rgb(255 255 255 / 0.08);
   padding: 0.15em 0.4em;
@@ -112,7 +126,7 @@
   right: 0.25rem;
   top: 0.25rem;
   z-index: 1;
-  font-family: "Computer Modern Mono", monospace;
+  font-family: var(--font-mono);
 }
 
 .code-block pre {
@@ -126,18 +140,24 @@
   padding: 0;
 }
 
-/* GitHub alert package follows OS color scheme; app is always dark, so pin colors. */
+/* 42-style alert: flat, square corners, thin coloured bar, monospace label + icon. */
 .markdown :global(.markdown-alert) {
   background: rgb(255 255 255 / 0.04);
-  border-radius: var(--radius);
-  padding: 1rem;
+  border-left-width: 2px;
+  border-radius: 0;
+  padding: 0.75rem 1rem;
 }
 
 .markdown :global(.markdown-alert-title) {
-  margin-bottom: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: var(--size-xs-font-size);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
   font-weight: 600;
 }
 
+/* Alert package follows OS color scheme; app is always dark, so pin colors. */
 .markdown :global(.markdown-alert.markdown-alert-note) {
   border-left-color: var(--color-primary);
 }

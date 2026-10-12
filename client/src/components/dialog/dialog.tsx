@@ -8,17 +8,37 @@ export interface DialogProps {
   onOpenChange: (open: boolean) => void;
   title: string;
   description?: string;
+  /** Optional icon in a round badge above the title; centres the dialog. */
+  icon?: ReactNode;
+  /** Optional line under the description, e.g. a quote. */
+  quote?: string;
+  tone?: "default" | "danger";
   children?: ReactNode;
   footer?: ReactNode;
 }
 
-function Dialog({ open, onOpenChange, title, description, children, footer }: DialogProps) {
+function Dialog({
+  open,
+  onOpenChange,
+  title,
+  description,
+  icon,
+  quote,
+  tone = "default",
+  children,
+  footer,
+}: DialogProps) {
   return (
     <BaseDialog.Root open={open} onOpenChange={onOpenChange}>
       <BaseDialog.Portal>
         <BaseDialog.Backdrop className={styles.backdrop} />
-        <BaseDialog.Popup className={styles.popup}>
+        <BaseDialog.Popup
+          className={styles.popup}
+          data-tone={tone}
+          data-with-icon={icon ? "" : undefined}
+        >
           <div className={styles.header}>
+            {icon && <div className={styles.iconBadge}>{icon}</div>}
             <div className={styles.headerText}>
               <BaseDialog.Title className={styles.title}>{title}</BaseDialog.Title>
               {description && (
@@ -26,6 +46,7 @@ function Dialog({ open, onOpenChange, title, description, children, footer }: Di
                   {description}
                 </BaseDialog.Description>
               )}
+              {quote && <p className={styles.quote}>{quote}</p>}
             </div>
             <BaseDialog.Close className={styles.closeButton} aria-label="Close dialog">
               <X size="1.25rem" />

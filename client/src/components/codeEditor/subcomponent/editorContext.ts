@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import type { CodeLanguage, RunResult } from "../codeEditor.schema";
+import type { CodeLanguage, RunResult, TestResult } from "../codeEditor.schema";
 import type { useEditorLayout } from "../hooks/useEditorLayout";
 
 export interface EditorContextValue {
@@ -15,6 +15,7 @@ export interface EditorContextValue {
   stderr?: string;
   layout: ReturnType<typeof useEditorLayout>;
   runResult?: RunResult;
+  testResults?: TestResult[];
   disableOutput?: boolean;
 }
 

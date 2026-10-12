@@ -86,6 +86,9 @@ export default class SessionController {
   }
 
   async cancel(): Promise<void> {
+    if (this.data.status !== "PENDING") {
+      throw new UserError(400, "Session is not in progress.");
+    }
     await db.sessions.update({
       where: {
         id: this.data.id,

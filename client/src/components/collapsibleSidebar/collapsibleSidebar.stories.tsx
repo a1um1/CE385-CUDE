@@ -6,8 +6,15 @@ import {
   CollapsibleSidebar,
   CollapsibleSidebarFooter,
   CollapsibleSidebarLabel,
+  CollapsibleSidebarProvider,
   CollapsibleSidebarToggle,
 } from "./collapsibleSidebar";
+
+const frame = (Story: () => React.ReactNode) => (
+  <div style={{ height: 480, display: "flex" }}>
+    <Story />
+  </div>
+);
 
 function SidebarContent() {
   return (
@@ -38,29 +45,60 @@ function SidebarContent() {
 
 const meta = {
   title: "Components/Collapsible Sidebar",
-  component: CollapsibleSidebar,
+  component: CollapsibleSidebarProvider,
   tags: ["autodocs"],
-  decorators: [
-    (Story) => (
-      <div style={{ height: 480, display: "flex" }}>
-        <Story />
-      </div>
-    ),
-  ],
   argTypes: {
     defaultCollapsed: { control: "boolean" },
     collapsed: { control: "boolean" },
   },
-} satisfies Meta<typeof CollapsibleSidebar>;
+} satisfies Meta<typeof CollapsibleSidebarProvider>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {
-  args: { defaultCollapsed: false, children: <SidebarContent /> },
+  args: {
+    defaultCollapsed: false,
+    children: (
+      <CollapsibleSidebar>
+        <SidebarContent />
+      </CollapsibleSidebar>
+    ),
+  },
+  decorators: [frame],
 };
 
 export const Collapsed: Story = {
-  args: { defaultCollapsed: true, children: <SidebarContent /> },
+  ...Playground,
+  args: { ...Playground.args, defaultCollapsed: true },
+};
+
+/** The toggle can live outside the rail — e.g. in a content header. */
+export const HeaderToggle: Story = {
+  args: {
+    children: (
+      <>
+        <CollapsibleSidebar>
+          <SidebarContent />
+        </CollapsibleSidebar>
+        <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+          <header
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              borderBottom: "2px solid var(--color-border)",
+              padding: "0.5rem 1rem",
+            }}
+          >
+            <CollapsibleSidebarToggle iconOnly label="Collapse" />
+            <span>Python | Python Fundamentals | Lesson 00</span>
+          </header>
+          <div style={{ padding: "1rem" }}>Content</div>
+        </div>
+      </>
+    ),
+  },
+  decorators: [frame],
 };
