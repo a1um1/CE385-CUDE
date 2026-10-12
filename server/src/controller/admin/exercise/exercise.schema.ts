@@ -29,3 +29,16 @@ export const AdminExerciseListResponseSchema = createCursorPaginationResponseSch
 );
 
 export type AdminExerciseListResponseSchema = zod.infer<typeof AdminExerciseListResponseSchema>;
+
+export const CreateAdminExerciseSchema = z
+  .object({
+    name: z.string().min(1).openapi({ example: "Exercise Name" }),
+    lessonID: z.string().min(1).openapi({
+      example: "lesson_id",
+      description: "Lesson ID",
+    }),
+    content: z.string().openapi({ example: "Exercise content" }),
+  })
+  .openapi("CreateAdminExercise");
+
+export type CreateAdminExercise = zod.infer<typeof CreateAdminExerciseSchema>;

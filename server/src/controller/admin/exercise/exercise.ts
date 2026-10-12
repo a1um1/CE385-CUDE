@@ -1,9 +1,11 @@
 import type {
   AdminExerciseListResponseSchema,
   AdminExerciseQuery,
+  CreateAdminExercise,
 } from "#/controller/admin/exercise/exercise.schema";
 import { buildCursorOrderBy } from "#/lib/pagination.schema";
 import { db } from "#/lib/prisma";
+import UserError from "#/lib/router/http/userError";
 
 export default class AdminExercisesController {
   static async getPaginateLists(
@@ -35,5 +37,17 @@ export default class AdminExercisesController {
     }
 
     return { data, nextCursor, prevCursor };
+  }
+
+  static async create(body: CreateAdminExercise) {
+    const lesson = await db.lesson.findUnique({ where: { id: body.lessonID } });
+    if (!lesson) throw new UserError(404, "Lesson not found");
+    return db.exercise.create({
+      data: {
+        name: body.name,
+        lessonID: body.lessonID,
+        content: body.content,
+      },
+    });
   }
 }

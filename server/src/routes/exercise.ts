@@ -5,6 +5,7 @@ import AdminExercisesController from "#/controller/admin/exercise";
 import {
   AdminExerciseListResponseSchema,
   AdminExerciseQuerySchema,
+  CreateAdminExerciseSchema,
 } from "#/controller/admin/exercise/exercise.schema";
 
 const exerciseRouter = new CustomRouter({
@@ -33,6 +34,17 @@ const exerciseRouter = new CustomRouter({
     async ({ params }) => {
       const exercise = await ExerciseController.getById(params.exerciseId);
       return exercise.JSON;
+    },
+  )
+  .post(
+    "/",
+    {
+      summary: "Create exercise",
+      body: CreateAdminExerciseSchema,
+      response: ExerciseSchema,
+    },
+    async ({ body }) => {
+      return AdminExercisesController.create(body);
     },
   );
 
