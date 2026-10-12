@@ -27,6 +27,10 @@
   color: var(--color-warning-text);
 }
 
+.locked {
+  background-color: var(--color-border);
+}
+
 .iconWrapper {
   width: 60px;
   height: 60px;

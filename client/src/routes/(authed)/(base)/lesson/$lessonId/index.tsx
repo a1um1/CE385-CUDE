@@ -16,7 +16,7 @@ import formatElapsedTime from "#/lib/elapsedTime";
 import { formatPercent } from "#/lib/formatNumber";
 import formatRelativeTime from "#/lib/relativeTime";
 import { createFileRoute, Link, useLoaderData } from "@tanstack/react-router";
-import { Book, ChevronLeft, XIcon, type LucideIcon } from "lucide-react";
+import { Book, ChevronLeft, type LucideIcon } from "lucide-react";
 
 const lessonRouteId = "/(authed)/(base)/lesson/$lessonId";
 
@@ -37,14 +37,14 @@ const availableStatuses = {
   },
   NOT_AVAILABLE: {
     label: "Not Available",
-    status: "fail",
-    icon: XIcon,
+    status: "locked",
+    icon: undefined,
   },
 } as const satisfies Record<
   components["schemas"]["EnrollmentStatus"],
   {
     label: string;
-    status: "inProgress" | "fail";
+    status: "inProgress" | "fail" | "locked";
     icon: LucideIcon | undefined;
   }
 >;

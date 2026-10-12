@@ -1,8 +1,8 @@
 import type React from "react";
 import styles from "./scoring.module.css";
-import { Check, X, CircleDashed, Flag } from "lucide-react";
+import { Check, X, CircleDashed, Flag, Lock } from "lucide-react";
 
-export type ScoringStatus = "success" | "fail" | "inProgress" | "giveUp";
+export type ScoringStatus = "success" | "fail" | "inProgress" | "giveUp" | "locked";
 
 export interface ScoringProps {
   status: ScoringStatus;
@@ -25,6 +25,11 @@ const defaultConfig: Record<
     style: styles.giveUp,
     icon: <Flag size={60} strokeWidth={3} />,
     label: "ยอมแพ้",
+  },
+  locked: {
+    style: styles.locked,
+    icon: <Lock size={60} strokeWidth={2.5} />,
+    label: "Locked",
   },
 };
 
