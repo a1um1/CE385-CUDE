@@ -29,6 +29,15 @@ const makeRefreshTokenRecord = (token: string): RefreshTokenRecord => ({
   },
 });
 
+function mockTransactionToInvokeCallback(): void {
+  mockDB.$transaction.mockImplementation(((callback: unknown) => {
+    if (typeof callback === "function") {
+      return callback(mockDB);
+    }
+    return undefined;
+  }) as never);
+}
+
 describe("Authentication Tests", () => {
   it("should sign in a user and return a token", async () => {
     const validPassword = "password"; // Assuming this is the correct password for the fake user
@@ -83,22 +92,34 @@ describe("Authentication Tests", () => {
     await expect(controller.signUp(userData)).rejects.toThrow();
   });
 
-  it("should reuse the refresh token and issue a new access token", async () => {
+  it("should rotate the refresh token and issue a new access token", async () => {
     const oldToken = "old-refresh-token";
     mockDB.refreshToken.findUnique.mockResolvedValue(makeRefreshTokenRecord(oldToken));
+    mockDB.refreshToken.deleteMany.mockResolvedValue({ count: 1 });
+    mockTransactionToInvokeCallback();
 
     const result = await controller.refreshToken(oldToken);
 
     expect(typeof result.accessToken).toBe("string");
-    expect(result.refreshToken).toBe(oldToken);
-    // No rotation: concurrent refreshes from two tabs must not revoke each other.
-    expect(mockDB.refreshToken.deleteMany).not.toHaveBeenCalled();
-    expect(mockDB.refreshToken.create).not.toHaveBeenCalled();
-    // Sliding expiry: the session window extends instead of being recreated.
-    expect(mockDB.refreshToken.updateMany).toHaveBeenCalledWith({
+    // Rotation: the presented token is consumed and replaced.
+    expect(result.refreshToken).not.toBe(oldToken);
+    expect(mockDB.refreshToken.deleteMany).toHaveBeenCalledWith({
       where: { token: oldToken },
-      data: { expiresAt: expect.any(Date) },
     });
+    expect(mockDB.refreshToken.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({ userID: fakeUser.id }),
+    });
+  });
+
+  it("should not revoke the winner when a concurrent refresh loses", async () => {
+    const oldToken = "already-consumed-refresh-token";
+    mockDB.refreshToken.findUnique.mockResolvedValue(makeRefreshTokenRecord(oldToken));
+    // The other concurrent refresh already deleted the row, so this one matches nothing.
+    mockDB.refreshToken.deleteMany.mockResolvedValue({ count: 0 });
+    mockTransactionToInvokeCallback();
+
+    await expect(controller.refreshToken(oldToken)).rejects.toThrow();
+    expect(mockDB.refreshToken.create).not.toHaveBeenCalled();
   });
 
   it("should throw error when refreshing with an invalid refresh token", async () => {
