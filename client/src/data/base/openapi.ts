@@ -2659,11 +2659,11 @@ export interface paths {
         put?: never;
         /**
          * Refresh authentication token
-         * @description Exchange the `refreshToken` cookie for a fresh `accessToken`.
+         * @description Exchange the `refreshToken` cookie for a fresh `accessToken` and a rotated `refreshToken`.
          *
-         *     The refresh token must still exist in the database and not be expired; its expiry slides forward 7 days on each successful call. No request body is needed — the token is read from the cookie.
+         *     The presented refresh token must still exist in the database and not be expired. It is consumed atomically and replaced, so a token is valid for a single refresh. The user-agent and IP address are recorded against the new token.
          *
-         *     Returns `400` when the cookie is missing, `403` when the token is unknown or expired.
+         *     Returns `400` when the cookie is missing, `403` when the token is unknown, expired, or already consumed (concurrent refresh or reuse).
          */
         post: {
             parameters: {
@@ -5178,6 +5178,11 @@ export interface components {
              * @example email@gmail.com
              */
             email: string;
+            /**
+             * Format: date-time
+             * @example 2023-01-01T00:00:00.000Z
+             */
+            passwordChangedAt: string;
             epithet: components["schemas"]["EpithetDefinition"];
             /**
              * @example USER
@@ -5315,12 +5320,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-12T16:40:52.406Z
+             * @example 2026-10-12T16:48:23.954Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-12T16:40:52.406Z
+             * @example 2026-10-12T16:48:23.955Z
              */
             updatedAt: string;
         };
