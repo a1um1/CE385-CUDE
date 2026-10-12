@@ -8,6 +8,7 @@ import type {
 import { courseQueryPayload } from "#/controller/admin/courses/courses.schema";
 import { buildCursorOrderBy } from "#/lib/pagination.schema";
 import { db } from "#/lib/prisma";
+import UserError from "#/lib/router/http/userError";
 
 export default class AdminCoursesController {
   private data: AdminCourseSchema;
@@ -24,7 +25,7 @@ export default class AdminCoursesController {
     const course = await db.course.findUnique({
       where: { id },
     });
-    if (!course) throw new Error("Course not found");
+    if (!course) throw new UserError(404, "Course not found");
     return new AdminCoursesController(course);
   }
 
