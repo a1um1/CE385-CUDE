@@ -302,7 +302,7 @@ export interface paths {
         put?: never;
         /**
          * Update user password
-         * @description Change the authenticated user's password. The current password must be supplied and is verified before the new one is stored. Existing sessions are not revoked; all other refresh tokens are invalidated.
+         * @description Change the authenticated user's password. The current password must be supplied and is verified before the new one is stored. All sessions are signed out: every refresh token for the user (the current one included) is revoked and access tokens issued before the change are rejected immediately. Sign in again afterwards.
          */
         post: {
             parameters: {
@@ -1714,7 +1714,7 @@ export interface paths {
         put?: never;
         /**
          * Force change user password
-         * @description Force-set a user's password without knowing the old one. Requires an `ADMIN` token. Existing refresh tokens for that user are not revoked by this call.
+         * @description Force-set a user's password without knowing the old one. Requires an `ADMIN` token. Every refresh token for that user is revoked and outstanding access tokens are rejected immediately.
          */
         post: {
             parameters: {
@@ -5178,6 +5178,11 @@ export interface components {
              * @example email@gmail.com
              */
             email: string;
+            /**
+             * Format: date-time
+             * @example 2023-01-01T00:00:00.000Z
+             */
+            passwordChangedAt: string;
             epithet: components["schemas"]["EpithetDefinition"];
             /**
              * @example USER
@@ -5315,12 +5320,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-12T16:29:32.294Z
+             * @example 2026-10-12T16:48:23.954Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-12T16:29:32.295Z
+             * @example 2026-10-12T16:48:23.955Z
              */
             updatedAt: string;
         };

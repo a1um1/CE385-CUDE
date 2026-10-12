@@ -129,8 +129,13 @@ export default class AuthenticationController {
     try {
       const decoded = jwt.verify(token, this.secret, {
         algorithms: ["HS256"],
-      }) as AuthenticationBody;
-      return await UserController.getById(decoded.userId);
+      }) as AuthenticationBody & { iat?: number };
+      const user = await UserController.getById(decoded.userId);
+      const changedAtSecond = Math.floor(user.JSON.passwordChangedAt.getTime() / 1000);
+      if (typeof decoded.iat === "number" && decoded.iat < changedAtSecond) {
+        throw new UserError(401, "Token invalidated by a password change");
+      }
+      return user;
     } catch (error) {
       if (error instanceof jwt.TokenExpiredError) throw new UserError(401, "Token expired");
       if (error instanceof jwt.NotBeforeError) throw new UserError(403, "Token not active yet");

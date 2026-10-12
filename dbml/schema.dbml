@@ -166,6 +166,7 @@ Table User {
   backgroundImage String
   epithet String
   password String [not null]
+  passwordChangedAt DateTime [default: `now()`, not null]
   isActive Boolean [not null, default: true]
   deactivateReason String
   role Role [not null, default: 'USER']
