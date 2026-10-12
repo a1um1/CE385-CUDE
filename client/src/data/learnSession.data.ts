@@ -20,6 +20,7 @@ export const usePendingLearnSessionQuery = () =>
 
 export const useStartLearnSessionMutation = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (lessonId: string) => {
       const { data, error } = await APIclient.POST("/session", {
@@ -31,6 +32,11 @@ export const useStartLearnSessionMutation = () => {
       return data;
     },
     onSuccess: async (data) => {
+      await queryClient.invalidateQueries({ queryKey: ["pending_learn_session"] });
+      await queryClient.invalidateQueries({ queryKey: ["learn_sessions"] });
+      await queryClient.invalidateQueries({ queryKey: ["session"] });
+      await queryClient.invalidateQueries({ queryKey: ["lesson_enrollment_availability"] });
+      await queryClient.invalidateQueries({ queryKey: ["exercises_from_lesson"] });
       navigate({
         to: "/session/$id",
         params: {
@@ -43,6 +49,7 @@ export const useStartLearnSessionMutation = () => {
 
 export const useAbortLearnSessionMutation = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (sessionId: string) => {
       const { data, error } = await APIclient.DELETE("/session/{SessionID}", {
@@ -56,6 +63,11 @@ export const useAbortLearnSessionMutation = () => {
       return data;
     },
     onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["pending_learn_session"] });
+      await queryClient.invalidateQueries({ queryKey: ["learn_sessions"] });
+      await queryClient.invalidateQueries({ queryKey: ["session"] });
+      await queryClient.invalidateQueries({ queryKey: ["lesson_enrollment_availability"] });
+      await queryClient.invalidateQueries({ queryKey: ["exercises_from_lesson"] });
       navigate({
         to: "/",
       });
