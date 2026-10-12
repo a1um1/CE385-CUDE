@@ -153,7 +153,12 @@ function RouteComponent() {
     };
   }, [exercise.id]);
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
+    // Flush the draft before navigating away.
+    if (canSave && edited.current) {
+      await saveSubmission.mutateAsync({ code: latestCode.current });
+    }
+
     if (submitted) {
       navigate({
         to: "/lesson/$lessonId/$sessionId",
