@@ -52,15 +52,15 @@ const exerciseRouter = new CustomRouter({
         throw new UserError(400, "Exercise is not a code exercise");
       }
 
-      const language = zGoJudgeLanguage.safeParse(exercise.language);
-      if (!language.success) throw new UserError(400, "Exercise language is not supported");
+      const grade = await exercise.grade(body.code, true);
+      if (!grade) throw new UserError(400, "Exercise language is not supported");
 
-      const testCases = await exercise.getAllTestCase(true);
       const codeGrader = new CodeGrader();
+      const publicTestCases = await exercise.getAllTestCase(true);
       const results = await codeGrader.grade({
         code: exercise.getRunnableCode(body.code),
-        language: language.data,
-        testCases: testCases.map((testCase) => testCase.JSON),
+        language: zGoJudgeLanguage.parse(exercise.language),
+        testCases: publicTestCases.map((testCase) => testCase.JSON),
       });
       return codeGrader.gradeSummary(results);
     },
