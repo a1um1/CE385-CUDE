@@ -151,7 +151,9 @@ export default class LessonController {
   }
 
   private static isPassed(attempt: LessonAttempt | undefined): boolean {
-    return attempt !== undefined && attempt.total > 0 && attempt.passed === attempt.total;
+    if (attempt === undefined) return false;
+    // A lesson with no CODE exercise has nothing to gate on, so it counts as passed.
+    return attempt.total === 0 || attempt.passed === attempt.total;
   }
 
   private static isLocked(

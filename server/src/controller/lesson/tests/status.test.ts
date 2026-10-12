@@ -125,6 +125,21 @@ describe("Lesson Controller status list", () => {
     expect(lessons.map((lesson) => lesson.status)).toEqual(["PASSED", "AVAILABLE"]);
   });
 
+  it("counts a prerequisite lesson with no CODE exercise as passed", async () => {
+    mockLessons(A, B);
+    mockDB.sessions.findFirst.mockResolvedValueOnce(null);
+    mockPrerequisites([{ lessonID: B, prerequisiteLessonID: A }]);
+    mockDB.sessions.findMany.mockResolvedValueOnce([
+      { LessonID: A, status: "SUBMITTED", submissions: [] },
+    ] as never);
+    mockDB.exercise.findMany.mockResolvedValueOnce([]);
+
+    const lessons = await LessonController.getByUnitIdWithStatus(UNIT, USER);
+
+    // A has nothing to grade, so B must not stay locked behind it.
+    expect(lessons.map((lesson) => lesson.status)).toEqual(["PASSED", "AVAILABLE"]);
+  });
+
   it("locks a lesson before its start time", async () => {
     mockDB.lesson.findMany.mockResolvedValueOnce([
       fakeLesson(A, A, { startAt: new Date(Date.now() + 86_400_000) }),
