@@ -11,11 +11,13 @@ export const Route = createFileRoute("/(authed)/session/$id")({
     const session = await context.queryClient.query(
       sessionByIdQuery(params.id, [...sessionInclude]),
     );
+    // A session that does not resolve has no score page to fall back to.
+    if (!session?.lesson) throw redirect({ to: "/" });
     // A finished or given-up session is read-only: its result lives on the score page.
-    if (session?.status !== "PENDING") {
+    if (session.status !== "PENDING") {
       throw redirect({
         to: "/lesson/$lessonId/$sessionId",
-        params: { lessonId: session?.lesson?.id ?? "", sessionId: params.id },
+        params: { lessonId: session.lesson.id, sessionId: params.id },
       });
     }
   },
