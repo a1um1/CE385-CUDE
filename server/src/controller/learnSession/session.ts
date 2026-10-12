@@ -114,6 +114,7 @@ export default class SessionController {
       where: {
         userID: props.UserID,
       },
+      orderBy: { createdAt: "desc" },
       include: resolveInclude<Prisma.SessionsInclude>(include, sessionIncludes),
     });
     return sessions as SessionData[];
