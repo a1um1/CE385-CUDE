@@ -4,6 +4,7 @@ import type {
 } from "#/controller/authentication/authentication.schema";
 import UserController from "#/controller/user";
 import type { userCreationSchema, userValidationSchema } from "#/controller/user/user.schema";
+import type { Prisma } from "#/generated/prisma/client";
 import { db } from "#/lib/prisma";
 import userError from "#/lib/router/http/userError";
 import UserError from "#/lib/router/http/userError";
@@ -21,7 +22,11 @@ export default class AuthenticationController {
   public static REFRESH_TOKEN_EXPIRATION_MS: number = 7 * 24 * 60 * 60 * 1000; // 7 days in ms
   private static TOKEN_EXPIRATION: jwt.SignOptions["expiresIn"] = "15m"; // 15 minutes in ms
 
-  async createRefreshToken(userId: string, context?: TokenContext): Promise<string> {
+  async createRefreshToken(
+    userId: string,
+    context?: TokenContext,
+    client: Prisma.TransactionClient = db,
+  ): Promise<string> {
     if (!this.secret) throw new Error("JWT secret is not defined");
     const refreshToken = jwt.sign(
       { userId, salt: crypto.randomBytes(32).toString("hex") },
@@ -32,7 +37,7 @@ export default class AuthenticationController {
       },
     );
 
-    await db.refreshToken.create({
+    await client.refreshToken.create({
       data: {
         token: refreshToken,
         userID: userId,
@@ -91,21 +96,23 @@ export default class AuthenticationController {
     };
   }
 
-  async refreshToken(refreshToken: string): Promise<{
+  async refreshToken(
+    refreshToken: string,
+    context?: TokenContext,
+  ): Promise<{
     accessToken: authenticationSchema;
     refreshToken: string;
   }> {
     const refreshTokenData = await this.validateRefreshToken(refreshToken);
     const accessToken = await this.generateToken(refreshTokenData);
 
-    await db.refreshToken.updateMany({
-      where: { token: refreshToken },
-      data: {
-        expiresAt: new Date(Date.now() + AuthenticationController.REFRESH_TOKEN_EXPIRATION_MS),
-      },
+    const newRefreshToken = await db.$transaction(async (tx) => {
+      const consumed = await tx.refreshToken.deleteMany({ where: { token: refreshToken } });
+      if (consumed.count === 0) throw new UserError(403, "Invalid refresh token");
+      return this.createRefreshToken(refreshTokenData.userId, context, tx);
     });
 
-    return { accessToken, refreshToken };
+    return { accessToken, refreshToken: newRefreshToken };
   }
 
   generateToken(user: AuthenticationBody): authenticationSchema {
