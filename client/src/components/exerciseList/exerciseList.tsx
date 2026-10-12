@@ -16,12 +16,33 @@ export interface ExerciseListProps {
 }
 
 /** Numbered list of a lesson's exercises, with an optional result badge per row. */
-export default function ExerciseList({ items, isLoading, sessionId }: ExerciseListProps) {
+export interface ExerciseListErrorProps {
+  isError?: boolean;
+  errorMessage?: string;
+}
+
+export default function ExerciseList({
+  items,
+  isLoading,
+  sessionId,
+  isError,
+  errorMessage,
+}: ExerciseListProps & ExerciseListErrorProps) {
   if (isLoading) return <Skeleton className="h-14" />;
+  if (isError) {
+    return (
+      <div className="flex items-center gap-2 p-4 text-sm text-red-500">
+        {errorMessage ?? "Failed to load exercises."}
+      </div>
+    );
+  }
+  if (!items || items.length === 0) {
+    return <div className="p-4 text-sm text-muted-foreground">No exercises found.</div>;
+  }
 
   return (
     <ol className="flex flex-col">
-      {items?.map((item, index) => {
+      {items.map((item, index) => {
         const row = (
           <>
             <span className="opacity-50">{index + 1}.</span>
