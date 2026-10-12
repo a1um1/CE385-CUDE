@@ -75,10 +75,21 @@ const LessonStart = () => {
 
   const handleStartSession = async () => {
     if (!lesson.id) return;
-    await startLearnSession.mutateAsync(lesson.id);
+    try {
+      await startLearnSession.mutateAsync(lesson.id);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   if (enrollmentAvailability.isLoading) return <Skeleton className="h-6 w-32" />;
+  if (enrollmentAvailability.isError) {
+    return (
+      <Button variant="secondary" disabled>
+        ไม่สามารถตรวจสอบสถานะได้
+      </Button>
+    );
+  }
 
   if (enrollmentAvailability.data?.isAvailable) {
     return (
