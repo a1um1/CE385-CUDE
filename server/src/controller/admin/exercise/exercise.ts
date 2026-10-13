@@ -2,6 +2,7 @@ import type {
   AdminExerciseListResponseSchema,
   AdminExerciseQuery,
   CreateAdminExercise,
+  UpdateAdminExercise,
 } from "#/controller/admin/exercise/exercise.schema";
 import { buildCursorOrderBy } from "#/lib/pagination.schema";
 import { db } from "#/lib/prisma";
@@ -43,11 +44,21 @@ export default class AdminExercisesController {
     const lesson = await db.lesson.findUnique({ where: { id: body.lessonID } });
     if (!lesson) throw new UserError(404, "Lesson not found");
     return db.exercise.create({
-      data: {
-        name: body.name,
-        lessonID: body.lessonID,
-        content: body.content,
-      },
+      data: { name: body.name, lessonID: body.lessonID, content: body.content },
+    });
+  }
+
+  static async update(id: string, body: UpdateAdminExercise) {
+    const existing = await db.exercise.findUnique({ where: { id } });
+    if (!existing) throw new UserError(404, "Exercise not found");
+
+    if (body.lessonID !== existing.lessonID) {
+      const lesson = await db.lesson.findUnique({ where: { id: body.lessonID } });
+      if (!lesson) throw new UserError(404, "Lesson not found");
+    }
+    return db.exercise.update({
+      where: { id },
+      data: { name: body.name, lessonID: body.lessonID, content: body.content },
     });
   }
 }
