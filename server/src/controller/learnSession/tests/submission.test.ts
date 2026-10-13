@@ -64,6 +64,10 @@ const mockLesson = (overrides: { XPgiven?: number; gemsGiven?: number } = {}) =>
     ...overrides,
   } as never);
 
+/** Number of CODE exercises the lesson defines, which is what the pass rate is measured against. */
+const mockCodeExerciseCount = (count: number) =>
+  mockDB.exercise.count.mockResolvedValueOnce(count as never);
+
 /** One submission graded against a single failing test case. */
 const mockFailedSubmission = () => {
   mockDB.submission.findMany.mockResolvedValueOnce([
@@ -89,6 +93,7 @@ describe("SubmissionController.submitSession", () => {
     mockPendingSession();
     mockDB.sessions.updateMany.mockResolvedValueOnce({ count: 1 } as never);
     mockDB.submission.findMany.mockResolvedValueOnce([] as never);
+    mockCodeExerciseCount(0);
     mockLesson({ XPgiven: 0, gemsGiven: 0 });
 
     await expect(
@@ -120,6 +125,7 @@ describe("SubmissionController.submitSession", () => {
     mockPendingSession();
     mockDB.sessions.updateMany.mockResolvedValueOnce({ count: 1 } as never);
     mockDB.submission.findMany.mockResolvedValueOnce([] as never);
+    mockCodeExerciseCount(0);
     mockLesson();
     mockDB.userStat.upsert.mockResolvedValueOnce({ totalXP: 100, currentGems: 10 } as never);
 
@@ -144,6 +150,7 @@ describe("SubmissionController.submitSession", () => {
     mockPendingSession();
     mockDB.sessions.updateMany.mockResolvedValueOnce({ count: 1 } as never);
     mockDB.submission.findMany.mockResolvedValueOnce([] as never);
+    mockCodeExerciseCount(0);
     mockLesson();
     mockDB.sessions.findFirst.mockResolvedValueOnce({ id: "already-rewarded-session" } as never);
 
@@ -157,6 +164,7 @@ describe("SubmissionController.submitSession", () => {
   it("pays nothing when the lesson is not passed", async () => {
     mockPendingSession();
     mockDB.sessions.updateMany.mockResolvedValueOnce({ count: 1 } as never);
+    mockCodeExerciseCount(1);
     mockLesson();
     mockFailedSubmission();
 
@@ -167,6 +175,19 @@ describe("SubmissionController.submitSession", () => {
       reward: undefined,
     });
     expect(mockDB.sessions.update).not.toHaveBeenCalled();
+    expect(mockDB.transactions.create).not.toHaveBeenCalled();
+  });
+
+  it("pays nothing when the student skipped every exercise", async () => {
+    mockPendingSession();
+    mockDB.sessions.updateMany.mockResolvedValueOnce({ count: 1 } as never);
+    mockDB.submission.findMany.mockResolvedValueOnce([] as never);
+    mockCodeExerciseCount(2);
+    mockLesson();
+
+    await expect(
+      SubmissionController.submitSession({ SessionID: SESSION, userID: USER }),
+    ).resolves.toMatchObject({ reward: undefined });
     expect(mockDB.transactions.create).not.toHaveBeenCalled();
   });
 });

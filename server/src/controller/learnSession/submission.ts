@@ -1,4 +1,5 @@
 import ExerciseController, { CodeExerciseController } from "#/controller/exercise";
+import LessonController from "#/controller/lesson";
 import SessionController from "#/controller/learnSession/session";
 import {
   SubmissionContentSchema,
@@ -139,12 +140,15 @@ export default class SubmissionController {
 
         const exercises = graded.filter((entry) => entry !== null);
         const passed = exercises.filter((entry) => entry.ok).length;
+        const totalCodeExercises = await tx.exercise.count({
+          where: { lessonID: session.JSON.LessonID, type: "CODE" },
+        });
         const reward = await this.grantLessonReward(tx, {
           SessionID: props.SessionID,
           userID: props.userID,
           LessonID: session.JSON.LessonID,
           passed,
-          total: exercises.length,
+          total: totalCodeExercises,
         });
         return {
           exercises,
@@ -162,8 +166,10 @@ export default class SubmissionController {
   ): Promise<LessonReward | undefined> {
     const lesson = await tx.lesson.findUnique({ where: { id: props.LessonID } });
     if (!lesson) return undefined;
-    const passedLesson =
-      props.total === 0 || props.passed / props.total >= Number(lesson.passThreshold);
+    const passedLesson = LessonController.isPassed(
+      { passed: props.passed, total: props.total, givenUp: false },
+      Number(lesson.passThreshold),
+    );
     if (!passedLesson) return undefined;
 
     const rewarded = await tx.sessions.findFirst({
