@@ -133,8 +133,7 @@ Table Sessions {
   LessonID String [not null]
   lesson Lesson [not null]
   status SubmissionStatus [not null, default: 'PENDING']
-  rewarded Boolean [not null, default: false, note: 'True on the one attempt that paid this lesson\'s reward. The partial unique index below turns
-"the first pass pays, later passes do not" into a database guarantee instead of a convention.']
+  rewarded Boolean [not null, default: false]
   submissions Submission [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]

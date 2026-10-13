@@ -1,5 +1,6 @@
 import ButtonLink from "#/components/buttonLink";
 import ExerciseList from "#/components/exerciseList";
+import Gem from "#/components/icon/gem";
 import { Scoring } from "#/components/scoring";
 import type { components } from "#/data/base/openapi";
 import { useExerciseFromLessonQuery } from "#/data/exercise.data";
@@ -77,7 +78,17 @@ function RouteComponent() {
           <p>
             {lesson?.unit?.course?.name} / {lesson?.unit?.name}
           </p>
-          <h1 className="text-2xl mb-4">{lesson?.name}</h1>
+          <h1 className="text-2xl mb-2">{lesson?.name}</h1>
+          {session?.rewarded && lesson && (
+            <p className="flex items-center gap-1">
+              <span className="text-success bg-current/20 border-2 rounded px-4 py-1.5">
+                +{lesson.XPgiven} XP
+              </span>
+              <span className="text-gem bg-current/20 border-2 rounded px-4 py-1.5 flex gap-2">
+                <Gem /> {lesson.gemsGiven}
+              </span>
+            </p>
+          )}
         </div>
       </div>
 
@@ -94,7 +105,6 @@ function RouteComponent() {
           return {
             id: exercise.id,
             name: exercise.name,
-            // A given-up attempt was never graded, so no per-exercise result is shown.
             badge: cancelled ? undefined : (resultOf(exercise, submission) ?? undefined),
           };
         })}

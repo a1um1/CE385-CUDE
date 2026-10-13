@@ -4200,6 +4200,8 @@ export interface paths {
                              * @enum {string}
                              */
                             status: "PENDING" | "SUBMITTED" | "GRADED" | "CANCELLED";
+                            /** @example true */
+                            rewarded: boolean;
                             /**
                              * Format: date-time
                              * @example 2023-01-01T00:00:00.000Z
@@ -4223,6 +4225,10 @@ export interface paths {
                                  * @example unit_id
                                  */
                                 unitID: string;
+                                /** @example 100 */
+                                XPgiven: number;
+                                /** @example 10 */
+                                gemsGiven: number;
                                 unit?: {
                                     /**
                                      * Format: uuid
@@ -4357,6 +4363,8 @@ export interface paths {
                              * @enum {string}
                              */
                             status: "PENDING" | "SUBMITTED" | "GRADED" | "CANCELLED";
+                            /** @example true */
+                            rewarded: boolean;
                             /**
                              * Format: date-time
                              * @example 2023-01-01T00:00:00.000Z
@@ -4380,6 +4388,10 @@ export interface paths {
                                  * @example unit_id
                                  */
                                 unitID: string;
+                                /** @example 100 */
+                                XPgiven: number;
+                                /** @example 10 */
+                                gemsGiven: number;
                                 unit?: {
                                     /**
                                      * Format: uuid
@@ -4514,6 +4526,8 @@ export interface paths {
                              * @enum {string}
                              */
                             status: "PENDING" | "SUBMITTED" | "GRADED" | "CANCELLED";
+                            /** @example true */
+                            rewarded: boolean;
                             /**
                              * Format: date-time
                              * @example 2023-01-01T00:00:00.000Z
@@ -4537,6 +4551,10 @@ export interface paths {
                                  * @example unit_id
                                  */
                                 unitID: string;
+                                /** @example 100 */
+                                XPgiven: number;
+                                /** @example 10 */
+                                gemsGiven: number;
                                 unit?: {
                                     /**
                                      * Format: uuid
@@ -4678,6 +4696,8 @@ export interface paths {
                              * @enum {string}
                              */
                             status: "PENDING" | "SUBMITTED" | "GRADED" | "CANCELLED";
+                            /** @example true */
+                            rewarded: boolean;
                             /**
                              * Format: date-time
                              * @example 2023-01-01T00:00:00.000Z
@@ -4701,6 +4721,10 @@ export interface paths {
                                  * @example unit_id
                                  */
                                 unitID: string;
+                                /** @example 100 */
+                                XPgiven: number;
+                                /** @example 10 */
+                                gemsGiven: number;
                                 unit?: {
                                     /**
                                      * Format: uuid
@@ -5322,12 +5346,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-13T06:06:54.220Z
+             * @example 2026-10-13T06:57:15.586Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-13T06:06:54.221Z
+             * @example 2026-10-13T06:57:15.589Z
              */
             updatedAt: string;
         };
@@ -5748,6 +5772,10 @@ export interface components {
              * @example exercise_id
              */
             exerciseID: string;
+            content: {
+                /** @example print("hello") */
+                code: string;
+            };
             /** @example true */
             isGraded: boolean;
             /** @example false */
