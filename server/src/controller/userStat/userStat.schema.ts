@@ -30,11 +30,19 @@ export const zodUserStatObject = z
 
 export const zodUserStatExtendedObject = zodUserStatObject
   .extend({
+    level: z.number(),
+    xpIntoLevel: z.number(),
+    xpToNextLevel: z.number(),
+    levelProgressPercent: z.number(),
     willRegenerateAt: z.date().optional(),
   })
   .openapi("userStatExtendedObject") satisfies zod.ZodType<userStatsExtendedQueryPayload>;
 
 export type userStatsExtendedQueryPayload = userStatsQueryPayload & {
+  level: number;
+  xpIntoLevel: number;
+  xpToNextLevel: number;
+  levelProgressPercent: number;
   willRegenerateAt?: Date;
 };
 

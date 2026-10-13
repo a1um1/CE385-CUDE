@@ -5299,6 +5299,10 @@ export interface components {
             updatedAt: string;
         };
         userStatExtendedObject: components["schemas"]["userStatObject"] & {
+            level: number;
+            xpIntoLevel: number;
+            xpToNextLevel: number;
+            levelProgressPercent: number;
             /** Format: date-time */
             willRegenerateAt?: string;
         };

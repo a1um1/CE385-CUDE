@@ -14,9 +14,50 @@ export default class UserStatController {
   private data: userStatsQueryPayload;
   static readonly MAX_ENERGY = 5;
   static readonly ENERGY_REGEN_RATE = 10;
+  static readonly XP_LEVEL_BASE = 42;
+  static readonly XP_LEVEL_EXPONENT = 1.67;
 
   constructor(data: userStatsQueryPayload) {
     this.data = data;
+  }
+
+  /** Total XP needed to reach `level`: round of `base * level ^ exponent`. */
+  static xpForLevel(level: number): number {
+    return Math.round(
+      UserStatController.XP_LEVEL_BASE * level ** UserStatController.XP_LEVEL_EXPONENT,
+    );
+  }
+
+  /** Highest level whose XP requirement `totalXP` meets. Inverse of `xpForLevel`. */
+  static levelByXp(totalXP: number): number {
+    if (totalXP <= 0) return 0;
+    const raw =
+      (totalXP / UserStatController.XP_LEVEL_BASE) ** (1 / UserStatController.XP_LEVEL_EXPONENT);
+    let level = Math.floor(raw);
+    // Nudge off floating-point error at exact level boundaries.
+    while (UserStatController.xpForLevel(level + 1) <= totalXP) level++;
+    while (level > 0 && UserStatController.xpForLevel(level) > totalXP) level--;
+    return level;
+  }
+
+  /** Level plus progress inside it: XP earned this level, XP left to level up, and percent. */
+  static progressByXp(totalXP: number): {
+    level: number;
+    xpIntoLevel: number;
+    xpToNextLevel: number;
+    levelProgressPercent: number;
+  } {
+    const level = UserStatController.levelByXp(totalXP);
+    const levelStart = UserStatController.xpForLevel(level);
+    const nextLevel = UserStatController.xpForLevel(level + 1);
+    const xpIntoLevel = totalXP - levelStart;
+    const percent = (xpIntoLevel / (nextLevel - levelStart)) * 100;
+    return {
+      level,
+      xpIntoLevel,
+      xpToNextLevel: nextLevel - totalXP,
+      levelProgressPercent: Math.round(percent * 100) / 100,
+    };
   }
 
   get JSON(): userStatsExtendedQueryPayload {
@@ -31,6 +72,7 @@ export default class UserStatController {
 
     const data = {
       ...this.data,
+      ...UserStatController.progressByXp(this.data.totalXP),
       willRegenerateAt,
     };
     return data;
