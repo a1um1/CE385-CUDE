@@ -3,7 +3,7 @@ import { sessionIncludes } from "#/controller/learnSession/session.schema";
 import { db } from "#/lib/prisma";
 import UserError from "#/lib/router/http/userError";
 import lessonController from "#/controller/lesson";
-import type { Prisma } from "#/generated/prisma/client";
+import { Prisma } from "#/generated/prisma/client";
 import { resolveInclude } from "#/lib/include";
 import { z } from "#/lib/extendZod";
 import type { z as zod } from "zod";
@@ -65,14 +65,20 @@ export default class SessionController {
     if (!check.isAvailable) throw new UserError(400, "Lesson is not available to start.");
 
     const lesson = await lessonController.getById(props.LessonID);
-    const created = await db.sessions.create({
-      data: {
-        LessonID: lesson.JSON.id,
-        userID: props.UserID,
-      },
-    });
-
-    return created;
+    try {
+      const created = await db.sessions.create({
+        data: {
+          LessonID: lesson.JSON.id,
+          userID: props.UserID,
+        },
+      });
+      return created;
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+        throw new UserError(400, "Lesson is not available to start.");
+      }
+      throw error;
+    }
   }
 
   async cancel(): Promise<void> {
