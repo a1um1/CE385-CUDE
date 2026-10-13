@@ -180,6 +180,8 @@ const learnSessionRouter = new CustomRouter({
         "included** — and close the session as `SUBMITTED`.\n\n" +
         "Only counts come back per exercise (`total`, `passed`, `ok`); hidden test cases stay hidden. " +
         "An exercise passes when every test case passes.\n\n" +
+        "Passing the lesson as a whole (see the lesson's `passThreshold`) pays its XP and gems once " +
+        "per student and returns them as `reward`. Re-passing a lesson pays nothing.\n\n" +
         "Returns `400` when the session is not pending, `404` when it does not exist or belongs to " +
         "another user.",
       params: z.object({

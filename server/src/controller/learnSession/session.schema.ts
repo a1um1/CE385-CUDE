@@ -79,10 +79,22 @@ export const SubmittedExerciseSchema = z.object({
   ok: z.boolean().openapi({ example: false }),
 });
 
+/** XP and gems paid out for the lesson, present only when this submit earned them. */
+export const LessonRewardSchema = z
+  .object({
+    lessonID: z.uuidv7().openapi({ example: "lesson_id" }),
+    xp: z.number().openapi({ example: 100 }),
+    gems: z.number().openapi({ example: 10 }),
+  })
+  .openapi("LessonReward");
+
+export type LessonReward = zod.infer<typeof LessonRewardSchema>;
+
 export const SubmitSessionResponseSchema = z
   .object({
     message: z.string().openapi({ example: "Submitted 5 exercise(s), 4 passed." }),
     exercises: z.array(SubmittedExerciseSchema),
+    reward: LessonRewardSchema.optional(),
   })
   .openapi("SubmitSessionResponse");
 

@@ -2,9 +2,11 @@ import ExerciseController, { CodeExerciseController } from "#/controller/exercis
 import SessionController from "#/controller/learnSession/session";
 import {
   SubmissionContentSchema,
+  type LessonReward,
   type SubmissionResponse,
   type SubmitSessionResponse,
 } from "#/controller/learnSession/session.schema";
+import UserStatController from "#/controller/userStat";
 import type { Prisma, Submission } from "#/generated/prisma/client";
 import { db } from "#/lib/prisma";
 import UserError from "#/lib/router/http/userError";
@@ -137,13 +139,49 @@ export default class SubmissionController {
 
         const exercises = graded.filter((entry) => entry !== null);
         const passed = exercises.filter((entry) => entry.ok).length;
+        const reward = await this.grantLessonReward(tx, {
+          SessionID: props.SessionID,
+          userID: props.userID,
+          LessonID: session.JSON.LessonID,
+          passed,
+          total: exercises.length,
+        });
         return {
           exercises,
           message: `Submitted ${exercises.length} exercise(s), ${passed} passed.`,
+          reward,
         };
       },
       { timeout: 120_000, maxWait: 10_000 },
     );
+  }
+
+  private static async grantLessonReward(
+    tx: Prisma.TransactionClient,
+    props: { SessionID: string; userID: string; LessonID: string; passed: number; total: number },
+  ): Promise<LessonReward | undefined> {
+    const lesson = await tx.lesson.findUnique({ where: { id: props.LessonID } });
+    if (!lesson) return undefined;
+    const passedLesson =
+      props.total === 0 || props.passed / props.total >= Number(lesson.passThreshold);
+    if (!passedLesson) return undefined;
+
+    const rewarded = await tx.sessions.findFirst({
+      where: { userID: props.userID, LessonID: lesson.id, rewarded: true },
+      select: { id: true },
+    });
+    if (rewarded) return undefined;
+
+    await tx.sessions.update({ where: { id: props.SessionID }, data: { rewarded: true } });
+
+    await UserStatController.grantReward(tx, {
+      userID: props.userID,
+      xp: lesson.XPgiven,
+      gems: lesson.gemsGiven,
+      reason: `Lesson reward: ${lesson.name}`,
+    });
+
+    return { lessonID: lesson.id, xp: lesson.XPgiven, gems: lesson.gemsGiven };
   }
 
   private static async assertExerciseInSession(session: SessionController, exerciseID: string) {

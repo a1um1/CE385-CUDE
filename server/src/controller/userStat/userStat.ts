@@ -74,6 +74,53 @@ export default class UserStatController {
     });
   }
 
+  /**
+   * Credit XP and/or gems and log one `Transactions` row per currency moved. The caller owns the
+   * transaction, so the grant commits together with whatever earned it.
+   */
+  static async grantReward(
+    tx: Prisma.TransactionClient,
+    props: { userID: string; xp: number; gems: number; reason: string },
+  ): Promise<void> {
+    if (props.xp === 0 && props.gems === 0) return;
+
+    const stat = await tx.userStat.upsert({
+      where: { userID: props.userID },
+      // The row is normally created by `getByUserId` at full energy; the column default would give
+      // a brand-new student 0 energy, so set it here too.
+      create: {
+        userID: props.userID,
+        energy: UserStatController.MAX_ENERGY,
+        energyUpdatedAt: new Date(),
+        totalXP: props.xp,
+        currentGems: props.gems,
+      },
+      update: {
+        totalXP: { increment: props.xp },
+        currentGems: { increment: props.gems },
+      },
+    });
+
+    if (props.xp !== 0) {
+      await TransactionsController.createTransaction(tx, {
+        userID: props.userID,
+        type: "XP",
+        amount: props.xp,
+        afterAmount: stat.totalXP,
+        reason: props.reason,
+      });
+    }
+    if (props.gems !== 0) {
+      await TransactionsController.createTransaction(tx, {
+        userID: props.userID,
+        type: "GEM",
+        amount: props.gems,
+        afterAmount: stat.currentGems,
+        reason: props.reason,
+      });
+    }
+  }
+
   private async calculateCurrentEnergy(tx: Prisma.TransactionClient): Promise<number> {
     const rows = await tx.$queryRaw<
       {

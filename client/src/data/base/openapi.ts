@@ -5080,6 +5080,8 @@ export interface paths {
          *
          *     Only counts come back per exercise (`total`, `passed`, `ok`); hidden test cases stay hidden. An exercise passes when every test case passes.
          *
+         *     Passing the lesson as a whole (see the lesson's `passThreshold`) pays its XP and gems once per student and returns them as `reward`. Re-passing a lesson pays nothing.
+         *
          *     Returns `400` when the session is not pending, `404` when it does not exist or belongs to another user.
          */
         post: {
@@ -5320,12 +5322,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-12T16:48:23.954Z
+             * @example 2026-10-13T06:06:54.220Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-12T16:48:23.955Z
+             * @example 2026-10-13T06:06:54.221Z
              */
             updatedAt: string;
         };
@@ -5787,6 +5789,18 @@ export interface components {
                 /** @example false */
                 ok: boolean;
             }[];
+            reward?: components["schemas"]["LessonReward"];
+        };
+        LessonReward: {
+            /**
+             * Format: uuid
+             * @example lesson_id
+             */
+            lessonID: string;
+            /** @example 100 */
+            xp: number;
+            /** @example 10 */
+            gems: number;
         };
     };
     responses: never;

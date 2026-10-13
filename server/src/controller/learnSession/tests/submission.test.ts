@@ -1,9 +1,41 @@
 import SubmissionController from "#/controller/learnSession/submission";
+import type { testResult } from "#/controller/grader/codeGrader.schema";
 import { mockDB } from "#/test/setup";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+// The controller chain builds a real `CodeGrader`; replace it so no sandbox is touched.
+const { grade } = vi.hoisted(() => ({ grade: vi.fn() }));
+vi.mock("#/controller/grader/codeGrader", () => ({
+  default: class {
+    grade = grade;
+    gradeSummary = (results: testResult[]) => {
+      const passed = results.filter((result) => result.ok).length;
+      return {
+        total: results.length,
+        passed,
+        failed: results.length - passed,
+        percentage: results.length === 0 ? 0 : (passed / results.length) * 100,
+        averageTime: 0,
+        averageMemory: 0,
+        testResults: results,
+      };
+    };
+  },
+}));
 
 const SESSION = "01a1256e-348e-7659-aea9-91a74eeeb7ee";
 const USER = "01a1256e-6278-772c-82e0-5f65c02ca559";
+const LESSON = "01a1256e-6278-772c-82e0-5f65c02ca51f";
+const EXERCISE = "01a1256e-6278-772c-82e0-5f65c02ca520";
+
+const result = (ok: boolean): testResult => ({
+  ok,
+  input: "",
+  output: "",
+  expectedOutput: "",
+  time: 0,
+  memory: 0,
+});
 
 function mockTransactionToInvokeCallback(): void {
   mockDB.$transaction.mockImplementation(((callback: unknown) => {
@@ -18,25 +50,53 @@ const mockPendingSession = () =>
   mockDB.sessions.findUnique.mockResolvedValueOnce({
     id: SESSION,
     userID: USER,
-    LessonID: "lesson-id",
+    LessonID: LESSON,
     status: "PENDING",
   } as never);
+
+const mockLesson = (overrides: { XPgiven?: number; gemsGiven?: number } = {}) =>
+  mockDB.lesson.findUnique.mockResolvedValueOnce({
+    id: LESSON,
+    name: "Lesson 1",
+    passThreshold: 1,
+    XPgiven: 100,
+    gemsGiven: 10,
+    ...overrides,
+  } as never);
+
+/** One submission graded against a single failing test case. */
+const mockFailedSubmission = () => {
+  mockDB.submission.findMany.mockResolvedValueOnce([
+    { id: "submission-id", exerciseID: EXERCISE, content: { code: "print(1)" } },
+  ] as never);
+  mockDB.exercise.findUnique.mockResolvedValueOnce({
+    id: EXERCISE,
+    lessonID: LESSON,
+    type: "CODE",
+    codeExercises: { id: "code-exercise-id", language: "python", testerCode: null },
+  } as never);
+  mockDB.testCase.findMany.mockResolvedValueOnce([{ input: "1" }] as never);
+  grade.mockResolvedValueOnce([result(false)]);
+};
 
 describe("SubmissionController.submitSession", () => {
   beforeEach(() => {
     mockTransactionToInvokeCallback();
+    grade.mockReset();
   });
 
   it("claims the pending session before grading", async () => {
     mockPendingSession();
     mockDB.sessions.updateMany.mockResolvedValueOnce({ count: 1 } as never);
     mockDB.submission.findMany.mockResolvedValueOnce([] as never);
+    mockLesson({ XPgiven: 0, gemsGiven: 0 });
 
     await expect(
       SubmissionController.submitSession({ SessionID: SESSION, userID: USER }),
     ).resolves.toEqual({
       exercises: [],
       message: "Submitted 0 exercise(s), 0 passed.",
+      reward: { lessonID: LESSON, xp: 0, gems: 0 },
     });
     expect(mockDB.sessions.updateMany).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -54,5 +114,59 @@ describe("SubmissionController.submitSession", () => {
       SubmissionController.submitSession({ SessionID: SESSION, userID: USER }),
     ).rejects.toThrow("Session are not available for submission.");
     expect(mockDB.submission.findMany).not.toHaveBeenCalled();
+  });
+
+  it("grants XP and gems, logging one transaction each, on the first pass", async () => {
+    mockPendingSession();
+    mockDB.sessions.updateMany.mockResolvedValueOnce({ count: 1 } as never);
+    mockDB.submission.findMany.mockResolvedValueOnce([] as never);
+    mockLesson();
+    mockDB.userStat.upsert.mockResolvedValueOnce({ totalXP: 100, currentGems: 10 } as never);
+
+    await expect(
+      SubmissionController.submitSession({ SessionID: SESSION, userID: USER }),
+    ).resolves.toMatchObject({ reward: { lessonID: LESSON, xp: 100, gems: 10 } });
+
+    expect(mockDB.sessions.update).toHaveBeenCalledWith({
+      where: { id: SESSION },
+      data: { rewarded: true },
+    });
+    expect(mockDB.transactions.create).toHaveBeenCalledTimes(2);
+    expect(mockDB.transactions.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({ type: "XP", amount: 100, afterAmount: 100 }),
+    });
+    expect(mockDB.transactions.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({ type: "GEM", amount: 10, afterAmount: 10 }),
+    });
+  });
+
+  it("pays nothing when the lesson was already rewarded", async () => {
+    mockPendingSession();
+    mockDB.sessions.updateMany.mockResolvedValueOnce({ count: 1 } as never);
+    mockDB.submission.findMany.mockResolvedValueOnce([] as never);
+    mockLesson();
+    mockDB.sessions.findFirst.mockResolvedValueOnce({ id: "already-rewarded-session" } as never);
+
+    await expect(
+      SubmissionController.submitSession({ SessionID: SESSION, userID: USER }),
+    ).resolves.toMatchObject({ reward: undefined });
+    expect(mockDB.sessions.update).not.toHaveBeenCalled();
+    expect(mockDB.transactions.create).not.toHaveBeenCalled();
+  });
+
+  it("pays nothing when the lesson is not passed", async () => {
+    mockPendingSession();
+    mockDB.sessions.updateMany.mockResolvedValueOnce({ count: 1 } as never);
+    mockLesson();
+    mockFailedSubmission();
+
+    await expect(
+      SubmissionController.submitSession({ SessionID: SESSION, userID: USER }),
+    ).resolves.toMatchObject({
+      exercises: [{ exerciseID: EXERCISE, total: 1, passed: 0, ok: false }],
+      reward: undefined,
+    });
+    expect(mockDB.sessions.update).not.toHaveBeenCalled();
+    expect(mockDB.transactions.create).not.toHaveBeenCalled();
   });
 });
