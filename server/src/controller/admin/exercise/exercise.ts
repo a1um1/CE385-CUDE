@@ -4,11 +4,28 @@ import type {
   CreateAdminExercise,
   UpdateAdminExercise,
 } from "#/controller/admin/exercise/exercise.schema";
+import type { Exercise } from "#/generated/prisma/client";
 import { buildCursorOrderBy } from "#/lib/pagination.schema";
 import { db } from "#/lib/prisma";
 import UserError from "#/lib/router/http/userError";
 
 export default class AdminExercisesController {
+  private data: Exercise;
+
+  constructor(data: Exercise) {
+    this.data = data;
+  }
+
+  get JSON() {
+    return this.data;
+  }
+
+  static async getById(id: string): Promise<AdminExercisesController> {
+    const exercise = await db.exercise.findUnique({ where: { id } });
+    if (!exercise) throw new UserError(404, "Exercise not found");
+    return new AdminExercisesController(exercise);
+  }
+
   static async getPaginateLists(
     query: AdminExerciseQuery,
   ): Promise<AdminExerciseListResponseSchema> {
@@ -40,25 +57,20 @@ export default class AdminExercisesController {
     return { data, nextCursor, prevCursor };
   }
 
-  static async create(body: CreateAdminExercise) {
+  static async create(body: CreateAdminExercise): Promise<AdminExercisesController> {
     const lesson = await db.lesson.findUnique({ where: { id: body.lessonID } });
     if (!lesson) throw new UserError(404, "Lesson not found");
-    return db.exercise.create({
+
+    const exercise = await db.exercise.create({
       data: { name: body.name, lessonID: body.lessonID, content: body.content },
     });
+    return new AdminExercisesController(exercise);
   }
 
-  static async update(id: string, body: UpdateAdminExercise) {
-    const existing = await db.exercise.findUnique({ where: { id } });
-    if (!existing) throw new UserError(404, "Exercise not found");
-
-    if (body.lessonID !== existing.lessonID) {
-      const lesson = await db.lesson.findUnique({ where: { id: body.lessonID } });
-      if (!lesson) throw new UserError(404, "Lesson not found");
-    }
-    return db.exercise.update({
-      where: { id },
-      data: { name: body.name, lessonID: body.lessonID, content: body.content },
+  async update(body: UpdateAdminExercise): Promise<void> {
+    this.data = await db.exercise.update({
+      where: { id: this.data.id },
+      data: { name: body.name, content: body.content },
     });
   }
 }

@@ -6,8 +6,8 @@ import {
   UpdateAdminExerciseSchema,
   adminExerciseSchema,
 } from "#/controller/admin/exercise/exercise.schema";
-import CustomRouter from "#/lib/router/customRouter";
 import { z } from "#/lib/extendZod";
+import CustomRouter from "#/lib/router/customRouter";
 
 const adminExerciseRouter = new CustomRouter({
   prefix: "/admin/exercise",
@@ -23,6 +23,18 @@ const adminExerciseRouter = new CustomRouter({
     },
     ({ query }) => AdminExercisesController.getPaginateLists(query),
   )
+  .get(
+    "/:id",
+    {
+      summary: "Get exercise by ID",
+      params: z.object({ id: z.uuid().openapi({ example: "exercise_id" }) }),
+      response: adminExerciseSchema,
+    },
+    async ({ params }) => {
+      const controller = await AdminExercisesController.getById(params.id);
+      return controller.JSON;
+    },
+  )
   .post(
     "/",
     {
@@ -30,17 +42,24 @@ const adminExerciseRouter = new CustomRouter({
       body: CreateAdminExerciseSchema,
       response: adminExerciseSchema,
     },
-    ({ body }) => AdminExercisesController.create(body),
+    async ({ body }) => {
+      const controller = await AdminExercisesController.create(body);
+      return controller.JSON;
+    },
   )
   .put(
     "/:id",
     {
-      summary: "Update exercise by ID",
+      summary: "Update exercise name/content by ID",
       params: z.object({ id: z.uuid().openapi({ example: "exercise_id" }) }),
       body: UpdateAdminExerciseSchema,
       response: adminExerciseSchema,
     },
-    ({ params, body }) => AdminExercisesController.update(params.id, body),
+    async ({ params, body }) => {
+      const controller = await AdminExercisesController.getById(params.id);
+      await controller.update(body);
+      return controller.JSON;
+    },
   );
 
 export const adminExerciseRoute = adminExerciseRouter.route;
