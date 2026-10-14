@@ -5350,12 +5350,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-13T06:57:15.586Z
+             * @example 2026-10-13T14:19:43.071Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-13T06:57:15.589Z
+             * @example 2026-10-13T14:19:43.071Z
              */
             updatedAt: string;
         };
@@ -5685,6 +5685,10 @@ export interface components {
              * @example unit_id
              */
             unitID: string;
+            /** @example 100 */
+            XPgiven: number;
+            /** @example 10 */
+            gemsGiven: number;
             /**
              * Format: date-time
              * @example 2026-10-11T00:00:00Z

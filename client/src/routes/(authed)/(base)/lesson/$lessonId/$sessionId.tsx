@@ -1,6 +1,6 @@
 import ButtonLink from "#/components/buttonLink";
 import ExerciseList from "#/components/exerciseList";
-import Gem from "#/components/icon/gem";
+import LessonReward from "#/components/lessonReward";
 import { Scoring } from "#/components/scoring";
 import type { components } from "#/data/base/openapi";
 import { useExerciseFromLessonQuery } from "#/data/exercise.data";
@@ -41,8 +41,8 @@ function RouteComponent() {
   const session = Route.useLoaderData();
   const lesson = session?.lesson;
   const exercises = useExerciseFromLessonQuery(lesson?.id);
-  // A given-up attempt is never graded, so it has no score.
-  const cancelled = session?.status === "CANCELLED";
+
+  const cancelled = session?.status === "PENDING" ? false : session?.status === "CANCELLED";
 
   const codeExercises = exercises.data?.filter((exercise) => exercise.type === "CODE") ?? [];
   const passed = codeExercises.filter((exercise) =>
@@ -63,7 +63,7 @@ function RouteComponent() {
           กลับไปหน้าบทเรียน
         </ButtonLink>
       </div>
-      <div className="flex gap-4">
+      <div className="flex gap-4 items-start">
         <Scoring
           status={
             cancelled
@@ -74,22 +74,15 @@ function RouteComponent() {
           }
           label={cancelled ? undefined : formatPercent(passed, codeExercises.length)}
         />
-        <div className="flex flex-col">
+        <div className="flex flex-col flex-1">
           <p>
             {lesson?.unit?.course?.name} / {lesson?.unit?.name}
           </p>
           <h1 className="text-2xl mb-2">{lesson?.name}</h1>
-          {session?.rewarded && lesson && (
-            <p className="flex items-center gap-1">
-              <span className="text-success bg-current/20 border-2 rounded px-4 py-1.5">
-                +{lesson.XPgiven} XP
-              </span>
-              <span className="text-gem bg-current/20 border-2 rounded px-4 py-1.5 flex gap-2">
-                <Gem /> {lesson.gemsGiven}
-              </span>
-            </p>
-          )}
         </div>
+        {session?.rewarded && lesson && (
+          <LessonReward xp={lesson.XPgiven} gems={lesson.gemsGiven} />
+        )}
       </div>
 
       {session?.status === "PENDING" && (
