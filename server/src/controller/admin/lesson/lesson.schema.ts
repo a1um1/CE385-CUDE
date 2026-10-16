@@ -1,3 +1,4 @@
+// cspell:ignore uuidv
 import type { Course, Lesson, Unit } from "#/generated/prisma/client";
 import { createIncludeQuerySchema } from "#/lib/include";
 import { z } from "#/lib/extendZod";
