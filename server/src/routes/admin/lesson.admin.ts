@@ -46,11 +46,11 @@ const lessonRouterInstance = new CustomRouter({
       response: PaginatedLessonSchema,
     },
     async ({ query, user }) =>
-  LessonController.getByUnitIdPaginated(query.unitId, user.JSON.id, {
-    page: query.page,
-    limit: query.limit,
-    include: query.include,
-  }),
+      LessonController.getByUnitIdPaginated(query.unitId, user.JSON.id, {
+        page: query.page,
+        limit: query.limit,
+        include: query.include,
+      }),
   )
   .get(
     "/:lessonId",
