@@ -1,6 +1,8 @@
 import ButtonLink from "#/components/buttonLink";
 import { Course, type CourseStatus } from "#/components/course";
+import DailyQuest from "#/components/dailyQuest";
 import LevelCard from "#/components/levelCard";
+import RankingCard from "#/components/rankingCard";
 import Select from "#/components/select";
 import Skeleton from "#/components/skeleton";
 import type { components } from "#/data/base/openapi";
@@ -98,14 +100,14 @@ function Home() {
             </Select.Root>
           )}
 
-          <div className="flex gap-2 ml-auto">
+          {/* <div className="flex gap-2 ml-auto">
             <ButtonLink variant="secondary" to="/play">
               Code Playground
             </ButtonLink>
             <ButtonLink variant="secondary" to="/play-grader">
               Code Grader
             </ButtonLink>
-          </div>
+          </div> */}
         </div>
         {(lessons.data || []).length === 0 && (
           <div className="flex flex-col items-center justify-center gap-2">
@@ -132,8 +134,10 @@ function Home() {
         )}
       </div>
 
-      <aside className="min-w-0 flex-1">
+      <aside className="min-w-0 flex-1 flex flex-col gap-4">
         <LevelCard />
+        <RankingCard />
+        <DailyQuest />
       </aside>
     </div>
   );
