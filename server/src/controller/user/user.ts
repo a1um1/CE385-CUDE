@@ -34,6 +34,7 @@ export default class UserController {
       deactivateReason: _deactivateReason,
       role: _role,
       isActive: _isActive,
+
       ...publicData
     } = this.user;
     return publicData as userSafePublicSchema;
@@ -65,10 +66,13 @@ export default class UserController {
     const isPasswordValid = await bcrypt.compare(data.currentPassword, userRecord.password);
     if (!isPasswordValid) throw new UserError(400, "Current password is incorrect");
     const hashedPassword = await bcrypt.hash(data.newPassword, 12);
-    await db.user.update({
-      where: { id: this.user.id },
-      data: { password: hashedPassword },
-    });
+    await db.$transaction([
+      db.user.update({
+        where: { id: this.user.id },
+        data: { password: hashedPassword, passwordChangedAt: new Date() },
+      }),
+      db.refreshToken.deleteMany({ where: { userID: this.user.id } }),
+    ]);
   }
 
   static async getById(userId: string): Promise<UserController> {

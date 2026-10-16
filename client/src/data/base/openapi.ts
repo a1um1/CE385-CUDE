@@ -11,7 +11,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** User information */
+        /**
+         * User information
+         * @description Return the authenticated user's own profile, including private fields such as email and role. Use `GET /user/get-profile/:username` for the public view of any user.
+         */
         get: {
             parameters: {
                 query?: never;
@@ -103,7 +106,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Update user avatar */
+        /**
+         * Update user avatar
+         * @description Replace the authenticated user's avatar. Upload the image first via `POST /storage/presign` and send back the resulting object key in the body. The previous avatar is not deleted.
+         */
         post: {
             parameters: {
                 query?: never;
@@ -197,7 +203,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Update user background */
+        /**
+         * Update user background
+         * @description Replace the authenticated user's profile background image. Upload the image first via `POST /storage/presign` and send back the resulting object key in the body.
+         */
         post: {
             parameters: {
                 query?: never;
@@ -291,7 +300,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Update user password */
+        /**
+         * Update user password
+         * @description Change the authenticated user's password. The current password must be supplied and is verified before the new one is stored. All sessions are signed out: every refresh token for the user (the current one included) is revoked and access tokens issued before the change are rejected immediately. Sign in again afterwards.
+         */
         post: {
             parameters: {
                 query?: never;
@@ -383,7 +395,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get user profile by username */
+        /**
+         * Get user profile by username
+         * @description Return the **public** profile of any user by username. No authentication is required. Private fields (email, role, password hash, …) are withheld. Returns `404` when no user has that username.
+         */
         get: {
             parameters: {
                 query?: never;
@@ -475,7 +490,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get current user stat */
+        /**
+         * Get current user stat
+         * @description Return the authenticated user's gamification stat: energy, streak, XP and level counters used by the dashboard. This is the same record the session endpoints spend energy and grant XP against.
+         */
         get: {
             parameters: {
                 query?: never;
@@ -565,7 +583,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get user transactions */
+        /**
+         * Get user transactions
+         * @description Return a paginated ledger of the authenticated user's currency and energy transactions (spends and grants), most recent first. Use the query parameters to page and filter. Membership submissions and purchases both appear here.
+         */
         get: {
             parameters: {
                 query?: {
@@ -661,7 +682,12 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Presign a direct upload to object storage */
+        /**
+         * Presign a direct upload to object storage
+         * @description Create a short-lived presigned URL so the client can upload a file straight to object storage instead of through the API. Requires an authenticated user.
+         *
+         *     Returns the upload URL and the object key. Send that key back to `POST /user/avatar` or `POST /user/background` to attach the file to the profile.
+         */
         post: {
             parameters: {
                 query?: never;
@@ -753,7 +779,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Random Number */
+        /**
+         * Random Number
+         * @description Debug endpoint. Validates `randomNumber` from the query string and echoes it back with status `201`. No authentication required.
+         */
         get: {
             parameters: {
                 query?: {
@@ -845,7 +874,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Handled Error */
+        /**
+         * Handled Error
+         * @description Debug endpoint that always throws `UserError(400, "Handled Error")`, to verify the global handler turns thrown errors into JSON. No authentication required.
+         */
         get: {
             parameters: {
                 query?: never;
@@ -935,7 +967,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Unhandled Error */
+        /**
+         * Unhandled Error
+         * @description Debug endpoint that always throws a plain `Error`, to verify the handler logs it and returns `500`. No authentication required.
+         */
         get: {
             parameters: {
                 query?: never;
@@ -1027,7 +1062,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Spend Energy */
+        /**
+         * Spend Energy
+         * @description Debug endpoint that spends energy from the authenticated user's stat once, exercising the currency / energy path. Requires an authenticated user.
+         */
         post: {
             parameters: {
                 query?: never;
@@ -1118,7 +1156,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** List all courses */
+        /**
+         * List all courses
+         * @description Cursor-paginated list of every course. Requires an `ADMIN` token. Sort by `name`, `createdAt`, `updatedAt` or `id`.
+         */
         get: {
             parameters: {
                 query?: {
@@ -1200,7 +1241,10 @@ export interface paths {
             };
         };
         put?: never;
-        /** Create a new course */
+        /**
+         * Create a new course
+         * @description Create a course. Requires an `ADMIN` token. The acting admin is recorded as the course's `createdByID`; the new course is appended at the end.
+         */
         post: {
             parameters: {
                 query?: never;
@@ -1292,7 +1336,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get course by ID */
+        /**
+         * Get course by ID
+         * @description Return one course by ID in the admin shape. Requires an `ADMIN` token. Returns `404` when the course does not exist.
+         */
         get: {
             parameters: {
                 query?: never;
@@ -1369,7 +1416,10 @@ export interface paths {
                 };
             };
         };
-        /** Update course by ID */
+        /**
+         * Update course by ID
+         * @description Update a course's `name`, `color` and `icon`. Requires an `ADMIN` token. Returns `404` when the course does not exist.
+         */
         put: {
             parameters: {
                 query?: never;
@@ -1464,7 +1514,12 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** List all users */
+        /**
+         * List all users
+         * @description Cursor-paginated list of every user. Requires an `ADMIN` token.
+         *
+         *     Sort by `name`, `email`, `role`, `createdAt`, `isActive` or `id`. Each item uses the full `UserSafeData` shape (includes role, status and deactivate reason).
+         */
         get: {
             parameters: {
                 query?: {
@@ -1560,7 +1615,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get user by ID */
+        /**
+         * Get user by ID
+         * @description Return one user by ID in the admin shape. Requires an `ADMIN` token. Returns `404` when the user does not exist.
+         */
         get: {
             parameters: {
                 query?: never;
@@ -1654,7 +1712,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Force change user password */
+        /**
+         * Force change user password
+         * @description Force-set a user's password without knowing the old one. Requires an `ADMIN` token. Every refresh token for that user is revoked and outstanding access tokens are rejected immediately.
+         */
         post: {
             parameters: {
                 query?: never;
@@ -1748,7 +1809,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Deactivate user */
+        /**
+         * Deactivate user
+         * @description Deactivate a user so they can no longer sign in, storing an optional reason. Requires an `ADMIN` token.
+         */
         post: {
             parameters: {
                 query?: never;
@@ -1842,7 +1906,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Activate user */
+        /**
+         * Activate user
+         * @description Reactivate a previously deactivated user, clearing the deactivation reason. Requires an `ADMIN` token.
+         */
         post: {
             parameters: {
                 query?: never;
@@ -1934,7 +2001,12 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** List units (paginated), optionally filtered by courseID */
+        /**
+         * List units (paginated), optionally filtered by courseID
+         * @description Cursor-paginated list of units. Requires an `ADMIN` token.
+         *
+         *     Sort by `name`, `createdAt`, `updatedAt` or `id`, and pass `courseID` to restrict the list to one course.
+         */
         get: {
             parameters: {
                 query?: {
@@ -2017,7 +2089,88 @@ export interface paths {
             };
         };
         put?: never;
-        post?: never;
+        /**
+         * Create a new unit
+         * @description Create a unit inside a course. Requires an `ADMIN` token. The new unit is appended at the end of the course.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["AdminUnitCreate"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminUnitObject"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
         delete?: never;
         options?: never;
         head?: never;
@@ -2031,7 +2184,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get unit by ID */
+        /**
+         * Get unit by ID
+         * @description Return one unit by ID. Requires an `ADMIN` token. Returns `404` when the unit does not exist.
+         */
         get: {
             parameters: {
                 query?: never;
@@ -2108,7 +2264,90 @@ export interface paths {
                 };
             };
         };
-        put?: never;
+        /**
+         * Update unit by ID
+         * @description Update a unit's `name` and `courseID` (which moves it between courses). Requires an `ADMIN` token. Returns `404` when the unit does not exist.
+         */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["AdminUnitUpdate"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminUnitObject"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
         post?: never;
         delete?: never;
         options?: never;
@@ -2123,7 +2362,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Admin route */
+        /**
+         * Admin route
+         * @description Role check for admins. Requires an `ADMIN` access token; any non-admin is rejected with `403`. Returns `{ ok, randomNumber }`.
+         */
         get: {
             parameters: {
                 query?: never;
@@ -2215,7 +2457,14 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** User signup */
+        /**
+         * User signup
+         * @description Create a new account and sign in in one call.
+         *
+         *     On success the `accessToken` (15 min) and `refreshToken` (7 days) cookies are set: `HttpOnly`, `Secure`, `SameSite=Strict`. The response body only confirms the signup — read the user from `GET /user` afterwards.
+         *
+         *     Returns `409` when the email or username is already taken.
+         */
         post: {
             parameters: {
                 query?: never;
@@ -2309,7 +2558,12 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** User signin */
+        /**
+         * User signin
+         * @description Authenticate with email and password. Sets the same `accessToken` / `refreshToken` cookies as signup. The user-agent and IP address are recorded against the refresh token.
+         *
+         *     Returns `401` when the credentials are invalid.
+         */
         post: {
             parameters: {
                 query?: never;
@@ -2403,7 +2657,14 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Refresh authentication token */
+        /**
+         * Refresh authentication token
+         * @description Exchange the `refreshToken` cookie for a fresh `accessToken` and a rotated `refreshToken`.
+         *
+         *     The presented refresh token must still exist in the database and not be expired. It is consumed atomically and replaced, so a token is valid for a single refresh. The user-agent and IP address are recorded against the new token.
+         *
+         *     Returns `400` when the cookie is missing, `403` when the token is unknown, expired, or already consumed (concurrent refresh or reuse).
+         */
         post: {
             parameters: {
                 query?: never;
@@ -2493,7 +2754,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Sign out and revoke the refresh token */
+        /**
+         * Sign out and revoke the refresh token
+         * @description Revoke the current `refreshToken` in the database and clear both auth cookies. Idempotent: calling it without a session still succeeds.
+         */
         post: {
             parameters: {
                 query?: never;
@@ -2581,7 +2845,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Return all support language */
+        /**
+         * Return all support language
+         * @description List the languages the judge currently supports, each with its exact runtime version. No authentication required. Public.
+         */
         get: {
             parameters: {
                 query?: never;
@@ -2673,7 +2940,12 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Run Code */
+        /**
+         * Run Code
+         * @description Compile and run a snippet once against the supplied stdin, then return the judge result (stdout / stderr, wall time, peak memory). Stateless — nothing is stored. No authentication required. Public.
+         *
+         *     Use this for the “Run” button; it does not check correctness against test cases.
+         */
         post: {
             parameters: {
                 query?: never;
@@ -2777,7 +3049,12 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Judge code with testCases */
+        /**
+         * Judge code with testCases
+         * @description Grade a snippet against an explicit list of test cases and return a summary: passed / total, a per-case verdict, and timing. Stateless. No authentication required. Public.
+         *
+         *     Unlike `POST /exercise/:exerciseId/run`, the caller supplies the test cases.
+         */
         post: {
             parameters: {
                 query?: never;
@@ -2878,7 +3155,15 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** List all available courses */
+        /**
+         * List all available courses
+         * @description Return every course as `{ data: Course[] }`. Requires an authenticated user.
+         *
+         *     Use `?include=` to embed related rows:
+         *
+         *     - `units` — the units of each course
+         *     - `units.lessons` — those units and their lessons
+         */
         get: {
             parameters: {
                 query?: {
@@ -2971,7 +3256,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get course by ID */
+        /**
+         * Get course by ID
+         * @description Return one course by ID. Requires an authenticated user. Use `?include=units` or `?include=units.lessons` to embed relations. Returns `404` when the course does not exist.
+         */
         get: {
             parameters: {
                 query?: {
@@ -3066,7 +3354,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** List unit of a course */
+        /**
+         * List unit of a course
+         * @description Return the units that belong to a course, in display order. Requires an authenticated user. Use `?include=units.lessons` to embed each unit's lessons. Returns `404` when the course does not exist.
+         */
         get: {
             parameters: {
                 query?: {
@@ -3161,7 +3452,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get unit by ID */
+        /**
+         * Get unit by ID
+         * @description Return one unit by ID. Requires an authenticated user. Use `?include=course` and `?include=lessons` (or `course,lessons`) to embed relations. Returns `404` when the unit does not exist.
+         */
         get: {
             parameters: {
                 query?: {
@@ -3256,7 +3550,18 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** List lessons of a unit */
+        /**
+         * List lessons of a unit
+         * @description Return every lesson of a unit, each tagged with the authenticated user's progress status:
+         *
+         *     - `AVAILABLE` — not attempted, no other lesson is open
+         *     - `PENDING` — this is the lesson the student is currently working on
+         *     - `PASSED` / `FAILED` — the student's best graded attempt
+         *     - `GIVE_UP` — the student gave up (cancelled) without a graded attempt
+         *     - `NOT_AVAILABLE` — blocked: another lesson has an open session, the lesson's start/end window is closed, or a prerequisite lesson is not passed
+         *
+         *     Use `?include=unit` / `?include=unit.course` to embed relations.
+         */
         get: {
             parameters: {
                 query?: {
@@ -3351,7 +3656,12 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get exercise by ID */
+        /**
+         * Get exercise by ID
+         * @description Return one exercise with its type and configuration. Requires an authenticated user.
+         *
+         *     For code exercises the **public** test cases are included; hidden test cases are never returned by any endpoint. Returns `404` when the exercise does not exist.
+         */
         get: {
             parameters: {
                 query?: never;
@@ -3445,7 +3755,12 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Run code against the public test cases of an exercise */
+        /**
+         * Run code against the public test cases of an exercise
+         * @description Compile and run the submitted code against the exercise's **public** test cases only, then return a grading summary (per-case verdict and timing). Nothing is saved.
+         *
+         *     Returns `400` when the exercise is not a code exercise, or when its language is not supported by the judge. Returns `404` when the exercise does not exist.
+         */
         post: {
             parameters: {
                 query?: never;
@@ -3542,7 +3857,17 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get lesson by ID */
+        /**
+         * Get lesson by ID
+         * @description Return a single lesson by its ID. Requires an authenticated user.
+         *
+         *     Use `?include=` to embed related rows:
+         *
+         *     - `unit` — the unit the lesson belongs to
+         *     - `unit.course` — the unit and its course
+         *
+         *     Does **not** require an open session; reading lesson metadata is always allowed. Returns `404` when no lesson has that ID.
+         */
         get: {
             parameters: {
                 query?: {
@@ -3637,7 +3962,18 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Check if a lesson is available for enrollment */
+        /**
+         * Check if a lesson is available for enrollment
+         * @description Check whether the authenticated user can start (enroll in) this lesson right now.
+         *
+         *     A student may have **only one open session at a time**, and a lesson only opens inside its `startAt`/`endAt` window and after every prerequisite lesson is passed. This endpoint reports:
+         *
+         *     - `AVAILABLE` — no session is open, the student can start this lesson
+         *     - `PENDING` — this is the lesson the student is currently working on
+         *     - `NOT_AVAILABLE` — blocked: another lesson has an open session, the time window is closed, or a prerequisite is not passed
+         *
+         *     `isAvailable` is the boolean form of the same answer.
+         */
         get: {
             parameters: {
                 query?: never;
@@ -3729,7 +4065,14 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** List exercises of a lesson */
+        /**
+         * List exercises of a lesson
+         * @description Return every exercise that belongs to the lesson. Requires an authenticated user.
+         *
+         *     Each item carries its type (`CODE`, `QUIZ`, …) and configuration. For code exercises the **public** test cases are included; hidden test cases are never exposed here.
+         *
+         *     Returns `404` when the lesson does not exist.
+         */
         get: {
             parameters: {
                 query?: never;
@@ -3821,7 +4164,12 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get all sessions for the authenticated user */
+        /**
+         * Get all sessions for the authenticated user
+         * @description List every learn session belonging to the authenticated user, newest first.
+         *
+         *     Use `?include=` to embed `lesson`, `lesson.unit`, `lesson.unit.course` or `submissions`.
+         */
         get: {
             parameters: {
                 query?: {
@@ -3964,7 +4312,14 @@ export interface paths {
             };
         };
         put?: never;
-        /** Create a new session for a lesson */
+        /**
+         * Create a new session for a lesson
+         * @description Start a new session for a lesson — this is what **enrolls** the student in it.
+         *
+         *     Requires that no other session is open. The created session starts as `PENDING`.
+         *
+         *     Returns `400` when a session is already open, `404` when the lesson does not exist.
+         */
         post: {
             parameters: {
                 query?: never;
@@ -4126,7 +4481,12 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get the pending session for the authenticated user */
+        /**
+         * Get the pending session for the authenticated user
+         * @description Return the authenticated user's single open (`PENDING`) session, or `null` when none is open.
+         *
+         *     A student may have **only one open session at a time**, so this is the session that gates starting a new lesson. See `GET /lesson/:lessonId/enrollment-availability`.
+         */
         get: {
             parameters: {
                 query?: never;
@@ -4280,7 +4640,12 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get a specific session by ID for the authenticated user */
+        /**
+         * Get a specific session by ID for the authenticated user
+         * @description Return one session owned by the authenticated user. Use `?include=` to embed `lesson`, `lesson.unit`, `lesson.unit.course` or `submissions`.
+         *
+         *     Returns `404` when the session does not exist or belongs to another user.
+         */
         get: {
             parameters: {
                 query?: {
@@ -4426,7 +4791,12 @@ export interface paths {
         };
         put?: never;
         post?: never;
-        /** Cancel a session */
+        /**
+         * Cancel a session
+         * @description Cancel a `PENDING` session, freeing the student to start another lesson. Saved answers are kept.
+         *
+         *     Returns `400` when the session is not pending, `404` when it does not exist or belongs to another user.
+         */
         delete: {
             parameters: {
                 query?: never;
@@ -4515,7 +4885,12 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get the saved answer for an exercise in a session */
+        /**
+         * Get the saved answer for an exercise in a session
+         * @description Return the authenticated user's saved answer for one exercise in the session, or `null` when nothing was saved yet.
+         *
+         *     Returns `404` when the session or the exercise does not exist, or the exercise does not belong to the session's lesson.
+         */
         get: {
             parameters: {
                 query?: never;
@@ -4593,7 +4968,12 @@ export interface paths {
                 };
             };
         };
-        /** Save the answer for an exercise in a session */
+        /**
+         * Save the answer for an exercise in a session
+         * @description Save or overwrite (upsert) the answer for one exercise in a `PENDING` session. Answers stay ungraded until the session is submitted.
+         *
+         *     Returns `400` when the session is not pending, `404` when the exercise is not part of the session's lesson.
+         */
         put: {
             parameters: {
                 query?: never;
@@ -4694,7 +5074,14 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Submit a session: grade every saved answer and close it */
+        /**
+         * Submit a session: grade every saved answer and close it
+         * @description Grade every saved answer of the session against all of its test cases — **hidden ones included** — and close the session as `SUBMITTED`.
+         *
+         *     Only counts come back per exercise (`total`, `passed`, `ok`); hidden test cases stay hidden. An exercise passes when every test case passes.
+         *
+         *     Returns `400` when the session is not pending, `404` when it does not exist or belongs to another user.
+         */
         post: {
             parameters: {
                 query?: never;
@@ -4791,6 +5178,11 @@ export interface components {
              * @example email@gmail.com
              */
             email: string;
+            /**
+             * Format: date-time
+             * @example 2023-01-01T00:00:00.000Z
+             */
+            passwordChangedAt: string;
             epithet: components["schemas"]["EpithetDefinition"];
             /**
              * @example USER
@@ -4928,12 +5320,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-11T09:29:04.084Z
+             * @example 2026-10-12T16:48:23.954Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-11T09:29:04.085Z
+             * @example 2026-10-12T16:48:23.955Z
              */
             updatedAt: string;
         };
@@ -5067,6 +5459,24 @@ export interface components {
             updatedAt: string;
             /** @example 1 */
             position: number;
+        };
+        AdminUnitCreate: {
+            /** @example Unit Name */
+            name: string;
+            /**
+             * Format: uuid
+             * @example course_id
+             */
+            courseID: string;
+        };
+        AdminUnitUpdate: {
+            /** @example Unit Name */
+            name: string;
+            /**
+             * Format: uuid
+             * @example course_id
+             */
+            courseID: string;
         };
         AuthenticationResponseData: {
             message: components["schemas"]["SuccessMessage"];
@@ -5231,7 +5641,7 @@ export interface components {
          * @example AVAILABLE
          * @enum {string}
          */
-        LessonStatus: "AVAILABLE" | "PENDING" | "PASSED" | "FAILED" | "NOT_AVAILABLE";
+        LessonStatus: "AVAILABLE" | "PENDING" | "PASSED" | "FAILED" | "GIVE_UP" | "NOT_AVAILABLE";
         Lesson: {
             /**
              * Format: uuid
@@ -5245,6 +5655,16 @@ export interface components {
              * @example unit_id
              */
             unitID: string;
+            /**
+             * Format: date-time
+             * @example 2026-10-11T00:00:00Z
+             */
+            startAt: string | null;
+            /**
+             * Format: date-time
+             * @example 2026-11-11T00:00:00Z
+             */
+            endAt: string | null;
             unit?: {
                 /**
                  * Format: uuid

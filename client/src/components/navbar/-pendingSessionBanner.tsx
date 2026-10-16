@@ -9,14 +9,20 @@ export const PendingSessionBanner = () => {
 
   return (
     <div
-      className="bg-indigo-100 border-l-4 border-indigo-500 text-indigo-700 p-4 flex items-center justify-between"
+      className="bg-indigo-500/10 rounded-full border border-indigo-500 text-indigo-500 p-3 flex items-center justify-between gap-4"
       role="alert"
     >
       <p className="flex gap-2 items-center">
         <Clock />
         คุณกำลังมีเนื้อหาที่รอดำเนินการ
       </p>
-      <ButtonLink to="/session/$id" params={{ id: pendingSessionQuery.data.id }} variant="primary">
+      <ButtonLink
+        to="/session/$id"
+        params={{ id: pendingSessionQuery.data.id }}
+        variant="primary"
+        radius="pilled"
+        size="sm"
+      >
         ดำเนินการต่อ
       </ButtonLink>
     </div>

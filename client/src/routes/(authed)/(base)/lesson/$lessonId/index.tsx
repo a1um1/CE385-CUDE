@@ -16,7 +16,7 @@ import formatElapsedTime from "#/lib/elapsedTime";
 import { formatPercent } from "#/lib/formatNumber";
 import formatRelativeTime from "#/lib/relativeTime";
 import { createFileRoute, Link, useLoaderData } from "@tanstack/react-router";
-import { Book, ChevronLeft, XIcon, type LucideIcon } from "lucide-react";
+import { Book, ChevronLeft, type LucideIcon } from "lucide-react";
 
 const lessonRouteId = "/(authed)/(base)/lesson/$lessonId";
 
@@ -37,14 +37,14 @@ const availableStatuses = {
   },
   NOT_AVAILABLE: {
     label: "Not Available",
-    status: "fail",
-    icon: XIcon,
+    status: "locked",
+    icon: undefined,
   },
 } as const satisfies Record<
   components["schemas"]["EnrollmentStatus"],
   {
     label: string;
-    status: "inProgress" | "fail";
+    status: "inProgress" | "fail" | "locked";
     icon: LucideIcon | undefined;
   }
 >;
@@ -75,10 +75,21 @@ const LessonStart = () => {
 
   const handleStartSession = async () => {
     if (!lesson.id) return;
-    await startLearnSession.mutateAsync(lesson.id);
+    try {
+      await startLearnSession.mutateAsync(lesson.id);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   if (enrollmentAvailability.isLoading) return <Skeleton className="h-6 w-32" />;
+  if (enrollmentAvailability.isError) {
+    return (
+      <Button variant="secondary" disabled>
+        ไม่สามารถตรวจสอบสถานะได้
+      </Button>
+    );
+  }
 
   if (enrollmentAvailability.data?.isAvailable) {
     return (

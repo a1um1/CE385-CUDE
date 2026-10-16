@@ -2,10 +2,21 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { remarkAlert } from "remark-github-blockquote-alert";
 import rehypeHighlight from "rehype-highlight";
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import { isValidElement, type ComponentProps, type ReactNode } from "react";
 import "highlight.js/styles/github-dark.css";
 import "remark-github-blockquote-alert/alert.css";
 import styles from "./markdown.module.css";
+
+/** Allow raw HTML for `<kbd>` and keep class names that alerts/highlighting rely on. */
+const sanitizeSchema = {
+  ...defaultSchema,
+  attributes: {
+    ...defaultSchema.attributes,
+    "*": [...(defaultSchema.attributes?.["*"] ?? []), "className"],
+  },
+};
 
 const LANGUAGE_CLASS = /language-(?<lang>\w+)/;
 
@@ -34,6 +45,14 @@ function MarkdownPre({
   );
 }
 
+function MarkdownKbd({ children, ...props }: ComponentProps<"kbd">) {
+  return (
+    <kbd className={styles.kbd} {...props}>
+      {children}
+    </kbd>
+  );
+}
+
 interface MarkdownProps {
   content: string;
 }
@@ -43,10 +62,15 @@ export default function Markdown({ content }: MarkdownProps) {
     <div className={styles.markdown}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm, remarkAlert]}
-        rehypePlugins={[[rehypeHighlight, { ignoreMissing: true, subset: true }]]}
+        rehypePlugins={[
+          rehypeRaw,
+          [rehypeSanitize, sanitizeSchema],
+          [rehypeHighlight, { ignoreMissing: true, subset: true }],
+        ]}
         components={{
           img: MarkdownImg,
           pre: MarkdownPre,
+          kbd: MarkdownKbd,
         }}
       >
         {content}
