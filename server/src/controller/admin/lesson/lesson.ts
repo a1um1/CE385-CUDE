@@ -64,7 +64,7 @@ export default class LessonController {
 
   /**
    * One page of a unit's lessons, each tagged with the student's status.
-  * Ordered by ID: time-ordered identifiers preserve creation order and keep pages stable.
+   * Ordered by ID: time-ordered identifiers preserve creation order and keep pages stable.
    */
   static async getByUnitIdPaginated(
     unitID: string,
