@@ -3,7 +3,7 @@ import { sessionIncludes } from "#/controller/learnSession/session.schema";
 import { db } from "#/lib/prisma";
 import UserError from "#/lib/router/http/userError";
 import lessonController from "#/controller/lesson";
-import type { Prisma } from "#/generated/prisma/client";
+import { Prisma } from "#/generated/prisma/client";
 import { resolveInclude } from "#/lib/include";
 import { z } from "#/lib/extendZod";
 import type { z as zod } from "zod";
@@ -49,43 +49,40 @@ export default class SessionController {
     UserID: string;
     LessonID: string;
   }): Promise<enrollmentAvailability> {
-    // ตรวจสอบว่าผู้ใช้มีการลงทะเบียนในบทเรียนหรือไม่
-    // 1. ต้องไม่มี Session ที่กำลังเรียนอยู่
     const lesson = await lessonController.getById(props.LessonID);
-    if (!lesson) throw new UserError(404, "Lesson not found.");
-    const pendingSession = await this.findUserPendingSession({ UserID: props.UserID });
-    if (pendingSession) {
-      return {
-        status: pendingSession.JSON.LessonID === props.LessonID ? "PENDING" : "NOT_AVAILABLE",
-        isAvailable: false,
-      };
-    }
+    const state = await lessonController.stateOf(lesson.JSON, props.UserID);
 
-    return {
-      status: "AVAILABLE",
-      isAvailable: true,
-    };
+    if (state.pendingLessonID === props.LessonID) return { status: "PENDING", isAvailable: false };
+
+    if (state.pendingLessonID || state.locked) {
+      return { status: "NOT_AVAILABLE", isAvailable: false };
+    }
+    return { status: "AVAILABLE", isAvailable: true };
   }
 
   static async createSession(props: { UserID: string; LessonID: string }): Promise<SessionObject> {
     const check = await this.enrollmentCheck(props);
-    if (!check.isAvailable) {
-      throw new UserError(400, "User already has a pending session.");
-    }
+    if (!check.isAvailable) throw new UserError(400, "Lesson is not available to start.");
 
     const lesson = await lessonController.getById(props.LessonID);
-
-    const created = await db.sessions.create({
-      data: {
-        LessonID: lesson.JSON.id,
-        userID: props.UserID,
-      },
-    });
-
-    return created;
+    try {
+      const created = await db.sessions.create({
+        data: {
+          LessonID: lesson.JSON.id,
+          userID: props.UserID,
+        },
+      });
+      return created;
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+        throw new UserError(400, "Lesson is not available to start.");
+      }
+      throw error;
+    }
   }
 
   async cancel(): Promise<void> {
+    if (this.data.status !== "PENDING") throw new UserError(400, "Session is not in progress.");
     await db.sessions.update({
       where: {
         id: this.data.id,
@@ -106,6 +103,7 @@ export default class SessionController {
       where: {
         userID: props.UserID,
       },
+      orderBy: { createdAt: "desc" },
       include: resolveInclude<Prisma.SessionsInclude>(include, sessionIncludes),
     });
     return sessions as SessionData[];

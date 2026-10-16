@@ -1,12 +1,8 @@
-import ExerciseController, { ExerciseSchema } from "#/controller/exercise";
+import ExerciseController, { CodeExerciseController, ExerciseSchema } from "#/controller/exercise";
+import { codeGradingSummary } from "#/controller/grader/codeGrader.schema";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
-import AdminExercisesController from "#/controller/admin/exercise";
-import {
-  AdminExerciseListResponseSchema,
-  AdminExerciseQuerySchema,
-  CreateAdminExerciseSchema,
-} from "#/controller/admin/exercise/exercise.schema";
+import UserError from "#/lib/router/http/userError";
 
 const exerciseRouter = new CustomRouter({
   prefix: "/exercise",
@@ -14,18 +10,13 @@ const exerciseRouter = new CustomRouter({
   authentication: true,
 })
   .get(
-    "/",
-    {
-      summary: "List exercises",
-      query: AdminExerciseQuerySchema,
-      response: AdminExerciseListResponseSchema,
-    },
-    ({ query }) => AdminExercisesController.getPaginateLists(query),
-  )
-  .get(
     "/:exerciseId",
     {
       summary: "Get exercise by ID",
+      description:
+        "Return one exercise with its type and configuration. Requires an authenticated user.\n\n" +
+        "For code exercises the **public** test cases are included; hidden test cases are never " +
+        "returned by any endpoint. Returns `404` when the exercise does not exist.",
       params: z.object({
         exerciseId: z.uuid().openapi({ example: "exercise_id" }),
       }),
@@ -37,14 +28,31 @@ const exerciseRouter = new CustomRouter({
     },
   )
   .post(
-    "/",
+    "/:exerciseId/run",
     {
-      summary: "Create exercise",
-      body: CreateAdminExerciseSchema,
-      response: ExerciseSchema,
+      summary: "Run code against the public test cases of an exercise",
+      description:
+        "Compile and run the submitted code against the exercise's **public** test cases only, then " +
+        "return a grading summary (per-case verdict and timing). Nothing is saved.\n\n" +
+        "Returns `400` when the exercise is not a code exercise, or when its language is not supported " +
+        "by the judge. Returns `404` when the exercise does not exist.",
+      params: z.object({
+        exerciseId: z.uuid().openapi({ example: "exercise_id" }),
+      }),
+      body: z.object({
+        code: z.string().openapi({ example: 'print("Hello world")' }),
+      }),
+      response: codeGradingSummary,
     },
-    async ({ body }) => {
-      return AdminExercisesController.create(body);
+    async ({ params, body }) => {
+      const exercise = await ExerciseController.getById(params.exerciseId);
+      if (!(exercise instanceof CodeExerciseController)) {
+        throw new UserError(400, "Exercise is not a code exercise");
+      }
+
+      const summary = await exercise.grade(body.code, true);
+      if (!summary) throw new UserError(400, "Exercise language is not supported");
+      return summary;
     },
   );
 

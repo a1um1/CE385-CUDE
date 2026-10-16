@@ -1,17 +1,30 @@
 import ButtonLink from "#/components/buttonLink";
+import { Course, type CourseStatus } from "#/components/course";
 import Select from "#/components/select";
 import Skeleton from "#/components/skeleton";
+import type { components } from "#/data/base/openapi";
 import { useCourses } from "#/data/course.data";
 import { useLessonFromUnitQuery } from "#/data/lesson.data";
 import { useUnitFromCourseQuery } from "#/data/unit.data";
 import { useHomeSelection } from "#/store/homeSelection";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { BookTextIcon, FaceSlightlyFrowning } from "lucide-react";
+import { FaceSlightlyFrowning } from "lucide-react";
 import { useEffect } from "react";
 
 export const Route = createFileRoute("/(authed)/(base)/")({
   component: Home,
 });
+
+const pathOffsets = [0, 48, 0, -48];
+
+const courseStatus: Record<components["schemas"]["LessonStatus"], CourseStatus> = {
+  AVAILABLE: "available",
+  PENDING: "ongoing",
+  PASSED: "passed",
+  FAILED: "failed",
+  GIVE_UP: "giveUp",
+  NOT_AVAILABLE: "unavailable",
+};
 
 function Home() {
   const { courseId, unitId, setCourse, setUnit } = useHomeSelection();
@@ -98,19 +111,23 @@ function Home() {
           <p>No lessons found for the selected unit.</p>
         </div>
       )}
-      {lessons.data?.map((lesson) => (
-        <Link
-          key={lesson.id}
-          to="/lesson/$lessonId"
-          params={{
-            lessonId: lesson.id,
-          }}
-          className="flex items-center gap-4 p-4 hover:bg-gray-500/10"
-        >
-          <BookTextIcon />
-          <p>{lesson.name}</p>
-        </Link>
-      ))}
+      {lessons.data && lessons.data.length > 0 && (
+        <div className="flex flex-col items-center gap-4 py-6">
+          {lessons.data.map((lesson, index) => (
+            <Link
+              key={lesson.id}
+              to="/lesson/$lessonId"
+              params={{ lessonId: lesson.id }}
+              className="block"
+              style={{
+                transform: `translateX(${pathOffsets[index % pathOffsets.length] ?? 0}px)`,
+              }}
+            >
+              <Course status={courseStatus[lesson.status]} label={lesson.name} />
+            </Link>
+          ))}
+        </div>
+      )}
     </>
   );
 }

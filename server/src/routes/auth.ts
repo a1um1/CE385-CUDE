@@ -43,6 +43,12 @@ const authRouter = new CustomRouter({
     "/signup",
     {
       summary: "User signup",
+      description:
+        "Create a new account and sign in in one call.\n\n" +
+        "On success the `accessToken` (15 min) and `refreshToken` (7 days) cookies are set: " +
+        "`HttpOnly`, `Secure`, `SameSite=Strict`. The response body only confirms the signup — " +
+        "read the user from `GET /user` afterwards.\n\n" +
+        "Returns `409` when the email or username is already taken.",
       body: UserCreationSchema,
       response: authenticationResponseSchema,
     },
@@ -56,6 +62,10 @@ const authRouter = new CustomRouter({
     "/signin",
     {
       summary: "User signin",
+      description:
+        "Authenticate with email and password. Sets the same `accessToken` / `refreshToken` cookies as " +
+        "signup. The user-agent and IP address are recorded against the refresh token.\n\n" +
+        "Returns `401` when the credentials are invalid.",
       body: UserValidationSchema,
       response: authenticationResponseSchema,
     },
@@ -69,12 +79,19 @@ const authRouter = new CustomRouter({
     "/refresh",
     {
       summary: "Refresh authentication token",
+      description:
+        "Exchange the `refreshToken` cookie for a fresh `accessToken` and a rotated `refreshToken`.\n\n" +
+        "The presented refresh token must still exist in the database and not be expired. It is consumed " +
+        "atomically and replaced, so a token is valid for a single refresh. The user-agent and IP address " +
+        "are recorded against the new token.\n\n" +
+        "Returns `400` when the cookie is missing, `403` when the token is unknown, expired, or already " +
+        "consumed (concurrent refresh or reuse).",
       response: authenticationResponseSchema,
     },
-    async ({ cookies, cookie }) => {
+    async ({ cookies, cookie, headers, ip }) => {
       const { refreshToken } = cookies;
       if (!refreshToken) throw new UserError(400, "Refresh token is required");
-      const result = await authController.refreshToken(refreshToken);
+      const result = await authController.refreshToken(refreshToken, tokenContextFrom(headers, ip));
       setAuthCookies(cookie, result.accessToken, result.refreshToken);
       return { message: "Token refreshed successfully" };
     },
@@ -83,6 +100,9 @@ const authRouter = new CustomRouter({
     "/logout",
     {
       summary: "Sign out and revoke the refresh token",
+      description:
+        "Revoke the current `refreshToken` in the database and clear both auth cookies. " +
+        "Idempotent: calling it without a session still succeeds.",
       response: authenticationResponseSchema,
     },
     async ({ cookies, cookie }) => {

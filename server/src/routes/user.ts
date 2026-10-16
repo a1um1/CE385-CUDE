@@ -24,6 +24,9 @@ const userRoute = new CustomRouter({
     "/",
     {
       summary: "User information",
+      description:
+        "Return the authenticated user's own profile, including private fields such as email and role. " +
+        "Use `GET /user/get-profile/:username` for the public view of any user.",
       response: UserSafeSchema,
     },
     async ({ user }) => user.JSON,
@@ -32,6 +35,9 @@ const userRoute = new CustomRouter({
     "/avatar",
     {
       summary: "Update user avatar",
+      description:
+        "Replace the authenticated user's avatar. Upload the image first via `POST /storage/presign` " +
+        "and send back the resulting object key in the body. The previous avatar is not deleted.",
       body: UserUpdateAvatarSchema,
       response: GenericResponseSchema,
     },
@@ -46,6 +52,9 @@ const userRoute = new CustomRouter({
     "/background",
     {
       summary: "Update user background",
+      description:
+        "Replace the authenticated user's profile background image. Upload the image first via " +
+        "`POST /storage/presign` and send back the resulting object key in the body.",
       body: UserUpdateBackgroundSchema,
       response: GenericResponseSchema,
     },
@@ -60,6 +69,11 @@ const userRoute = new CustomRouter({
     "/password",
     {
       summary: "Update user password",
+      description:
+        "Change the authenticated user's password. The current password must be supplied and is " +
+        "verified before the new one is stored. All sessions are signed out: every refresh token for " +
+        "the user (the current one included) is revoked and access tokens issued before the change are " +
+        "rejected immediately. Sign in again afterwards.",
       body: UserUpdatePasswordSchema,
       response: GenericResponseSchema,
     },
@@ -72,6 +86,10 @@ const userRoute = new CustomRouter({
     "/get-profile/:username",
     {
       summary: "Get user profile by username",
+      description:
+        "Return the **public** profile of any user by username. No authentication is required. " +
+        "Private fields (email, role, password hash, …) are withheld. Returns `404` when no user has " +
+        "that username.",
       params: z
         .object({
           username: z.string(),
@@ -94,6 +112,9 @@ const userRoute = new CustomRouter({
       prefix: "/user",
       tags: ["User"],
       summary: "Get current user stat",
+      description:
+        "Return the authenticated user's gamification stat: energy, streak, XP and level counters used " +
+        "by the dashboard. This is the same record the session endpoints spend energy and grant XP against.",
       response: zodUserStatExtendedObject,
     },
     async ({ user }) => {
@@ -105,6 +126,10 @@ const userRoute = new CustomRouter({
     "/transactions",
     {
       summary: "Get user transactions",
+      description:
+        "Return a paginated ledger of the authenticated user's currency and energy transactions " +
+        "(spends and grants), most recent first. Use the query parameters to page and filter. " +
+        "Membership submissions and purchases both appear here.",
       response: TransactionListResponseSchema,
       query: TransactionQuerySchema,
     },

@@ -8,6 +8,8 @@ export const LessonSchema = z
     id: z.uuidv7().openapi({ example: "lesson_id" }),
     name: z.string().openapi({ example: "lesson_name" }),
     unitID: z.uuidv7().openapi({ example: "unit_id" }),
+    startAt: z.date().nullable().openapi({ example: "2026-10-11T00:00:00Z" }),
+    endAt: z.date().nullable().openapi({ example: "2026-11-11T00:00:00Z" }),
     unit: z
       .object({
         id: z.uuidv7().openapi({ example: "unit_id" }),
@@ -28,12 +30,20 @@ export const LessonSchema = z
 
 export type LessonSchema = zod.infer<typeof LessonSchema>;
 
-/** Lesson row as stored, plus relations added by `?include=`. */
+export const LessonStatusSchema = z
+  .enum(["AVAILABLE", "PENDING", "PASSED", "FAILED", "GIVE_UP", "NOT_AVAILABLE"])
+  .openapi("LessonStatus");
+
+export type LessonStatus = zod.infer<typeof LessonStatusSchema>;
+
+export const LessonWithStatusSchema = LessonSchema.extend({
+  status: LessonStatusSchema.openapi({ example: "AVAILABLE" }),
+}).openapi("LessonWithStatus");
+
 export type LessonData = Lesson & {
   unit?: Unit & { course?: Course };
 };
 
-/** Allow-list of `?include=` paths for a lesson. */
 export const lessonIncludes = ["unit", "unit.course"] as const;
 
 export const LessonIncludeQuerySchema = createIncludeQuerySchema(

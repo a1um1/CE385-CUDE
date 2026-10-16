@@ -2,6 +2,7 @@ model CodeExercise {
   id               String   @id @default(uuid(7)) @db.Uuid
   exerciseID       String   @unique @db.Uuid
   exercise         Exercise @relation(fields: [exerciseID], references: [id])
+  language         String   @default("python")
   starterCode      String?
   testerCode       String?
   allowedFunctions String[] @default([])

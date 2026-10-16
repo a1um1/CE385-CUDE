@@ -21,8 +21,12 @@ describe("User Update Password", () => {
     });
     expect(mockDB.user.update).toHaveBeenCalledWith({
       where: { id: fakeUser.id },
-      data: { password: expect.any(String) },
+      data: { password: expect.any(String), passwordChangedAt: expect.any(Date) },
     });
+    expect(mockDB.refreshToken.deleteMany).toHaveBeenCalledWith({
+      where: { userID: fakeUser.id },
+    });
+    expect(mockDB.$transaction).toHaveBeenCalled();
   });
 
   it("should throw error when updating password with incorrect current password", async () => {

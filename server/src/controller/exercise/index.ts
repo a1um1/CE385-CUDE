@@ -30,7 +30,8 @@ export default class ExerciseController extends BaseExerciseController {
     const exercises = await db.exercise.findMany({
       select: ExerciseSelection,
       where: { lessonID },
-      orderBy: { position: "asc" },
+      // Ties on position (the column defaults to 0) fall back to creation order.
+      orderBy: [{ position: "asc" }, { id: "asc" }],
     });
 
     return exercises.map((exercise) => this.getMatchedController(exercise));

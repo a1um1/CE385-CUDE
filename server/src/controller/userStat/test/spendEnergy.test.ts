@@ -41,6 +41,7 @@ describe("Spend Energy in UserStat Controller", () => {
 
     expect(mockDB.$transaction).toHaveBeenCalled();
     expect(userStatController.JSON.energy).toEqual(expectedEnergyAfterSpend);
+    expect(mockDB.$transaction).toHaveBeenCalledTimes(2);
   });
 
   it("should throw an error if trying to spend more energy than available", async () => {

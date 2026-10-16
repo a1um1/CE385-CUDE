@@ -24,10 +24,13 @@ export default class AdminUserController {
 
   async forceChangePassword(body: AdminUserUpdatePasswordSchema) {
     if (!this.user) throw new Error("User not found");
-    await db.user.update({
-      where: { id: this.user.id },
-      data: { password: bcrypt.hashSync(body.newPassword, 12) },
-    });
+    await db.$transaction([
+      db.user.update({
+        where: { id: this.user.id },
+        data: { password: bcrypt.hashSync(body.newPassword, 12), passwordChangedAt: new Date() },
+      }),
+      db.refreshToken.deleteMany({ where: { userID: this.user.id } }),
+    ]);
     return this;
   }
 

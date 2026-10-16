@@ -16,6 +16,14 @@ const db = new PrismaClient({
   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL! }),
 });
 
+if (!process.env.DATABASE_URL) {
+  throw new Error("Missing DATABASE_URL in .env");
+}
+
+if (!process.env.SEED_ADMIN_PASSWORD) {
+  throw new Error("Missing SEED_ADMIN_PASSWORD in .env");
+}
+
 const CONTENT_ROOT = path.resolve(import.meta.dirname, "data");
 
 const FRONT_MATTER = /^---\r?\n(?<data>[\s\S]*?)\r?\n---\r?\n?/;
@@ -40,11 +48,16 @@ const lessonMeta = z.object({
   passThreshold: z.number().min(0).max(1),
   XPgiven: z.number().int(),
   gemsGiven: z.number().int(),
+  startAt: z.coerce.date().optional(),
+  endAt: z.coerce.date().optional(),
+  /** Lesson titles this lesson requires the student to pass first. Resolved in a second pass. */
+  prerequisites: z.array(z.string()).default([]),
 });
 
 export const exerciseMeta = z.object({
   title: z.string(),
   type: z.enum(["normal", "code"]),
+  language: z.enum(["python", "c"]).default("python"),
   starterCode: z.string().optional(),
   testerCode: z.string().optional(),
   allowedFunctions: z.array(z.string()).default([]),
@@ -70,7 +83,7 @@ const SEED_ADMIN = {
   email: process.env.SEED_ADMIN_EMAIL ?? "admin@cude.local",
   username: process.env.SEED_ADMIN_USERNAME ?? "seed_admin",
   name: process.env.SEED_ADMIN_NAME ?? "Seed Admin",
-  password: process.env.SEED_ADMIN_PASSWORD ?? "SeedAdmin1!",
+  password: process.env.SEED_ADMIN_PASSWORD,
 };
 
 async function ensureAdmin() {
@@ -164,6 +177,8 @@ async function upsertLesson(
     passThreshold: meta.passThreshold,
     XPgiven: meta.XPgiven,
     gemsGiven: meta.gemsGiven,
+    startAt: meta.startAt ?? null,
+    endAt: meta.endAt ?? null,
   };
   const existing = await tx.lesson.findFirst({ where: { name: meta.title, unitID } });
   if (existing) {
@@ -202,11 +217,13 @@ async function upsertExercise(
     where: { exerciseID: exercise.id },
     create: {
       exerciseID: exercise.id,
+      language: meta.language,
       starterCode: meta.starterCode,
       testerCode: meta.testerCode,
       allowedFunctions: meta.allowedFunctions,
     },
     update: {
+      language: meta.language,
       starterCode: meta.starterCode,
       testerCode: meta.testerCode,
       allowedFunctions: meta.allowedFunctions,
@@ -231,6 +248,78 @@ export interface SeedResult {
   lessons: number;
   exercises: number;
   testCases: number;
+  prerequisites: number;
+}
+
+function requiredLessonID(byTitle: Map<string, string[]>, title: string): string {
+  const ids = byTitle.get(title) ?? [];
+  if (ids.length === 0) throw new Error(`Prerequisite points at unknown lesson "${title}"`);
+  if (ids.length > 1) {
+    throw new Error(
+      `Lesson title "${title}" is used by more than one lesson, so a prerequisite cannot reference it`,
+    );
+  }
+  return ids[0] as string;
+}
+
+/** Reject a graph that loops or points at itself: those lessons could never unlock. */
+export function assertAcyclic(edges: { lessonID: string; prerequisiteLessonID: string }[]): void {
+  const dependents = new Map<string, string[]>();
+  for (const edge of edges) {
+    dependents.set(edge.lessonID, [
+      ...(dependents.get(edge.lessonID) ?? []),
+      edge.prerequisiteLessonID,
+    ]);
+  }
+
+  const visiting = new Set<string>();
+  const done = new Set<string>();
+  const visit = (id: string) => {
+    if (done.has(id)) return;
+    if (visiting.has(id)) throw new Error(`Prerequisite cycle through lesson "${id}"`);
+    visiting.add(id);
+    for (const prerequisite of dependents.get(id) ?? []) visit(prerequisite);
+    visiting.delete(id);
+    done.add(id);
+  };
+  for (const id of dependents.keys()) visit(id);
+}
+
+/**
+ * Write every lesson's `prerequisites` as LessonPrerequisite rows. Runs after the lessons pass,
+ * because a prerequisite may live in a unit seeded later. The file tree owns the rows, so the
+ * table is cleared and rebuilt on every run.
+ * shortcut: prerequisites reference lessons by title, so a title used by two lessons is an error.
+ */
+export async function seedPrerequisites(contentRoot: string = CONTENT_ROOT): Promise<number> {
+  // A title may repeat across courses, so collect every id and fail only when a prerequisite
+  // actually has to pick one.
+  const byTitle = new Map<string, string[]>();
+  for (const lesson of await db.lesson.findMany({ select: { id: true, name: true } })) {
+    byTitle.set(lesson.name, [...(byTitle.get(lesson.name) ?? []), lesson.id]);
+  }
+
+  const edges: { lessonID: string; prerequisiteLessonID: string }[] = [];
+  for (const course of readMetaDirs(contentRoot)) {
+    for (const unit of readMetaDirs(course.dir)) {
+      for (const lesson of readMetaDirs(unit.dir)) {
+        const meta = lessonMeta.parse(lesson.data);
+        for (const title of meta.prerequisites) {
+          edges.push({
+            lessonID: requiredLessonID(byTitle, meta.title),
+            prerequisiteLessonID: requiredLessonID(byTitle, title),
+          });
+        }
+      }
+    }
+  }
+
+  assertAcyclic(edges);
+  await db.$transaction(async (tx) => {
+    await tx.lessonPrerequisite.deleteMany();
+    await tx.lessonPrerequisite.createMany({ data: edges, skipDuplicates: true });
+  });
+  return edges.length;
 }
 
 async function seedLesson(
@@ -295,7 +384,14 @@ async function seedCourse(
  */
 export async function seed(contentRoot: string = CONTENT_ROOT): Promise<SeedResult> {
   const admin = await ensureAdmin();
-  const result: SeedResult = { courses: 0, units: 0, lessons: 0, exercises: 0, testCases: 0 };
+  const result: SeedResult = {
+    courses: 0,
+    units: 0,
+    lessons: 0,
+    exercises: 0,
+    testCases: 0,
+    prerequisites: 0,
+  };
   const courses = readMetaDirs(contentRoot);
 
   await db.$transaction(
@@ -307,6 +403,8 @@ export async function seed(contentRoot: string = CONTENT_ROOT): Promise<SeedResu
     },
     { timeout: 60_000 },
   );
+
+  result.prerequisites = await seedPrerequisites(contentRoot);
 
   return result;
 }

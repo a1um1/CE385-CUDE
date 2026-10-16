@@ -64,6 +64,7 @@ export const UserSchema = z
     name: nameDefinition,
     email: z.email().openapi({ example: "email@gmail.com" }),
     password: UserPasswordDefinition,
+    passwordChangedAt: z.date().openapi({ example: "2023-01-01T00:00:00.000Z" }),
     epithet: epithetDefinition.nullable(),
     role: z.enum(["USER", "ADMIN"]).openapi({ example: "USER" }),
     profileImage: z.string().nullable().openapi({ example: "https://example.com/profile.jpg" }),
@@ -76,7 +77,7 @@ export const UserSchema = z
     createdAt: z.date().openapi({ example: "2023-01-01T00:00:00.000Z" }),
     updatedAt: z.date().openapi({ example: "2023-01-01T00:00:00.000Z" }),
   })
-  .openapi("User") satisfies Zod.ZodType<User>;
+  .openapi("User") satisfies Zod.ZodType<Omit<User, "passwordChangedAt">>;
 
 export const UserUpdateAvatarSchema = z
   .object({
@@ -108,6 +109,7 @@ export const UserSafePublicSchema = UserSchema.omit({
   password: true,
   email: true,
   deactivateReason: true,
+  passwordChangedAt: true,
   role: true,
   isActive: true,
 }).openapi("UserSafePublicData");
@@ -132,6 +134,7 @@ export const userQueryPayload = {
   role: true,
   profileImage: true,
   backgroundImage: true,
+  passwordChangedAt: true,
   createdAt: true,
   updatedAt: true,
   epithet: true,

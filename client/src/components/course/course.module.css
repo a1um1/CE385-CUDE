@@ -3,7 +3,7 @@
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  width: 120px;
+  width: 160px;
 }
 
 .iconWrapper {
@@ -34,15 +34,29 @@
 }
 
 .label {
-  font-size: 20px;
+  font-size: 14px;
   font-weight: 500;
   font-style: italic;
   letter-spacing: 0.5px;
-  margin-top: 0px;
+  text-align: center;
+  line-height: 1.3;
 }
 
-/* --- สถานะ Completed --- */
-.completed {
+/* --- สถานะ Available (ยังไม่เริ่ม) --- */
+.available {
+  .hexagonSvg {
+    stroke: var(--color-blue-600);
+    fill: color-mix(in oklch, var(--color-blue-600) 20%, transparent);
+  }
+  .innerIcon {
+    color: var(--color-blue-600);
+  }
+  .label {
+    color: var(--color-blue-600);
+  }
+}
+/* --- สถานะ Ongoing (กำลังทำ) --- */
+.ongoing {
   .hexagonSvg {
     stroke: var(--color-blue-600);
     fill: var(--color-blue-600);
@@ -54,30 +68,55 @@
     color: var(--color-blue-600);
   }
 }
-/* --- สถานะ Active --- */
-.active {
+/* --- สถานะ Passed (ผ่าน) --- */
+.passed {
   .hexagonSvg {
-    stroke: var(--color-blue-600);
-    fill: color-mix(in oklch, var(--color-blue-600) 20%, transparent);
+    stroke: var(--color-success);
+    fill: var(--color-success);
   }
-
-  .active .innerIcon {
-    color: var(--color-blue-600);
+  .innerIcon {
+    color: var(--color-success-text);
   }
-  .active .label {
-    color: var(--color-blue-600);
+  .label {
+    color: var(--color-success);
   }
 }
-/* --- สถานะ Locked --- */
-.locked {
+/* --- สถานะ Failed (ไม่ผ่าน) --- */
+.failed {
+  .hexagonSvg {
+    stroke: var(--color-danger);
+    fill: color-mix(in oklch, var(--color-danger) 20%, transparent);
+  }
+  .innerIcon {
+    color: var(--color-danger);
+  }
+  .label {
+    color: var(--color-danger);
+  }
+}
+/* --- สถานะ Give up (ยอมแพ้) --- */
+.giveUp {
+  .hexagonSvg {
+    stroke: var(--color-warning);
+    fill: color-mix(in oklch, var(--color-warning) 20%, transparent);
+  }
+  .innerIcon {
+    color: var(--color-warning);
+  }
+  .label {
+    color: var(--color-warning);
+  }
+}
+/* --- สถานะ Unavailable (ยังไม่เปิดให้ทำ) --- */
+.unavailable {
   .hexagonSvg {
     stroke: var(--color-border);
     fill: color-mix(in oklch, var(--color-border) 20%, transparent);
   }
-  .locked .innerIcon {
+  .innerIcon {
     color: var(--color-border);
   }
-  .locked .label {
+  .label {
     color: var(--color-border);
   }
 }

@@ -1,12 +1,15 @@
 import Dialog from "./dialog";
 import Button from "#/components/button";
 import Spinner from "#/components/spinner";
+import type { ReactNode } from "react";
 
 export interface ConfirmDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   title: string;
   description?: string;
+  icon?: ReactNode;
+  quote?: string;
   confirmLabel?: string;
   cancelLabel?: string;
   variant?: "default" | "danger";
@@ -19,6 +22,8 @@ function ConfirmDialog({
   onOpenChange,
   title,
   description,
+  icon,
+  quote,
   confirmLabel = "Confirm",
   cancelLabel = "Cancel",
   variant = "default",
@@ -31,6 +36,9 @@ function ConfirmDialog({
       onOpenChange={onOpenChange}
       title={title}
       description={description}
+      icon={icon}
+      quote={quote}
+      tone={variant}
       footer={
         <>
           <Button variant="secondary" onClick={() => onOpenChange(false)} disabled={isPending}>

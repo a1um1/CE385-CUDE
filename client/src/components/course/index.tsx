@@ -1,1 +1,1 @@
-export { Course } from "./course";
+export { Course, type CourseStatus } from "./course";

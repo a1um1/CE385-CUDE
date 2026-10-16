@@ -11,6 +11,7 @@ export const ExerciseSchema = z
     content: z.string().openapi({ example: "exercise content" }),
     codeExercise: z
       .object({
+        language: z.enum(["python", "c"]).openapi({ example: "python" }),
         starterCode: z.string().nullable().openapi({ example: "print('hello')" }),
         timeLimitMs: z.number().int().openapi({ example: 2000 }),
         memoryLimitMb: z.number().int().openapi({ example: 256 }),

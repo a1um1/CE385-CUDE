@@ -18,6 +18,9 @@ const adminCourseRouter = new CustomRouter({
     "/",
     {
       summary: "List all courses",
+      description:
+        "Cursor-paginated list of every course. Requires an `ADMIN` token. Sort by `name`, `createdAt`, " +
+        "`updatedAt` or `id`.",
       query: AdminCourseQuerySchema,
       response: AdminCourseListResponseSchema,
     },
@@ -27,6 +30,9 @@ const adminCourseRouter = new CustomRouter({
     "/:id",
     {
       summary: "Get course by ID",
+      description:
+        "Return one course by ID in the admin shape. Requires an `ADMIN` token. Returns `404` when the " +
+        "course does not exist.",
       response: adminCourseSchema,
       params: z.object({
         id: z.uuid().openapi({ example: "course_id" }),
@@ -42,6 +48,9 @@ const adminCourseRouter = new CustomRouter({
     "/",
     {
       summary: "Create a new course",
+      description:
+        "Create a course. Requires an `ADMIN` token. The acting admin is recorded as the course's " +
+        "`createdByID`; the new course is appended at the end.",
       body: AdminCourseCreateSchema,
       response: adminCourseSchema,
     },
@@ -57,6 +66,9 @@ const adminCourseRouter = new CustomRouter({
     "/:id",
     {
       summary: "Update course by ID",
+      description:
+        "Update a course's `name`, `color` and `icon`. Requires an `ADMIN` token. Returns `404` when " +
+        "the course does not exist.",
       params: z.object({
         id: z.uuid().openapi({ example: "course_id" }),
       }),

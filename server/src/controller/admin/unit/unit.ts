@@ -3,6 +3,7 @@ import type {
   AdminUnitListResponseSchema,
   AdminUnitQuery,
   AdminUnitCreateSchema,
+  AdminUnitUpdateSchema,
 } from "#/controller/admin/unit/unit.schema";
 import { unitQueryPayload } from "#/controller/admin/unit/unit.schema";
 import { buildCursorOrderBy } from "#/lib/pagination.schema";
@@ -36,7 +37,27 @@ export default class AdminUnitsController {
     const course = await db.course.findUnique({ where: { id: data.courseID } });
     if (!course) throw new UserError(404, "Course not found");
 
-    const unit = await db.unit.create({ data });
+    const { _max } = await db.unit.aggregate({
+      _max: { position: true },
+      where: { courseID: data.courseID },
+    });
+    const unit = await db.unit.create({
+      data: { ...data, position: (_max.position ?? -1) + 1 },
+    });
+    return new AdminUnitsController(unit);
+  }
+
+  static async update(id: string, data: AdminUnitUpdateSchema): Promise<AdminUnitsController> {
+    await AdminUnitsController.getById(id);
+
+    const course = await db.course.findUnique({ where: { id: data.courseID } });
+    if (!course) throw new UserError(404, "Course not found");
+
+    const unit = await db.unit.update({
+      where: { id },
+      data,
+    });
+
     return new AdminUnitsController(unit);
   }
 

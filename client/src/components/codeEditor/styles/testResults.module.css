@@ -1,0 +1,56 @@
+@reference "#/styles/main.css";
+
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  font-family: var(--font-mono);
+  font-size: var(--size-xs-font-size);
+}
+
+.summary {
+  color: var(--color-placeholder);
+}
+
+.case {
+  display: flex;
+  flex-direction: column;
+  padding-left: 0.5rem;
+  border-left: 2px solid var(--color-border);
+}
+
+.pass {
+  border-left-color: var(--color-success);
+}
+
+.fail {
+  border-left-color: var(--color-danger);
+}
+
+.label {
+  font-weight: 600;
+}
+
+.pass .label {
+  color: var(--color-success);
+}
+
+.fail .label {
+  color: var(--color-danger);
+}
+
+.meta {
+  color: var(--color-placeholder);
+}
+
+.line {
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.mismatch {
+  white-space: pre-wrap;
+  word-break: break-all;
+  color: var(--color-danger);
+}

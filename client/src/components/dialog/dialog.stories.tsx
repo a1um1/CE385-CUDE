@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Dialog from "./dialog";
 import Button from "#/components/button";
+import { FrownIcon } from "lucide-react";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta = {
@@ -10,6 +11,9 @@ const meta = {
   argTypes: {
     title: { control: "text" },
     description: { control: "text" },
+    quote: { control: "text" },
+    icon: { control: false },
+    tone: { control: "inline-radio", options: ["default", "danger"] },
     open: { control: false },
     onOpenChange: { control: false },
   },
@@ -56,6 +60,19 @@ export const Playground: Story = {
 export const NoDescription: Story = {
   args: {
     title: "No Description Dialog",
+    open: false,
+    onOpenChange: () => {},
+  },
+  render: (args) => <DialogPlayground {...args} />,
+};
+
+export const WithIconAndQuote: Story = {
+  args: {
+    title: "ยอมแพ้บทเรียนนี้?",
+    description: "เซสชันนี้จะถูกยกเลิก คะแนนที่ทำไว้จะไม่ถูกนับ และคุณจะเริ่มบทเรียนนี้ใหม่ได้",
+    icon: <FrownIcon size="2rem" />,
+    quote: "“ยอมแพ้ไม่ใช่ความล้มเหลว แต่คือการให้โอกาสตัวเองเริ่มต้นใหม่”",
+    tone: "danger",
     open: false,
     onOpenChange: () => {},
   },

@@ -35,10 +35,27 @@ Table Lesson {
   passThreshold Decimal [not null]
   XPgiven Int [not null]
   gemsGiven Int [not null]
+  startAt DateTime
+  endAt DateTime
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   exercises Exercise [not null]
   sessions Sessions [not null]
+  prerequisites LessonPrerequisite [not null]
+  requiredBy LessonPrerequisite [not null]
+}
+
+Table LessonPrerequisite {
+  lessonID String [not null]
+  prerequisiteLessonID String [not null]
+  lesson Lesson [not null]
+  prerequisite Lesson [not null]
+
+  indexes {
+    (lessonID, prerequisiteLessonID) [pk]
+  }
+
+  Note: '"lesson unlocks only after prerequisite is passed". Edge rows are the whole table.'
 }
 
 Table UserStat {
@@ -82,6 +99,7 @@ Table CodeExercise {
   id String [pk]
   exerciseID String [unique, not null]
   exercise Exercise [not null]
+  language String [not null, default: 'python']
   starterCode String
   testerCode String
   allowedFunctions String[] [not null]
@@ -133,6 +151,10 @@ Table Submission {
   ok Boolean [not null, default: false]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
+
+  indexes {
+    (SessionID, exerciseID) [unique]
+  }
 }
 
 Table User {
@@ -144,6 +166,7 @@ Table User {
   backgroundImage String
   epithet String
   password String [not null]
+  passwordChangedAt DateTime [default: `now()`, not null]
   isActive Boolean [not null, default: true]
   deactivateReason String
   role Role [not null, default: 'USER']
@@ -202,6 +225,10 @@ Ref: Course.createdByID > User.id
 Ref: Unit.courseID > Course.id
 
 Ref: Lesson.unitID > Unit.id
+
+Ref: LessonPrerequisite.lessonID > Lesson.id [delete: Cascade]
+
+Ref: LessonPrerequisite.prerequisiteLessonID > Lesson.id [delete: Cascade]
 
 Ref: UserStat.userID > User.id [delete: Cascade]
 

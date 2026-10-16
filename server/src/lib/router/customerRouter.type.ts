@@ -61,6 +61,8 @@ export interface RouteConfig<
   prefix?: string;
   tags?: string[];
   summary?: string;
+  /** Long-form Markdown shown under the summary in the API reference. */
+  description?: string;
   params?: TParams;
   query?: TQuery;
   body?: TBody;
