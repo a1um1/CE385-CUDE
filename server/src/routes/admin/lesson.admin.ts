@@ -17,10 +17,10 @@ import UserError from "#/lib/router/http/userError";
 const ExerciseListSchema = z.array(ExerciseSchema);
 
 // TODO: adjust to the real role names / field of your user model.
-const MANAGER_ROLES = ["ADMIN", "TEACHER"];
+const MANAGER_ROLES = new Set(["ADMIN", "TEACHER"]);
 
 function assertCanManage(user: { JSON: { role?: string } }) {
-  if (!user.JSON.role || !MANAGER_ROLES.includes(user.JSON.role)) {
+  if (!user.JSON.role || !MANAGER_ROLES.has(user.JSON.role)) {
     throw new UserError(403, "You are not allowed to manage lessons");
   }
 }
@@ -45,13 +45,12 @@ const lessonRouterInstance = new CustomRouter({
       query: LessonListQuerySchema,
       response: PaginatedLessonSchema,
     },
-    async ({ query, user }) => {
-      return LessonController.getByUnitIdPaginated(query.unitId, user.JSON.id, {
-        page: query.page,
-        limit: query.limit,
-        include: query.include,
-      });
-    },
+    async ({ query, user }) =>
+  LessonController.getByUnitIdPaginated(query.unitId, user.JSON.id, {
+    page: query.page,
+    limit: query.limit,
+    include: query.include,
+  }),
   )
   .get(
     "/:lessonId",
