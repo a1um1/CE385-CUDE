@@ -1,4 +1,3 @@
-import ButtonLink from "#/components/buttonLink";
 import { Course, type CourseStatus } from "#/components/course";
 import DailyQuest from "#/components/dailyQuest";
 import LevelCard from "#/components/levelCard";
