@@ -51,25 +51,27 @@ export const useAbortLearnSessionMutation = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (sessionId: string) => {
+    mutationFn: async (props: { sessionId: string; lessonId: string }) => {
       const { data, error } = await APIclient.DELETE("/session/{SessionID}", {
         params: {
           path: {
-            SessionID: sessionId,
+            SessionID: props.sessionId,
           },
         },
       });
       if (error) throw error;
       return data;
     },
-    onSuccess: async () => {
+    onSuccess: async (_data, variables) => {
       await queryClient.invalidateQueries({ queryKey: ["pending_learn_session"] });
       await queryClient.invalidateQueries({ queryKey: ["learn_sessions"] });
       await queryClient.invalidateQueries({ queryKey: ["session"] });
       await queryClient.invalidateQueries({ queryKey: ["lesson_enrollment_availability"] });
       await queryClient.invalidateQueries({ queryKey: ["exercises_from_lesson"] });
+
       navigate({
-        to: "/",
+        to: "/lesson/$lessonId/$sessionId",
+        params: { lessonId: variables.lessonId, sessionId: variables.sessionId },
       });
     },
   });
@@ -174,6 +176,8 @@ export const useSubmitLearnSessionMutation = (sessionId: string) => {
       await queryClient.invalidateQueries({ queryKey: ["session", sessionId] });
       await queryClient.invalidateQueries({ queryKey: ["pending_learn_session"] });
       await queryClient.invalidateQueries({ queryKey: ["learn_sessions"] });
+      // A first pass pays XP and gems, which the navbar reads from the user's stats.
+      await queryClient.invalidateQueries({ queryKey: ["userStats"] });
     },
   });
 };

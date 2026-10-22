@@ -8,6 +8,8 @@ export const LessonSchema = z
     id: z.uuidv7().openapi({ example: "lesson_id" }),
     name: z.string().openapi({ example: "lesson_name" }),
     unitID: z.uuidv7().openapi({ example: "unit_id" }),
+    XPgiven: z.number().openapi({ example: 100 }),
+    gemsGiven: z.number().openapi({ example: 10 }),
     startAt: z.date().nullable().openapi({ example: "2026-10-11T00:00:00Z" }),
     endAt: z.date().nullable().openapi({ example: "2026-11-11T00:00:00Z" }),
     unit: z

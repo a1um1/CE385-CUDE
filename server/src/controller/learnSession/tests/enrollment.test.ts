@@ -20,7 +20,12 @@ const mockState = (props: {
   mockDB.sessions.findFirst.mockResolvedValueOnce(
     props.pendingLessonID ? ({ LessonID: props.pendingLessonID } as never) : (null as never),
   );
-  mockDB.lessonPrerequisite.findMany.mockResolvedValueOnce((props.prerequisites ?? []) as never);
+  mockDB.lessonPrerequisite.findMany.mockResolvedValueOnce(
+    (props.prerequisites ?? []).map((row) => ({
+      lessonID: row.lessonID,
+      prerequisite: { id: row.prerequisiteLessonID, passThreshold: 1 },
+    })) as never,
+  );
   mockDB.sessions.findMany.mockResolvedValueOnce((props.attempts ?? []) as never);
   mockDB.exercise.findMany.mockResolvedValueOnce([] as never);
 };

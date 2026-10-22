@@ -1,6 +1,7 @@
 import Badge from "#/components/badge";
 import Button from "#/components/button";
 import ButtonLink from "#/components/buttonLink";
+import LessonReward from "#/components/lessonReward";
 import { PieChart } from "#/components/pie-chart";
 import { Scoring } from "#/components/scoring";
 import Skeleton from "#/components/skeleton";
@@ -208,18 +209,19 @@ function RouteComponent() {
           เนื้อหาทั้งหมด
         </ButtonLink>
       </div>
-      <div className="flex gap-4">
+      <div className="flex gap-4 items-start">
         <LessonScore />
-        <div className="flex flex-col">
+        <div className="flex flex-col flex-1">
           <p>
             {lesson?.unit?.course?.name} / {lesson?.unit?.name}
           </p>
-          <h1 className="text-2xl mb-4">{lesson?.name}</h1>
+          <h1 className="text-2xl">{lesson?.name}</h1>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 mt-4">
             <LessonStart />
           </div>
         </div>
+        <LessonReward xp={lesson.XPgiven} gems={lesson.gemsGiven} />
       </div>
       <div className="flex gap-4">
         <LessonHistory />

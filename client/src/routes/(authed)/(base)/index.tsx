@@ -1,5 +1,7 @@
-import ButtonLink from "#/components/buttonLink";
 import { Course, type CourseStatus } from "#/components/course";
+import DailyQuest from "#/components/dailyQuest";
+import LevelCard from "#/components/levelCard";
+import RankingCard from "#/components/rankingCard";
 import Select from "#/components/select";
 import Skeleton from "#/components/skeleton";
 import type { components } from "#/data/base/openapi";
@@ -50,84 +52,92 @@ function Home() {
   };
 
   return (
-    <>
-      <div className="flex flex-wrap gap-4">
-        {courses.isLoading ? (
-          <Skeleton className="h-6 w-32" />
-        ) : (
-          <Select.Root
-            value={courseId}
-            onValueChange={handleCourseChange}
-            items={
-              courses.data?.data.map((course) => ({ value: course.id, label: course.name })) || []
-            }
-          >
-            <Select.Trigger>
-              <Select.Value placeholder="Select a course" />
-            </Select.Trigger>
-            <Select.Content>
-              {courses.data?.data.map((course) => (
-                <Select.Item key={course.id} value={course.id}>
-                  {course.name}
-                </Select.Item>
-              ))}
-            </Select.Content>
-          </Select.Root>
-        )}
-
-        {units.isLoading ? (
-          <Skeleton className="h-6 w-32" />
-        ) : (
-          <Select.Root
-            value={unitId}
-            onValueChange={handleUnitChange}
-            items={units.data?.map((unit) => ({ value: unit.id, label: unit.name })) || []}
-          >
-            <Select.Trigger>
-              <Select.Value placeholder="Select a unit" />
-            </Select.Trigger>
-            <Select.Content>
-              {units.data?.map((unit) => (
-                <Select.Item key={unit.id} value={unit.id}>
-                  {unit.name}
-                </Select.Item>
-              ))}
-            </Select.Content>
-          </Select.Root>
-        )}
-
-        <div className="flex gap-2 ml-auto">
-          <ButtonLink variant="secondary" to="/play">
-            Code Playground
-          </ButtonLink>
-          <ButtonLink variant="secondary" to="/play-grader">
-            Code Grader
-          </ButtonLink>
-        </div>
-      </div>
-      {(lessons.data || []).length === 0 && (
-        <div className="flex flex-col items-center justify-center gap-2">
-          <FaceSlightlyFrowning className="size-24" />
-          <p>No lessons found for the selected unit.</p>
-        </div>
-      )}
-      {lessons.data && lessons.data.length > 0 && (
-        <div className="flex flex-col items-center gap-4 py-6">
-          {lessons.data.map((lesson, index) => (
-            <Link
-              key={lesson.id}
-              to="/lesson/$lessonId"
-              params={{ lessonId: lesson.id }}
-              className="block"
-              style={{
-                transform: `translateX(${pathOffsets[index % pathOffsets.length] ?? 0}px)`,
-              }}
+    <div className="flex flex-col gap-6 lg:flex-row">
+      <div className="flex min-w-0 flex-[2] flex-col gap-6">
+        <div className="flex flex-wrap gap-4">
+          {courses.isLoading ? (
+            <Skeleton className="h-6 w-32" />
+          ) : (
+            <Select.Root
+              value={courseId}
+              onValueChange={handleCourseChange}
+              items={
+                courses.data?.data.map((course) => ({ value: course.id, label: course.name })) || []
+              }
             >
-              <Course status={courseStatus[lesson.status]} label={lesson.name} />
-            </Link>
-          ))}
+              <Select.Trigger>
+                <Select.Value placeholder="Select a course" />
+              </Select.Trigger>
+              <Select.Content>
+                {courses.data?.data.map((course) => (
+                  <Select.Item key={course.id} value={course.id}>
+                    {course.name}
+                  </Select.Item>
+                ))}
+              </Select.Content>
+            </Select.Root>
+          )}
+
+          {units.isLoading ? (
+            <Skeleton className="h-6 w-32" />
+          ) : (
+            <Select.Root
+              value={unitId}
+              onValueChange={handleUnitChange}
+              items={units.data?.map((unit) => ({ value: unit.id, label: unit.name })) || []}
+            >
+              <Select.Trigger>
+                <Select.Value placeholder="Select a unit" />
+              </Select.Trigger>
+              <Select.Content>
+                {units.data?.map((unit) => (
+                  <Select.Item key={unit.id} value={unit.id}>
+                    {unit.name}
+                  </Select.Item>
+                ))}
+              </Select.Content>
+            </Select.Root>
+          )}
+
+          {/* <div className="flex gap-2 ml-auto">
+            <ButtonLink variant="secondary" to="/play">
+              Code Playground
+            </ButtonLink>
+            <ButtonLink variant="secondary" to="/play-grader">
+              Code Grader
+            </ButtonLink>
+          </div> */}
         </div>
-      )}
-    </>
+        {(lessons.data || []).length === 0 && (
+          <div className="flex flex-col items-center justify-center gap-2">
+            <FaceSlightlyFrowning className="size-24" />
+            <p>No lessons found for the selected unit.</p>
+          </div>
+        )}
+        {lessons.data && lessons.data.length > 0 && (
+          <div className="flex flex-col items-center gap-4 py-6">
+            {lessons.data.map((lesson, index) => (
+              <Link
+                key={lesson.id}
+                to="/lesson/$lessonId"
+                params={{ lessonId: lesson.id }}
+                className="block"
+                style={{
+                  transform: `translateX(${pathOffsets[index % pathOffsets.length] ?? 0}px)`,
+                }}
+              >
+                <Course status={courseStatus[lesson.status]} label={lesson.name} />
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <aside className="min-w-0 flex-1 flex flex-col gap-4">
+        <LevelCard />
+        <RankingCard />
+        <DailyQuest />
+      </aside>
+    </div>
   );
 }

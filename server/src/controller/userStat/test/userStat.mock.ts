@@ -16,3 +16,9 @@ export const fakeUserStatWithLowEnergy = {
   energy: 0,
   energyUpdatedAt: new Date(Date.now() - 20 * 60 * 1000), // 20 minutes ago
 } satisfies UserStat;
+
+// `JSON` augments the stored row with derived level progress.
+export const fakeUserStatProgress = {
+  ...fakeUserStat,
+  ...UserStatController.progressByXp(fakeUserStat.totalXP),
+};
