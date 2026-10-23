@@ -249,4 +249,4 @@ Ref: Submission.SessionID > Sessions.id
 
 Ref: Submission.exerciseID > Exercise.id
 
-Ref: refreshToken.userID > User.id
+Ref: refreshToken.userID > User.id [delete: Cascade]
