@@ -1,8 +1,8 @@
-import { ExerciseSelection, type ExercisePayload } from "./base/exercise.schema";
+import type { ExercisePayload } from "./base/exercise.schema";
 import BaseExerciseService from "./base/exercise";
 import { CodeExerciseService } from "./codeExercise/codeExercise";
-import { db } from "#/lib/prisma";
 import UserError from "#/lib/router/http/userError";
+import { exerciseRepository } from "#/repository/exercise.repository";
 
 export default class ExerciseService extends BaseExerciseService {
   static getMatchedService(data: ExercisePayload): BaseExerciseService {
@@ -15,24 +15,14 @@ export default class ExerciseService extends BaseExerciseService {
   }
 
   static async getById(id: string): Promise<BaseExerciseService> {
-    const exercise = await db.exercise.findUnique({
-      select: ExerciseSelection,
-      where: {
-        id,
-      },
-    });
+    const exercise = await exerciseRepository.findById(id);
 
     if (!exercise) throw new UserError(404, "Exercise not found");
     return this.getMatchedService(exercise);
   }
 
   static async getByLessonId(lessonID: string): Promise<BaseExerciseService[]> {
-    const exercises = await db.exercise.findMany({
-      select: ExerciseSelection,
-      where: { lessonID },
-      // Ties on position (the column defaults to 0) fall back to creation order.
-      orderBy: [{ position: "asc" }, { id: "asc" }],
-    });
+    const exercises = await exerciseRepository.findAllByLessonID(lessonID);
 
     return exercises.map((exercise) => this.getMatchedService(exercise));
   }

@@ -1,10 +1,7 @@
 import type { CourseData } from "#/service/course/course.schema";
-import { courseIncludes } from "#/service/course/course.schema";
 import UnitService from "#/service/unit";
-import type { Prisma } from "#/generated/prisma/client";
-import { resolveInclude } from "#/lib/include";
-import { db } from "#/lib/prisma";
 import UserError from "#/lib/router/http/userError";
+import { courseRepository } from "#/repository/course.repository";
 
 export default class CourseService {
   private data: CourseData;
@@ -18,20 +15,13 @@ export default class CourseService {
   }
 
   static async getById(id: string, include?: string | string[]): Promise<CourseService> {
-    const course = await db.course.findUnique({
-      where: { id },
-      include: resolveInclude<Prisma.CourseInclude>(include, courseIncludes),
-    });
+    const course = await courseRepository.findById(id, include);
     if (!course) throw new UserError(404, "Course not found");
-    return new CourseService(course as CourseData);
+    return new CourseService(course);
   }
 
   static async getAllRaw(include?: string | string[]): Promise<CourseData[]> {
-    const courses = await db.course.findMany({
-      include: resolveInclude<Prisma.CourseInclude>(include, courseIncludes),
-      orderBy: [{ position: "asc" }, { id: "asc" }],
-    });
-    return courses as CourseData[];
+    return await courseRepository.findAll(include);
   }
 
   static async getAll(include?: string | string[]): Promise<CourseService[]> {

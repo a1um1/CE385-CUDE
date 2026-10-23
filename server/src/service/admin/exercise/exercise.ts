@@ -6,8 +6,9 @@ import type {
 } from "#/service/admin/exercise/exercise.schema";
 import type { Exercise } from "#/generated/prisma/client";
 import { buildCursorOrderBy } from "#/lib/pagination.schema";
-import { db } from "#/lib/prisma";
 import UserError from "#/lib/router/http/userError";
+import { exerciseRepository } from "#/repository/exercise.repository";
+import { lessonRepository } from "#/repository/lesson.repository";
 
 export default class AdminExercisesService {
   private data: Exercise;
@@ -21,7 +22,7 @@ export default class AdminExercisesService {
   }
 
   static async getById(id: string): Promise<AdminExercisesService> {
-    const exercise = await db.exercise.findUnique({ where: { id } });
+    const exercise = await exerciseRepository.findRawById(id);
     if (!exercise) throw new UserError(404, "Exercise not found");
     return new AdminExercisesService(exercise);
   }
@@ -32,7 +33,7 @@ export default class AdminExercisesService {
     const isBackward = query.direction === "backward" && Boolean(query.cursor);
     const orderBy = buildCursorOrderBy(query.sortBy, query.sortOrder, isBackward);
 
-    const data = await db.exercise.findMany({
+    const data = await exerciseRepository.findPage({
       where: query.lessonID ? { lessonID: query.lessonID } : undefined,
       take: query.perPage + 1,
       skip: query.cursor ? 1 : 0,
@@ -58,19 +59,21 @@ export default class AdminExercisesService {
   }
 
   static async create(body: CreateAdminExercise): Promise<AdminExercisesService> {
-    const lesson = await db.lesson.findUnique({ where: { id: body.lessonID } });
+    const lesson = await lessonRepository.findRawById(body.lessonID);
     if (!lesson) throw new UserError(404, "Lesson not found");
 
-    const exercise = await db.exercise.create({
-      data: { name: body.name, lessonID: body.lessonID, content: body.content },
+    const exercise = await exerciseRepository.create({
+      name: body.name,
+      lessonID: body.lessonID,
+      content: body.content,
     });
     return new AdminExercisesService(exercise);
   }
 
   async update(body: UpdateAdminExercise): Promise<void> {
-    this.data = await db.exercise.update({
-      where: { id: this.data.id },
-      data: { name: body.name, content: body.content },
+    this.data = await exerciseRepository.update(this.data.id, {
+      name: body.name,
+      content: body.content,
     });
   }
 }
