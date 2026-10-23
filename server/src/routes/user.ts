@@ -1,16 +1,16 @@
 import {
   TransactionListResponseSchema,
   TransactionQuerySchema,
-} from "#/controller/transactions/transactions.schema";
-import UserController from "#/controller/user";
+} from "#/service/transactions/transactions.schema";
+import UserService from "#/service/user";
 import {
   UserSafePublicSchema,
   UserSafeSchema,
   UserUpdateAvatarSchema,
   UserUpdateBackgroundSchema,
   UserUpdatePasswordSchema,
-} from "#/controller/user/user.schema";
-import { zodUserStatExtendedObject } from "#/controller/userStat/userStat.schema";
+} from "#/service/user/user.schema";
+import { zodUserStatExtendedObject } from "#/service/userStat/userStat.schema";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 import { GenericResponseSchema } from "#/lib/router/http/genericResponse";
@@ -102,7 +102,7 @@ const userRoute = new CustomRouter({
       response: UserSafePublicSchema,
     },
     async ({ params }) => {
-      const user = await UserController.getByUsername(params.username);
+      const user = await UserService.getByUsername(params.username);
       return user.publicJSON;
     },
   )

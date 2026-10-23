@@ -1,11 +1,11 @@
-import AdminExercisesController from "#/controller/admin/exercise";
+import AdminExercisesService from "#/service/admin/exercise";
 import {
   AdminExerciseListResponseSchema,
   AdminExerciseQuerySchema,
   CreateAdminExerciseSchema,
   UpdateAdminExerciseSchema,
   adminExerciseSchema,
-} from "#/controller/admin/exercise/exercise.schema";
+} from "#/service/admin/exercise/exercise.schema";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 
@@ -21,7 +21,7 @@ const adminExerciseRouter = new CustomRouter({
       query: AdminExerciseQuerySchema,
       response: AdminExerciseListResponseSchema,
     },
-    ({ query }) => AdminExercisesController.getPaginateLists(query),
+    ({ query }) => AdminExercisesService.getPaginateLists(query),
   )
   .get(
     "/:id",
@@ -31,8 +31,8 @@ const adminExerciseRouter = new CustomRouter({
       response: adminExerciseSchema,
     },
     async ({ params }) => {
-      const controller = await AdminExercisesController.getById(params.id);
-      return controller.JSON;
+      const service = await AdminExercisesService.getById(params.id);
+      return service.JSON;
     },
   )
   .post(
@@ -43,8 +43,8 @@ const adminExerciseRouter = new CustomRouter({
       response: adminExerciseSchema,
     },
     async ({ body }) => {
-      const controller = await AdminExercisesController.create(body);
-      return controller.JSON;
+      const service = await AdminExercisesService.create(body);
+      return service.JSON;
     },
   )
   .put(
@@ -56,9 +56,9 @@ const adminExerciseRouter = new CustomRouter({
       response: adminExerciseSchema,
     },
     async ({ params, body }) => {
-      const controller = await AdminExercisesController.getById(params.id);
-      await controller.update(body);
-      return controller.JSON;
+      const service = await AdminExercisesService.getById(params.id);
+      await service.update(body);
+      return service.JSON;
     },
   );
 

@@ -1,9 +1,9 @@
 import CustomRouter from "#/lib/router/customRouter";
-import GoJudgeClient from "#/controller/go-judge";
+import GoJudgeClient from "#/service/go-judge";
 import { z } from "#/lib/extendZod";
-import { cleanResultSchema, zGoJudgeLanguage } from "#/controller/go-judge/go-judge.schema";
-import CodeGrader from "#/controller/grader/codeGrader";
-import { codeGradingSummary } from "#/controller/grader/codeGrader.schema";
+import { cleanResultSchema, zGoJudgeLanguage } from "#/service/go-judge/go-judge.schema";
+import CodeGrader from "#/service/grader/codeGrader";
+import { codeGradingSummary } from "#/service/grader/codeGrader.schema";
 
 const CodingRouter = new CustomRouter({
   prefix: "/coding",

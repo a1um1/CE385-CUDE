@@ -1,6 +1,6 @@
-import AuthenticationController from "#/controller/authentication";
-import type { AuthenticationBody } from "#/controller/authentication/authentication.schema";
-import fakeUser from "#/controller/user/tests/user.mock";
+import AuthenticationService from "#/service/authentication";
+import type { AuthenticationBody } from "#/service/authentication/authentication.schema";
+import fakeUser from "#/service/user/tests/user.mock";
 import { mockDB } from "#/test/setup";
 import { describe, expect, it } from "vitest";
 import request from "supertest";
@@ -13,7 +13,7 @@ const mockAuthenticationBody = {
   email: fakeUser.email,
 } satisfies AuthenticationBody;
 
-const authenticationToken = new AuthenticationController().generateToken(mockAuthenticationBody);
+const authenticationToken = new AuthenticationService().generateToken(mockAuthenticationBody);
 
 describe("Authentication Tests", () => {
   it("should handle undefined authentication", async () => {

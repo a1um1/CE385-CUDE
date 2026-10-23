@@ -1,8 +1,8 @@
-import SessionController from "#/controller/learnSession";
-import { enrollmentAvailabilitySchema } from "#/controller/learnSession/session";
-import { ExerciseSchema } from "#/controller/exercise";
-import LessonController from "#/controller/lesson";
-import { LessonIncludeQuerySchema, LessonSchema } from "#/controller/lesson/lesson.schema";
+import SessionService from "#/service/learnSession";
+import { enrollmentAvailabilitySchema } from "#/service/learnSession/session";
+import { ExerciseSchema } from "#/service/exercise";
+import LessonService from "#/service/lesson";
+import { LessonIncludeQuerySchema, LessonSchema } from "#/service/lesson/lesson.schema";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 
@@ -31,7 +31,7 @@ const lessonRouterInstance = new CustomRouter({
       response: LessonSchema,
     },
     async ({ params, query }) => {
-      const result = await LessonController.getById(params.lessonId, query.include);
+      const result = await LessonService.getById(params.lessonId, query.include);
       return result.JSON;
     },
   )
@@ -54,7 +54,7 @@ const lessonRouterInstance = new CustomRouter({
       response: enrollmentAvailabilitySchema,
     },
     async ({ params, user }) => {
-      const isAvailable = await SessionController.enrollmentCheck({
+      const isAvailable = await SessionService.enrollmentCheck({
         LessonID: params.lessonId,
         UserID: user.JSON.id,
       });
@@ -76,7 +76,7 @@ const lessonRouterInstance = new CustomRouter({
       response: ExerciseListSchema,
     },
     async ({ params }) => {
-      const lesson = await LessonController.getById(params.lessonId);
+      const lesson = await LessonService.getById(params.lessonId);
       const exercises = await lesson.getAllExercise();
       return exercises.map((exercise) => exercise.JSON);
     },

@@ -2,7 +2,7 @@ import type { z, ZodObject, ZodType } from "zod";
 import type { IncomingHttpHeaders } from "http";
 import type { Role } from "#/generated/prisma/enums";
 import type { HTTPstatus } from "#/lib/router/http/httpStatus";
-import type UserController from "#/controller/user";
+import type UserService from "#/service/user";
 import type { CookieOptions } from "express";
 
 export type RequestObject = ZodObject<any, any> | undefined;
@@ -45,7 +45,7 @@ export type RouteHandler<
   query: InferOrAny<TQuery>;
   headers: IncomingHttpHeaders;
   ip: string | undefined;
-  user: TAuth extends true | Role[] ? UserController : undefined;
+  user: TAuth extends true | Role[] ? UserService : undefined;
   cookies: RouteCookieValues;
   cookie: RouteCookieOps;
   status: HTTPstatus;

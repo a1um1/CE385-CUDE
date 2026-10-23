@@ -1,8 +1,8 @@
-import StorageController from "#/controller/storage/storage";
+import StorageService from "#/service/storage/storage";
 import {
   PresignUploadRequestSchema,
   PresignUploadResponseSchema,
-} from "#/controller/storage/storage.schema";
+} from "#/service/storage/storage.schema";
 import CustomRouter from "#/lib/router/customRouter";
 
 const storageRoute = new CustomRouter({
@@ -21,7 +21,7 @@ const storageRoute = new CustomRouter({
     body: PresignUploadRequestSchema,
     response: PresignUploadResponseSchema,
   },
-  async ({ user, body }) => StorageController.presignUpload(user.JSON.id, body),
+  async ({ user, body }) => StorageService.presignUpload(user.JSON.id, body),
 );
 
 export const storageRouter = storageRoute.route;

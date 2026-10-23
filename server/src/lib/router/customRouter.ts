@@ -2,7 +2,7 @@ import type { Role } from "#/generated/prisma/enums";
 import { Router } from "express";
 import type { RequestHandler } from "express-serve-static-core";
 import { registry } from "#/openapi";
-import AuthenticationController from "#/controller/authentication";
+import AuthenticationService from "#/service/authentication";
 import { HTTPstatus } from "#/lib/router/http/httpStatus";
 import UserError from "#/lib/router/http/userError";
 import { mergePath } from "#/lib/mergePath";
@@ -24,7 +24,7 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
   private defaultConfig: RouteConfig<any, any, any, any, TDefaultAuth> = {
     prefix: undefined,
   };
-  private authController = new AuthenticationController();
+  private authService = new AuthenticationService();
 
   constructor(defaultConfig?: RouteConfig<any, any, any, any, TDefaultAuth>) {
     if (defaultConfig) this.defaultConfig = defaultConfig;
@@ -70,7 +70,7 @@ export default class CustomRouter<TDefaultAuth extends AuthenticationObject = un
         (req.headers["authorization"] || "")?.split(" ")?.[1];
       if (!token) throw new UserError(401, "Unauthorized");
 
-      const user = await this.authController.validateToken(token);
+      const user = await this.authService.validateToken(token);
       if (!roleToCheck.includes(user.JSON.role)) throw new UserError(403, "Forbidden");
       res.locals.user = user;
       next();

@@ -1,7 +1,7 @@
-import SessionController from "#/controller/learnSession";
-import { enrollmentAvailabilitySchema } from "#/controller/learnSession/session";
-import { ExerciseSchema } from "#/controller/exercise";
-import LessonController from "#/controller/admin/lesson";
+import SessionService from "#/service/learnSession";
+import { enrollmentAvailabilitySchema } from "#/service/learnSession/session";
+import { ExerciseSchema } from "#/service/exercise";
+import LessonService from "#/service/admin/lesson";
 import {
   LessonCreateSchema,
   LessonIncludeQuerySchema,
@@ -9,7 +9,7 @@ import {
   LessonSchema,
   LessonUpdateSchema,
   PaginatedLessonSchema,
-} from "#/controller/admin/lesson/lesson.schema";
+} from "#/service/admin/lesson/lesson.schema";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 
@@ -35,7 +35,7 @@ const lessonRouterInstance = new CustomRouter({
       response: PaginatedLessonSchema,
     },
     async ({ query }) =>
-      LessonController.getByUnitIdPaginated(query.unitId, {
+      LessonService.getByUnitIdPaginated(query.unitId, {
         page: query.page,
         limit: query.limit,
         include: query.include,
@@ -59,7 +59,7 @@ const lessonRouterInstance = new CustomRouter({
       response: LessonSchema,
     },
     async ({ params, query }) => {
-      const result = await LessonController.getById(params.lessonId, query.include);
+      const result = await LessonService.getById(params.lessonId, query.include);
       return result.JSON;
     },
   )
@@ -72,7 +72,7 @@ const lessonRouterInstance = new CustomRouter({
       response: LessonSchema,
     },
     async ({ body }) => {
-      const lesson = await LessonController.create(body);
+      const lesson = await LessonService.create(body);
       return lesson.JSON;
     },
   )
@@ -91,7 +91,7 @@ const lessonRouterInstance = new CustomRouter({
       response: LessonSchema,
     },
     async ({ params, body }) => {
-      const lesson = await LessonController.update(params.lessonId, body);
+      const lesson = await LessonService.update(params.lessonId, body);
       return lesson.JSON;
     },
   )
@@ -112,7 +112,7 @@ const lessonRouterInstance = new CustomRouter({
       response: enrollmentAvailabilitySchema,
     },
     async ({ params, user }) => {
-      const availability = await SessionController.enrollmentCheck({
+      const availability = await SessionService.enrollmentCheck({
         LessonID: params.lessonId,
         UserID: user.JSON.id,
       });
@@ -134,7 +134,7 @@ const lessonRouterInstance = new CustomRouter({
       response: ExerciseListSchema,
     },
     async ({ params }) => {
-      const lesson = await LessonController.getById(params.lessonId);
+      const lesson = await LessonService.getById(params.lessonId);
       const exercises = await lesson.getAllExercise();
       return exercises.map((exercise) => exercise.JSON);
     },

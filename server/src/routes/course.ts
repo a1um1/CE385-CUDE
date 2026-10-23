@@ -1,6 +1,6 @@
-import CourseController from "#/controller/course";
-import { CourseIncludeQuerySchema, CourseSchema } from "#/controller/course/course.schema";
-import { UnitIncludeQuerySchema, UnitSchema } from "#/controller/unit/unit.schema";
+import CourseService from "#/service/course";
+import { CourseIncludeQuerySchema, CourseSchema } from "#/service/course/course.schema";
+import { UnitIncludeQuerySchema, UnitSchema } from "#/service/unit/unit.schema";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 
@@ -30,7 +30,7 @@ const courseRouter = new CustomRouter({
       response: CourseListSchema,
     },
     async ({ query }) => {
-      const courses = await CourseController.getAll(query.include);
+      const courses = await CourseService.getAll(query.include);
       return { data: courses.map((course) => course.JSON) };
     },
   )
@@ -48,7 +48,7 @@ const courseRouter = new CustomRouter({
       response: CourseSchema,
     },
     async ({ params, query }) => {
-      const course = await CourseController.getById(params.courseId, query.include);
+      const course = await CourseService.getById(params.courseId, query.include);
       return course.JSON;
     },
   )
@@ -66,7 +66,7 @@ const courseRouter = new CustomRouter({
       response: UnitListSchema,
     },
     async ({ params, query }) => {
-      const course = await CourseController.getById(params.courseId);
+      const course = await CourseService.getById(params.courseId);
       const units = await course.getAllUnit(query.include);
       return units.map((unit) => unit.JSON);
     },

@@ -1,11 +1,11 @@
-import AdminUnitsController from "#/controller/admin/unit";
+import AdminUnitsService from "#/service/admin/unit";
 import {
   AdminUnitCreateSchema,
   AdminUnitUpdateSchema,
   AdminUnitListResponseSchema,
   AdminUnitQuerySchema,
   adminUnitSchema,
-} from "#/controller/admin/unit/unit.schema";
+} from "#/service/admin/unit/unit.schema";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 
@@ -25,7 +25,7 @@ const adminUnitRouter = new CustomRouter({
       query: AdminUnitQuerySchema,
       response: AdminUnitListResponseSchema,
     },
-    ({ query }) => AdminUnitsController.getPaginateLists(query),
+    ({ query }) => AdminUnitsService.getPaginateLists(query),
   )
   //เรียกดูข้อมูล Unit ทีละตัว
   .get(
@@ -40,8 +40,8 @@ const adminUnitRouter = new CustomRouter({
       response: adminUnitSchema,
     },
     async ({ params }) => {
-      const controller = await AdminUnitsController.getById(params.id);
-      return controller.JSON;
+      const service = await AdminUnitsService.getById(params.id);
+      return service.JSON;
     },
   )
   .post(
@@ -55,8 +55,8 @@ const adminUnitRouter = new CustomRouter({
       response: adminUnitSchema,
     },
     async ({ body }) => {
-      const controller = await AdminUnitsController.create(body);
-      return controller.JSON;
+      const service = await AdminUnitsService.create(body);
+      return service.JSON;
     },
   )
   .put(
@@ -73,8 +73,8 @@ const adminUnitRouter = new CustomRouter({
       response: adminUnitSchema,
     },
     async ({ params, body }) => {
-      const controller = await AdminUnitsController.update(params.id, body);
-      return controller.JSON;
+      const service = await AdminUnitsService.update(params.id, body);
+      return service.JSON;
     },
   );
 
