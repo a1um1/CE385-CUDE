@@ -44,6 +44,19 @@ const typedColumns = columnHelper.columns([
         <ButtonLink
           size="xs"
           variant="secondary"
+          to="/admin/unit"
+          search={{
+            cursor: undefined,
+            perPage: 20,
+            direction: "forward",
+            courseID: _info.row.original.id,
+          }}
+        >
+          Units
+        </ButtonLink>
+        <ButtonLink
+          size="xs"
+          variant="secondary"
           to="/admin/course/$id"
           params={{ id: _info.row.original.id }}
         >

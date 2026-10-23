@@ -47,9 +47,6 @@ export default class AdminUnitsService {
   static async update(id: string, data: AdminUnitUpdateSchema): Promise<AdminUnitsService> {
     await AdminUnitsService.getById(id);
 
-    const course = await courseRepository.findById(data.courseID);
-    if (!course) throw new UserError(404, "Course not found");
-
     const unit = await unitRepository.update(id, data);
 
     return new AdminUnitsService(unit);
