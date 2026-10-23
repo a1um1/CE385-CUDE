@@ -111,10 +111,21 @@ export type GenericFieldOptions<TData extends RowData, TValue> = BaseFieldOption
 function resolveHeader<TData extends RowData, TValue>(
   headerOption?: string | ColumnDefTemplate<HeaderContext<DefaultTableFeatures, TData, TValue>>,
   sortable = true,
+  align?: "left" | "center" | "right",
 ): ColumnDefTemplate<HeaderContext<DefaultTableFeatures, TData, TValue>> | undefined {
   if (typeof headerOption === "string") {
     if (sortable) {
-      return ({ column }) => <DataTableColumnHeader column={column} title={headerOption} />;
+      return ({ column }) => (
+        <DataTableColumnHeader column={column} title={headerOption} align={align} />
+      );
+    }
+    if (align && align !== "left") {
+      const justify = align === "center" ? "center" : align === "right" ? "flex-end" : "flex-start";
+      return () => (
+        <div style={{ display: "flex", width: "100%", justifyContent: justify }}>
+          {headerOption}
+        </div>
+      );
     }
     return headerOption;
   }
@@ -135,9 +146,10 @@ function makeAccessorColumn<TData extends RowData, TKey extends DeepKeys<TData>>
   sortable: boolean | undefined,
   renderCell: (info: CellContext<DefaultTableFeatures, TData, unknown>) => React.ReactNode,
   rest: Partial<AccessorKeyColumnDef<DefaultTableFeatures, TData, unknown>>,
+  align?: "left" | "center" | "right",
 ): ColumnDef<DefaultTableFeatures, TData, any> {
   return helper.accessor(accessorKey as any, {
-    header: resolveHeader(header, sortable),
+    header: resolveHeader(header, sortable, align),
     cell: renderCell,
     enableSorting: sortable,
     ...rest,
@@ -185,6 +197,7 @@ export function createTableColumnHelper<TData extends RowData = RowData>() {
         (info) =>
           renderNumberCell(info.getValue(), { locale, decimals, prefix, suffix, fallback, align }),
         rest,
+        align,
       );
     },
 
@@ -204,6 +217,7 @@ export function createTableColumnHelper<TData extends RowData = RowData>() {
         (info) =>
           renderCurrencyCell(info.getValue(), { currency, locale, decimals, fallback, align }),
         rest,
+        align,
       );
     },
 

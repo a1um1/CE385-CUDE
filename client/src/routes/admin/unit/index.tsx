@@ -41,6 +41,7 @@ const buildColumns = (courseMap: Map<string, string>) =>
     }),
     columnHelper.number("position", {
       header: "Position",
+      align: "center",
     }),
     columnHelper.display({
       id: "course",
@@ -171,63 +172,65 @@ function RouteComponent() {
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: "1rem",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", minWidth: 260 }}>
-          <span style={{ fontSize: "0.875rem", fontWeight: 500 }}>Course:</span>
-          <SelectRoot
-            value={search.courseID ?? "ALL"}
-            onValueChange={handleCourseFilterChange}
-            size="sm"
-            items={courseFilterItems}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="All Courses" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="ALL">All Courses</SelectItem>
-              {coursesQuery.data?.data?.map((c) => (
-                <SelectItem key={c.id} value={c.id}>
-                  {c.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </SelectRoot>
-        </div>
-
-        <ButtonLink
-          to="/admin/unit/create"
-          search={{ courseID: search.courseID }}
-          variant="primary"
+    <DataTable
+      toolbarActions={
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            width: "100%",
+            gap: "1rem",
+          }}
         >
-          Create Unit
-        </ButtonLink>
-      </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <span style={{ fontSize: "0.875rem", fontWeight: 500, whiteSpace: "nowrap" }}>
+              Course:
+            </span>
+            <SelectRoot
+              value={search.courseID ?? "ALL"}
+              onValueChange={handleCourseFilterChange}
+              size="sm"
+              items={courseFilterItems}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="All Courses" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ALL">All Courses</SelectItem>
+                {coursesQuery.data?.data?.map((c) => (
+                  <SelectItem key={c.id} value={c.id}>
+                    {c.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </SelectRoot>
+          </div>
 
-      <DataTable
-        columns={typedColumns}
-        data={query.data?.data ?? []}
-        isLoading={query.isLoading}
-        sorting={sorting}
-        onSortingChange={handleSortingChange}
-        manualSorting
-        cursorPagination={{
-          hasNextPage: Boolean(query.data?.nextCursor),
-          hasPreviousPage: Boolean(query.data?.prevCursor),
-          onNextPage: handleNextPage,
-          onPreviousPage: handlePreviousPage,
-          pageSize: search.perPage,
-          onPageSizeChange: handlePageSizeChange,
-          pageSizeOptions: [10, 20, 50],
-        }}
-      />
-    </div>
+          <ButtonLink
+            to="/admin/unit/create"
+            search={{ courseID: search.courseID }}
+            variant="primary"
+          >
+            Create Unit
+          </ButtonLink>
+        </div>
+      }
+      columns={typedColumns}
+      data={query.data?.data ?? []}
+      isLoading={query.isLoading}
+      sorting={sorting}
+      onSortingChange={handleSortingChange}
+      manualSorting
+      cursorPagination={{
+        hasNextPage: Boolean(query.data?.nextCursor),
+        hasPreviousPage: Boolean(query.data?.prevCursor),
+        onNextPage: handleNextPage,
+        onPreviousPage: handlePreviousPage,
+        pageSize: search.perPage,
+        onPageSizeChange: handlePageSizeChange,
+        pageSizeOptions: [10, 20, 50],
+      }}
+    />
   );
 }
