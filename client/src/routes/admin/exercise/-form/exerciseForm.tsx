@@ -3,11 +3,13 @@ import ButtonLink from "#/components/buttonLink";
 import Button from "#/components/button";
 import Input from "#/components/input";
 import formStyles from "#/components/form/form.module.css";
+import styles from "./exerciseForm.module.css";
 import { useAppForm } from "#/components/form";
 import { useAdminLessonListQuery } from "#/data/admin/lesson.data";
 import MarkdownEditor from "#/components/markdownEditor";
 import { Editor } from "@monaco-editor/react";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, FileText, Code2, Database } from "lucide-react";
+import clsx from "clsx";
 import {
   SelectRoot,
   SelectTrigger,
@@ -65,6 +67,8 @@ const languageItems = [
   { value: "c", label: "C (C11)" },
 ];
 
+type TabKey = "metadata" | "content" | "coding";
+
 export function ExerciseForm({
   defaultValues = defaultValuesFallback,
   onSubmit,
@@ -72,6 +76,8 @@ export function ExerciseForm({
   isPending,
   isEdit = false,
 }: ExerciseFormProps) {
+  const [activeTab, setActiveTab] = React.useState<TabKey>("metadata");
+
   const lessonsQuery = useAdminLessonListQuery({
     page: 1,
     limit: 100,
@@ -103,130 +109,166 @@ export function ExerciseForm({
         form.handleSubmit();
       }}
     >
+      <div className={styles["tab-nav"]}>
+        <button
+          type="button"
+          className={clsx(styles["tab-btn"], activeTab === "metadata" && styles.active)}
+          onClick={() => setActiveTab("metadata")}
+        >
+          <FileText size={16} />
+          <span>Metadata</span>
+        </button>
+        <button
+          type="button"
+          className={clsx(styles["tab-btn"], activeTab === "content" && styles.active)}
+          onClick={() => setActiveTab("content")}
+        >
+          <Code2 size={16} />
+          <span>Problem Content</span>
+        </button>
+        {exerciseType === "CODE" && (
+          <button
+            type="button"
+            className={clsx(styles["tab-btn"], activeTab === "coding" && styles.active)}
+            onClick={() => setActiveTab("coding")}
+          >
+            <Database size={16} />
+            <span>Code & Test Cases</span>
+          </button>
+        )}
+      </div>
+
       <form.AppForm>
         <form.FormError />
-        <form.AppField name="name">
-          {(field) => (
-            <field.TextField label="Exercise Name" type="text" required disabled={isPending} />
-          )}
-        </form.AppField>
 
-        <form.Field name="lessonID">
-          {(field) => (
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.25rem",
-                marginTop: "0.75rem",
-              }}
-            >
-              <label style={{ fontSize: "0.875rem", fontWeight: 500 }}>
-                Lesson <span style={{ color: "red" }}>*</span>
-                {isEdit && (
-                  <span style={{ fontSize: "0.75rem", color: "#888", marginLeft: "0.5rem" }}>
-                    (Cannot be changed once created)
-                  </span>
-                )}
-              </label>
-              <SelectRoot
-                value={field.state.value || null}
-                onValueChange={(val) => field.handleChange(val ?? "")}
-                disabled={isPending || isEdit || lessonsQuery.isLoading}
-                items={lessonItems}
+        {/* TAB 1: METADATA */}
+        <div
+          className={styles["tab-content"]}
+          style={{ display: activeTab === "metadata" ? "flex" : "none" }}
+        >
+          <form.AppField name="name">
+            {(field) => (
+              <field.TextField label="Exercise Name" type="text" required disabled={isPending} />
+            )}
+          </form.AppField>
+
+          <form.Field name="lessonID">
+            {(field) => (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.25rem",
+                  marginTop: "0.75rem",
+                }}
               >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a lesson..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {lessonsQuery.data?.items?.map((l) => (
-                    <SelectItem key={l.id} value={l.id}>
-                      {l.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </SelectRoot>
-            </div>
-          )}
-        </form.Field>
+                <label style={{ fontSize: "0.875rem", fontWeight: 500 }}>
+                  Lesson <span style={{ color: "red" }}>*</span>
+                  {isEdit && (
+                    <span style={{ fontSize: "0.75rem", color: "#888", marginLeft: "0.5rem" }}>
+                      (Cannot be changed once created)
+                    </span>
+                  )}
+                </label>
+                <SelectRoot
+                  value={field.state.value || null}
+                  onValueChange={(val) => field.handleChange(val ?? "")}
+                  disabled={isPending || isEdit || lessonsQuery.isLoading}
+                  items={lessonItems}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a lesson..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {lessonsQuery.data?.items?.map((l) => (
+                      <SelectItem key={l.id} value={l.id}>
+                        {l.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </SelectRoot>
+              </div>
+            )}
+          </form.Field>
 
-        <form.Field name="type">
-          {(field) => (
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.25rem",
-                marginTop: "0.75rem",
-              }}
-            >
-              <label style={{ fontSize: "0.875rem", fontWeight: 500 }}>
-                Exercise Type <span style={{ color: "red" }}>*</span>
-                {isEdit && (
-                  <span style={{ fontSize: "0.75rem", color: "#888", marginLeft: "0.5rem" }}>
-                    (Cannot be changed once created)
-                  </span>
-                )}
-              </label>
-              <SelectRoot
-                value={field.state.value}
-                onValueChange={(val) => field.handleChange((val as "NONE" | "CODE") ?? "NONE")}
-                disabled={isPending || isEdit}
-                items={typeItems}
+          <form.Field name="type">
+            {(field) => (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.25rem",
+                  marginTop: "0.75rem",
+                }}
               >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select exercise type..." />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="NONE">Reading Only (Markdown)</SelectItem>
-                  <SelectItem value="CODE">Code Exercise (Programming)</SelectItem>
-                </SelectContent>
-              </SelectRoot>
-            </div>
-          )}
-        </form.Field>
+                <label style={{ fontSize: "0.875rem", fontWeight: 500 }}>
+                  Exercise Type <span style={{ color: "red" }}>*</span>
+                  {isEdit && (
+                    <span style={{ fontSize: "0.75rem", color: "#888", marginLeft: "0.5rem" }}>
+                      (Cannot be changed once created)
+                    </span>
+                  )}
+                </label>
+                <SelectRoot
+                  value={field.state.value}
+                  onValueChange={(val) => {
+                    const newType = (val as "NONE" | "CODE") ?? "NONE";
+                    field.handleChange(newType);
+                    if (newType === "NONE" && activeTab === "coding") {
+                      setActiveTab("metadata");
+                    }
+                  }}
+                  disabled={isPending || isEdit}
+                  items={typeItems}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select exercise type..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="NONE">Reading Only (Markdown)</SelectItem>
+                    <SelectItem value="CODE">Code Exercise (Programming)</SelectItem>
+                  </SelectContent>
+                </SelectRoot>
+              </div>
+            )}
+          </form.Field>
+        </div>
 
-        <form.Field name="content">
-          {(field) => (
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.35rem",
-                marginTop: "0.75rem",
-              }}
-            >
-              <label style={{ fontSize: "0.875rem", fontWeight: 500 }}>
-                Exercise Content / Problem Statement (Markdown){" "}
-                <span style={{ color: "red" }}>*</span>
-              </label>
-              <MarkdownEditor
-                value={field.state.value}
-                onChange={(val) => field.handleChange(val)}
-                disabled={isPending}
-                height={450}
-              />
-            </div>
-          )}
-        </form.Field>
+        {/* TAB 2: CONTENT */}
+        <div
+          className={styles["tab-content"]}
+          style={{ display: activeTab === "content" ? "flex" : "none" }}
+        >
+          <form.Field name="content">
+            {(field) => (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.35rem",
+                }}
+              >
+                <label style={{ fontSize: "0.875rem", fontWeight: 500 }}>
+                  Exercise Content / Problem Statement (Markdown){" "}
+                  <span style={{ color: "red" }}>*</span>
+                </label>
+                <MarkdownEditor
+                  value={field.state.value}
+                  onChange={(val) => field.handleChange(val)}
+                  disabled={isPending}
+                  height={500}
+                />
+              </div>
+            )}
+          </form.Field>
+        </div>
 
+        {/* TAB 3: CODE & TEST CASES */}
         {exerciseType === "CODE" && (
           <div
-            style={{
-              marginTop: "1.5rem",
-              padding: "1.25rem",
-              border: "1px solid var(--color-border, #333)",
-              borderRadius: "0.5rem",
-              display: "flex",
-              flexDirection: "column",
-              gap: "1.25rem",
-              backgroundColor: "rgba(255, 255, 255, 0.02)",
-            }}
+            className={styles["tab-content"]}
+            style={{ display: activeTab === "coding" ? "flex" : "none" }}
           >
-            <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: 600 }}>
-              Code Configuration & Limits
-            </h3>
-
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "1rem" }}>
               <form.Field name="language">
                 {(field) => (
@@ -309,7 +351,7 @@ export function ExerciseForm({
                   </label>
                   <div
                     style={{
-                      height: 180,
+                      height: 200,
                       border: "1px solid var(--color-border, #444)",
                       borderRadius: "0.25rem",
                       overflow: "hidden",
@@ -352,7 +394,14 @@ export function ExerciseForm({
                 };
 
                 return (
-                  <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "0.75rem",
+                      marginTop: "0.5rem",
+                    }}
+                  >
                     <div
                       style={{
                         display: "flex",
@@ -379,7 +428,7 @@ export function ExerciseForm({
                         style={{
                           fontSize: "0.825rem",
                           color: "#888",
-                          padding: "0.75rem",
+                          padding: "1rem",
                           border: "1px dashed var(--color-border, #444)",
                           borderRadius: "0.25rem",
                           textAlign: "center",
@@ -428,7 +477,7 @@ export function ExerciseForm({
                                   onChange={(e) => updateCase(idx, { isPublic: e.target.checked })}
                                   disabled={isPending}
                                 />
-                                Public (visible to students in problem statement)
+                                Public
                               </label>
                               <Button
                                 type="button"
@@ -457,7 +506,7 @@ export function ExerciseForm({
                                 Standard Input
                               </span>
                               <textarea
-                                rows={2}
+                                rows={3}
                                 value={tc.input}
                                 onChange={(e) => updateCase(idx, { input: e.target.value })}
                                 disabled={isPending}
@@ -481,7 +530,7 @@ export function ExerciseForm({
                                 Expected Output
                               </span>
                               <textarea
-                                rows={2}
+                                rows={3}
                                 value={tc.output}
                                 onChange={(e) => updateCase(idx, { output: e.target.value })}
                                 disabled={isPending}
@@ -514,7 +563,7 @@ export function ExerciseForm({
             display: "flex",
             gap: "0.75rem",
             alignItems: "center",
-            marginTop: "1.25rem",
+            marginTop: "1.5rem",
           }}
         >
           <form.SubmitButton label={submitLabel} isPending={isPending} />
