@@ -6066,12 +6066,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-23T18:49:12.252Z
+             * @example 2026-10-23T19:47:55.796Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-23T18:49:12.253Z
+             * @example 2026-10-23T19:47:55.797Z
              */
             updatedAt: string;
         };
@@ -6373,6 +6373,11 @@ export interface components {
              * @example 0192a000-0000-7000-8000-000000000002
              */
             lessonID: string;
+            /**
+             * @example CODE
+             * @enum {string}
+             */
+            type: "NONE" | "CODE";
             /** @example Exercise content */
             content: string;
             /** @example 0 */
@@ -6387,6 +6392,46 @@ export interface components {
              * @example 2026-10-24T00:00:00Z
              */
             updatedAt: string;
+            codeExercise?: components["schemas"]["AdminCodeExerciseConfig"];
+        };
+        AdminCodeExerciseConfig: {
+            /**
+             * @default python
+             * @example python
+             * @enum {string}
+             */
+            language: "python" | "c";
+            /** @example print('hello') */
+            starterCode?: string | null;
+            testerCode?: string | null;
+            /**
+             * @default 2000
+             * @example 2000
+             */
+            timeLimitMs: number;
+            /**
+             * @default 256
+             * @example 256
+             */
+            memoryLimitMb: number;
+            /** @default [] */
+            testCases: components["schemas"]["AdminTestCase"][];
+        };
+        AdminTestCase: {
+            /**
+             * Format: uuid
+             * @example 0192a000-0000-7000-8000-000000000003
+             */
+            id?: string;
+            /** @example 5 7 */
+            input: string;
+            /** @example 12 */
+            output: string;
+            /**
+             * @default false
+             * @example true
+             */
+            isPublic: boolean;
         };
         CreateAdminExercise: {
             /** @example Exercise Name */
@@ -6397,14 +6442,22 @@ export interface components {
              * @example 0192a000-0000-7000-8000-000000000002
              */
             lessonID: string;
+            /**
+             * @default NONE
+             * @example CODE
+             * @enum {string}
+             */
+            type: "NONE" | "CODE";
             /** @example Exercise content */
             content: string;
+            codeExercise?: components["schemas"]["AdminCodeExerciseConfig"];
         };
         UpdateAdminExercise: {
             /** @example Exercise Name */
-            name: string;
+            name?: string;
             /** @example Exercise content */
-            content: string;
+            content?: string;
+            codeExercise?: components["schemas"]["AdminCodeExerciseConfig"];
         };
         AuthenticationResponseData: {
             message: components["schemas"]["SuccessMessage"];

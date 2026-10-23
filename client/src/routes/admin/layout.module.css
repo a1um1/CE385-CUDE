@@ -17,6 +17,12 @@
   gap: 1rem;
 }
 
+.admin-container.full-width {
+  max-width: none;
+  padding: 0;
+  gap: 0;
+}
+
 .admin-content {
   display: flex;
   flex-direction: column;
@@ -26,6 +32,9 @@
 
 .admin-navbar {
   display: flex;
+  position: sticky;
+  top: 0;
+  z-index: 20;
   flex-direction: row;
   align-items: center;
   gap: 1rem;

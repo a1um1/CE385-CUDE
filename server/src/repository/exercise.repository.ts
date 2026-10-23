@@ -7,6 +7,20 @@ export const exerciseRepository = {
   findById: (id: string, tx?: Db) =>
     client(tx).exercise.findUnique({ select: ExerciseSelection, where: { id } }),
 
+  findAdminById: (id: string, tx?: Db) =>
+    client(tx).exercise.findUnique({
+      where: { id },
+      include: {
+        codeExercises: {
+          include: {
+            testCases: {
+              orderBy: { createdAt: "asc" },
+            },
+          },
+        },
+      },
+    }),
+
   findRawById: (id: string, tx?: Db) => client(tx).exercise.findUnique({ where: { id } }),
 
   findAllByLessonID: (lessonID: string, tx?: Db) =>

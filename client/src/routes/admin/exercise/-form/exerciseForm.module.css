@@ -1,0 +1,215 @@
+@reference "#/styles/main.css";
+
+.form-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 54px);
+  width: 100%;
+}
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--color-border);
+  padding: 0 1.5rem;
+  background-color: var(--color-background);
+  position: sticky;
+  top: 54px;
+  z-index: 15;
+}
+
+.header-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-foreground);
+  margin-right: 1.5rem;
+  white-space: nowrap;
+}
+
+.tab-nav {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: -1px;
+}
+
+.tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-foreground-muted, #aaa);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+
+  &:hover {
+    color: var(--color-foreground);
+  }
+
+  &.active {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+    font-weight: 600;
+  }
+}
+
+.tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 0.1rem 0.4rem;
+  border-radius: 9999px;
+}
+
+.main-body {
+  flex: 1 1 auto;
+  padding: 1.5rem;
+  width: 100%;
+}
+
+.tab-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 100%;
+}
+
+.bottom-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--color-background);
+  border-top: 1px solid var(--color-border);
+  position: sticky;
+  bottom: 0;
+  z-index: 15;
+}
+
+/* Compact Borderless Test Case List Styles */
+.tc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  width: 100%;
+}
+
+.tc-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.6rem 0.5rem;
+  border-bottom: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
+  background-color: transparent;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.015);
+  }
+}
+
+.tc-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tc-card-title {
+  font-size: 0.775rem;
+  font-weight: 600;
+  color: var(--color-foreground-muted, #aaa);
+}
+
+.tc-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.tc-public-label {
+  font-size: 0.725rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.tc-io-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.tc-textarea {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.775rem;
+  line-height: 1.35;
+  padding: 0.4rem 0.5rem;
+  border-radius: 0.25rem;
+  border: 1px solid var(--color-border, #333);
+  background-color: rgba(0, 0, 0, 0.25);
+  color: #eee;
+  resize: vertical;
+  width: 100%;
+}
+
+.judge-results {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.375rem;
+  padding: 1rem;
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+.judge-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.judge-badge-pass {
+  background-color: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  padding: 0.2rem 0.6rem;
+  border-radius: 0.25rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.judge-badge-fail {
+  background-color: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  padding: 0.2rem 0.6rem;
+  border-radius: 0.25rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.judge-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+
+  th {
+    text-align: left;
+    padding: 0.4rem 0.6rem;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-foreground-muted);
+  }
+
+  td {
+    padding: 0.4rem 0.6rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-family: var(--font-mono, monospace);
+  }
+}
