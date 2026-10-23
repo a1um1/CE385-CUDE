@@ -3,12 +3,21 @@ import { createFileRoute } from "@tanstack/react-router";
 import {
   useAdminDeactivateUser,
   useAdminActivateUser,
+  useAdminUpdateUser,
   getAdminUserQueryOptions,
+  useGetAdminUser,
 } from "#/data/admin/user.data";
 import { useQueryClient } from "@tanstack/react-query";
 import Button from "#/components/button";
+import ButtonLink from "#/components/buttonLink";
+import Input from "#/components/input";
+import Avatar from "#/components/avatar";
+import UserBackground from "#/components/userBackground";
+import ImageUploadField from "#/components/imageUploadField";
 import ConfirmDialog from "#/components/dialog/confirmDialog";
 import ChangePasswordDialog from "#/routes/admin/user/-dialog/changePasswordDialog";
+import { CameraIcon, ExternalLinkIcon } from "lucide-react";
+import styles from "./userEdit.module.css";
 
 export const Route = createFileRoute("/admin/user/$id")({
   component: RouteComponent,
@@ -22,30 +31,11 @@ export const Route = createFileRoute("/admin/user/$id")({
   },
 });
 
-const fieldStyle: React.CSSProperties = {
-  display: "flex",
-  flexDirection: "column",
-  gap: "0.25rem",
-};
-
-const labelStyle: React.CSSProperties = {
-  fontSize: "0.75rem",
-  fontWeight: 600,
-  color: "color-mix(in oklch, var(--color-background-text) 60%, transparent)",
-  textTransform: "uppercase",
-  letterSpacing: "0.05em",
-};
-
-const valueStyle: React.CSSProperties = {
-  fontSize: "1rem",
-  color: "var(--color-background-text)",
-};
-
 function UserField({ label, value }: { label: string; value: string | null | undefined }) {
   return (
-    <div style={fieldStyle}>
-      <span style={labelStyle}>{label}</span>
-      <span style={valueStyle}>{value ?? "—"}</span>
+    <div className={styles.field}>
+      <span className={styles.label}>{label}</span>
+      <span className={styles.value}>{value ?? "—"}</span>
     </div>
   );
 }
@@ -53,7 +43,11 @@ function UserField({ label, value }: { label: string; value: string | null | und
 function RouteComponent() {
   const { id } = Route.useParams();
   const queryClient = useQueryClient();
-  const data = Route.useLoaderData();
+  const initialData = Route.useLoaderData();
+  const { data: user = initialData } = useGetAdminUser(id);
+
+  const [name, setName] = useState(user.name);
+  const [epithet, setEpithet] = useState(user.epithet ?? "");
 
   const [deactivateOpen, setDeactivateOpen] = useState(false);
   const [activateOpen, setActivateOpen] = useState(false);
@@ -61,56 +55,137 @@ function RouteComponent() {
 
   const { mutateAsync: deactivate, isPending: isDeactivating } = useAdminDeactivateUser();
   const { mutateAsync: activate, isPending: isActivating } = useAdminActivateUser();
+  const { mutateAsync: updateUser, isPending: isUpdating } = useAdminUpdateUser();
 
   const handleDeactivate = async () => {
     await deactivate({ id });
-    await queryClient.invalidateQueries({ queryKey: ["admin", "user", "info", { id }] });
+    await queryClient.invalidateQueries({ queryKey: ["admin", "user", "info", id] });
     setDeactivateOpen(false);
   };
 
   const handleActivate = async () => {
     await activate({ id });
-    await queryClient.invalidateQueries({ queryKey: ["admin", "user", "info", { id }] });
+    await queryClient.invalidateQueries({ queryKey: ["admin", "user", "info", id] });
     setActivateOpen(false);
   };
 
+  const handleSaveProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await updateUser({
+      id,
+      name,
+      epithet: epithet.trim() || null,
+    });
+    await queryClient.invalidateQueries({ queryKey: ["admin", "user", "info", id] });
+  };
+
+  const handleUpdateAvatar = async (url: string) => {
+    await updateUser({
+      id,
+      profileImage: url,
+    });
+    await queryClient.invalidateQueries({ queryKey: ["admin", "user", "info", id] });
+  };
+
+  const handleUpdateBackground = async (url: string) => {
+    await updateUser({
+      id,
+      backgroundImage: url,
+    });
+    await queryClient.invalidateQueries({ queryKey: ["admin", "user", "info", id] });
+  };
+
+  const hasProfileChanges = name !== user.name || epithet !== (user.epithet ?? "");
+
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: "2rem",
-      }}
-    >
-      {/* Header */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "space-between",
-          gap: "1rem",
-        }}
-      >
-        <div>
-          <h1 style={{ margin: 0, fontSize: "1.5rem", fontWeight: 700 }}>{data.name}</h1>
-          <p
-            style={{
-              margin: "0.25rem 0 0",
-              fontSize: "0.875rem",
-              color: "color-mix(in oklch, var(--color-background-text) 60%, transparent)",
-            }}
-          >
-            {data.email}
-          </p>
-        </div>
-        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-          {data.isActive ? (
-            <Button
-              size="sm"
-              variant="primary"
-              onClick={() => setDeactivateOpen(true)}
-              style={{ backgroundColor: "var(--color-danger)", color: "var(--color-danger-text)" }}
+    <div className={styles.container}>
+      {/* Banner */}
+      <div className={styles.banner}>
+        <UserBackground
+          backgroundUrl={user.backgroundImage}
+          name={user.name}
+          className="w-full h-48 rounded-lg object-cover"
+        />
+        <ImageUploadField
+          purpose="background"
+          aspect={32 / 9}
+          maxDim={1600}
+          targetBytes={400 * 1024}
+          value={user.backgroundImage}
+          disabled={isUpdating}
+          onUploaded={handleUpdateBackground}
+          renderTrigger={({ onClick, busy }) => (
+            <button
+              type="button"
+              onClick={onClick}
+              disabled={busy}
+              aria-label="Change background banner"
+              className={styles.bannerTrigger}
             >
+              <span className={styles.bannerBadge}>
+                <CameraIcon size="0.875rem" />
+                Change banner
+              </span>
+            </button>
+          )}
+        />
+      </div>
+
+      {/* Profile info row */}
+      <div className={styles.profileRow}>
+        <div className={styles.profileInfo}>
+          <div className={styles.avatarWrapper}>
+            <Avatar avatarUrl={user.profileImage} name={user.name} size="6rem" />
+            <ImageUploadField
+              purpose="avatar"
+              aspect={1}
+              maxDim={512}
+              targetBytes={150 * 1024}
+              value={user.profileImage}
+              disabled={isUpdating}
+              onUploaded={handleUpdateAvatar}
+              renderTrigger={({ onClick, busy }) => (
+                <button
+                  type="button"
+                  onClick={onClick}
+                  disabled={busy}
+                  aria-label="Change avatar"
+                  className={styles.avatarTrigger}
+                >
+                  <span className={styles.avatarBadge}>
+                    <CameraIcon size="0.75rem" />
+                  </span>
+                </button>
+              )}
+            />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold flex items-center gap-2">
+              {user.name}
+              {user.epithet && (
+                <span className="text-xs px-2 py-0.5 rounded bg-muted text-muted-foreground font-normal">
+                  {user.epithet}
+                </span>
+              )}
+            </h2>
+            <p className="text-sm text-muted-foreground">@{user.username}</p>
+          </div>
+        </div>
+
+        <div className={styles.actions}>
+          <ButtonLink
+            to="/profile/$username"
+            params={{ username: user.username }}
+            target="_blank"
+            rel="noopener noreferrer"
+            size="sm"
+            variant="ghost"
+          >
+            <ExternalLinkIcon size="0.875rem" />
+            View Profile
+          </ButtonLink>
+          {user.isActive ? (
+            <Button size="sm" variant="danger" onClick={() => setDeactivateOpen(true)}>
               Deactivate
             </Button>
           ) : (
@@ -124,29 +199,48 @@ function RouteComponent() {
         </div>
       </div>
 
-      {/* Details grid */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "1.5rem",
-          padding: "1.5rem",
-          border: "1px solid var(--color-border)",
-          borderRadius: "calc(var(--radius) * 2)",
-        }}
-      >
-        <UserField label="ID" value={data.id} />
-        <UserField label="Role" value={data.role} />
-        <UserField label="Epithet" value={data.epithet} />
-        <UserField label="Status" value={data.isActive ? "Active" : "Inactive"} />
-        <UserField label="Created At" value={new Date(data.createdAt).toLocaleString()} />
-        <UserField label="Updated At" value={new Date(data.updatedAt).toLocaleString()} />
-        {data.deactivateReason && (
-          <div style={{ ...fieldStyle, gridColumn: "1 / -1" }}>
-            <span style={labelStyle}>Deactivation Reason</span>
-            <span style={{ ...valueStyle, color: "var(--color-danger)" }}>
-              {data.deactivateReason}
-            </span>
+      {/* Editable form fields */}
+      <form onSubmit={handleSaveProfile} className="flex flex-col gap-4">
+        <div className={styles.formGrid}>
+          <div className={styles.field}>
+            <label htmlFor="user-name" className={styles.label}>
+              Name
+            </label>
+            <Input id="user-name" value={name} onChange={(e) => setName(e.target.value)} required />
+          </div>
+
+          <div className={styles.field}>
+            <label htmlFor="user-epithet" className={styles.label}>
+              Epithet
+            </label>
+            <Input
+              id="user-epithet"
+              value={epithet}
+              onChange={(e) => setEpithet(e.target.value)}
+              placeholder="e.g. The Brave"
+            />
+          </div>
+        </div>
+
+        <div>
+          <Button type="submit" size="sm" disabled={!hasProfileChanges || isUpdating}>
+            {isUpdating ? "Saving..." : "Save Changes"}
+          </Button>
+        </div>
+      </form>
+
+      {/* Read-only metadata fields */}
+      <div className={styles.formGrid}>
+        <UserField label="ID" value={user.id} />
+        <UserField label="Email" value={user.email} />
+        <UserField label="Role" value={user.role} />
+        <UserField label="Status" value={user.isActive ? "Active" : "Inactive"} />
+        <UserField label="Created At" value={new Date(user.createdAt).toLocaleString()} />
+        <UserField label="Updated At" value={new Date(user.updatedAt).toLocaleString()} />
+        {user.deactivateReason && (
+          <div className="col-span-full flex flex-col gap-1">
+            <span className={styles.label}>Deactivation Reason</span>
+            <span className="text-red-500 font-medium">{user.deactivateReason}</span>
           </div>
         )}
       </div>
@@ -156,7 +250,7 @@ function RouteComponent() {
         open={deactivateOpen}
         onOpenChange={setDeactivateOpen}
         title="Deactivate User"
-        description={`Are you sure you want to deactivate ${data.name}? They will lose access to the platform.`}
+        description={`Are you sure you want to deactivate ${user.name}? They will lose access to the platform.`}
         confirmLabel="Deactivate"
         variant="danger"
         onConfirm={handleDeactivate}
@@ -167,7 +261,7 @@ function RouteComponent() {
         open={activateOpen}
         onOpenChange={setActivateOpen}
         title="Activate User"
-        description={`Are you sure you want to re-activate ${data.name}?`}
+        description={`Are you sure you want to re-activate ${user.name}?`}
         confirmLabel="Activate"
         onConfirm={handleActivate}
         isPending={isActivating}

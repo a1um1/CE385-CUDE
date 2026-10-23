@@ -4,6 +4,7 @@ import {
   AdminUserListResponseSchema,
   AdminUserQuerySchema,
   AdminUserUpdatePasswordSchema,
+  AdminUserUpdateSchema,
 } from "#/service/admin/user/user.schema";
 import CustomRouter from "#/lib/router/customRouter";
 import { z } from "#/lib/extendZod";
@@ -98,6 +99,21 @@ const adminUserRouter = new CustomRouter({
       return {
         message: "User activated successfully",
       };
+    },
+  )
+  .patch(
+    "/",
+    {
+      summary: "Update user details",
+      description:
+        "Update user details (name, epithet, profile image, background image) by an admin.",
+      body: AdminUserUpdateSchema,
+      response: UserSafeSchema,
+    },
+    async ({ body }) => {
+      const user = await AdminUserService.getById(body.id);
+      await user.update(body);
+      return user.JSON;
     },
   );
 

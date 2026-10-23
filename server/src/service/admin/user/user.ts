@@ -8,6 +8,7 @@ import type {
   AdminUserListResponseSchema,
   AdminUserQuery,
   AdminUserUpdatePasswordSchema,
+  AdminUserUpdateSchema,
 } from "#/service/admin/user/user.schema";
 import { userRepository } from "#/repository/user.repository";
 
@@ -50,6 +51,21 @@ export default class AdminUserService {
     });
     this.user.isActive = true;
     this.user.deactivateReason = null;
+    return this;
+  }
+
+  async update(body: AdminUserUpdateSchema) {
+    if (!this.user) throw new Error("User not found");
+    const updated = await userRepository.update(this.user.id, {
+      ...(body.name !== undefined && { name: body.name }),
+      ...(body.epithet !== undefined && { epithet: body.epithet }),
+      ...(body.profileImage !== undefined && { profileImage: body.profileImage }),
+      ...(body.backgroundImage !== undefined && { backgroundImage: body.backgroundImage }),
+    });
+    this.user = {
+      ...this.user,
+      ...updated,
+    };
     return this;
   }
 
