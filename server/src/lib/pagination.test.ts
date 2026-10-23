@@ -1,5 +1,72 @@
 import { describe, expect, it } from "vitest";
+import { cursorArgs, isBackward, paginate } from "./pagination";
 import { buildCursorOrderBy, createCursorPaginationQuerySchema } from "./pagination.schema";
+
+const rows = (...ids: string[]) => ids.map((id) => ({ id }));
+
+describe("cursorArgs", () => {
+  it("asks for one row past the page and skips the cursor row", () => {
+    expect(cursorArgs({ perPage: 2 })).toEqual({
+      take: 3,
+      skip: 0,
+      cursor: undefined,
+    });
+    expect(cursorArgs({ perPage: 2, cursor: "b" })).toEqual({
+      take: 3,
+      skip: 1,
+      cursor: { id: "b" },
+    });
+  });
+});
+
+describe("isBackward", () => {
+  it("needs both a backward direction and a cursor", () => {
+    expect(isBackward({ perPage: 2, direction: "backward", cursor: "b" })).toBe(true);
+    expect(isBackward({ perPage: 2, direction: "backward" })).toBe(false);
+    expect(isBackward({ perPage: 2, direction: "forward", cursor: "b" })).toBe(false);
+  });
+});
+
+describe("paginate", () => {
+  it("drops the look-ahead row and points next at the last returned id", () => {
+    const page = paginate(rows("a", "b", "c"), { perPage: 2, direction: "forward" });
+
+    expect(page).toEqual({ data: rows("a", "b"), nextCursor: "b", prevCursor: undefined });
+  });
+
+  it("returns the last page without a next cursor", () => {
+    const page = paginate(rows("a", "b"), { perPage: 2, direction: "forward" });
+
+    expect(page).toEqual({ data: rows("a", "b"), nextCursor: undefined, prevCursor: undefined });
+  });
+
+  it("keeps the cursor as prevCursor when paging forward", () => {
+    const page = paginate(rows("c", "d", "e"), { perPage: 2, direction: "forward", cursor: "b" });
+
+    expect(page).toEqual({ data: rows("c", "d"), nextCursor: "d", prevCursor: "b" });
+  });
+
+  it("reverses back into reading order when paging backward", () => {
+    const page = paginate(rows("a", "b", "c"), { perPage: 2, direction: "backward", cursor: "d" });
+
+    // prevCursor is the look-ahead row "c": the client passes it back to walk further back.
+    expect(page).toEqual({ data: rows("b", "a"), nextCursor: "d", prevCursor: "c" });
+  });
+
+  it("does not treat a backward direction without a cursor as backward", () => {
+    const page = paginate(rows("a", "b"), { perPage: 2, direction: "backward" });
+
+    expect(page).toEqual({ data: rows("a", "b"), nextCursor: undefined, prevCursor: undefined });
+  });
+
+  it("accepts an empty page", () => {
+    expect(paginate([], { perPage: 2, direction: "forward" })).toEqual({
+      data: [],
+      nextCursor: undefined,
+      prevCursor: undefined,
+    });
+  });
+});
 
 describe("buildCursorOrderBy", () => {
   it("should default to sorting by id desc when no sortBy is provided", () => {

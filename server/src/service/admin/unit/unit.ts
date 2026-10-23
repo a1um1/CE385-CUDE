@@ -6,6 +6,7 @@ import type {
   AdminUnitUpdateSchema,
 } from "#/service/admin/unit/unit.schema";
 import { buildCursorOrderBy } from "#/lib/pagination.schema";
+import { cursorArgs, isBackward, paginate } from "#/lib/pagination";
 import UserError from "#/lib/router/http/userError";
 import { unitRepository } from "#/repository/unit.repository";
 import { courseRepository } from "#/repository/course.repository";
@@ -55,37 +56,13 @@ export default class AdminUnitsService {
   }
 
   static async getPaginateLists(query: AdminUnitQuery): Promise<AdminUnitListResponseSchema> {
-    const isBackward = query.direction === "backward" && Boolean(query.cursor);
-    const orderBy = buildCursorOrderBy(query.sortBy, query.sortOrder, isBackward);
-
+    const orderBy = buildCursorOrderBy(query.sortBy, query.sortOrder, isBackward(query));
     const data = await unitRepository.findPage({
       where: query.courseID ? { courseID: query.courseID } : undefined,
-      take: query.perPage + 1,
-      skip: query.cursor ? 1 : 0,
-      cursor: query.cursor ? { id: query.cursor } : undefined,
+      ...cursorArgs(query),
       orderBy,
     });
 
-    let nextCursor: string | undefined = undefined;
-    let prevCursor: string | undefined = undefined;
-
-    if (isBackward) {
-      const hasExtra = data.length > query.perPage;
-      if (hasExtra) data.pop();
-      data.reverse();
-      if (hasExtra) prevCursor = data[0]?.id;
-      nextCursor = query.cursor;
-    } else {
-      const hasExtra = data.length > query.perPage;
-      if (hasExtra) data.pop();
-      if (hasExtra) nextCursor = data[data.length - 1]?.id;
-      if (query.cursor) prevCursor = query.cursor;
-    }
-
-    return {
-      data,
-      nextCursor,
-      prevCursor,
-    };
+    return paginate(data, query);
   }
 }

@@ -3,7 +3,8 @@ import type {
   TransactionQuerySchema,
   TransactionListResponseSchema,
 } from "#/service/transactions/transactions.schema";
-import type { Prisma } from "@prisma/client/extension";
+import { cursorArgs, isBackward, paginate } from "#/lib/pagination";
+import { type Db } from "#/repository/client";
 import { transactionRepository } from "#/repository/transaction.repository";
 
 export default class TransactionsService {
@@ -18,7 +19,7 @@ export default class TransactionsService {
   }
 
   static async createTransaction(
-    tx: Prisma.TransactionClient,
+    tx: Db,
     data: Omit<TransactionSchema, "id" | "createdAt" | "updatedAt">,
   ): Promise<TransactionsService> {
     const transaction = await transactionRepository.create(
@@ -38,31 +39,11 @@ export default class TransactionsService {
     userID: string,
     query: TransactionQuerySchema,
   ): Promise<TransactionListResponseSchema> {
-    const isBackward = query.direction === "backward" && Boolean(query.cursor);
-
-    const users = await transactionRepository.findPageByUser(userID, {
-      take: query.perPage + 1,
-      skip: query.cursor ? 1 : 0,
-      cursorID: query.cursor,
-      orderBy: { createdAt: isBackward ? "asc" : "desc" },
+    const rows = await transactionRepository.findPageByUser(userID, {
+      ...cursorArgs(query),
+      orderBy: { createdAt: isBackward(query) ? "asc" : "desc" },
     });
 
-    let nextCursor: string | undefined = undefined;
-    let prevCursor: string | undefined = undefined;
-
-    if (isBackward) {
-      if (users.length > query.perPage) prevCursor = users.pop()?.id;
-      users.reverse();
-      nextCursor = query.cursor || undefined;
-    } else {
-      if (users.length > query.perPage) nextCursor = users.pop()?.id;
-      if (query.cursor) prevCursor = query.cursor;
-    }
-
-    return {
-      data: users,
-      nextCursor: nextCursor || undefined,
-      prevCursor: prevCursor || undefined,
-    };
+    return paginate(rows, query);
   }
 }
