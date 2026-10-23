@@ -29,18 +29,6 @@ export const LessonSchema = z
 
 export type LessonSchema = zod.infer<typeof LessonSchema>;
 
-/** Where a student stands on a lesson, as shown in the lesson list. */
-export const LessonStatusSchema = z
-  .enum(["AVAILABLE", "PENDING", "PASSED", "FAILED", "NOT_AVAILABLE"])
-  .openapi("LessonStatus");
-
-export type LessonStatus = zod.infer<typeof LessonStatusSchema>;
-
-/** Lesson row plus the student's status, so a list needs no per-lesson lookup. */
-export const LessonWithStatusSchema = LessonSchema.extend({
-  status: LessonStatusSchema.openapi({ example: "AVAILABLE" }),
-}).openapi("LessonWithStatus");
-
 /** Lesson row as stored, plus relations added by `?include=`. */
 export type LessonData = Lesson & {
   unit?: Unit & { course?: Course };
@@ -65,7 +53,7 @@ export type LessonListQuery = zod.infer<typeof LessonListQuerySchema>;
 
 export const PaginatedLessonSchema = z
   .object({
-    items: z.array(LessonWithStatusSchema),
+    items: z.array(LessonSchema),
     total: z.number().int().openapi({ example: 42 }),
     page: z.number().int().openapi({ example: 1 }),
     limit: z.number().int().openapi({ example: 20 }),

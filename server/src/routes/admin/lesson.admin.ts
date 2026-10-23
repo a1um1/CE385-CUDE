@@ -12,18 +12,8 @@ import {
 } from "#/controller/admin/lesson/lesson.schema";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
-import UserError from "#/lib/router/http/userError";
 
 const ExerciseListSchema = z.array(ExerciseSchema);
-
-// TODO: adjust to the real role names / field of your user model.
-const MANAGER_ROLES = new Set(["ADMIN", "TEACHER"]);
-
-function assertCanManage(user: { JSON: { role?: string } }) {
-  if (!user.JSON.role || !MANAGER_ROLES.has(user.JSON.role)) {
-    throw new UserError(403, "You are not allowed to manage lessons");
-  }
-}
 
 const lessonRouterInstance = new CustomRouter({
   prefix: "/admin/lesson",
@@ -35,8 +25,7 @@ const lessonRouterInstance = new CustomRouter({
     {
       summary: "List lessons of a unit (paginated)",
       description:
-        "Return one page of the lessons that belong to a unit, each tagged with the caller's " +
-        "`status` (`AVAILABLE`, `PENDING`, `PASSED`, `FAILED`, `NOT_AVAILABLE`).\n\n" +
+        "Return one page of the lessons that belong to a unit.\n\n" +
         "- `unitId` — required, the unit to list\n" +
         "- `page` — 1-based, default `1`\n" +
         "- `limit` — items per page, default `20`, max `100`\n" +
@@ -45,8 +34,8 @@ const lessonRouterInstance = new CustomRouter({
       query: LessonListQuerySchema,
       response: PaginatedLessonSchema,
     },
-    async ({ query, user }) =>
-      LessonController.getByUnitIdPaginated(query.unitId, user.JSON.id, {
+    async ({ query }) =>
+      LessonController.getByUnitIdPaginated(query.unitId, {
         page: query.page,
         limit: query.limit,
         include: query.include,
@@ -78,14 +67,11 @@ const lessonRouterInstance = new CustomRouter({
     "/",
     {
       summary: "Create a lesson",
-      description:
-        "Create a lesson inside a unit. Requires a manager role (`ADMIN` / `TEACHER`).\n\n" +
-        "Returns `403` for other roles and `404` when the unit does not exist.",
+      description: "Create a lesson inside a unit. Returns `404` when the unit does not exist.",
       body: LessonCreateSchema,
       response: LessonSchema,
     },
-    async ({ body, user }) => {
-      assertCanManage(user);
+    async ({ body }) => {
       const lesson = await LessonController.create(body);
       return lesson.JSON;
     },
@@ -96,8 +82,7 @@ const lessonRouterInstance = new CustomRouter({
       summary: "Update a lesson",
       description:
         "Update the `name` and/or move the lesson to another unit (`unitID`). " +
-        "Send at least one field. Requires a manager role (`ADMIN` / `TEACHER`).\n\n" +
-        "Returns `403` for other roles and `404` when the lesson (or the target unit) " +
+        "Send at least one field. Returns `404` when the lesson (or the target unit) " +
         "does not exist.",
       params: z.object({
         lessonId: z.uuid().openapi({ example: "lesson_id" }),
@@ -105,8 +90,7 @@ const lessonRouterInstance = new CustomRouter({
       body: LessonUpdateSchema,
       response: LessonSchema,
     },
-    async ({ params, body, user }) => {
-      assertCanManage(user);
+    async ({ params, body }) => {
       const lesson = await LessonController.update(params.lessonId, body);
       return lesson.JSON;
     },
