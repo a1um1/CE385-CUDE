@@ -2,7 +2,7 @@ import { z } from "#/lib/extendZod";
 import type zod from "zod";
 
 export const StoragePurposeSchema = z
-  .enum(["avatar", "thumbnail", "background"])
+  .enum(["avatar", "thumbnail", "background", "exercise-asset"])
   .openapi("StoragePurpose");
 
 export type StoragePurposeSchema = zod.infer<typeof StoragePurposeSchema>;

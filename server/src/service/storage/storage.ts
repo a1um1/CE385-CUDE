@@ -35,6 +35,11 @@ const PURPOSES: Record<StoragePurposeSchema, StoragePurpose> = {
     maxBytes: 5 * 1024 * 1024,
     contentTypes: ["image/png", "image/jpeg", "image/webp"],
   },
+  "exercise-asset": {
+    prefix: "exercises",
+    maxBytes: 10 * 1024 * 1024,
+    contentTypes: ["image/png", "image/jpeg", "image/webp", "image/gif", "image/svg+xml"],
+  },
 };
 
 // services here are classes by convention
