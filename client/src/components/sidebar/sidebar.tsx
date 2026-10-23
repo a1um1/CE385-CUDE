@@ -30,6 +30,12 @@ const navItems: { key: string; label: string; link: LinkProps; icon: LucideIcon 
     icon: BookTextIcon,
   },
   {
+    key: "admin-exercise-list",
+    label: "Exercises",
+    link: { to: "/admin/exercise" },
+    icon: BookTextIcon,
+  },
+  {
     key: "admin-user-list",
     label: "Users",
     link: { to: "/admin/user" },

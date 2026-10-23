@@ -45,10 +45,12 @@ export default class AdminExercisesService {
     const lesson = await lessonRepository.findRawById(body.lessonID);
     if (!lesson) throw new UserError(404, "Lesson not found");
 
+    const { _max } = await exerciseRepository.maxPosition(body.lessonID);
     const exercise = await exerciseRepository.create({
       name: body.name,
       lessonID: body.lessonID,
       content: body.content,
+      position: (_max.position ?? -1) + 1,
     });
     return new AdminExercisesService(exercise);
   }

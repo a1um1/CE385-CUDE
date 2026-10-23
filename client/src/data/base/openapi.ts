@@ -2737,7 +2737,7 @@ export interface paths {
                     perPage?: number;
                     cursor?: string;
                     direction?: "forward" | "backward";
-                    sortBy?: "createdAt" | "updatedAt" | "id";
+                    sortBy?: "name" | "position" | "createdAt" | "updatedAt" | "id";
                     sortOrder?: "asc" | "desc";
                     /** @description Filter by Lesson ID */
                     lessonID?: string;
@@ -6066,12 +6066,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-23T18:07:58.999Z
+             * @example 2026-10-23T18:19:46.994Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-23T18:07:59.000Z
+             * @example 2026-10-23T18:19:46.995Z
              */
             updatedAt: string;
         };
@@ -6357,13 +6357,27 @@ export interface components {
              * @example 0192a000-0000-7000-8000-000000000001
              */
             id: string;
+            /** @example Exercise Name */
+            name: string;
             /**
              * Format: uuid
              * @example 0192a000-0000-7000-8000-000000000002
              */
             lessonID: string;
-        } & {
-            [key: string]: unknown;
+            /** @example Exercise content */
+            content: string;
+            /** @example 0 */
+            position: number;
+            /**
+             * Format: date-time
+             * @example 2026-10-24T00:00:00Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @example 2026-10-24T00:00:00Z
+             */
+            updatedAt: string;
         };
         CreateAdminExercise: {
             /** @example Exercise Name */
