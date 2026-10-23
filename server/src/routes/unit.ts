@@ -1,10 +1,7 @@
-import LessonController from "#/controller/lesson";
-import {
-  LessonIncludeQuerySchema,
-  LessonWithStatusSchema,
-} from "#/controller/lesson/lesson.schema";
-import UnitController from "#/controller/unit";
-import { UnitIncludeQuerySchema, UnitSchema } from "#/controller/unit/unit.schema";
+import LessonService from "#/service/lesson";
+import { LessonIncludeQuerySchema, LessonWithStatusSchema } from "#/service/lesson/lesson.schema";
+import UnitService from "#/service/unit";
+import { UnitIncludeQuerySchema, UnitSchema } from "#/service/unit/unit.schema";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 
@@ -29,7 +26,7 @@ const unitRouter = new CustomRouter({
       response: UnitSchema,
     },
     async ({ params, query }) => {
-      const unit = await UnitController.getById(params.unitId, query.include);
+      const unit = await UnitService.getById(params.unitId, query.include);
       return unit.JSON;
     },
   )
@@ -53,7 +50,7 @@ const unitRouter = new CustomRouter({
       response: LessonListSchema,
     },
     async ({ params, query, user }) => {
-      const lessons = await LessonController.getByUnitIdWithStatus(
+      const lessons = await LessonService.getByUnitIdWithStatus(
         params.unitId,
         user.JSON.id,
         query.include,

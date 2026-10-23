@@ -1,11 +1,11 @@
-import AdminCoursesController from "#/controller/admin/courses";
+import AdminCoursesService from "#/service/admin/courses";
 import {
   AdminCourseCreateSchema,
   AdminCourseUpdateSchema,
   AdminCourseListResponseSchema,
   AdminCourseQuerySchema,
   adminCourseSchema,
-} from "#/controller/admin/courses/courses.schema";
+} from "#/service/admin/courses/courses.schema";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 
@@ -24,7 +24,7 @@ const adminCourseRouter = new CustomRouter({
       query: AdminCourseQuerySchema,
       response: AdminCourseListResponseSchema,
     },
-    ({ query }) => AdminCoursesController.getPaginateLists(query),
+    ({ query }) => AdminCoursesService.getPaginateLists(query),
   )
   .get(
     "/:id",
@@ -39,8 +39,8 @@ const adminCourseRouter = new CustomRouter({
       }),
     },
     async ({ params }) => {
-      const controller = await AdminCoursesController.getById(params.id);
-      return controller.JSON;
+      const service = await AdminCoursesService.getById(params.id);
+      return service.JSON;
     },
   )
 
@@ -55,11 +55,11 @@ const adminCourseRouter = new CustomRouter({
       response: adminCourseSchema,
     },
     async ({ body, user }) => {
-      const controller = await AdminCoursesController.create({
+      const service = await AdminCoursesService.create({
         ...body,
         createdByID: user.JSON.id,
       });
-      return controller.JSON;
+      return service.JSON;
     },
   )
   .put(
@@ -76,8 +76,8 @@ const adminCourseRouter = new CustomRouter({
       response: adminCourseSchema,
     },
     async ({ params, body }) => {
-      const controller = await AdminCoursesController.update(params.id, body);
-      return controller.JSON;
+      const service = await AdminCoursesService.update(params.id, body);
+      return service.JSON;
     },
   );
 

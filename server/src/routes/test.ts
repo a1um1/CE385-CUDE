@@ -70,8 +70,8 @@ const testRoute = new CustomRouter({
       authentication: true,
     },
     async ({ user }) => {
-      const currencieController = await user.getUserStat();
-      await currencieController.spendEnergy({
+      const currencieService = await user.getUserStat();
+      await currencieService.spendEnergy({
         reason: "test spend energy",
       });
       return {
