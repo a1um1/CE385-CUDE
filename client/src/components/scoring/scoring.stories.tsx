@@ -6,7 +6,10 @@ const meta = {
   component: Scoring,
   tags: ["autodocs"],
   argTypes: {
-    status: { control: "radio", options: ["success", "fail", "inProgress"] },
+    status: {
+      control: "radio",
+      options: ["success", "fail", "inProgress", "giveUp", "locked"],
+    },
   },
 } satisfies Meta<typeof Scoring>;
 

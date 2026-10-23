@@ -71,8 +71,9 @@ const userRoute = new CustomRouter({
       summary: "Update user password",
       description:
         "Change the authenticated user's password. The current password must be supplied and is " +
-        "verified before the new one is stored. Existing sessions are not revoked; all other refresh " +
-        "tokens are invalidated.",
+        "verified before the new one is stored. All sessions are signed out: every refresh token for " +
+        "the user (the current one included) is revoked and access tokens issued before the change are " +
+        "rejected immediately. Sign in again afterwards.",
       body: UserUpdatePasswordSchema,
       response: GenericResponseSchema,
     },

@@ -15,6 +15,7 @@ const fakeUser = {
   deactivateReason: null,
   createdAt: new Date(),
   updatedAt: new Date(),
+  passwordChangedAt: new Date(),
 } satisfies User;
 
 export default fakeUser;

@@ -10,6 +10,7 @@ import { Link } from "@tanstack/react-router";
 import UserMenu from "#/components/userMenu";
 import Skeleton from "#/components/skeleton";
 import CountdownTimer from "#/components/countdown";
+import { PendingSessionBanner } from "#/components/navbar/-pendingSessionBanner";
 
 export default function Navbar() {
   const { data: user, isLoading: isUserLoading, isFetching: isUserFetching } = useUser();
@@ -31,6 +32,7 @@ export default function Navbar() {
             </ButtonLink>
           </div>
         </div>
+        <PendingSessionBanner />
         <div className={navbarStyles["user-profile"]}>
           {isLoading || !user ? (
             <Skeleton className="h-20 min-w-64" />

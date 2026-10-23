@@ -1,3 +1,5 @@
+![Banner](/resources/banner.png)
+
 # CE385-CUDE
 
 ### Table of Contents

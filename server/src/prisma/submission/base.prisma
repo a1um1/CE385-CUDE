@@ -5,10 +5,14 @@ model Sessions {
   LessonID    String           @db.Uuid
   lesson      Lesson           @relation(fields: [LessonID], references: [id])
   status      SubmissionStatus @default(PENDING)
+  rewarded    Boolean          @default(false)
   submissions Submission[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique([userID], where: raw("status = 'PENDING'"))
+  @@unique([userID, LessonID], where: raw("rewarded = true"))
 }
 
 model Submission {

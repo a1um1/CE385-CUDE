@@ -1,6 +1,7 @@
 import Badge from "#/components/badge";
 import Button from "#/components/button";
 import ButtonLink from "#/components/buttonLink";
+import LessonReward from "#/components/lessonReward";
 import { PieChart } from "#/components/pie-chart";
 import { Scoring } from "#/components/scoring";
 import Skeleton from "#/components/skeleton";
@@ -16,7 +17,7 @@ import formatElapsedTime from "#/lib/elapsedTime";
 import { formatPercent } from "#/lib/formatNumber";
 import formatRelativeTime from "#/lib/relativeTime";
 import { createFileRoute, Link, useLoaderData } from "@tanstack/react-router";
-import { Book, ChevronLeft, XIcon, type LucideIcon } from "lucide-react";
+import { Book, ChevronLeft, type LucideIcon } from "lucide-react";
 
 const lessonRouteId = "/(authed)/(base)/lesson/$lessonId";
 
@@ -37,14 +38,14 @@ const availableStatuses = {
   },
   NOT_AVAILABLE: {
     label: "Not Available",
-    status: "fail",
-    icon: XIcon,
+    status: "locked",
+    icon: undefined,
   },
 } as const satisfies Record<
   components["schemas"]["EnrollmentStatus"],
   {
     label: string;
-    status: "inProgress" | "fail";
+    status: "inProgress" | "fail" | "locked";
     icon: LucideIcon | undefined;
   }
 >;
@@ -75,10 +76,21 @@ const LessonStart = () => {
 
   const handleStartSession = async () => {
     if (!lesson.id) return;
-    await startLearnSession.mutateAsync(lesson.id);
+    try {
+      await startLearnSession.mutateAsync(lesson.id);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   if (enrollmentAvailability.isLoading) return <Skeleton className="h-6 w-32" />;
+  if (enrollmentAvailability.isError) {
+    return (
+      <Button variant="secondary" disabled>
+        ไม่สามารถตรวจสอบสถานะได้
+      </Button>
+    );
+  }
 
   if (enrollmentAvailability.data?.isAvailable) {
     return (
@@ -197,18 +209,19 @@ function RouteComponent() {
           เนื้อหาทั้งหมด
         </ButtonLink>
       </div>
-      <div className="flex gap-4">
+      <div className="flex gap-4 items-start">
         <LessonScore />
-        <div className="flex flex-col">
+        <div className="flex flex-col flex-1">
           <p>
             {lesson?.unit?.course?.name} / {lesson?.unit?.name}
           </p>
-          <h1 className="text-2xl mb-4">{lesson?.name}</h1>
+          <h1 className="text-2xl">{lesson?.name}</h1>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 mt-4">
             <LessonStart />
           </div>
         </div>
+        <LessonReward xp={lesson.XPgiven} gems={lesson.gemsGiven} />
       </div>
       <div className="flex gap-4">
         <LessonHistory />

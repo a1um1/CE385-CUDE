@@ -1,12 +1,13 @@
 import ExerciseController, { CodeExerciseController } from "#/controller/exercise";
-import { zGoJudgeLanguage } from "#/controller/go-judge/go-judge.schema";
-import CodeGrader from "#/controller/grader/codeGrader";
+import LessonController from "#/controller/lesson";
 import SessionController from "#/controller/learnSession/session";
 import {
   SubmissionContentSchema,
+  type LessonReward,
   type SubmissionResponse,
   type SubmitSessionResponse,
 } from "#/controller/learnSession/session.schema";
+import UserStatController from "#/controller/userStat";
 import type { Prisma, Submission } from "#/generated/prisma/client";
 import { db } from "#/lib/prisma";
 import UserError from "#/lib/router/http/userError";
@@ -18,7 +19,6 @@ export default class SubmissionController {
     this.data = data;
   }
 
-  /** `content` is free-form Json in the database; only `{ code }` is ever written today. */
   get JSON(): SubmissionResponse {
     return {
       id: this.data.id,
@@ -29,7 +29,6 @@ export default class SubmissionController {
     };
   }
 
-  /** The student's saved answer for one exercise, or `null` when they never saved one. */
   static async getByExercise(props: {
     SessionID: string;
     userID: string;
@@ -88,10 +87,6 @@ export default class SubmissionController {
     return new SubmissionController(submission);
   }
 
-  /**
-   * Grades every saved answer of the session against all of its test cases (hidden ones included)
-   * and closes the session as `SUBMITTED`.
-   */
   static async submitSession(props: {
     SessionID: string;
     userID: string;
@@ -104,55 +99,100 @@ export default class SubmissionController {
       throw new UserError(400, "Session are not available for submission.");
     }
 
-    const submissions = await db.submission.findMany({
-      where: { SessionID: props.SessionID },
-    });
-
-    const grader = new CodeGrader();
-    const graded = await Promise.all(
-      submissions.map(async (submission) => {
-        const exercise = await ExerciseController.getById(submission.exerciseID);
-        if (!(exercise instanceof CodeExerciseController)) return null;
-        const language = zGoJudgeLanguage.safeParse(exercise.language);
-        if (!language.success) return null;
-
-        const testCases = await exercise.getAllTestCase();
-        const results = await grader.grade({
-          code: exercise.getRunnableCode(SubmissionContentSchema.parse(submission.content).code),
-          language: language.data,
-          testCases: testCases.map((testCase) => testCase.JSON),
+    return await db.$transaction(
+      async (tx) => {
+        const claimed = await tx.sessions.updateMany({
+          where: { id: props.SessionID, userID: props.userID, status: "PENDING" },
+          data: { status: "SUBMITTED" },
         });
-        const passed = results.filter((result) => result.ok).length;
-        const ok = results.length > 0 && passed === results.length;
+        if (claimed.count === 0) {
+          throw new UserError(400, "Session are not available for submission.");
+        }
 
-        await db.submission.update({
-          where: { id: submission.id },
-          data: { isGraded: true, ok },
+        const submissions = await tx.submission.findMany({
+          where: { SessionID: props.SessionID },
         });
 
-        return { exerciseID: submission.exerciseID, total: results.length, passed, ok };
-      }),
+        const graded = await Promise.all(
+          submissions.map(async (submission) => {
+            const exercise = await ExerciseController.getById(submission.exerciseID);
+            if (!(exercise instanceof CodeExerciseController)) return null;
+
+            const grade = await exercise.grade(
+              SubmissionContentSchema.parse(submission.content).code,
+            );
+            if (!grade) return null;
+
+            const ok = grade.total > 0 && grade.failed === 0;
+            await tx.submission.update({
+              where: { id: submission.id },
+              data: { isGraded: true, ok },
+            });
+
+            return {
+              exerciseID: submission.exerciseID,
+              total: grade.total,
+              passed: grade.passed,
+              ok,
+            };
+          }),
+        );
+
+        const exercises = graded.filter((entry) => entry !== null);
+        const passed = exercises.filter((entry) => entry.ok).length;
+        const totalCodeExercises = await tx.exercise.count({
+          where: { lessonID: session.JSON.LessonID, type: "CODE" },
+        });
+        const reward = await this.grantLessonReward(tx, {
+          SessionID: props.SessionID,
+          userID: props.userID,
+          LessonID: session.JSON.LessonID,
+          passed,
+          total: totalCodeExercises,
+        });
+        return {
+          exercises,
+          message: `Submitted ${exercises.length} exercise(s), ${passed} passed.`,
+          reward,
+        };
+      },
+      { timeout: 120_000, maxWait: 10_000 },
     );
+  }
 
-    await db.sessions.update({
-      where: { id: props.SessionID, userID: props.userID, status: "PENDING" },
-      data: { status: "SUBMITTED" },
+  private static async grantLessonReward(
+    tx: Prisma.TransactionClient,
+    props: { SessionID: string; userID: string; LessonID: string; passed: number; total: number },
+  ): Promise<LessonReward | undefined> {
+    const lesson = await tx.lesson.findUnique({ where: { id: props.LessonID } });
+    if (!lesson) return undefined;
+    const passedLesson = LessonController.isPassed(
+      { passed: props.passed, total: props.total, givenUp: false },
+      Number(lesson.passThreshold),
+    );
+    if (!passedLesson) return undefined;
+
+    const rewarded = await tx.sessions.findFirst({
+      where: { userID: props.userID, LessonID: lesson.id, rewarded: true },
+      select: { id: true },
+    });
+    if (rewarded) return undefined;
+
+    await tx.sessions.update({ where: { id: props.SessionID }, data: { rewarded: true } });
+
+    await UserStatController.grantReward(tx, {
+      userID: props.userID,
+      xp: lesson.XPgiven,
+      gems: lesson.gemsGiven,
+      reason: `Lesson reward: ${lesson.name}`,
     });
 
-    const exercises = graded.filter((entry) => entry !== null);
-    const passed = exercises.filter((entry) => entry.ok).length;
-    return {
-      exercises,
-      message: `Submitted ${exercises.length} exercise(s), ${passed} passed.`,
-    };
+    return { lessonID: lesson.id, xp: lesson.XPgiven, gems: lesson.gemsGiven };
   }
 
   private static async assertExerciseInSession(session: SessionController, exerciseID: string) {
-    const exercise = await db.exercise.findUnique({
-      select: { lessonID: true },
-      where: { id: exerciseID },
-    });
-    if (!exercise || exercise.lessonID !== session.JSON.LessonID) {
+    const exercise = await ExerciseController.getById(exerciseID);
+    if (exercise.JSON.lessonID !== session.JSON.LessonID) {
       throw new UserError(404, "Exercise not found in this session.");
     }
   }

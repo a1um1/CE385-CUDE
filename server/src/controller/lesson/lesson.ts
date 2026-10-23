@@ -6,6 +6,11 @@ import type { Prisma } from "#/generated/prisma/client";
 import { resolveInclude } from "#/lib/include";
 import { db } from "#/lib/prisma";
 import UserError from "#/lib/router/http/userError";
+interface LessonAttempt {
+  passed: number;
+  total: number;
+  givenUp: boolean;
+}
 
 export default class LessonController {
   private data: LessonData;
@@ -31,6 +36,7 @@ export default class LessonController {
     const lessons = await db.lesson.findMany({
       where: { unitID },
       include: resolveInclude<Prisma.LessonInclude>(include, lessonIncludes),
+      orderBy: [{ position: "asc" }, { id: "asc" }],
     });
     return lessons as LessonData[];
   }
@@ -43,10 +49,6 @@ export default class LessonController {
     return lessons.map((lesson) => new LessonController(lesson));
   }
 
-  /**
-   * Lessons of a unit tagged with the student's status. Three queries for the whole unit, so the
-   * client does not have to ask per lesson.
-   */
   static async getByUnitIdWithStatus(
     unitID: string,
     userID: string,
@@ -56,18 +58,65 @@ export default class LessonController {
     if (lessons.length === 0) return [];
     const lessonIDs = lessons.map((lesson) => lesson.id);
 
-    // 1. A student can only have one lesson open at a time.
     const pending = await db.sessions.findFirst({
       where: { userID, status: "PENDING" },
       select: { LessonID: true },
     });
-    // 2. Every graded attempt of those lessons, oldest first, with its per-exercise results.
-    const attempts = await db.sessions.findMany({
-      where: { userID, LessonID: { in: lessonIDs }, status: "SUBMITTED" },
-      select: { LessonID: true, submissions: { select: { ok: true } } },
-      orderBy: { createdAt: "asc" },
+
+    const prerequisites = await LessonController.getPrerequisites(lessonIDs);
+    const requiredIDs = [...new Set([...prerequisites.values()].flat().map((entry) => entry.id))];
+    const attempts = await LessonController.attemptsByLesson(userID, [
+      ...lessonIDs,
+      ...requiredIDs,
+    ]);
+    const now = new Date();
+
+    return lessons.map((lesson) => {
+      const required = prerequisites.get(lesson.id) ?? [];
+      const status = LessonController.statusOf({
+        lessonID: lesson.id,
+        pendingLessonID: pending?.LessonID,
+        attempt: attempts.get(lesson.id),
+        locked: LessonController.isLocked(lesson, required, attempts, now),
+        passThreshold: Number(lesson.passThreshold),
+      });
+      return Object.assign(lesson, { status });
     });
-    // 3. Only CODE exercises are graded, so they alone decide pass or fail.
+  }
+
+  static async getPrerequisites(
+    lessonIDs: string[],
+  ): Promise<Map<string, { id: string; passThreshold: number }[]>> {
+    if (lessonIDs.length === 0) return new Map();
+    const rows = await db.lessonPrerequisite.findMany({
+      where: { lessonID: { in: lessonIDs } },
+      select: { lessonID: true, prerequisite: { select: { id: true, passThreshold: true } } },
+    });
+    const map = new Map<string, { id: string; passThreshold: number }[]>();
+    for (const row of rows) {
+      const entry = {
+        id: row.prerequisite.id,
+        passThreshold: Number(row.prerequisite.passThreshold),
+      };
+      map.set(row.lessonID, [...(map.get(row.lessonID) ?? []), entry]);
+    }
+    return map;
+  }
+
+  static async attemptsByLesson(
+    userID: string,
+    lessonIDs: string[],
+  ): Promise<Map<string, LessonAttempt>> {
+    if (lessonIDs.length === 0) return new Map();
+    const sessions = await db.sessions.findMany({
+      where: {
+        userID,
+        LessonID: { in: lessonIDs },
+        status: { in: ["SUBMITTED", "CANCELLED"] },
+      },
+      select: { LessonID: true, status: true, submissions: { select: { ok: true } } },
+    });
+
     const codeExercises = await db.exercise.findMany({
       where: { lessonID: { in: lessonIDs }, type: "CODE" },
       select: { lessonID: true },
@@ -77,33 +126,102 @@ export default class LessonController {
       totals.set(exercise.lessonID, (totals.get(exercise.lessonID) ?? 0) + 1);
     }
 
-    return lessons.map((lesson) => {
-      // Only the latest attempt counts, same as the score on the lesson page.
-      const latest = attempts.findLast((attempt) => attempt.LessonID === lesson.id);
-      const status = LessonController.statusOf({
-        lessonID: lesson.id,
-        pendingLessonID: pending?.LessonID,
-        passed: latest?.submissions.filter((submission) => submission.ok).length,
-        total: totals.get(lesson.id) ?? 0,
-      });
-      return Object.assign(lesson, { status });
-    });
+    const bestPassed = new Map<string, number>();
+    const givenUp = new Set<string>();
+    for (const session of sessions) {
+      if (session.status === "CANCELLED") {
+        givenUp.add(session.LessonID);
+      } else {
+        const passed = session.submissions.filter((submission) => submission.ok).length;
+        bestPassed.set(session.LessonID, Math.max(bestPassed.get(session.LessonID) ?? -1, passed));
+      }
+    }
+
+    const result = new Map<string, LessonAttempt>();
+    for (const lessonID of lessonIDs) {
+      const total = totals.get(lessonID) ?? 0;
+      const passed = bestPassed.get(lessonID);
+      if (passed !== undefined) {
+        result.set(lessonID, { passed, total, givenUp: false });
+      } else if (givenUp.has(lessonID)) {
+        result.set(lessonID, { passed: 0, total, givenUp: true });
+      }
+    }
+    return result;
   }
 
-  /** Mirrors the lesson states the client draws in the lesson list. */
+  /**
+   * The inputs `statusOf` derives a lesson's status from: the open session, this lesson's own
+   * attempt, and whether it is still locked. Enrollment and the lesson list share this.
+   */
+  static async stateOf(
+    lesson: { id: string; startAt?: Date | null; endAt?: Date | null },
+    userID: string,
+    now = new Date(),
+  ): Promise<{
+    lessonID: string;
+    pendingLessonID?: string;
+    attempt?: LessonAttempt;
+    locked: boolean;
+  }> {
+    const prerequisites = await LessonController.getPrerequisites([lesson.id]);
+    const required = prerequisites.get(lesson.id) ?? [];
+    const [pending, attempts] = await Promise.all([
+      db.sessions.findFirst({
+        where: { userID, status: "PENDING" },
+        select: { LessonID: true },
+      }),
+      LessonController.attemptsByLesson(userID, [lesson.id, ...required.map((entry) => entry.id)]),
+    ]);
+    return {
+      lessonID: lesson.id,
+      pendingLessonID: pending?.LessonID,
+      attempt: attempts.get(lesson.id),
+      locked: LessonController.isLocked(lesson, required, attempts, now),
+    };
+  }
+
+  /**
+   * The single definition of "passed" for a lesson attempt: nothing to grade counts as passed,
+   * otherwise the fraction of CODE exercises passed must reach the lesson's own pass threshold.
+   */
+  static isPassed(attempt: LessonAttempt | undefined, passThreshold: number): boolean {
+    if (attempt === undefined) return false;
+    // A lesson with no CODE exercise has nothing to gate on, so it counts as passed.
+    if (attempt.total === 0) return true;
+    return attempt.passed / attempt.total >= passThreshold;
+  }
+
+  private static isLocked(
+    lesson: { startAt?: Date | null; endAt?: Date | null },
+    prerequisites: { id: string; passThreshold: number }[],
+    attempts: Map<string, LessonAttempt>,
+    now: Date,
+  ): boolean {
+    if (lesson.startAt && now < lesson.startAt) return true;
+    if (lesson.endAt && now > lesson.endAt) return true;
+    return prerequisites.some(
+      (prerequisite) =>
+        !LessonController.isPassed(attempts.get(prerequisite.id), prerequisite.passThreshold),
+    );
+  }
+
   private static statusOf(props: {
     lessonID: string;
     pendingLessonID?: string;
-    passed?: number;
-    total: number;
+    attempt?: LessonAttempt;
+    locked: boolean;
+    passThreshold: number;
   }): LessonStatus {
     if (props.pendingLessonID === props.lessonID) return "PENDING";
-    // A lesson the student already submitted keeps its result, even while another one is open.
-    if (props.passed !== undefined) {
-      return props.total > 0 && props.passed === props.total ? "PASSED" : "FAILED";
+
+    if (props.attempt) {
+      if (props.attempt.givenUp) return "GIVE_UP";
+      return LessonController.isPassed(props.attempt, props.passThreshold) ? "PASSED" : "FAILED";
     }
-    // The open session locks whatever they have never attempted.
-    return props.pendingLessonID ? "NOT_AVAILABLE" : "AVAILABLE";
+
+    if (props.locked || props.pendingLessonID) return "NOT_AVAILABLE";
+    return "AVAILABLE";
   }
 
   async getAllExercise() {
@@ -113,10 +231,5 @@ export default class LessonController {
   async getUnit(): Promise<UnitController> {
     if (this.data.unit) return new UnitController(this.data.unit);
     return UnitController.getById(this.data.unitID);
-  }
-
-  async getCourse() {
-    const unit = await this.getUnit();
-    return unit.getCourse();
   }
 }

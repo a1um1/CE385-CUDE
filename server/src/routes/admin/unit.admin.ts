@@ -35,7 +35,7 @@ const adminUnitRouter = new CustomRouter({
       description:
         "Return one unit by ID. Requires an `ADMIN` token. Returns `404` when the unit does not exist.",
       params: z.object({
-        id: z.string().openapi({ example: "unit_id" }),
+        id: z.uuid().openapi({ example: "unit_id" }),
       }),
       response: adminUnitSchema,
     },
@@ -67,7 +67,7 @@ const adminUnitRouter = new CustomRouter({
         "Update a unit's `name` and `courseID` (which moves it between courses). Requires an `ADMIN` token. " +
         "Returns `404` when the unit does not exist.",
       params: z.object({
-        id: z.string().openapi({ example: "unit_id" }),
+        id: z.uuid().openapi({ example: "unit_id" }),
       }),
       body: AdminUnitUpdateSchema,
       response: adminUnitSchema,
