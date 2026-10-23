@@ -4,6 +4,8 @@
   display: flex;
   flex-direction: column;
   width: 100%;
+  height: 100%;
+  min-height: 450px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   background-color: var(--color-background);
@@ -19,6 +21,7 @@
   padding: 0.5rem 0.75rem;
   background-color: color-mix(in oklch, var(--color-background) 80%, black);
   border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
 }
 
 .toolbar-group {
@@ -32,6 +35,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.25rem;
   padding: 0.35rem 0.5rem;
   font-size: 0.75rem;
   font-weight: 500;
@@ -60,6 +64,10 @@
   }
 }
 
+.dropdown-menu {
+  min-width: 160px;
+}
+
 .toolbar-divider {
   width: 1px;
   height: 1.25rem;
@@ -69,8 +77,10 @@
 
 .editor-area {
   display: grid;
-  min-height: 400px;
+  flex: 1 1 auto;
+  min-height: 0;
   width: 100%;
+  height: 100%;
 }
 
 .mode-split {
@@ -95,12 +105,16 @@
   display: flex;
   flex-direction: column;
   min-height: 0;
+  height: 100%;
+  width: 100%;
   overflow: hidden;
 }
 
 .write-pane {
   position: relative;
   background-color: #1e1e1e;
+  height: 100%;
+  width: 100%;
 }
 
 .mode-split .write-pane {
@@ -115,7 +129,7 @@
 .preview-pane {
   padding: 0.75rem 1.25rem;
   overflow-y: auto;
-  max-height: 700px;
+  height: 100%;
   background-color: color-mix(in oklch, var(--color-background) 95%, black);
 }
 
