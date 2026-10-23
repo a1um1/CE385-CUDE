@@ -7,8 +7,8 @@ import type zod from "zod";
 
 export const adminExerciseSchema = z
   .looseObject({
-    id: z.string().openapi({ example: "exercise_id" }),
-    lessonID: z.string().openapi({ example: "lesson_id" }),
+    id: z.uuid().openapi({ example: "0192a000-0000-7000-8000-000000000001" }),
+    lessonID: z.uuid().openapi({ example: "0192a000-0000-7000-8000-000000000002" }),
   })
   .openapi("AdminExerciseObject");
 
@@ -18,7 +18,10 @@ export const AdminExerciseQuerySchema = createCursorPaginationQuerySchema(
   ["createdAt", "updatedAt", "id"],
   "AdminExerciseQuery",
 ).extend({
-  lessonID: z.string().optional().openapi({ description: "Filter by Lesson ID" }),
+  lessonID: z.uuid().optional().openapi({
+    example: "0192a000-0000-7000-8000-000000000002",
+    description: "Filter by Lesson ID",
+  }),
 });
 
 export type AdminExerciseQuery = zod.infer<typeof AdminExerciseQuerySchema>;
@@ -33,8 +36,8 @@ export type AdminExerciseListResponseSchema = zod.infer<typeof AdminExerciseList
 export const CreateAdminExerciseSchema = z
   .object({
     name: z.string().min(1).openapi({ example: "Exercise Name" }),
-    lessonID: z.string().min(1).openapi({
-      example: "lesson_id",
+    lessonID: z.uuid().openapi({
+      example: "0192a000-0000-7000-8000-000000000002",
       description: "Lesson ID",
     }),
     content: z.string().openapi({ example: "Exercise content" }),
