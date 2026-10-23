@@ -29,6 +29,10 @@ Write a function that calculates the sum of two integers.
 - First line contains an integer $A$.
 - Second line contains an integer $B$.
 
+## Math Formula
+Let the formula be:
+$$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$
+
 ## Output Format
 - Print the sum of $A$ and $B$.
 
@@ -44,13 +48,19 @@ Output:
 
 > [!NOTE]
 > All integers are within standard 32-bit limits.
+
+> [!TIP]
+> Use fast I/O if the inputs are large.
+
+> [!WARNING]
+> Overflow might occur if $A + B > 2^{31} - 1$.
 `;
 
 function MarkdownEditorWrapper(args: React.ComponentProps<typeof MarkdownEditor>) {
   const [content, setContent] = React.useState(args.value || SAMPLE_MARKDOWN);
 
   return (
-    <div style={{ maxWidth: 900, margin: "0 auto", padding: "1rem" }}>
+    <div style={{ maxWidth: 1000, margin: "0 auto", padding: "1rem" }}>
       <MarkdownEditor {...args} value={content} onChange={setContent} />
     </div>
   );

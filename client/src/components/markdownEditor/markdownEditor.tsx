@@ -1,5 +1,7 @@
 import * as React from "react";
 import clsx from "clsx";
+import { Editor, type OnMount } from "@monaco-editor/react";
+import type * as Monaco from "monaco-editor";
 import {
   Bold,
   Italic,
@@ -15,8 +17,14 @@ import {
   Columns,
   Eye,
   PenTool,
+  Info,
+  AlertTriangle,
+  Lightbulb,
+  ShieldAlert,
+  Sigma,
 } from "lucide-react";
 import Markdown from "#/components/markdown";
+import Spinner from "#/components/spinner";
 import styles from "./markdownEditor.module.css";
 
 export type EditorViewMode = "write" | "preview" | "split";
@@ -36,71 +44,115 @@ export function MarkdownEditor({
   value,
   onChange,
   onBlur,
-  placeholder = "Write markdown content here...",
   disabled = false,
-  minHeight = 300,
+  minHeight = 400,
   defaultViewMode = "split",
   className,
 }: MarkdownEditorProps) {
   const [viewMode, setViewMode] = React.useState<EditorViewMode>(defaultViewMode);
-  const textareaRef = React.useRef<HTMLTextAreaElement>(null);
+  const editorRef = React.useRef<Monaco.editor.IStandaloneCodeEditor | null>(null);
 
-  const applyFormatting = React.useCallback(
-    (prefix: string, suffix = "", defaultText = "text") => {
-      const textarea = textareaRef.current;
-      if (!textarea) return;
+  const handleEditorMount: OnMount = (editor) => {
+    editorRef.current = editor;
+    if (onBlur) {
+      editor.onDidBlurEditorWidget(onBlur);
+    }
+  };
 
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-      const selected = value.substring(start, end) || defaultText;
-      const replacement = `${prefix}${selected}${suffix}`;
-      const nextValue = value.substring(0, start) + replacement + value.substring(end);
+  const applyFormatting = React.useCallback((prefix: string, suffix = "", defaultText = "text") => {
+    const editor = editorRef.current;
+    if (!editor) return;
 
-      onChange(nextValue);
+    const selection = editor.getSelection();
+    const model = editor.getModel();
+    if (!selection || !model) return;
 
-      // Restore cursor position
-      requestAnimationFrame(() => {
-        textarea.focus();
-        const cursorStart = start + prefix.length;
-        const cursorEnd = cursorStart + selected.length;
-        textarea.setSelectionRange(cursorStart, cursorEnd);
-      });
-    },
-    [value, onChange],
-  );
+    const selectedText = model.getValueInRange(selection);
+    const textToWrap = selectedText || defaultText;
+    const text = `${prefix}${textToWrap}${suffix}`;
 
-  const insertLinePrefix = React.useCallback(
-    (prefix: string) => {
-      const textarea = textareaRef.current;
-      if (!textarea) return;
+    editor.executeEdits("markdown-editor", [
+      {
+        range: selection,
+        text,
+        forceMoveMarkers: true,
+      },
+    ]);
 
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
+    editor.focus();
+  }, []);
 
-      // Find beginning of current line
-      const lineStart = value.lastIndexOf("\n", start - 1) + 1;
-      const nextValue = value.substring(0, lineStart) + prefix + value.substring(lineStart);
+  const insertLinePrefix = React.useCallback((prefix: string, defaultText = "text") => {
+    const editor = editorRef.current;
+    if (!editor) return;
 
-      onChange(nextValue);
+    const selection = editor.getSelection();
+    const model = editor.getModel();
+    if (!selection || !model) return;
 
-      requestAnimationFrame(() => {
-        textarea.focus();
-        textarea.setSelectionRange(start + prefix.length, end + prefix.length);
-      });
-    },
-    [value, onChange],
-  );
+    const lineNumber = selection.startLineNumber;
+    const lineContent = model.getLineContent(lineNumber);
+
+    if (lineContent.trim().length === 0) {
+      editor.executeEdits("markdown-editor", [
+        {
+          range: {
+            startLineNumber: lineNumber,
+            startColumn: 1,
+            endLineNumber: lineNumber,
+            endColumn: 1,
+          },
+          text: `${prefix}${defaultText}`,
+          forceMoveMarkers: true,
+        },
+      ]);
+    } else {
+      editor.executeEdits("markdown-editor", [
+        {
+          range: {
+            startLineNumber: lineNumber,
+            startColumn: 1,
+            endLineNumber: lineNumber,
+            endColumn: 1,
+          },
+          text: prefix,
+          forceMoveMarkers: true,
+        },
+      ]);
+    }
+
+    editor.focus();
+  }, []);
+
+  const insertBlock = React.useCallback((blockContent: string) => {
+    const editor = editorRef.current;
+    if (!editor) return;
+
+    const selection = editor.getSelection();
+    if (!selection) return;
+
+    editor.executeEdits("markdown-editor", [
+      {
+        range: selection,
+        text: `\n${blockContent}\n`,
+        forceMoveMarkers: true,
+      },
+    ]);
+
+    editor.focus();
+  }, []);
 
   return (
     <div className={clsx(styles.container, className)}>
       <div className={styles.toolbar} role="toolbar" aria-label="Markdown Editor Toolbar">
         <div className={styles["toolbar-group"]}>
+          {/* Headings */}
           <button
             type="button"
             className={styles["toolbar-btn"]}
             title="Heading 1"
             disabled={disabled || viewMode === "preview"}
-            onClick={() => insertLinePrefix("# ")}
+            onClick={() => insertLinePrefix("# ", "Heading 1")}
           >
             <Heading1 size={15} />
           </button>
@@ -109,7 +161,7 @@ export function MarkdownEditor({
             className={styles["toolbar-btn"]}
             title="Heading 2"
             disabled={disabled || viewMode === "preview"}
-            onClick={() => insertLinePrefix("## ")}
+            onClick={() => insertLinePrefix("## ", "Heading 2")}
           >
             <Heading2 size={15} />
           </button>
@@ -118,13 +170,14 @@ export function MarkdownEditor({
             className={styles["toolbar-btn"]}
             title="Heading 3"
             disabled={disabled || viewMode === "preview"}
-            onClick={() => insertLinePrefix("### ")}
+            onClick={() => insertLinePrefix("### ", "Heading 3")}
           >
             <Heading3 size={15} />
           </button>
 
           <span className={styles["toolbar-divider"]} />
 
+          {/* Inline format */}
           <button
             type="button"
             className={styles["toolbar-btn"]}
@@ -143,15 +196,25 @@ export function MarkdownEditor({
           >
             <Italic size={15} />
           </button>
+          <button
+            type="button"
+            className={styles["toolbar-btn"]}
+            title="Inline Math ($formula$)"
+            disabled={disabled || viewMode === "preview"}
+            onClick={() => applyFormatting("$", "$", "x^2 + y^2 = z^2")}
+          >
+            <Sigma size={15} />
+          </button>
 
           <span className={styles["toolbar-divider"]} />
 
+          {/* Blocks */}
           <button
             type="button"
             className={styles["toolbar-btn"]}
             title="Code block"
             disabled={disabled || viewMode === "preview"}
-            onClick={() => applyFormatting("```\n", "\n```", "code here")}
+            onClick={() => insertBlock("```typescript\n// code here\n```")}
           >
             <Code size={15} />
           </button>
@@ -160,7 +223,7 @@ export function MarkdownEditor({
             className={styles["toolbar-btn"]}
             title="Bullet list"
             disabled={disabled || viewMode === "preview"}
-            onClick={() => insertLinePrefix("- ")}
+            onClick={() => insertLinePrefix("- ", "list item")}
           >
             <List size={15} />
           </button>
@@ -169,7 +232,7 @@ export function MarkdownEditor({
             className={styles["toolbar-btn"]}
             title="Numbered list"
             disabled={disabled || viewMode === "preview"}
-            onClick={() => insertLinePrefix("1. ")}
+            onClick={() => insertLinePrefix("1. ", "list item")}
           >
             <ListOrdered size={15} />
           </button>
@@ -178,7 +241,7 @@ export function MarkdownEditor({
             className={styles["toolbar-btn"]}
             title="Quote"
             disabled={disabled || viewMode === "preview"}
-            onClick={() => insertLinePrefix("> ")}
+            onClick={() => insertLinePrefix("> ", "Quote text")}
           >
             <Quote size={15} />
           </button>
@@ -187,7 +250,7 @@ export function MarkdownEditor({
             className={styles["toolbar-btn"]}
             title="Link"
             disabled={disabled || viewMode === "preview"}
-            onClick={() => applyFormatting("[", "](https://)", "link text")}
+            onClick={() => applyFormatting("[", "](https://example.com)", "link text")}
           >
             <Link size={15} />
           </button>
@@ -197,13 +260,56 @@ export function MarkdownEditor({
             title="Table"
             disabled={disabled || viewMode === "preview"}
             onClick={() =>
-              applyFormatting("| Header 1 | Header 2 |\n| --- | --- |\n| Cell 1 | Cell 2 |", "", "")
+              insertBlock(
+                "| Column 1 | Column 2 |\n| -------- | -------- |\n| Item 1   | Item 2   |",
+              )
             }
           >
             <Table size={15} />
           </button>
+
+          <span className={styles["toolbar-divider"]} />
+
+          {/* GitHub Alert Notes */}
+          <button
+            type="button"
+            className={styles["toolbar-btn"]}
+            title="Insert Note Alert"
+            disabled={disabled || viewMode === "preview"}
+            onClick={() => insertBlock("> [!NOTE]\n> Note content here")}
+          >
+            <Info size={15} style={{ marginRight: "0.2rem" }} /> Note
+          </button>
+          <button
+            type="button"
+            className={styles["toolbar-btn"]}
+            title="Insert Tip Alert"
+            disabled={disabled || viewMode === "preview"}
+            onClick={() => insertBlock("> [!TIP]\n> Tip content here")}
+          >
+            <Lightbulb size={15} style={{ marginRight: "0.2rem" }} /> Tip
+          </button>
+          <button
+            type="button"
+            className={styles["toolbar-btn"]}
+            title="Insert Warning Alert"
+            disabled={disabled || viewMode === "preview"}
+            onClick={() => insertBlock("> [!WARNING]\n> Warning content here")}
+          >
+            <AlertTriangle size={15} style={{ marginRight: "0.2rem" }} /> Warn
+          </button>
+          <button
+            type="button"
+            className={styles["toolbar-btn"]}
+            title="Insert Caution Alert"
+            disabled={disabled || viewMode === "preview"}
+            onClick={() => insertBlock("> [!CAUTION]\n> Caution content here")}
+          >
+            <ShieldAlert size={15} style={{ marginRight: "0.2rem" }} /> Caution
+          </button>
         </div>
 
+        {/* View mode toggle */}
         <div className={styles["toolbar-group"]}>
           <button
             type="button"
@@ -243,21 +349,31 @@ export function MarkdownEditor({
       >
         {viewMode !== "preview" && (
           <div className={clsx(styles.pane, styles["write-pane"])}>
-            <textarea
-              ref={textareaRef}
-              className={styles.textarea}
+            <Editor
+              height={minHeight}
+              language="markdown"
+              theme="vs-dark"
               value={value}
-              onChange={(e) => onChange(e.target.value)}
-              onBlur={onBlur}
-              placeholder={placeholder}
-              disabled={disabled}
-              style={{ minHeight }}
+              onChange={(val) => onChange(val ?? "")}
+              onMount={handleEditorMount}
+              loading={<Spinner />}
+              options={{
+                readOnly: disabled,
+                minimap: { enabled: false },
+                fontSize: 14,
+                fontFamily: '"Geist Mono", monospace',
+                wordWrap: "on",
+                scrollBeyondLastLine: false,
+                tabSize: 2,
+                automaticLayout: true,
+                lineNumbers: "on",
+              }}
             />
           </div>
         )}
 
         {viewMode !== "write" && (
-          <div className={clsx(styles.pane, styles["preview-pane"])}>
+          <div className={clsx(styles.pane, styles["preview-pane"])} style={{ minHeight }}>
             {value.trim() ? (
               <Markdown content={value} />
             ) : (

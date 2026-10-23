@@ -69,7 +69,7 @@
 
 .editor-area {
   display: grid;
-  min-height: 300px;
+  min-height: 400px;
   width: 100%;
 }
 
@@ -100,6 +100,7 @@
 
 .write-pane {
   position: relative;
+  background-color: #1e1e1e;
 }
 
 .mode-split .write-pane {
@@ -111,36 +112,10 @@
   }
 }
 
-.textarea {
-  width: 100%;
-  height: 100%;
-  min-height: 300px;
-  padding: 0.75rem;
-  border: none;
-  resize: vertical;
-  font-family:
-    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
-    monospace;
-  font-size: 0.875rem;
-  line-height: 1.5;
-  background-color: transparent;
-  color: var(--color-foreground);
-  outline: none;
-
-  &:focus {
-    outline: none;
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-}
-
 .preview-pane {
-  padding: 0.75rem 1rem;
+  padding: 0.75rem 1.25rem;
   overflow-y: auto;
-  max-height: 600px;
+  max-height: 700px;
   background-color: color-mix(in oklch, var(--color-background) 95%, black);
 }
 
