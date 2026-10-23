@@ -69,3 +69,15 @@ export const useAdminActivateUser = () =>
       return data;
     },
   });
+
+export const useAdminUpdateUser = () =>
+  useMutation({
+    mutationKey: ["admin", "user", "update"],
+    mutationFn: async (body: ExtractRequestBody<"/admin/user", "patch">) => {
+      const { data, error } = await APIclient.PATCH("/admin/user", {
+        body,
+      });
+      if (error) throw error;
+      return data;
+    },
+  });

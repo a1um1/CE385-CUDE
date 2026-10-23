@@ -1973,7 +1973,88 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        /**
+         * Update user details
+         * @description Update user details (name, epithet, profile image, background image) by an admin.
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["AdminUserUpdate"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["UserSafeData"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
         trace?: never;
     };
     "/admin/user/{id}": {
@@ -6066,12 +6147,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-23T19:47:55.796Z
+             * @example 2026-10-23T20:30:22.692Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-23T19:47:55.797Z
+             * @example 2026-10-23T20:30:22.693Z
              */
             updatedAt: string;
         };
@@ -6307,6 +6388,18 @@ export interface components {
         AdminUserActivate: {
             /** @example user_id */
             id: string;
+        };
+        AdminUserUpdate: {
+            /** @example user_id */
+            id: string;
+            /** @example John Doe */
+            name?: string;
+            /** @example The Brave */
+            epithet?: string | null;
+            /** @example https://example.com/profile.jpg */
+            profileImage?: string | null;
+            /** @example https://example.com/background.jpg */
+            backgroundImage?: string | null;
         };
         AdminUnitListResponse: {
             /** @example [] */

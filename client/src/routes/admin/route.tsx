@@ -1,4 +1,8 @@
 import Sidebar from "#/components/sidebar";
+import {
+  CollapsibleSidebarProvider,
+  CollapsibleSidebarToggle,
+} from "#/components/collapsibleSidebar";
 import { resolveSession, useUser } from "#/data/user.data";
 import { createFileRoute, Navigate, Outlet, redirect, useMatches } from "@tanstack/react-router";
 import style from "./layout.module.css";
@@ -25,18 +29,23 @@ function RouteComponent() {
   if (!(user.data || user.isLoading)) return <Navigate to="/auth/signin" />;
 
   return (
-    <div className={style["admin-layout"]}>
-      <Sidebar />
-      <div className={style["admin-content"]}>
-        <div className={style["admin-navbar"]}>
-          <p>Hello world</p>
-          <UserMenu />
-        </div>
-        <div className={clsx(style["admin-container"], fullWidth && style["full-width"])}>
-          {!hideTitle && <h1 className="text-3xl font-bold">{pageTitle || "Unknown Page"}</h1>}
-          <Outlet />
+    <CollapsibleSidebarProvider>
+      <div className={style["admin-layout"]}>
+        <Sidebar />
+        <div className={style["admin-content"]}>
+          <div className={style["admin-navbar"]}>
+            <div className="flex items-center gap-2">
+              <CollapsibleSidebarToggle iconOnly label="Toggle sidebar" />
+              <p>Hello world</p>
+            </div>
+            <UserMenu />
+          </div>
+          <div className={clsx(style["admin-container"], fullWidth && style["full-width"])}>
+            {!hideTitle && <h1 className="text-3xl font-bold">{pageTitle || "Unknown Page"}</h1>}
+            <Outlet />
+          </div>
         </div>
       </div>
-    </div>
+    </CollapsibleSidebarProvider>
   );
 }
