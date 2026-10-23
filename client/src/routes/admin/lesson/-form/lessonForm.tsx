@@ -2,7 +2,10 @@ import * as React from "react";
 import ButtonLink from "#/components/buttonLink";
 import { useAppForm } from "#/components/form";
 import { useAdminUnitListQuery } from "#/data/admin/unit.data";
+import { useAdminLessonListQuery } from "#/data/admin/lesson.data";
 import Input from "#/components/input";
+import Badge from "#/components/badge";
+import { X } from "lucide-react";
 import formStyles from "#/components/form/form.module.css";
 import {
   SelectRoot,
@@ -18,9 +21,13 @@ export interface LessonFormValues {
   passThreshold: number;
   XPgiven: number;
   gemsGiven: number;
+  startAt: string;
+  endAt: string;
+  prerequisiteLessonIDs: string[];
 }
 
 export interface LessonFormProps {
+  currentLessonId?: string;
   defaultValues?: LessonFormValues;
   onSubmit: (values: LessonFormValues) => void | Promise<void>;
   submitLabel?: string;
@@ -34,9 +41,13 @@ const defaultValuesFallback: LessonFormValues = {
   passThreshold: 1,
   XPgiven: 0,
   gemsGiven: 0,
+  startAt: "",
+  endAt: "",
+  prerequisiteLessonIDs: [],
 };
 
 export function LessonForm({
+  currentLessonId,
   defaultValues = defaultValuesFallback,
   onSubmit,
   submitLabel = "Submit",
@@ -63,6 +74,26 @@ export function LessonForm({
       await onSubmit(value);
     },
   });
+
+  const selectedUnitID = form.getFieldValue("unitID");
+  const lessonsQuery = useAdminLessonListQuery({
+    page: 1,
+    limit: 100,
+    unitId: selectedUnitID || undefined,
+  });
+
+  const availableLessons = React.useMemo(
+    () => (lessonsQuery.data?.items ?? []).filter((l) => l.id !== currentLessonId),
+    [lessonsQuery.data?.items, currentLessonId],
+  );
+
+  const lessonMap = React.useMemo(() => {
+    const map = new Map<string, string>();
+    for (const l of lessonsQuery.data?.items ?? []) {
+      map.set(l.id, l.name);
+    }
+    return map;
+  }, [lessonsQuery.data?.items]);
 
   return (
     <form
@@ -186,6 +217,132 @@ export function LessonForm({
             )}
           </form.Field>
         </div>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "1rem",
+            marginTop: "0.75rem",
+          }}
+        >
+          <form.Field name="startAt">
+            {(field) => (
+              <div className={formStyles["form-field"]}>
+                <label htmlFor="startAt" className={formStyles.label}>
+                  Start Date/Time (optional)
+                </label>
+                <Input
+                  id="startAt"
+                  type="datetime-local"
+                  disabled={isPending}
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+              </div>
+            )}
+          </form.Field>
+
+          <form.Field name="endAt">
+            {(field) => (
+              <div className={formStyles["form-field"]}>
+                <label htmlFor="endAt" className={formStyles.label}>
+                  End Date/Time (optional)
+                </label>
+                <Input
+                  id="endAt"
+                  type="datetime-local"
+                  disabled={isPending}
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+              </div>
+            )}
+          </form.Field>
+        </div>
+
+        <form.Field name="prerequisiteLessonIDs">
+          {(field) => {
+            const selected = field.state.value || [];
+            const remainingLessons = availableLessons.filter((l) => !selected.includes(l.id));
+
+            return (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.5rem",
+                  marginTop: "0.75rem",
+                }}
+              >
+                <label style={{ fontSize: "0.875rem", fontWeight: 500 }}>
+                  Prerequisites (Lessons required before this one)
+                </label>
+
+                {selected.length > 0 && (
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+                    {selected.map((prereqId: string) => (
+                      <Badge
+                        key={prereqId}
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "0.25rem",
+                          padding: "0.25rem 0.5rem",
+                        }}
+                      >
+                        <span>{lessonMap.get(prereqId) ?? prereqId}</span>
+                        {!isPending && (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              field.handleChange(selected.filter((id: string) => id !== prereqId))
+                            }
+                            style={{
+                              background: "none",
+                              border: "none",
+                              cursor: "pointer",
+                              padding: 0,
+                              display: "inline-flex",
+                              alignItems: "center",
+                              color: "inherit",
+                            }}
+                          >
+                            <X size={12} />
+                          </button>
+                        )}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+
+                {remainingLessons.length > 0 && (
+                  <SelectRoot
+                    value={null}
+                    onValueChange={(val) => {
+                      if (val && !selected.includes(val)) {
+                        field.handleChange([...selected, val]);
+                      }
+                    }}
+                    disabled={isPending || lessonsQuery.isLoading}
+                    items={remainingLessons.map((l) => ({ value: l.id, label: l.name }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Add a prerequisite lesson..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {remainingLessons.map((l) => (
+                        <SelectItem key={l.id} value={l.id}>
+                          {l.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </SelectRoot>
+                )}
+              </div>
+            );
+          }}
+        </form.Field>
 
         <div
           style={{

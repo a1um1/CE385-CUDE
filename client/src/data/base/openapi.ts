@@ -6066,12 +6066,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-23T18:19:46.994Z
+             * @example 2026-10-23T18:49:12.252Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-23T18:19:46.995Z
+             * @example 2026-10-23T18:49:12.253Z
              */
             updatedAt: string;
         };
@@ -6194,6 +6194,8 @@ export interface components {
              * @example 2026-11-11T00:00:00Z
              */
             endAt: string | null;
+            /** @example [] */
+            prerequisiteLessonIDs: string[];
             unit?: {
                 /**
                  * Format: uuid
@@ -6255,6 +6257,11 @@ export interface components {
              * @example 2026-11-11T00:00:00Z
              */
             endAt?: string | null;
+            /**
+             * @default []
+             * @example []
+             */
+            prerequisiteLessonIDs: string[];
         };
         LessonUpdate: {
             /** @example new_name */
@@ -6275,6 +6282,8 @@ export interface components {
              * @example 2026-11-11T00:00:00Z
              */
             endAt?: string | null;
+            /** @example [] */
+            prerequisiteLessonIDs?: string[];
         };
         AdminUserListResponse: {
             /** @example [] */
