@@ -63,8 +63,8 @@ export default class LessonController {
       select: { LessonID: true },
     });
 
-    const prerequisites = await LessonController.getPrerequisiteIDs(lessonIDs);
-    const requiredIDs = [...new Set([...prerequisites.values()].flat())];
+    const prerequisites = await LessonController.getPrerequisites(lessonIDs);
+    const requiredIDs = [...new Set([...prerequisites.values()].flat().map((entry) => entry.id))];
     const attempts = await LessonController.attemptsByLesson(userID, [
       ...lessonIDs,
       ...requiredIDs,
@@ -78,20 +78,27 @@ export default class LessonController {
         pendingLessonID: pending?.LessonID,
         attempt: attempts.get(lesson.id),
         locked: LessonController.isLocked(lesson, required, attempts, now),
+        passThreshold: Number(lesson.passThreshold),
       });
       return Object.assign(lesson, { status });
     });
   }
 
-  static async getPrerequisiteIDs(lessonIDs: string[]): Promise<Map<string, string[]>> {
+  static async getPrerequisites(
+    lessonIDs: string[],
+  ): Promise<Map<string, { id: string; passThreshold: number }[]>> {
     if (lessonIDs.length === 0) return new Map();
     const rows = await db.lessonPrerequisite.findMany({
       where: { lessonID: { in: lessonIDs } },
-      select: { lessonID: true, prerequisiteLessonID: true },
+      select: { lessonID: true, prerequisite: { select: { id: true, passThreshold: true } } },
     });
-    const map = new Map<string, string[]>();
+    const map = new Map<string, { id: string; passThreshold: number }[]>();
     for (const row of rows) {
-      map.set(row.lessonID, [...(map.get(row.lessonID) ?? []), row.prerequisiteLessonID]);
+      const entry = {
+        id: row.prerequisite.id,
+        passThreshold: Number(row.prerequisite.passThreshold),
+      };
+      map.set(row.lessonID, [...(map.get(row.lessonID) ?? []), entry]);
     }
     return map;
   }
@@ -157,14 +164,14 @@ export default class LessonController {
     attempt?: LessonAttempt;
     locked: boolean;
   }> {
-    const prerequisites = await LessonController.getPrerequisiteIDs([lesson.id]);
+    const prerequisites = await LessonController.getPrerequisites([lesson.id]);
     const required = prerequisites.get(lesson.id) ?? [];
     const [pending, attempts] = await Promise.all([
       db.sessions.findFirst({
         where: { userID, status: "PENDING" },
         select: { LessonID: true },
       }),
-      LessonController.attemptsByLesson(userID, [lesson.id, ...required]),
+      LessonController.attemptsByLesson(userID, [lesson.id, ...required.map((entry) => entry.id)]),
     ]);
     return {
       lessonID: lesson.id,
@@ -174,21 +181,29 @@ export default class LessonController {
     };
   }
 
-  private static isPassed(attempt: LessonAttempt | undefined): boolean {
+  /**
+   * The single definition of "passed" for a lesson attempt: nothing to grade counts as passed,
+   * otherwise the fraction of CODE exercises passed must reach the lesson's own pass threshold.
+   */
+  static isPassed(attempt: LessonAttempt | undefined, passThreshold: number): boolean {
     if (attempt === undefined) return false;
     // A lesson with no CODE exercise has nothing to gate on, so it counts as passed.
-    return attempt.total === 0 || attempt.passed === attempt.total;
+    if (attempt.total === 0) return true;
+    return attempt.passed / attempt.total >= passThreshold;
   }
 
   private static isLocked(
     lesson: { startAt?: Date | null; endAt?: Date | null },
-    prerequisiteIDs: string[],
+    prerequisites: { id: string; passThreshold: number }[],
     attempts: Map<string, LessonAttempt>,
     now: Date,
   ): boolean {
     if (lesson.startAt && now < lesson.startAt) return true;
     if (lesson.endAt && now > lesson.endAt) return true;
-    return prerequisiteIDs.some((id) => !LessonController.isPassed(attempts.get(id)));
+    return prerequisites.some(
+      (prerequisite) =>
+        !LessonController.isPassed(attempts.get(prerequisite.id), prerequisite.passThreshold),
+    );
   }
 
   private static statusOf(props: {
@@ -196,12 +211,13 @@ export default class LessonController {
     pendingLessonID?: string;
     attempt?: LessonAttempt;
     locked: boolean;
+    passThreshold: number;
   }): LessonStatus {
     if (props.pendingLessonID === props.lessonID) return "PENDING";
 
     if (props.attempt) {
       if (props.attempt.givenUp) return "GIVE_UP";
-      return LessonController.isPassed(props.attempt) ? "PASSED" : "FAILED";
+      return LessonController.isPassed(props.attempt, props.passThreshold) ? "PASSED" : "FAILED";
     }
 
     if (props.locked || props.pendingLessonID) return "NOT_AVAILABLE";

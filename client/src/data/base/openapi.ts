@@ -4200,6 +4200,8 @@ export interface paths {
                              * @enum {string}
                              */
                             status: "PENDING" | "SUBMITTED" | "GRADED" | "CANCELLED";
+                            /** @example true */
+                            rewarded: boolean;
                             /**
                              * Format: date-time
                              * @example 2023-01-01T00:00:00.000Z
@@ -4223,6 +4225,10 @@ export interface paths {
                                  * @example unit_id
                                  */
                                 unitID: string;
+                                /** @example 100 */
+                                XPgiven: number;
+                                /** @example 10 */
+                                gemsGiven: number;
                                 unit?: {
                                     /**
                                      * Format: uuid
@@ -4357,6 +4363,8 @@ export interface paths {
                              * @enum {string}
                              */
                             status: "PENDING" | "SUBMITTED" | "GRADED" | "CANCELLED";
+                            /** @example true */
+                            rewarded: boolean;
                             /**
                              * Format: date-time
                              * @example 2023-01-01T00:00:00.000Z
@@ -4380,6 +4388,10 @@ export interface paths {
                                  * @example unit_id
                                  */
                                 unitID: string;
+                                /** @example 100 */
+                                XPgiven: number;
+                                /** @example 10 */
+                                gemsGiven: number;
                                 unit?: {
                                     /**
                                      * Format: uuid
@@ -4514,6 +4526,8 @@ export interface paths {
                              * @enum {string}
                              */
                             status: "PENDING" | "SUBMITTED" | "GRADED" | "CANCELLED";
+                            /** @example true */
+                            rewarded: boolean;
                             /**
                              * Format: date-time
                              * @example 2023-01-01T00:00:00.000Z
@@ -4537,6 +4551,10 @@ export interface paths {
                                  * @example unit_id
                                  */
                                 unitID: string;
+                                /** @example 100 */
+                                XPgiven: number;
+                                /** @example 10 */
+                                gemsGiven: number;
                                 unit?: {
                                     /**
                                      * Format: uuid
@@ -4678,6 +4696,8 @@ export interface paths {
                              * @enum {string}
                              */
                             status: "PENDING" | "SUBMITTED" | "GRADED" | "CANCELLED";
+                            /** @example true */
+                            rewarded: boolean;
                             /**
                              * Format: date-time
                              * @example 2023-01-01T00:00:00.000Z
@@ -4701,6 +4721,10 @@ export interface paths {
                                  * @example unit_id
                                  */
                                 unitID: string;
+                                /** @example 100 */
+                                XPgiven: number;
+                                /** @example 10 */
+                                gemsGiven: number;
                                 unit?: {
                                     /**
                                      * Format: uuid
@@ -5080,6 +5104,8 @@ export interface paths {
          *
          *     Only counts come back per exercise (`total`, `passed`, `ok`); hidden test cases stay hidden. An exercise passes when every test case passes.
          *
+         *     Passing the lesson as a whole (see the lesson's `passThreshold`) pays its XP and gems once per student and returns them as `reward`. Re-passing a lesson pays nothing.
+         *
          *     Returns `400` when the session is not pending, `404` when it does not exist or belongs to another user.
          */
         post: {
@@ -5273,6 +5299,10 @@ export interface components {
             updatedAt: string;
         };
         userStatExtendedObject: components["schemas"]["userStatObject"] & {
+            level: number;
+            xpIntoLevel: number;
+            xpToNextLevel: number;
+            levelProgressPercent: number;
             /** Format: date-time */
             willRegenerateAt?: string;
         };
@@ -5320,12 +5350,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-12T16:48:23.954Z
+             * @example 2026-10-13T14:19:43.071Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-12T16:48:23.955Z
+             * @example 2026-10-13T14:19:43.071Z
              */
             updatedAt: string;
         };
@@ -5655,6 +5685,10 @@ export interface components {
              * @example unit_id
              */
             unitID: string;
+            /** @example 100 */
+            XPgiven: number;
+            /** @example 10 */
+            gemsGiven: number;
             /**
              * Format: date-time
              * @example 2026-10-11T00:00:00Z
@@ -5746,6 +5780,10 @@ export interface components {
              * @example exercise_id
              */
             exerciseID: string;
+            content: {
+                /** @example print("hello") */
+                code: string;
+            };
             /** @example true */
             isGraded: boolean;
             /** @example false */
@@ -5787,6 +5825,18 @@ export interface components {
                 /** @example false */
                 ok: boolean;
             }[];
+            reward?: components["schemas"]["LessonReward"];
+        };
+        LessonReward: {
+            /**
+             * Format: uuid
+             * @example lesson_id
+             */
+            lessonID: string;
+            /** @example 100 */
+            xp: number;
+            /** @example 10 */
+            gems: number;
         };
     };
     responses: never;

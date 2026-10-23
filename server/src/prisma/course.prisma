@@ -41,25 +41,21 @@ model Lesson {
   passThreshold Decimal   @db.Decimal(3, 2) // 0.00 to 1.00 eg 0.75 = 75% pass threshold
   XPgiven       Int
   gemsGiven     Int
-  // Both null = always open. Timestamps are UTC; the client renders local time.
   startAt       DateTime?
   endAt         DateTime?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
   exercises Exercise[]
+  sessions  Sessions[]
 
-  sessions Sessions[]
-
-  // Lessons this one requires the student to pass before it unlocks.
   prerequisites LessonPrerequisite[] @relation("lesson")
-  // Lessons that require this one, kept so deleting a lesson can drop its requirement rows.
-  requiredBy    LessonPrerequisite[] @relation("prerequisite")
+
+  requiredBy LessonPrerequisite[] @relation("prerequisite")
 
   @@index([unitID, position, id])
 }
 
-/// "lesson unlocks only after prerequisite is passed". Edge rows are the whole table.
 model LessonPrerequisite {
   lessonID             String @db.Uuid
   prerequisiteLessonID String @db.Uuid

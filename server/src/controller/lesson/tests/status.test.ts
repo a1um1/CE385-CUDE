@@ -18,6 +18,7 @@ const fakeLesson = (id: string, name: string, overrides: Partial<Lesson> = {}) =
     name,
     unitID: UNIT,
     position: 0,
+    passThreshold: 1,
     XPgiven: 0,
     gemsGiven: 0,
     startAt: null,
@@ -33,7 +34,12 @@ const mockNoPrerequisites = () =>
   mockDB.lessonPrerequisite.findMany.mockResolvedValueOnce([] as never);
 
 const mockPrerequisites = (rows: { lessonID: string; prerequisiteLessonID: string }[]) =>
-  mockDB.lessonPrerequisite.findMany.mockResolvedValueOnce(rows as never);
+  mockDB.lessonPrerequisite.findMany.mockResolvedValueOnce(
+    rows.map((row) => ({
+      lessonID: row.lessonID,
+      prerequisite: { id: row.prerequisiteLessonID, passThreshold: 1 },
+    })) as never,
+  );
 
 describe("Lesson Controller status list", () => {
   it("uses the best attempt, so a later failed retry does not undo a pass", async () => {

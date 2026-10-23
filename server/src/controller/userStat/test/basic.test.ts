@@ -1,5 +1,5 @@
 import UserStatController from "#/controller/userStat";
-import { fakeUserStat } from "#/controller/userStat/test/userStat.mock";
+import { fakeUserStat, fakeUserStatProgress } from "#/controller/userStat/test/userStat.mock";
 import { mockDB } from "#/test/setup";
 import { describe, expect, it } from "vitest";
 
@@ -8,7 +8,7 @@ describe("Basic UserStat Controller", () => {
     mockDB.userStat.findUnique.mockResolvedValueOnce(fakeUserStat);
 
     const userStatController = await UserStatController.getByUserId(fakeUserStat.userID);
-    expect(userStatController.JSON).toEqual(fakeUserStat);
+    expect(userStatController.JSON).toEqual(fakeUserStatProgress);
   });
 
   it("should create a new user statistics record if none exists", async () => {
@@ -16,7 +16,7 @@ describe("Basic UserStat Controller", () => {
     mockDB.userStat.create.mockResolvedValueOnce(fakeUserStat);
 
     const userStatController = await UserStatController.getByUserId(fakeUserStat.userID);
-    expect(userStatController.JSON).toEqual(fakeUserStat);
+    expect(userStatController.JSON).toEqual(fakeUserStatProgress);
     expect(mockDB.userStat.create).toHaveBeenCalledWith({
       data: {
         userID: fakeUserStat.userID,
