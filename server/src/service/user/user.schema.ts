@@ -50,7 +50,7 @@ export const epithetDefinition = z
   .string()
   .min(1, { message: "Epithet must be at least 1 character long." })
   .max(50, { message: "Epithet cannot exceed 50 characters." })
-  .regex(/^[a-zA-Z\s]+$/, {
+  .regex(/^[a-zA-Z\-.\s]+$/, {
     message: "Epithet can only contain letters and spaces.",
   })
   .openapi("EpithetDefinition", {
