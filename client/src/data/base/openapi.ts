@@ -5502,11 +5502,6 @@ export interface components {
         AdminUnitUpdate: {
             /** @example Unit Name */
             name: string;
-            /**
-             * Format: uuid
-             * @example course_id
-             */
-            courseID: string;
         };
         AuthenticationResponseData: {
             message: components["schemas"]["SuccessMessage"];

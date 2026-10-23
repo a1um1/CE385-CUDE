@@ -55,12 +55,11 @@ export const AdminUnitCreateSchema = z
 
 export type AdminUnitCreateSchema = zod.infer<typeof AdminUnitCreateSchema>;
 
-export type adminUnitUpdatePayload = adminUnitCreatePayload;
+export type adminUnitUpdatePayload = Pick<AdminUnitSchema, "name">;
 
 export const AdminUnitUpdateSchema = z
   .object({
     name: z.string().openapi({ example: "Unit Name" }),
-    courseID: z.uuid().openapi({ example: "course_id" }),
   })
   .openapi("AdminUnitUpdate") satisfies zod.ZodType<adminUnitUpdatePayload>;
 

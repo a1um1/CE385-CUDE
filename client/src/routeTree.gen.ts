@@ -25,6 +25,9 @@ import { Route as authedSessionIdRouteRouteImport } from './routes/(authed)/sess
 import { Route as AdminCourseIndexRouteImport } from './routes/admin/course/index'
 import { Route as AdminCourseIdRouteImport } from './routes/admin/course/$id'
 import { Route as AdminCourseCreateRouteImport } from './routes/admin/course/create'
+import { Route as AdminUnitIndexRouteImport } from './routes/admin/unit/index'
+import { Route as AdminUnitIdRouteImport } from './routes/admin/unit/$id'
+import { Route as AdminUnitCreateRouteImport } from './routes/admin/unit/create'
 import { Route as AdminUserIndexRouteImport } from './routes/admin/user/index'
 import { Route as AdminUserIdRouteImport } from './routes/admin/user/$id'
 import { Route as authedbaseAccountIndexRouteImport } from './routes/(authed)/(base)/account/index'
@@ -116,6 +119,21 @@ const AdminCourseCreateRoute = AdminCourseCreateRouteImport.update({
   path: '/course/create',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminUnitIndexRoute = AdminUnitIndexRouteImport.update({
+  id: '/unit/',
+  path: '/unit/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminUnitIdRoute = AdminUnitIdRouteImport.update({
+  id: '/unit/$id',
+  path: '/unit/$id',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminUnitCreateRoute = AdminUnitCreateRouteImport.update({
+  id: '/unit/create',
+  path: '/unit/create',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminUserIndexRoute = AdminUserIndexRouteImport.update({
   id: '/user/',
   path: '/user/',
@@ -197,9 +215,12 @@ export interface FileRoutesByFullPath {
   '/play-grader': typeof authedbasePlayGraderRoute
   '/admin/course/$id': typeof AdminCourseIdRoute
   '/admin/course/create': typeof AdminCourseCreateRoute
+  '/admin/unit/$id': typeof AdminUnitIdRoute
+  '/admin/unit/create': typeof AdminUnitCreateRoute
   '/admin/user/$id': typeof AdminUserIdRoute
   '/': typeof authedbaseIndexRoute
   '/admin/course/': typeof AdminCourseIndexRoute
+  '/admin/unit/': typeof AdminUnitIndexRoute
   '/admin/user/': typeof AdminUserIndexRoute
   '/lesson/$lessonId': typeof authedbaseLessonLessonIdRouteRouteWithChildren
   '/account/security': typeof authedbaseAccountSecurityRoute
@@ -221,9 +242,12 @@ export interface FileRoutesByTo {
   '/play-grader': typeof authedbasePlayGraderRoute
   '/admin/course/$id': typeof AdminCourseIdRoute
   '/admin/course/create': typeof AdminCourseCreateRoute
+  '/admin/unit/$id': typeof AdminUnitIdRoute
+  '/admin/unit/create': typeof AdminUnitCreateRoute
   '/admin/user/$id': typeof AdminUserIdRoute
   '/': typeof authedbaseIndexRoute
   '/admin/course': typeof AdminCourseIndexRoute
+  '/admin/unit': typeof AdminUnitIndexRoute
   '/admin/user': typeof AdminUserIndexRoute
   '/account/security': typeof authedbaseAccountSecurityRoute
   '/account/transactions': typeof authedbaseAccountTransactionsRoute
@@ -251,9 +275,12 @@ export interface FileRoutesById {
   '/(authed)/(base)/play-grader': typeof authedbasePlayGraderRoute
   '/admin/course/$id': typeof AdminCourseIdRoute
   '/admin/course/create': typeof AdminCourseCreateRoute
+  '/admin/unit/$id': typeof AdminUnitIdRoute
+  '/admin/unit/create': typeof AdminUnitCreateRoute
   '/admin/user/$id': typeof AdminUserIdRoute
   '/(authed)/(base)/': typeof authedbaseIndexRoute
   '/admin/course/': typeof AdminCourseIndexRoute
+  '/admin/unit/': typeof AdminUnitIndexRoute
   '/admin/user/': typeof AdminUserIndexRoute
   '/(authed)/(base)/lesson/$lessonId': typeof authedbaseLessonLessonIdRouteRouteWithChildren
   '/(authed)/(base)/account/security': typeof authedbaseAccountSecurityRoute
@@ -281,9 +308,12 @@ export interface FileRouteTypes {
     | '/play-grader'
     | '/admin/course/$id'
     | '/admin/course/create'
+    | '/admin/unit/$id'
+    | '/admin/unit/create'
     | '/admin/user/$id'
     | '/'
     | '/admin/course/'
+    | '/admin/unit/'
     | '/admin/user/'
     | '/lesson/$lessonId'
     | '/account/security'
@@ -305,9 +335,12 @@ export interface FileRouteTypes {
     | '/play-grader'
     | '/admin/course/$id'
     | '/admin/course/create'
+    | '/admin/unit/$id'
+    | '/admin/unit/create'
     | '/admin/user/$id'
     | '/'
     | '/admin/course'
+    | '/admin/unit'
     | '/admin/user'
     | '/account/security'
     | '/account/transactions'
@@ -334,9 +367,12 @@ export interface FileRouteTypes {
     | '/(authed)/(base)/play-grader'
     | '/admin/course/$id'
     | '/admin/course/create'
+    | '/admin/unit/$id'
+    | '/admin/unit/create'
     | '/admin/user/$id'
     | '/(authed)/(base)/'
     | '/admin/course/'
+    | '/admin/unit/'
     | '/admin/user/'
     | '/(authed)/(base)/lesson/$lessonId'
     | '/(authed)/(base)/account/security'
@@ -468,6 +504,27 @@ declare module '@tanstack/react-router' {
       path: '/course/create'
       fullPath: '/admin/course/create'
       preLoaderRoute: typeof AdminCourseCreateRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/unit/': {
+      id: '/admin/unit/'
+      path: '/unit'
+      fullPath: '/admin/unit/'
+      preLoaderRoute: typeof AdminUnitIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/unit/$id': {
+      id: '/admin/unit/$id'
+      path: '/unit/$id'
+      fullPath: '/admin/unit/$id'
+      preLoaderRoute: typeof AdminUnitIdRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/unit/create': {
+      id: '/admin/unit/create'
+      path: '/unit/create'
+      fullPath: '/admin/unit/create'
+      preLoaderRoute: typeof AdminUnitCreateRouteImport
       parentRoute: typeof AdminRouteRoute
     }
     '/admin/user/': {
@@ -648,8 +705,11 @@ interface AdminRouteRouteChildren {
   AdminIndexRoute: typeof AdminIndexRoute
   AdminCourseIdRoute: typeof AdminCourseIdRoute
   AdminCourseCreateRoute: typeof AdminCourseCreateRoute
+  AdminUnitIdRoute: typeof AdminUnitIdRoute
+  AdminUnitCreateRoute: typeof AdminUnitCreateRoute
   AdminUserIdRoute: typeof AdminUserIdRoute
   AdminCourseIndexRoute: typeof AdminCourseIndexRoute
+  AdminUnitIndexRoute: typeof AdminUnitIndexRoute
   AdminUserIndexRoute: typeof AdminUserIndexRoute
 }
 
@@ -657,8 +717,11 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminIndexRoute: AdminIndexRoute,
   AdminCourseIdRoute: AdminCourseIdRoute,
   AdminCourseCreateRoute: AdminCourseCreateRoute,
+  AdminUnitIdRoute: AdminUnitIdRoute,
+  AdminUnitCreateRoute: AdminUnitCreateRoute,
   AdminUserIdRoute: AdminUserIdRoute,
   AdminCourseIndexRoute: AdminCourseIndexRoute,
+  AdminUnitIndexRoute: AdminUnitIndexRoute,
   AdminUserIndexRoute: AdminUserIndexRoute,
 }
 

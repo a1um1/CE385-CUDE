@@ -18,6 +18,12 @@ const navItems: { key: string; label: string; link: LinkProps; icon: LucideIcon 
     icon: BookTextIcon,
   },
   {
+    key: "admin-unit-list",
+    label: "Units",
+    link: { to: "/admin/unit" },
+    icon: BookTextIcon,
+  },
+  {
     key: "admin-user-list",
     label: "Users",
     link: { to: "/admin/user" },

@@ -64,7 +64,7 @@ const adminUnitRouter = new CustomRouter({
     {
       summary: "Update unit by ID",
       description:
-        "Update a unit's `name` and `courseID` (which moves it between courses). Requires an `ADMIN` token. " +
+        "Update a unit's `name`. Course cannot be changed after creation. Requires an `ADMIN` token. " +
         "Returns `404` when the unit does not exist.",
       params: z.object({
         id: z.uuid().openapi({ example: "unit_id" }),
