@@ -6066,12 +6066,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-23T17:27:56.659Z
+             * @example 2026-10-23T18:07:58.999Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-23T17:27:56.660Z
+             * @example 2026-10-23T18:07:59.000Z
              */
             updatedAt: string;
         };
@@ -6096,7 +6096,7 @@ export interface components {
             size: number;
         };
         /** @enum {string} */
-        StoragePurpose: "avatar" | "thumbnail" | "background";
+        StoragePurpose: "avatar" | "thumbnail" | "background" | "exercise-asset";
         Test: {
             /** @example 123456 */
             randomNumber: number | null;

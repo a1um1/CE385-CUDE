@@ -8,12 +8,14 @@ import {
   LinkAction,
   TableAction,
 } from "./blockActions";
+import { ImageUploadAction } from "./imageUploadAction";
 import { AlertNoteAction } from "./alertAction";
 
 export * from "./actionItem";
 export * from "./headingAction";
 export * from "./formatActions";
 export * from "./blockActions";
+export * from "./imageUploadAction";
 export * from "./alertAction";
 export * from "./windowActions";
 
@@ -32,6 +34,7 @@ export const DEFAULT_TOOLBAR_ACTIONS: ToolbarActionConfig[] = [
   { id: "numbered-list", component: NumberedListAction },
   { id: "quote", component: QuoteAction },
   { id: "link", component: LinkAction },
+  { id: "image-upload", component: ImageUploadAction },
   { id: "table", component: TableAction },
   { id: "alert-note", component: AlertNoteAction },
 ];

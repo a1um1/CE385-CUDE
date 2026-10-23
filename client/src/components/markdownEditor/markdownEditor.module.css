@@ -78,7 +78,7 @@
 }
 
 .toolbar-dropdown-btn {
-  padding: 0 0.5rem;
+  padding: 0 0.5rem !important;
   gap: 0.35rem;
 }
 
