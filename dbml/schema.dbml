@@ -54,8 +54,6 @@ Table LessonPrerequisite {
   indexes {
     (lessonID, prerequisiteLessonID) [pk]
   }
-
-  Note: '"lesson unlocks only after prerequisite is passed". Edge rows are the whole table.'
 }
 
 Table UserStat {
