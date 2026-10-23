@@ -21,6 +21,8 @@ export interface LessonFormValues {
   passThreshold: number;
   XPgiven: number;
   gemsGiven: number;
+  startAt: string;
+  endAt: string;
   prerequisiteLessonIDs: string[];
 }
 
@@ -39,6 +41,8 @@ const defaultValuesFallback: LessonFormValues = {
   passThreshold: 1,
   XPgiven: 0,
   gemsGiven: 0,
+  startAt: "",
+  endAt: "",
   prerequisiteLessonIDs: [],
 };
 
@@ -208,6 +212,49 @@ export function LessonForm({
                   disabled={isPending}
                   value={field.state.value}
                   onChange={(e) => field.handleChange(Number.parseInt(e.target.value, 10) || 0)}
+                />
+              </div>
+            )}
+          </form.Field>
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "1rem",
+            marginTop: "0.75rem",
+          }}
+        >
+          <form.Field name="startAt">
+            {(field) => (
+              <div className={formStyles["form-field"]}>
+                <label htmlFor="startAt" className={formStyles.label}>
+                  Start Date/Time (optional)
+                </label>
+                <Input
+                  id="startAt"
+                  type="datetime-local"
+                  disabled={isPending}
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+              </div>
+            )}
+          </form.Field>
+
+          <form.Field name="endAt">
+            {(field) => (
+              <div className={formStyles["form-field"]}>
+                <label htmlFor="endAt" className={formStyles.label}>
+                  End Date/Time (optional)
+                </label>
+                <Input
+                  id="endAt"
+                  type="datetime-local"
+                  disabled={isPending}
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
                 />
               </div>
             )}

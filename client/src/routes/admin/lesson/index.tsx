@@ -71,6 +71,12 @@ const buildColumns = (unitMap: Map<string, string>) =>
         return <span>{count > 0 ? `${count} required` : "None"}</span>;
       },
     }),
+    columnHelper.datetime("startAt", {
+      header: "Start At",
+    }),
+    columnHelper.datetime("endAt", {
+      header: "End At",
+    }),
     columnHelper.display({
       id: "actions",
       header: "Actions",
