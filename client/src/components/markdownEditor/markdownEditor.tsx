@@ -32,9 +32,13 @@ export interface MarkdownEditorProps {
   disabled?: boolean;
   height?: number | string;
   minHeight?: number | string;
+  maxHeight?: number | string;
+  width?: number | string;
+  maxWidth?: number | string;
   defaultShowEditor?: boolean;
   defaultShowPreview?: boolean;
   className?: string;
+  style?: React.CSSProperties;
 }
 
 function detectHeading(trimmed: string): HeadingType {
@@ -87,9 +91,13 @@ export function MarkdownEditor({
   disabled = false,
   height,
   minHeight = 450,
+  maxHeight,
+  width,
+  maxWidth,
   defaultShowEditor = true,
   defaultShowPreview = true,
   className,
+  style,
 }: MarkdownEditorProps) {
   const [showEditor, setShowEditor] = React.useState(defaultShowEditor);
   const [showPreview, setShowPreview] = React.useState(defaultShowPreview);
@@ -359,7 +367,18 @@ export function MarkdownEditor({
   );
 
   return (
-    <div className={clsx(styles.container, className)} style={{ height, minHeight }}>
+    <div
+      className={clsx(styles.container, className)}
+      style={{
+        position: "relative",
+        height,
+        minHeight,
+        maxHeight,
+        width,
+        maxWidth,
+        ...style,
+      }}
+    >
       <div className={styles.toolbar} role="toolbar" aria-label="Markdown Editor Toolbar">
         <div className={styles["toolbar-group"]}>
           {/* Headings Dropdown */}
