@@ -2355,6 +2355,194 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get stats for all courses
+         * @description Return attempt and score-distribution stats for every course. Requires an `ADMIN` token.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminCourseStates"][];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/stats/{courseId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get stats for one course
+         * @description Return attempt and score-distribution stats for one course. Requires an `ADMIN` token. Returns `404` when the course does not exist.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    courseId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminCourseStates"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin": {
         parameters: {
             query?: never;
@@ -5320,12 +5508,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-12T16:48:23.954Z
+             * @example 2026-10-23T03:09:14.625Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-12T16:48:23.955Z
+             * @example 2026-10-23T03:09:14.626Z
              */
             updatedAt: string;
         };
@@ -5477,6 +5665,61 @@ export interface components {
              * @example course_id
              */
             courseID: string;
+        };
+        AdminCourseStates: {
+            /** @example course_id */
+            courseID: string;
+            /** @example Course Name */
+            courseName: string;
+            /**
+             * @description จำนวนครั้งที่เรียน
+             * @example 30
+             */
+            totalAttempts: number;
+            passed: {
+                /** @example 12 */
+                count: number;
+                /**
+                 * @description 0-100 ปัดทศนิยม 1 ตำแหน่ง
+                 * @example 40
+                 */
+                percent: number;
+            };
+            failed: {
+                /** @example 12 */
+                count: number;
+                /**
+                 * @description 0-100 ปัดทศนิยม 1 ตำแหน่ง
+                 * @example 40
+                 */
+                percent: number;
+            };
+            inProgress: {
+                /** @example 12 */
+                count: number;
+                /**
+                 * @description 0-100 ปัดทศนิยม 1 ตำแหน่ง
+                 * @example 40
+                 */
+                percent: number;
+            };
+            gaveUp: {
+                /** @example 12 */
+                count: number;
+                /**
+                 * @description 0-100 ปัดทศนิยม 1 ตำแหน่ง
+                 * @example 40
+                 */
+                percent: number;
+            };
+            scoreDistribution: {
+                /** @example 0 */
+                min: number;
+                /** @example 10 */
+                max: number;
+                /** @example 3 */
+                count: number;
+            }[];
         };
         AuthenticationResponseData: {
             message: components["schemas"]["SuccessMessage"];
