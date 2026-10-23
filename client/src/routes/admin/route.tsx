@@ -1,4 +1,5 @@
 import Sidebar from "#/components/sidebar";
+import AdminBreadcrumbs from "#/components/breadcrumbs/adminBreadcrumbs";
 import {
   CollapsibleSidebarProvider,
   CollapsibleSidebarToggle,
@@ -36,7 +37,7 @@ function RouteComponent() {
           <div className={style["admin-navbar"]}>
             <div className="flex items-center gap-2">
               <CollapsibleSidebarToggle iconOnly label="Toggle sidebar" />
-              <p>Hello world</p>
+              <AdminBreadcrumbs />
             </div>
             <UserMenu />
           </div>
