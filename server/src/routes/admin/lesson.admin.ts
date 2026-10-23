@@ -1,6 +1,3 @@
-import SessionService from "#/service/learnSession";
-import { enrollmentAvailabilitySchema } from "#/service/learnSession/session";
-import { ExerciseSchema } from "#/service/exercise";
 import LessonService from "#/service/admin/lesson";
 import {
   LessonCreateSchema,
@@ -13,24 +10,21 @@ import {
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 
-const ExerciseListSchema = z.array(ExerciseSchema);
-
-const lessonRouterInstance = new CustomRouter({
+const adminLessonRouter = new CustomRouter({
   prefix: "/admin/lesson",
-  tags: ["Lesson"],
-  authentication: true,
+  tags: ["Admin Lesson Management"],
+  authentication: ["ADMIN"],
 })
   .get(
     "/",
     {
-      summary: "List lessons of a unit (paginated)",
+      summary: "List lessons (paginated), optionally filtered by unitId",
       description:
-        "Return one page of the lessons that belong to a unit.\n\n" +
-        "- `unitId` — required, the unit to list\n" +
+        "Return one page of lessons. Requires an `ADMIN` token.\n\n" +
+        "- `unitId` — optional, the unit to list lessons for\n" +
         "- `page` — 1-based, default `1`\n" +
         "- `limit` — items per page, default `20`, max `100`\n" +
-        "- `include` — same allow-list as `GET /lesson/:lessonId`\n\n" +
-        "Lessons are ordered by creation. Returns `404` when the unit does not exist.",
+        "- `include` — allowed: `unit`, `unit.course`",
       query: LessonListQuerySchema,
       response: PaginatedLessonSchema,
     },
@@ -46,12 +40,8 @@ const lessonRouterInstance = new CustomRouter({
     {
       summary: "Get lesson by ID",
       description:
-        "Return a single lesson by its ID. Requires an authenticated user.\n\n" +
-        "Use `?include=` to embed related rows:\n\n" +
-        "- `unit` — the unit the lesson belongs to\n" +
-        "- `unit.course` — the unit and its course\n\n" +
-        "Does **not** require an open session; reading lesson metadata is always allowed. " +
-        "Returns `404` when no lesson has that ID.",
+        "Return a single lesson by its ID. Requires an `ADMIN` token.\n\n" +
+        "Use `?include=` to embed related rows (`unit`, `unit.course`).",
       params: z.object({
         lessonId: z.uuid().openapi({ example: "lesson_id" }),
       }),
@@ -67,7 +57,7 @@ const lessonRouterInstance = new CustomRouter({
     "/",
     {
       summary: "Create a lesson",
-      description: "Create a lesson inside a unit. Returns `404` when the unit does not exist.",
+      description: "Create a lesson inside a unit. Requires an `ADMIN` token.",
       body: LessonCreateSchema,
       response: LessonSchema,
     },
@@ -76,14 +66,12 @@ const lessonRouterInstance = new CustomRouter({
       return lesson.JSON;
     },
   )
-  .patch(
+  .put(
     "/:lessonId",
     {
       summary: "Update a lesson",
       description:
-        "Update the `name` and/or move the lesson to another unit (`unitID`). " +
-        "Send at least one field. Returns `404` when the lesson (or the target unit) " +
-        "does not exist.",
+        "Update lesson fields. Unit cannot be changed after creation. Requires an `ADMIN` token.",
       params: z.object({
         lessonId: z.uuid().openapi({ example: "lesson_id" }),
       }),
@@ -94,50 +82,6 @@ const lessonRouterInstance = new CustomRouter({
       const lesson = await LessonService.update(params.lessonId, body);
       return lesson.JSON;
     },
-  )
-  .get(
-    "/:lessonId/enrollment-availability",
-    {
-      summary: "Check if a lesson is available for enrollment",
-      description:
-        "Check whether the authenticated user can start (enroll in) this lesson right now.\n\n" +
-        "A student may have **only one open session at a time**. This endpoint reports:\n\n" +
-        "- `AVAILABLE` — no session is open, the student can start this lesson\n" +
-        "- `PENDING` — this is the lesson the student is currently working on\n" +
-        "- `NOT_AVAILABLE` — another lesson has an open session and blocks this one\n\n" +
-        "`isAvailable` is the boolean form of the same answer.",
-      params: z.object({
-        lessonId: z.uuid().openapi({ example: "lesson_id" }),
-      }),
-      response: enrollmentAvailabilitySchema,
-    },
-    async ({ params, user }) => {
-      const availability = await SessionService.enrollmentCheck({
-        LessonID: params.lessonId,
-        UserID: user.JSON.id,
-      });
-      return availability;
-    },
-  )
-  .get(
-    "/:lessonId/exercise",
-    {
-      summary: "List exercises of a lesson",
-      description:
-        "Return every exercise that belongs to the lesson. Requires an authenticated user.\n\n" +
-        "Each item carries its type (`CODE`, `QUIZ`, …) and configuration. For code exercises the " +
-        "**public** test cases are included; hidden test cases are never exposed here.\n\n" +
-        "Returns `404` when the lesson does not exist.",
-      params: z.object({
-        lessonId: z.uuid().openapi({ example: "lesson_id" }),
-      }),
-      response: ExerciseListSchema,
-    },
-    async ({ params }) => {
-      const lesson = await LessonService.getById(params.lessonId);
-      const exercises = await lesson.getAllExercise();
-      return exercises.map((exercise) => exercise.JSON);
-    },
   );
 
-export const adminLessonRoute = lessonRouterInstance.route;
+export const adminLessonRoute = adminLessonRouter.route;

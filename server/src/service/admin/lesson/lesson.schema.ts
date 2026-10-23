@@ -9,6 +9,12 @@ export const LessonSchema = z
     id: z.uuidv7().openapi({ example: "lesson_id" }),
     name: z.string().openapi({ example: "lesson_name" }),
     unitID: z.uuidv7().openapi({ example: "unit_id" }),
+    position: z.number().int().openapi({ example: 0 }),
+    passThreshold: z.number().openapi({ example: 1 }),
+    XPgiven: z.number().int().openapi({ example: 100 }),
+    gemsGiven: z.number().int().openapi({ example: 10 }),
+    startAt: z.date().nullable().openapi({ example: "2026-10-11T00:00:00Z" }),
+    endAt: z.date().nullable().openapi({ example: "2026-11-11T00:00:00Z" }),
     unit: z
       .object({
         id: z.uuidv7().openapi({ example: "unit_id" }),
@@ -42,9 +48,9 @@ export const LessonIncludeQuerySchema = createIncludeQuerySchema(
   "LessonIncludeQuery",
 );
 
-/** Query of `GET /lesson`: lessons of one unit, paginated. */
+/** Query of `GET /admin/lesson`: lessons of one unit, paginated. */
 export const LessonListQuerySchema = LessonIncludeQuerySchema.extend({
-  unitId: z.uuid().openapi({ example: "unit_id" }),
+  unitId: z.uuid().optional().openapi({ example: "unit_id" }),
   page: z.coerce.number().int().min(1).default(1).openapi({ example: 1 }),
   limit: z.coerce.number().int().min(1).max(100).default(20).openapi({ example: 20 }),
 });
@@ -63,7 +69,7 @@ export const PaginatedLessonSchema = z
 
 export type PaginatedLesson = zod.infer<typeof PaginatedLessonSchema>;
 
-/** Body of `POST /lesson`. */
+/** Body of `POST /admin/lesson`. */
 export const LessonCreateSchema = z
   .object({
     name: z.string().trim().min(1).max(200).openapi({ example: "lesson_name" }),
@@ -71,16 +77,22 @@ export const LessonCreateSchema = z
     passThreshold: z.number().min(0).max(1).default(1).openapi({ example: 1 }),
     XPgiven: z.number().int().min(0).default(0).openapi({ example: 0 }),
     gemsGiven: z.number().int().min(0).default(0).openapi({ example: 0 }),
+    startAt: z.date().nullable().optional().openapi({ example: "2026-10-11T00:00:00Z" }),
+    endAt: z.date().nullable().optional().openapi({ example: "2026-11-11T00:00:00Z" }),
   })
   .openapi("LessonCreate");
 
 export type LessonCreate = zod.infer<typeof LessonCreateSchema>;
 
-/** Body of `PATCH /lesson/:lessonId`. At least one field is required. */
+/** Body of `PUT/PATCH /admin/lesson/:lessonId`. Cannot move units. */
 export const LessonUpdateSchema = z
   .object({
     name: z.string().trim().min(1).max(200).optional().openapi({ example: "new_name" }),
-    unitID: z.uuidv7().optional().openapi({ example: "unit_id" }),
+    passThreshold: z.number().min(0).max(1).optional().openapi({ example: 1 }),
+    XPgiven: z.number().int().min(0).optional().openapi({ example: 0 }),
+    gemsGiven: z.number().int().min(0).optional().openapi({ example: 0 }),
+    startAt: z.date().nullable().optional().openapi({ example: "2026-10-11T00:00:00Z" }),
+    endAt: z.date().nullable().optional().openapi({ example: "2026-11-11T00:00:00Z" }),
   })
   .refine((body) => Object.keys(body).length > 0, {
     message: "At least one field is required",

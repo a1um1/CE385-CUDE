@@ -1507,6 +1507,374 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/lesson": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List lessons (paginated), optionally filtered by unitId
+         * @description Return one page of lessons. Requires an `ADMIN` token.
+         *
+         *     - `unitId` — optional, the unit to list lessons for
+         *     - `page` — 1-based, default `1`
+         *     - `limit` — items per page, default `20`, max `100`
+         *     - `include` — allowed: `unit`, `unit.course`
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Relations to include. Allowed: unit, unit.course */
+                    include?: ("unit" | "unit.course") | ("unit" | "unit.course")[];
+                    unitId?: string;
+                    page?: number;
+                    limit?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PaginatedLesson"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /**
+         * Create a lesson
+         * @description Create a lesson inside a unit. Requires an `ADMIN` token.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["LessonCreate"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Lesson"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/lesson/{lessonId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get lesson by ID
+         * @description Return a single lesson by its ID. Requires an `ADMIN` token.
+         *
+         *     Use `?include=` to embed related rows (`unit`, `unit.course`).
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Relations to include. Allowed: unit, unit.course */
+                    include?: ("unit" | "unit.course") | ("unit" | "unit.course")[];
+                };
+                header?: never;
+                path: {
+                    lessonId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Lesson"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        /**
+         * Update a lesson
+         * @description Update lesson fields. Unit cannot be changed after creation. Requires an `ADMIN` token.
+         */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    lessonId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["LessonUpdate"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Lesson"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/user": {
         parameters: {
             query?: never;
@@ -2013,7 +2381,7 @@ export interface paths {
                     perPage?: number;
                     cursor?: string;
                     direction?: "forward" | "backward";
-                    sortBy?: "name" | "createdAt" | "updatedAt" | "id";
+                    sortBy?: "name" | "position" | "createdAt" | "updatedAt" | "id";
                     sortOrder?: "asc" | "desc";
                     courseID?: string;
                 };
@@ -2266,7 +2634,7 @@ export interface paths {
         };
         /**
          * Update unit by ID
-         * @description Update a unit's `name` and `courseID` (which moves it between courses). Requires an `ADMIN` token. Returns `404` when the unit does not exist.
+         * @description Update a unit's `name`. Course cannot be changed after creation. Requires an `ADMIN` token. Returns `404` when the unit does not exist.
          */
         put: {
             parameters: {
@@ -2290,6 +2658,354 @@ export interface paths {
                     };
                     content: {
                         "application/json": components["schemas"]["AdminUnitObject"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/exercise": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List exercises (paginated), optionally filter by lessonID */
+        get: {
+            parameters: {
+                query?: {
+                    perPage?: number;
+                    cursor?: string;
+                    direction?: "forward" | "backward";
+                    sortBy?: "createdAt" | "updatedAt" | "id";
+                    sortOrder?: "asc" | "desc";
+                    /** @description Filter by Lesson ID */
+                    lessonID?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminExerciseListResponse"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Create a new exercise */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["CreateAdminExercise"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminExerciseObject"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/exercise/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get exercise by ID */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminExerciseObject"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        /** Update exercise name/content by ID */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["UpdateAdminExercise"];
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminExerciseObject"];
                     };
                 };
                 /** @description Validation error */
@@ -5350,12 +6066,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-13T14:19:43.071Z
+             * @example 2026-10-23T17:27:56.659Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-13T14:19:43.071Z
+             * @example 2026-10-23T17:27:56.660Z
              */
             updatedAt: string;
         };
@@ -5436,6 +6152,130 @@ export interface components {
             /** @example icon_name */
             icon: string;
         };
+        PaginatedLesson: {
+            items: components["schemas"]["Lesson"][];
+            /** @example 42 */
+            total: number;
+            /** @example 1 */
+            page: number;
+            /** @example 20 */
+            limit: number;
+            /** @example 3 */
+            totalPages: number;
+        };
+        Lesson: {
+            /**
+             * Format: uuid
+             * @example lesson_id
+             */
+            id: string;
+            /** @example lesson_name */
+            name: string;
+            /**
+             * Format: uuid
+             * @example unit_id
+             */
+            unitID: string;
+            /** @example 0 */
+            position: number;
+            /** @example 1 */
+            passThreshold: number;
+            /** @example 100 */
+            XPgiven: number;
+            /** @example 10 */
+            gemsGiven: number;
+            /**
+             * Format: date-time
+             * @example 2026-10-11T00:00:00Z
+             */
+            startAt: string | null;
+            /**
+             * Format: date-time
+             * @example 2026-11-11T00:00:00Z
+             */
+            endAt: string | null;
+            unit?: {
+                /**
+                 * Format: uuid
+                 * @example unit_id
+                 */
+                id: string;
+                /** @example unit_name */
+                name: string;
+                /**
+                 * Format: uuid
+                 * @example course_id
+                 */
+                courseID: string;
+                course?: {
+                    /**
+                     * Format: uuid
+                     * @example course_id
+                     */
+                    id: string;
+                    /** @example Course_Name */
+                    name: string;
+                    /** @example #FFFFF */
+                    color: string;
+                    /** @example icon_name */
+                    icon: string;
+                };
+            };
+        };
+        LessonCreate: {
+            /** @example lesson_name */
+            name: string;
+            /**
+             * Format: uuid
+             * @example unit_id
+             */
+            unitID: string;
+            /**
+             * @default 1
+             * @example 1
+             */
+            passThreshold: number;
+            /**
+             * @default 0
+             * @example 0
+             */
+            XPgiven: number;
+            /**
+             * @default 0
+             * @example 0
+             */
+            gemsGiven: number;
+            /**
+             * Format: date-time
+             * @example 2026-10-11T00:00:00Z
+             */
+            startAt?: string | null;
+            /**
+             * Format: date-time
+             * @example 2026-11-11T00:00:00Z
+             */
+            endAt?: string | null;
+        };
+        LessonUpdate: {
+            /** @example new_name */
+            name?: string;
+            /** @example 1 */
+            passThreshold?: number;
+            /** @example 0 */
+            XPgiven?: number;
+            /** @example 0 */
+            gemsGiven?: number;
+            /**
+             * Format: date-time
+             * @example 2026-10-11T00:00:00Z
+             */
+            startAt?: string | null;
+            /**
+             * Format: date-time
+             * @example 2026-11-11T00:00:00Z
+             */
+            endAt?: string | null;
+        };
         AdminUserListResponse: {
             /** @example [] */
             data: components["schemas"]["UserSafeData"][];
@@ -5502,6 +6342,46 @@ export interface components {
         AdminUnitUpdate: {
             /** @example Unit Name */
             name: string;
+        };
+        AdminExerciseListResponse: {
+            /** @example [] */
+            data: components["schemas"]["AdminExerciseObject"][];
+            /** @example next_cursor_id */
+            nextCursor?: string;
+            /** @example prev_cursor_id */
+            prevCursor?: string;
+        };
+        AdminExerciseObject: {
+            /**
+             * Format: uuid
+             * @example 0192a000-0000-7000-8000-000000000001
+             */
+            id: string;
+            /**
+             * Format: uuid
+             * @example 0192a000-0000-7000-8000-000000000002
+             */
+            lessonID: string;
+        } & {
+            [key: string]: unknown;
+        };
+        CreateAdminExercise: {
+            /** @example Exercise Name */
+            name: string;
+            /**
+             * Format: uuid
+             * @description Lesson ID
+             * @example 0192a000-0000-7000-8000-000000000002
+             */
+            lessonID: string;
+            /** @example Exercise content */
+            content: string;
+        };
+        UpdateAdminExercise: {
+            /** @example Exercise Name */
+            name: string;
+            /** @example Exercise content */
+            content: string;
         };
         AuthenticationResponseData: {
             message: components["schemas"]["SuccessMessage"];
@@ -5667,61 +6547,6 @@ export interface components {
          * @enum {string}
          */
         LessonStatus: "AVAILABLE" | "PENDING" | "PASSED" | "FAILED" | "GIVE_UP" | "NOT_AVAILABLE";
-        Lesson: {
-            /**
-             * Format: uuid
-             * @example lesson_id
-             */
-            id: string;
-            /** @example lesson_name */
-            name: string;
-            /**
-             * Format: uuid
-             * @example unit_id
-             */
-            unitID: string;
-            /** @example 100 */
-            XPgiven: number;
-            /** @example 10 */
-            gemsGiven: number;
-            /**
-             * Format: date-time
-             * @example 2026-10-11T00:00:00Z
-             */
-            startAt: string | null;
-            /**
-             * Format: date-time
-             * @example 2026-11-11T00:00:00Z
-             */
-            endAt: string | null;
-            unit?: {
-                /**
-                 * Format: uuid
-                 * @example unit_id
-                 */
-                id: string;
-                /** @example unit_name */
-                name: string;
-                /**
-                 * Format: uuid
-                 * @example course_id
-                 */
-                courseID: string;
-                course?: {
-                    /**
-                     * Format: uuid
-                     * @example course_id
-                     */
-                    id: string;
-                    /** @example Course_Name */
-                    name: string;
-                    /** @example #FFFFF */
-                    color: string;
-                    /** @example icon_name */
-                    icon: string;
-                };
-            };
-        };
         Exercise: {
             /**
              * Format: uuid

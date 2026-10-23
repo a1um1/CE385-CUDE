@@ -29,7 +29,7 @@ export const unitQueryPayload = {
 } satisfies Prisma.UnitSelect;
 
 export const AdminUnitQuerySchema = createCursorPaginationQuerySchema(
-  ["name", "createdAt", "updatedAt", "id"],
+  ["name", "position", "createdAt", "updatedAt", "id"],
   "AdminUnitQuery",
 ).extend({
   courseID: z.uuid().optional().openapi({ example: "course_id" }),
