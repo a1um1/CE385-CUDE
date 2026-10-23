@@ -1,11 +1,56 @@
 import * as React from "react";
 import MarkdownEditor from "#/components/markdownEditor";
+import { APIclient } from "#/data/base/baseAPI";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { Meta, StoryObj } from "@storybook/react";
+
+// Storybook-only mock: short-circuit POST /storage/presign and mock fetch
+let mocksInstalled = false;
+
+function installMocks() {
+  if (mocksInstalled) return;
+  mocksInstalled = true;
+
+  APIclient.use({
+    onRequest: async ({ request }) => {
+      if (!request.url.endsWith("/storage/presign")) return;
+      const key = `exercises/mock/${Date.now()}.png`;
+      return Response.json({
+        key,
+        uploadUrl: `https://mock-upload.local/${key}`,
+        accessUrl: `https://picsum.photos/seed/${Date.now()}/600/400`,
+        expiresIn: 300,
+      });
+    },
+  });
+
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = (input, init) => {
+    const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
+    if (url.startsWith("https://mock-upload.local/")) {
+      return Promise.resolve(new Response(null, { status: 200 }));
+    }
+    return realFetch.call(globalThis, input, init);
+  };
+}
+
+installMocks();
+
+const queryClient = new QueryClient({
+  defaultOptions: { mutations: { retry: false }, queries: { retry: false } },
+});
 
 const meta = {
   title: "Components/MarkdownEditor",
   component: MarkdownEditor,
   tags: ["autodocs"],
+  decorators: [
+    (Story) => (
+      <QueryClientProvider client={queryClient}>
+        <Story />
+      </QueryClientProvider>
+    ),
+  ],
   argTypes: {
     disabled: {
       control: "boolean",
