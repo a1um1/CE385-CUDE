@@ -378,6 +378,12 @@ export function MarkdownEditor({
             <Dropdown.Content className={styles["dropdown-menu"]}>
               <Dropdown.Item
                 className={styles["dropdown-item"]}
+                onClick={() => setHeading("Paragraph")}
+              >
+                Paragraph
+              </Dropdown.Item>
+              <Dropdown.Item
+                className={styles["dropdown-item"]}
                 onClick={() => setHeading("Heading 1")}
               >
                 Heading 1
