@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import { buildCursorOrderBy } from "#/lib/pagination.schema";
+import { cursorArgs, isBackward, paginate } from "#/lib/pagination";
 import { type userSafeSchema } from "#/service/user/user.schema";
 import UserError from "#/lib/router/http/userError";
 import type {
@@ -59,32 +60,9 @@ export default class AdminUserService {
   }
 
   static async queryUser(query: AdminUserQuery): Promise<AdminUserListResponseSchema> {
-    const isBackward = query.direction === "backward" && Boolean(query.cursor);
-    const orderBy = buildCursorOrderBy(query.sortBy, query.sortOrder, isBackward);
+    const orderBy = buildCursorOrderBy(query.sortBy, query.sortOrder, isBackward(query));
+    const users = await userRepository.findPage({ ...cursorArgs(query), orderBy });
 
-    const users = await userRepository.findPage({
-      take: query.perPage + 1,
-      skip: query.cursor ? 1 : 0,
-      cursor: query.cursor ? { id: query.cursor } : undefined,
-      orderBy,
-    });
-
-    let nextCursor: string | undefined = undefined;
-    let prevCursor: string | undefined = undefined;
-
-    if (isBackward) {
-      if (users.length > query.perPage) prevCursor = users.pop()?.id || undefined;
-      users.reverse();
-      nextCursor = query.cursor || undefined;
-    } else {
-      if (users.length > query.perPage) nextCursor = users.pop()?.id || undefined;
-      if (query.cursor) prevCursor = query.cursor;
-    }
-
-    return {
-      data: users,
-      nextCursor: nextCursor || undefined,
-      prevCursor: prevCursor || undefined,
-    };
+    return paginate(users, query);
   }
 }

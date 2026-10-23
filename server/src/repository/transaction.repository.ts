@@ -20,14 +20,14 @@ export const transactionRepository = {
     args: {
       take: number;
       skip: number;
-      cursorID?: string;
+      cursor?: { id: string };
       orderBy: Prisma.TransactionsOrderByWithRelationInput;
     },
   ) =>
     client().transactions.findMany({
       take: args.take,
       skip: args.skip,
-      cursor: args.cursorID ? { id: args.cursorID, userID } : undefined,
+      cursor: args.cursor ? { id: args.cursor.id, userID } : undefined,
       orderBy: args.orderBy,
       select: TransactionQueryPayload,
     }),

@@ -6,6 +6,7 @@ import type {
 } from "#/service/admin/exercise/exercise.schema";
 import type { Exercise } from "#/generated/prisma/client";
 import { buildCursorOrderBy } from "#/lib/pagination.schema";
+import { cursorArgs, isBackward, paginate } from "#/lib/pagination";
 import UserError from "#/lib/router/http/userError";
 import { exerciseRepository } from "#/repository/exercise.repository";
 import { lessonRepository } from "#/repository/lesson.repository";
@@ -30,32 +31,14 @@ export default class AdminExercisesService {
   static async getPaginateLists(
     query: AdminExerciseQuery,
   ): Promise<AdminExerciseListResponseSchema> {
-    const isBackward = query.direction === "backward" && Boolean(query.cursor);
-    const orderBy = buildCursorOrderBy(query.sortBy, query.sortOrder, isBackward);
-
+    const orderBy = buildCursorOrderBy(query.sortBy, query.sortOrder, isBackward(query));
     const data = await exerciseRepository.findPage({
       where: query.lessonID ? { lessonID: query.lessonID } : undefined,
-      take: query.perPage + 1,
-      skip: query.cursor ? 1 : 0,
-      cursor: query.cursor ? { id: query.cursor } : undefined,
+      ...cursorArgs(query),
       orderBy,
     });
 
-    let nextCursor: string | undefined = undefined;
-    let prevCursor: string | undefined = undefined;
-
-    const hasExtra = data.length > query.perPage;
-    if (hasExtra) data.pop();
-    if (isBackward) {
-      data.reverse();
-      if (hasExtra) prevCursor = data[0]?.id;
-      nextCursor = query.cursor;
-    } else {
-      if (hasExtra) nextCursor = data[data.length - 1]?.id;
-      if (query.cursor) prevCursor = query.cursor;
-    }
-
-    return { data, nextCursor, prevCursor };
+    return paginate(data, query);
   }
 
   static async create(body: CreateAdminExercise): Promise<AdminExercisesService> {
