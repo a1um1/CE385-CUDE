@@ -1,0 +1,151 @@
+@reference "#/styles/main.css";
+
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background-color: var(--color-background);
+  overflow: hidden;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background-color: color-mix(in oklch, var(--color-background) 80%, black);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.toolbar-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-foreground);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition:
+    background-color 0.15s,
+    border-color 0.15s;
+
+  &:hover:not(:disabled) {
+    background-color: color-mix(in oklch, var(--color-foreground) 10%, transparent);
+    border-color: var(--color-border);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  &.active {
+    background-color: var(--color-primary);
+    color: var(--color-primary-foreground, #fff);
+  }
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 1.25rem;
+  background-color: var(--color-border);
+  margin: 0 0.25rem;
+}
+
+.editor-area {
+  display: grid;
+  min-height: 300px;
+  width: 100%;
+}
+
+.mode-split {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+}
+
+.mode-write {
+  grid-template-columns: 1fr;
+}
+
+.mode-preview {
+  grid-template-columns: 1fr;
+}
+
+.pane {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.write-pane {
+  position: relative;
+}
+
+.mode-split .write-pane {
+  border-right: 1px solid var(--color-border);
+
+  @media (max-width: 768px) {
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+  }
+}
+
+.textarea {
+  width: 100%;
+  height: 100%;
+  min-height: 300px;
+  padding: 0.75rem;
+  border: none;
+  resize: vertical;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+    monospace;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  background-color: transparent;
+  color: var(--color-foreground);
+  outline: none;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.preview-pane {
+  padding: 0.75rem 1rem;
+  overflow-y: auto;
+  max-height: 600px;
+  background-color: color-mix(in oklch, var(--color-background) 95%, black);
+}
+
+.preview-empty {
+  color: var(--color-placeholder, #888);
+  font-style: italic;
+  font-size: 0.875rem;
+}
