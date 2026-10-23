@@ -64,6 +64,14 @@ const buildColumns = (unitMap: Map<string, string>) =>
       align: "center",
     }),
     columnHelper.display({
+      id: "prerequisites",
+      header: "Prerequisites",
+      cell: (info) => {
+        const count = info.row.original.prerequisiteLessonIDs?.length ?? 0;
+        return <span>{count > 0 ? `${count} required` : "None"}</span>;
+      },
+    }),
+    columnHelper.display({
       id: "actions",
       header: "Actions",
       cell: (info) => (

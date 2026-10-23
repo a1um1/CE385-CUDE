@@ -23,12 +23,14 @@ function RouteComponent() {
   return (
     <LessonForm
       key={data.id}
+      currentLessonId={id}
       defaultValues={{
         name: data.name,
         unitID: data.unitID,
         passThreshold: data.passThreshold,
         XPgiven: data.XPgiven,
         gemsGiven: data.gemsGiven,
+        prerequisiteLessonIDs: data.prerequisiteLessonIDs,
       }}
       isEdit
       submitLabel="Save Changes"
@@ -41,6 +43,7 @@ function RouteComponent() {
             passThreshold: value.passThreshold,
             XPgiven: value.XPgiven,
             gemsGiven: value.gemsGiven,
+            prerequisiteLessonIDs: value.prerequisiteLessonIDs,
           },
         });
         navigate({

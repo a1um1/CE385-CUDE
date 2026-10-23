@@ -8,7 +8,7 @@ import type {
 import UnitService from "#/service/unit";
 import UserError from "#/lib/router/http/userError";
 import { lessonRepository } from "#/repository/lesson.repository";
-import { client } from "#/repository/client";
+import { client, transaction } from "#/repository/client";
 import { resolveInclude } from "#/lib/include";
 import { lessonIncludes } from "#/service/admin/lesson/lesson.schema";
 import type { Prisma } from "#/generated/prisma/client";
@@ -24,13 +24,18 @@ export default class LessonService {
     return {
       ...this.data,
       passThreshold: Number(this.data.passThreshold),
+      prerequisiteLessonIDs: this.data.prerequisites?.map((p) => p.prerequisiteLessonID) ?? [],
     };
   }
 
   static async getById(id: string, include?: string | string[]): Promise<LessonService> {
     const lesson = await lessonRepository.findById(id, include);
     if (!lesson) throw new UserError(404, "Lesson not found");
-    return new LessonService(lesson);
+    const prerequisites = await client().lessonPrerequisite.findMany({
+      where: { lessonID: id },
+      select: { prerequisiteLessonID: true },
+    });
+    return new LessonService({ ...lesson, prerequisites });
   }
 
   static async getByUnitIdPaginated(
@@ -46,7 +51,10 @@ export default class LessonService {
     const [rows, total] = await Promise.all([
       client().lesson.findMany({
         where,
-        include: resolveInclude<Prisma.LessonInclude>(include, lessonIncludes),
+        include: {
+          ...resolveInclude<Prisma.LessonInclude>(include, lessonIncludes),
+          prerequisites: { select: { prerequisiteLessonID: true } },
+        },
         orderBy: [{ position: "asc" }, { id: "asc" }],
         skip: (page - 1) * limit,
         take: limit,
@@ -65,28 +73,77 @@ export default class LessonService {
 
   static async create(input: LessonCreate): Promise<LessonService> {
     await UnitService.getById(input.unitID);
-    const lesson = await lessonRepository.create({
-      name: input.name,
-      unitID: input.unitID,
-      passThreshold: input.passThreshold,
-      XPgiven: input.XPgiven,
-      gemsGiven: input.gemsGiven,
-      startAt: input.startAt,
-      endAt: input.endAt,
+    const { _max } = await client().lesson.aggregate({
+      _max: { position: true },
+      where: { unitID: input.unitID },
     });
-    return new LessonService(lesson);
+
+    const lesson = await transaction(async (tx) => {
+      const created = await lessonRepository.create(
+        {
+          name: input.name,
+          unitID: input.unitID,
+          passThreshold: input.passThreshold,
+          XPgiven: input.XPgiven,
+          gemsGiven: input.gemsGiven,
+          startAt: input.startAt,
+          endAt: input.endAt,
+          position: (_max.position ?? -1) + 1,
+        },
+        tx,
+      );
+
+      if (input.prerequisiteLessonIDs && input.prerequisiteLessonIDs.length > 0) {
+        await lessonRepository.setPrerequisites(created.id, input.prerequisiteLessonIDs, tx);
+      }
+
+      return created;
+    });
+
+    return new LessonService({
+      ...lesson,
+      prerequisites: (input.prerequisiteLessonIDs ?? []).map((id) => ({
+        prerequisiteLessonID: id,
+      })),
+    });
   }
 
   static async update(id: string, input: LessonUpdate): Promise<LessonService> {
     await LessonService.getById(id);
-    const lesson = await lessonRepository.update(id, {
-      name: input.name,
-      passThreshold: input.passThreshold,
-      XPgiven: input.XPgiven,
-      gemsGiven: input.gemsGiven,
-      startAt: input.startAt,
-      endAt: input.endAt,
+
+    if (input.prerequisiteLessonIDs?.includes(id)) {
+      throw new UserError(400, "A lesson cannot have itself as a prerequisite");
+    }
+
+    const lesson = await transaction(async (tx) => {
+      const updated = await lessonRepository.update(
+        id,
+        {
+          name: input.name,
+          passThreshold: input.passThreshold,
+          XPgiven: input.XPgiven,
+          gemsGiven: input.gemsGiven,
+          startAt: input.startAt,
+          endAt: input.endAt,
+        },
+        tx,
+      );
+
+      if (input.prerequisiteLessonIDs !== undefined) {
+        await lessonRepository.setPrerequisites(id, input.prerequisiteLessonIDs, tx);
+      }
+
+      return updated;
     });
-    return new LessonService(lesson);
+
+    const prerequisites =
+      input.prerequisiteLessonIDs !== undefined
+        ? input.prerequisiteLessonIDs.map((pid) => ({ prerequisiteLessonID: pid }))
+        : await client().lessonPrerequisite.findMany({
+            where: { lessonID: id },
+            select: { prerequisiteLessonID: true },
+          });
+
+    return new LessonService({ ...lesson, prerequisites });
   }
 }

@@ -29,6 +29,7 @@ function RouteComponent() {
         passThreshold: 1,
         XPgiven: 100,
         gemsGiven: 10,
+        prerequisiteLessonIDs: [],
       }}
       submitLabel="Create Lesson"
       isPending={createMutation.isPending}

@@ -15,6 +15,7 @@ export const LessonSchema = z
     gemsGiven: z.number().int().openapi({ example: 10 }),
     startAt: z.date().nullable().openapi({ example: "2026-10-11T00:00:00Z" }),
     endAt: z.date().nullable().openapi({ example: "2026-11-11T00:00:00Z" }),
+    prerequisiteLessonIDs: z.array(z.uuidv7()).openapi({ example: [] }),
     unit: z
       .object({
         id: z.uuidv7().openapi({ example: "unit_id" }),
@@ -38,6 +39,7 @@ export type LessonSchema = zod.infer<typeof LessonSchema>;
 /** Lesson row as stored, plus relations added by `?include=`. */
 export type LessonData = Lesson & {
   unit?: Unit & { course?: Course };
+  prerequisites?: { prerequisiteLessonID: string }[];
 };
 
 /** Allow-list of `?include=` paths for a lesson. */
@@ -79,6 +81,7 @@ export const LessonCreateSchema = z
     gemsGiven: z.number().int().min(0).default(0).openapi({ example: 0 }),
     startAt: z.date().nullable().optional().openapi({ example: "2026-10-11T00:00:00Z" }),
     endAt: z.date().nullable().optional().openapi({ example: "2026-11-11T00:00:00Z" }),
+    prerequisiteLessonIDs: z.array(z.uuidv7()).default([]).openapi({ example: [] }),
   })
   .openapi("LessonCreate");
 
@@ -93,6 +96,7 @@ export const LessonUpdateSchema = z
     gemsGiven: z.number().int().min(0).optional().openapi({ example: 0 }),
     startAt: z.date().nullable().optional().openapi({ example: "2026-10-11T00:00:00Z" }),
     endAt: z.date().nullable().optional().openapi({ example: "2026-11-11T00:00:00Z" }),
+    prerequisiteLessonIDs: z.array(z.uuidv7()).optional().openapi({ example: [] }),
   })
   .refine((body) => Object.keys(body).length > 0, {
     message: "At least one field is required",
