@@ -17,6 +17,12 @@
   gap: 1rem;
 }
 
+.admin-container.full-width {
+  max-width: none;
+  padding: 0;
+  gap: 0;
+}
+
 .admin-content {
   display: flex;
   flex-direction: column;

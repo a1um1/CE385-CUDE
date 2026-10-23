@@ -8,6 +8,7 @@ function toCodeExerciseConfig(value: {
   timeLimitMs: number;
   memoryLimitMb: number;
   starterCode: string;
+  testerCode: string;
   testCases: { id?: string; input: string; output: string; isPublic: boolean }[];
 }) {
   if (value.type !== "CODE") return undefined;
@@ -16,6 +17,7 @@ function toCodeExerciseConfig(value: {
     timeLimitMs: value.timeLimitMs,
     memoryLimitMb: value.memoryLimitMb,
     starterCode: value.starterCode.trim() ? value.starterCode : null,
+    testerCode: value.testerCode.trim() ? value.testerCode : null,
     testCases: value.testCases.map((tc) => ({
       id: tc.id,
       input: tc.input,
@@ -30,6 +32,8 @@ export const Route = createFileRoute("/admin/exercise/$id")({
   staticData: {
     pageTitle: "Edit Exercise",
     pageKey: "admin-exercise-edit",
+    fullWidth: true,
+    hideTitle: true,
   },
   loader: async ({ params, context }) => {
     const exercise = await context.queryClient.query(getAdminExerciseQueryOptions(params.id));
@@ -55,6 +59,7 @@ function RouteComponent() {
         timeLimitMs: data.codeExercise?.timeLimitMs ?? 2000,
         memoryLimitMb: data.codeExercise?.memoryLimitMb ?? 256,
         starterCode: data.codeExercise?.starterCode ?? "",
+        testerCode: data.codeExercise?.testerCode ?? "",
         testCases: data.codeExercise?.testCases ?? [],
       }}
       isEdit
