@@ -378,33 +378,27 @@ export function MarkdownEditor({
             <Dropdown.Content className={styles["dropdown-menu"]}>
               <Dropdown.Item
                 className={styles["dropdown-item"]}
-                onClick={() => setHeading("Paragraph")}
-              >
-                Paragraph
-              </Dropdown.Item>
-              <Dropdown.Item
-                className={styles["dropdown-item"]}
                 onClick={() => setHeading("Heading 1")}
               >
-                Heading 1 (#)
+                Heading 1
               </Dropdown.Item>
               <Dropdown.Item
                 className={styles["dropdown-item"]}
                 onClick={() => setHeading("Heading 2")}
               >
-                Heading 2 (##)
+                Heading 2
               </Dropdown.Item>
               <Dropdown.Item
                 className={styles["dropdown-item"]}
                 onClick={() => setHeading("Heading 3")}
               >
-                Heading 3 (###)
+                Heading 3
               </Dropdown.Item>
               <Dropdown.Item
                 className={styles["dropdown-item"]}
                 onClick={() => setHeading("Heading 4")}
               >
-                Heading 4 (####)
+                Heading 4
               </Dropdown.Item>
             </Dropdown.Content>
           </Dropdown.Root>
@@ -526,7 +520,7 @@ export function MarkdownEditor({
             <Table size={15} />
           </button>
 
-          {/* Alert Notes Dropdown */}
+          {/* Insert Note Dropdown */}
           <Dropdown.Root>
             <Dropdown.Trigger
               className={clsx(
@@ -536,37 +530,39 @@ export function MarkdownEditor({
               )}
               disabled={disabled || !showEditor}
             >
-              <span>{currentAlert === "None" ? "Alert Note" : `Alert: ${currentAlert}`}</span>
+              <span>{currentAlert === "None" ? "Insert Note" : currentAlert}</span>
               <ChevronDown size={12} />
             </Dropdown.Trigger>
             <Dropdown.Content className={styles["dropdown-menu"]}>
-              <Dropdown.Item className={styles["dropdown-item"]} onClick={() => setAlert("None")}>
-                None (Remove alert)
-              </Dropdown.Item>
               <Dropdown.Item className={styles["dropdown-item"]} onClick={() => setAlert("Note")}>
-                Note (&gt; [!NOTE])
+                Note
               </Dropdown.Item>
               <Dropdown.Item className={styles["dropdown-item"]} onClick={() => setAlert("Tip")}>
-                Tip (&gt; [!TIP])
+                Tip
               </Dropdown.Item>
               <Dropdown.Item
                 className={styles["dropdown-item"]}
                 onClick={() => setAlert("Warning")}
               >
-                Warning (&gt; [!WARNING])
+                Warning
               </Dropdown.Item>
               <Dropdown.Item
                 className={styles["dropdown-item"]}
                 onClick={() => setAlert("Caution")}
               >
-                Caution (&gt; [!CAUTION])
+                Caution
               </Dropdown.Item>
               <Dropdown.Item
                 className={styles["dropdown-item"]}
                 onClick={() => setAlert("Important")}
               >
-                Important (&gt; [!IMPORTANT])
+                Important
               </Dropdown.Item>
+              {currentAlert !== "None" && (
+                <Dropdown.Item className={styles["dropdown-item"]} onClick={() => setAlert("None")}>
+                  Remove note
+                </Dropdown.Item>
+              )}
             </Dropdown.Content>
           </Dropdown.Root>
         </div>
