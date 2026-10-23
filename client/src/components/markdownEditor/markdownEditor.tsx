@@ -11,7 +11,6 @@ import {
   Quote,
   Link,
   Table,
-  Columns,
   Eye,
   PenTool,
   Sigma,
@@ -22,7 +21,6 @@ import Spinner from "#/components/spinner";
 import Dropdown from "#/components/dropdown";
 import styles from "./markdownEditor.module.css";
 
-export type EditorViewMode = "write" | "preview" | "split";
 export type HeadingType = "Paragraph" | "Heading 1" | "Heading 2" | "Heading 3" | "Heading 4";
 export type AlertType = "None" | "Note" | "Tip" | "Warning" | "Caution" | "Important";
 
@@ -34,7 +32,8 @@ export interface MarkdownEditorProps {
   disabled?: boolean;
   height?: number | string;
   minHeight?: number | string;
-  defaultViewMode?: EditorViewMode;
+  defaultShowEditor?: boolean;
+  defaultShowPreview?: boolean;
   className?: string;
 }
 
@@ -88,10 +87,12 @@ export function MarkdownEditor({
   disabled = false,
   height,
   minHeight = 450,
-  defaultViewMode = "split",
+  defaultShowEditor = true,
+  defaultShowPreview = true,
   className,
 }: MarkdownEditorProps) {
-  const [viewMode, setViewMode] = React.useState<EditorViewMode>(defaultViewMode);
+  const [showEditor, setShowEditor] = React.useState(defaultShowEditor);
+  const [showPreview, setShowPreview] = React.useState(defaultShowPreview);
   const editorRef = React.useRef<Monaco.editor.IStandaloneCodeEditor | null>(null);
 
   const [currentHeading, setCurrentHeading] = React.useState<HeadingType>("Paragraph");
@@ -103,6 +104,20 @@ export function MarkdownEditor({
   const [isList, setIsList] = React.useState(false);
   const [isNumList, setIsNumList] = React.useState(false);
   const [isQuote, setIsQuote] = React.useState(false);
+
+  const toggleEditorWindow = React.useCallback(() => {
+    setShowEditor((prev) => {
+      if (prev && !showPreview) return prev; // Don't close all windows
+      return !prev;
+    });
+  }, [showPreview]);
+
+  const togglePreviewWindow = React.useCallback(() => {
+    setShowPreview((prev) => {
+      if (prev && !showEditor) return prev; // Don't close all windows
+      return !prev;
+    });
+  }, [showEditor]);
 
   const updateActiveStates = React.useCallback(() => {
     const editor = editorRef.current;
@@ -352,108 +367,156 @@ export function MarkdownEditor({
             <Dropdown.Trigger
               className={clsx(
                 styles["toolbar-btn"],
+                styles["toolbar-dropdown-btn"],
                 currentHeading !== "Paragraph" && styles.active,
               )}
-              disabled={disabled || viewMode === "preview"}
+              disabled={disabled || !showEditor}
             >
               <span>{currentHeading}</span>
               <ChevronDown size={12} />
             </Dropdown.Trigger>
             <Dropdown.Content className={styles["dropdown-menu"]}>
-              <Dropdown.Item onClick={() => setHeading("Paragraph")}>Paragraph</Dropdown.Item>
-              <Dropdown.Item onClick={() => setHeading("Heading 1")}>Heading 1 (#)</Dropdown.Item>
-              <Dropdown.Item onClick={() => setHeading("Heading 2")}>Heading 2 (##)</Dropdown.Item>
-              <Dropdown.Item onClick={() => setHeading("Heading 3")}>Heading 3 (###)</Dropdown.Item>
-              <Dropdown.Item onClick={() => setHeading("Heading 4")}>
+              <Dropdown.Item
+                className={styles["dropdown-item"]}
+                onClick={() => setHeading("Paragraph")}
+              >
+                Paragraph
+              </Dropdown.Item>
+              <Dropdown.Item
+                className={styles["dropdown-item"]}
+                onClick={() => setHeading("Heading 1")}
+              >
+                Heading 1 (#)
+              </Dropdown.Item>
+              <Dropdown.Item
+                className={styles["dropdown-item"]}
+                onClick={() => setHeading("Heading 2")}
+              >
+                Heading 2 (##)
+              </Dropdown.Item>
+              <Dropdown.Item
+                className={styles["dropdown-item"]}
+                onClick={() => setHeading("Heading 3")}
+              >
+                Heading 3 (###)
+              </Dropdown.Item>
+              <Dropdown.Item
+                className={styles["dropdown-item"]}
+                onClick={() => setHeading("Heading 4")}
+              >
                 Heading 4 (####)
               </Dropdown.Item>
             </Dropdown.Content>
           </Dropdown.Root>
 
-          <span className={styles["toolbar-divider"]} />
-
           {/* Inline format toggles */}
           <button
             type="button"
-            className={clsx(styles["toolbar-btn"], isBold && styles.active)}
+            className={clsx(
+              styles["toolbar-btn"],
+              styles["toolbar-icon-btn"],
+              isBold && styles.active,
+            )}
             title="Bold (**text**)"
-            disabled={disabled || viewMode === "preview"}
+            disabled={disabled || !showEditor}
             onClick={() => toggleInlineWrap("**", "bold text")}
           >
             <Bold size={15} />
           </button>
           <button
             type="button"
-            className={clsx(styles["toolbar-btn"], isItalic && styles.active)}
+            className={clsx(
+              styles["toolbar-btn"],
+              styles["toolbar-icon-btn"],
+              isItalic && styles.active,
+            )}
             title="Italic (*text*)"
-            disabled={disabled || viewMode === "preview"}
+            disabled={disabled || !showEditor}
             onClick={() => toggleInlineWrap("*", "italic text")}
           >
             <Italic size={15} />
           </button>
           <button
             type="button"
-            className={clsx(styles["toolbar-btn"], isMath && styles.active)}
+            className={clsx(
+              styles["toolbar-btn"],
+              styles["toolbar-icon-btn"],
+              isMath && styles.active,
+            )}
             title="Math ($formula$)"
-            disabled={disabled || viewMode === "preview"}
+            disabled={disabled || !showEditor}
             onClick={() => toggleInlineWrap("$", "x^2 + y^2 = z^2")}
           >
             <Sigma size={15} />
           </button>
           <button
             type="button"
-            className={clsx(styles["toolbar-btn"], isCode && styles.active)}
+            className={clsx(
+              styles["toolbar-btn"],
+              styles["toolbar-icon-btn"],
+              isCode && styles.active,
+            )}
             title="Inline code (`code`)"
-            disabled={disabled || viewMode === "preview"}
+            disabled={disabled || !showEditor}
             onClick={() => toggleInlineWrap("`", "code")}
           >
             <Code size={15} />
           </button>
 
-          <span className={styles["toolbar-divider"]} />
-
           {/* List & Quote Toggles */}
           <button
             type="button"
-            className={clsx(styles["toolbar-btn"], isList && styles.active)}
+            className={clsx(
+              styles["toolbar-btn"],
+              styles["toolbar-icon-btn"],
+              isList && styles.active,
+            )}
             title="Bullet list (- )"
-            disabled={disabled || viewMode === "preview"}
+            disabled={disabled || !showEditor}
             onClick={() => toggleLinePrefix("- ", isList)}
           >
             <List size={15} />
           </button>
           <button
             type="button"
-            className={clsx(styles["toolbar-btn"], isNumList && styles.active)}
+            className={clsx(
+              styles["toolbar-btn"],
+              styles["toolbar-icon-btn"],
+              isNumList && styles.active,
+            )}
             title="Numbered list (1. )"
-            disabled={disabled || viewMode === "preview"}
+            disabled={disabled || !showEditor}
             onClick={() => toggleLinePrefix("1. ", isNumList)}
           >
             <ListOrdered size={15} />
           </button>
           <button
             type="button"
-            className={clsx(styles["toolbar-btn"], isQuote && styles.active)}
+            className={clsx(
+              styles["toolbar-btn"],
+              styles["toolbar-icon-btn"],
+              isQuote && styles.active,
+            )}
             title="Quote (> )"
-            disabled={disabled || viewMode === "preview"}
+            disabled={disabled || !showEditor}
             onClick={() => toggleLinePrefix("> ", isQuote)}
           >
             <Quote size={15} />
           </button>
           <button
             type="button"
-            className={styles["toolbar-btn"]}
+            className={clsx(styles["toolbar-btn"], styles["toolbar-icon-btn"])}
             title="Link"
-            disabled={disabled || viewMode === "preview"}
+            disabled={disabled || !showEditor}
             onClick={() => toggleInlineWrap("[", "](https://example.com)")}
           >
             <Link size={15} />
           </button>
           <button
             type="button"
-            className={styles["toolbar-btn"]}
+            className={clsx(styles["toolbar-btn"], styles["toolbar-icon-btn"])}
             title="Table"
-            disabled={disabled || viewMode === "preview"}
+            disabled={disabled || !showEditor}
             onClick={() =>
               insertBlock(
                 "| Column 1 | Column 2 |\n| -------- | -------- |\n| Item 1   | Item 2   |",
@@ -463,59 +526,76 @@ export function MarkdownEditor({
             <Table size={15} />
           </button>
 
-          <span className={styles["toolbar-divider"]} />
-
           {/* Alert Notes Dropdown */}
           <Dropdown.Root>
             <Dropdown.Trigger
-              className={clsx(styles["toolbar-btn"], currentAlert !== "None" && styles.active)}
-              disabled={disabled || viewMode === "preview"}
+              className={clsx(
+                styles["toolbar-btn"],
+                styles["toolbar-dropdown-btn"],
+                currentAlert !== "None" && styles.active,
+              )}
+              disabled={disabled || !showEditor}
             >
               <span>{currentAlert === "None" ? "Alert Note" : `Alert: ${currentAlert}`}</span>
               <ChevronDown size={12} />
             </Dropdown.Trigger>
             <Dropdown.Content className={styles["dropdown-menu"]}>
-              <Dropdown.Item onClick={() => setAlert("None")}>None (Remove alert)</Dropdown.Item>
-              <Dropdown.Item onClick={() => setAlert("Note")}>Note (&gt; [!NOTE])</Dropdown.Item>
-              <Dropdown.Item onClick={() => setAlert("Tip")}>Tip (&gt; [!TIP])</Dropdown.Item>
-              <Dropdown.Item onClick={() => setAlert("Warning")}>
+              <Dropdown.Item className={styles["dropdown-item"]} onClick={() => setAlert("None")}>
+                None (Remove alert)
+              </Dropdown.Item>
+              <Dropdown.Item className={styles["dropdown-item"]} onClick={() => setAlert("Note")}>
+                Note (&gt; [!NOTE])
+              </Dropdown.Item>
+              <Dropdown.Item className={styles["dropdown-item"]} onClick={() => setAlert("Tip")}>
+                Tip (&gt; [!TIP])
+              </Dropdown.Item>
+              <Dropdown.Item
+                className={styles["dropdown-item"]}
+                onClick={() => setAlert("Warning")}
+              >
                 Warning (&gt; [!WARNING])
               </Dropdown.Item>
-              <Dropdown.Item onClick={() => setAlert("Caution")}>
+              <Dropdown.Item
+                className={styles["dropdown-item"]}
+                onClick={() => setAlert("Caution")}
+              >
                 Caution (&gt; [!CAUTION])
               </Dropdown.Item>
-              <Dropdown.Item onClick={() => setAlert("Important")}>
+              <Dropdown.Item
+                className={styles["dropdown-item"]}
+                onClick={() => setAlert("Important")}
+              >
                 Important (&gt; [!IMPORTANT])
               </Dropdown.Item>
             </Dropdown.Content>
           </Dropdown.Root>
         </div>
 
-        {/* View mode toggle */}
+        {/* Window toggle icon buttons */}
         <div className={styles["toolbar-group"]}>
           <button
             type="button"
-            className={clsx(styles["toolbar-btn"], viewMode === "write" && styles.active)}
-            title="Write mode"
-            onClick={() => setViewMode("write")}
+            className={clsx(
+              styles["toolbar-btn"],
+              styles["toolbar-icon-btn"],
+              showEditor && styles.active,
+            )}
+            title="Toggle Editor Window"
+            onClick={toggleEditorWindow}
           >
-            <PenTool size={14} style={{ marginRight: "0.25rem" }} /> Write
+            <PenTool size={15} />
           </button>
           <button
             type="button"
-            className={clsx(styles["toolbar-btn"], viewMode === "split" && styles.active)}
-            title="Split mode"
-            onClick={() => setViewMode("split")}
+            className={clsx(
+              styles["toolbar-btn"],
+              styles["toolbar-icon-btn"],
+              showPreview && styles.active,
+            )}
+            title="Toggle Preview Window"
+            onClick={togglePreviewWindow}
           >
-            <Columns size={14} style={{ marginRight: "0.25rem" }} /> Split
-          </button>
-          <button
-            type="button"
-            className={clsx(styles["toolbar-btn"], viewMode === "preview" && styles.active)}
-            title="Preview mode"
-            onClick={() => setViewMode("preview")}
-          >
-            <Eye size={14} style={{ marginRight: "0.25rem" }} /> Preview
+            <Eye size={15} />
           </button>
         </div>
       </div>
@@ -523,12 +603,12 @@ export function MarkdownEditor({
       <div
         className={clsx(
           styles["editor-area"],
-          viewMode === "split" && styles["mode-split"],
-          viewMode === "write" && styles["mode-write"],
-          viewMode === "preview" && styles["mode-preview"],
+          showEditor && showPreview && styles["split-both"],
+          showEditor && !showPreview && styles["only-write"],
+          !showEditor && showPreview && styles["only-preview"],
         )}
       >
-        {viewMode !== "preview" && (
+        {showEditor && (
           <div className={clsx(styles.pane, styles["write-pane"])}>
             <Editor
               height="100%"
@@ -553,7 +633,7 @@ export function MarkdownEditor({
           </div>
         )}
 
-        {viewMode !== "write" && (
+        {showPreview && (
           <div className={clsx(styles.pane, styles["preview-pane"])}>
             {value.trim() ? (
               <Markdown content={value} />

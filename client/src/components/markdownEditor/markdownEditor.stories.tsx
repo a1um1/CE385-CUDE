@@ -10,9 +10,11 @@ const meta = {
     disabled: {
       control: "boolean",
     },
-    defaultViewMode: {
-      control: "select",
-      options: ["split", "write", "preview"],
+    defaultShowEditor: {
+      control: "boolean",
+    },
+    defaultShowPreview: {
+      control: "boolean",
     },
   },
 } satisfies Meta<typeof MarkdownEditor>;
@@ -71,17 +73,19 @@ export const Playground: Story = {
   args: {
     value: SAMPLE_MARKDOWN,
     onChange: () => {},
-    defaultViewMode: "split",
+    defaultShowEditor: true,
+    defaultShowPreview: true,
     disabled: false,
   },
 };
 
-export const WriteOnly: Story = {
+export const EditorOnly: Story = {
   render: (args) => <MarkdownEditorWrapper {...args} />,
   args: {
     value: SAMPLE_MARKDOWN,
     onChange: () => {},
-    defaultViewMode: "write",
+    defaultShowEditor: true,
+    defaultShowPreview: false,
     disabled: false,
   },
 };
@@ -91,7 +95,8 @@ export const PreviewOnly: Story = {
   args: {
     value: SAMPLE_MARKDOWN,
     onChange: () => {},
-    defaultViewMode: "preview",
+    defaultShowEditor: false,
+    defaultShowPreview: true,
     disabled: false,
   },
 };
