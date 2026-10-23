@@ -1,3 +1,9 @@
+/* Base UI sets will-change: transform on the positioner, making it a stacking
+   context; its z-index must be set here or page content can cover the popup. */
+.positioner {
+  z-index: 50;
+}
+
 .trigger {
   cursor: pointer;
   display: inline-flex;
