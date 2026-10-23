@@ -15,51 +15,31 @@ import {
 } from "lucide-react";
 import Dropdown from "#/components/dropdown";
 import styles from "./markdownEditor.module.css";
-import type { AlertType, HeadingType } from "./editorActions";
+import { useMarkdownEditor } from "./editorContext";
 
-export interface EditorToolbarProps {
-  disabled: boolean;
-  showEditor: boolean;
-  showPreview: boolean;
-  currentHeading: HeadingType;
-  currentAlert: AlertType;
-  isBold: boolean;
-  isItalic: boolean;
-  isMath: boolean;
-  isCode: boolean;
-  isList: boolean;
-  isNumList: boolean;
-  isQuote: boolean;
-  onSetHeading: (type: HeadingType) => void;
-  onSetAlert: (type: AlertType) => void;
-  onToggleInline: (wrap: string, defaultText?: string) => void;
-  onToggleLinePrefix: (prefix: string, isActive: boolean) => void;
-  onInsertBlock: (block: string) => void;
-  onToggleEditorWindow: () => void;
-  onTogglePreviewWindow: () => void;
-}
+export function EditorToolbar() {
+  const {
+    disabled,
+    showEditor,
+    showPreview,
+    currentHeading,
+    currentAlert,
+    isBold,
+    isItalic,
+    isMath,
+    isCode,
+    isList,
+    isNumList,
+    isQuote,
+    setHeading,
+    setAlert,
+    toggleInline,
+    toggleLinePrefix,
+    insertBlock,
+    toggleEditorWindow,
+    togglePreviewWindow,
+  } = useMarkdownEditor();
 
-export function EditorToolbar({
-  disabled,
-  showEditor,
-  showPreview,
-  currentHeading,
-  currentAlert,
-  isBold,
-  isItalic,
-  isMath,
-  isCode,
-  isList,
-  isNumList,
-  isQuote,
-  onSetHeading,
-  onSetAlert,
-  onToggleInline,
-  onToggleLinePrefix,
-  onInsertBlock,
-  onToggleEditorWindow,
-  onTogglePreviewWindow,
-}: EditorToolbarProps) {
   return (
     <div className={styles.toolbar} role="toolbar" aria-label="Markdown Editor Toolbar">
       <div className={styles["toolbar-group"]}>
@@ -79,25 +59,25 @@ export function EditorToolbar({
           <Dropdown.Content className={styles["dropdown-menu"]}>
             <Dropdown.Item
               className={styles["dropdown-item"]}
-              onClick={() => onSetHeading("Heading 1")}
+              onClick={() => setHeading("Heading 1")}
             >
               Heading 1
             </Dropdown.Item>
             <Dropdown.Item
               className={styles["dropdown-item"]}
-              onClick={() => onSetHeading("Heading 2")}
+              onClick={() => setHeading("Heading 2")}
             >
               Heading 2
             </Dropdown.Item>
             <Dropdown.Item
               className={styles["dropdown-item"]}
-              onClick={() => onSetHeading("Heading 3")}
+              onClick={() => setHeading("Heading 3")}
             >
               Heading 3
             </Dropdown.Item>
             <Dropdown.Item
               className={styles["dropdown-item"]}
-              onClick={() => onSetHeading("Heading 4")}
+              onClick={() => setHeading("Heading 4")}
             >
               Heading 4
             </Dropdown.Item>
@@ -114,7 +94,7 @@ export function EditorToolbar({
           )}
           title="Bold (**text**)"
           disabled={disabled || !showEditor}
-          onClick={() => onToggleInline("**", "bold text")}
+          onClick={() => toggleInline("**", "bold text")}
         >
           <Bold size={15} />
         </button>
@@ -127,7 +107,7 @@ export function EditorToolbar({
           )}
           title="Italic (*text*)"
           disabled={disabled || !showEditor}
-          onClick={() => onToggleInline("*", "italic text")}
+          onClick={() => toggleInline("*", "italic text")}
         >
           <Italic size={15} />
         </button>
@@ -140,7 +120,7 @@ export function EditorToolbar({
           )}
           title="Math ($formula$)"
           disabled={disabled || !showEditor}
-          onClick={() => onToggleInline("$", "x^2 + y^2 = z^2")}
+          onClick={() => toggleInline("$", "x^2 + y^2 = z^2")}
         >
           <Sigma size={15} />
         </button>
@@ -153,7 +133,7 @@ export function EditorToolbar({
           )}
           title="Inline code (`code`)"
           disabled={disabled || !showEditor}
-          onClick={() => onToggleInline("`", "code")}
+          onClick={() => toggleInline("`", "code")}
         >
           <Code size={15} />
         </button>
@@ -168,7 +148,7 @@ export function EditorToolbar({
           )}
           title="Bullet list (- )"
           disabled={disabled || !showEditor}
-          onClick={() => onToggleLinePrefix("- ", isList)}
+          onClick={() => toggleLinePrefix("- ", isList)}
         >
           <List size={15} />
         </button>
@@ -181,7 +161,7 @@ export function EditorToolbar({
           )}
           title="Numbered list (1. )"
           disabled={disabled || !showEditor}
-          onClick={() => onToggleLinePrefix("1. ", isNumList)}
+          onClick={() => toggleLinePrefix("1. ", isNumList)}
         >
           <ListOrdered size={15} />
         </button>
@@ -194,7 +174,7 @@ export function EditorToolbar({
           )}
           title="Quote (> )"
           disabled={disabled || !showEditor}
-          onClick={() => onToggleLinePrefix("> ", isQuote)}
+          onClick={() => toggleLinePrefix("> ", isQuote)}
         >
           <Quote size={15} />
         </button>
@@ -203,7 +183,7 @@ export function EditorToolbar({
           className={clsx(styles["toolbar-btn"], styles["toolbar-icon-btn"])}
           title="Link"
           disabled={disabled || !showEditor}
-          onClick={() => onToggleInline("[", "](https://example.com)")}
+          onClick={() => toggleInline("[", "](https://example.com)")}
         >
           <Link size={15} />
         </button>
@@ -213,9 +193,7 @@ export function EditorToolbar({
           title="Table"
           disabled={disabled || !showEditor}
           onClick={() =>
-            onInsertBlock(
-              "| Column 1 | Column 2 |\n| -------- | -------- |\n| Item 1   | Item 2   |",
-            )
+            insertBlock("| Column 1 | Column 2 |\n| -------- | -------- |\n| Item 1   | Item 2   |")
           }
         >
           <Table size={15} />
@@ -235,32 +213,26 @@ export function EditorToolbar({
             <ChevronDown size={12} />
           </Dropdown.Trigger>
           <Dropdown.Content className={styles["dropdown-menu"]}>
-            <Dropdown.Item className={styles["dropdown-item"]} onClick={() => onSetAlert("Note")}>
+            <Dropdown.Item className={styles["dropdown-item"]} onClick={() => setAlert("Note")}>
               Note
             </Dropdown.Item>
-            <Dropdown.Item className={styles["dropdown-item"]} onClick={() => onSetAlert("Tip")}>
+            <Dropdown.Item className={styles["dropdown-item"]} onClick={() => setAlert("Tip")}>
               Tip
             </Dropdown.Item>
-            <Dropdown.Item
-              className={styles["dropdown-item"]}
-              onClick={() => onSetAlert("Warning")}
-            >
+            <Dropdown.Item className={styles["dropdown-item"]} onClick={() => setAlert("Warning")}>
               Warning
             </Dropdown.Item>
-            <Dropdown.Item
-              className={styles["dropdown-item"]}
-              onClick={() => onSetAlert("Caution")}
-            >
+            <Dropdown.Item className={styles["dropdown-item"]} onClick={() => setAlert("Caution")}>
               Caution
             </Dropdown.Item>
             <Dropdown.Item
               className={styles["dropdown-item"]}
-              onClick={() => onSetAlert("Important")}
+              onClick={() => setAlert("Important")}
             >
               Important
             </Dropdown.Item>
             {currentAlert !== "None" && (
-              <Dropdown.Item className={styles["dropdown-item"]} onClick={() => onSetAlert("None")}>
+              <Dropdown.Item className={styles["dropdown-item"]} onClick={() => setAlert("None")}>
                 Remove note
               </Dropdown.Item>
             )}
@@ -278,7 +250,7 @@ export function EditorToolbar({
             showEditor && styles.active,
           )}
           title="Toggle Editor Window"
-          onClick={onToggleEditorWindow}
+          onClick={toggleEditorWindow}
         >
           <PenTool size={15} />
         </button>
@@ -290,7 +262,7 @@ export function EditorToolbar({
             showPreview && styles.active,
           )}
           title="Toggle Preview Window"
-          onClick={onTogglePreviewWindow}
+          onClick={togglePreviewWindow}
         >
           <Eye size={15} />
         </button>

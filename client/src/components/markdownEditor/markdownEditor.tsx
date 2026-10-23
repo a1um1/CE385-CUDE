@@ -18,6 +18,7 @@ import {
   executeWrap,
 } from "./editorActions";
 import { EditorToolbar } from "./editorToolbar";
+import { MarkdownEditorContext } from "./editorContext";
 
 export type { HeadingType, AlertType } from "./editorActions";
 
@@ -113,89 +114,110 @@ export function MarkdownEditor({
     [updateActiveStates],
   );
 
+  const contextValue = React.useMemo(
+    () => ({
+      disabled,
+      showEditor,
+      showPreview,
+      currentHeading,
+      currentAlert,
+      isBold,
+      isItalic,
+      isMath,
+      isCode,
+      isList,
+      isNumList,
+      isQuote,
+      editorRef,
+      setHeading: (type: HeadingType) =>
+        handleAction((ed) => executeHeading(ed, type, currentHeading)),
+      setAlert: (type: AlertType) => handleAction((ed) => executeAlert(ed, type, currentAlert)),
+      toggleInline: (wrap: string, defaultText = "text") =>
+        handleAction((ed) => executeWrap(ed, wrap, defaultText)),
+      toggleLinePrefix: (prefix: string, isActive: boolean) =>
+        handleAction((ed) => executeLinePrefix(ed, prefix, isActive)),
+      insertBlock: (block: string) => handleAction((ed) => executeInsertBlock(ed, block)),
+      toggleEditorWindow: () => setShowEditor((prev) => (prev && !showPreview ? prev : !prev)),
+      togglePreviewWindow: () => setShowPreview((prev) => (prev && !showEditor ? prev : !prev)),
+    }),
+    [
+      disabled,
+      showEditor,
+      showPreview,
+      currentHeading,
+      currentAlert,
+      isBold,
+      isItalic,
+      isMath,
+      isCode,
+      isList,
+      isNumList,
+      isQuote,
+      handleAction,
+    ],
+  );
+
   return (
-    <div
-      className={clsx(styles.container, className)}
-      style={{
-        position: "relative",
-        height,
-        minHeight,
-        maxHeight,
-        width,
-        maxWidth,
-        ...style,
-      }}
-    >
-      <EditorToolbar
-        disabled={disabled}
-        showEditor={showEditor}
-        showPreview={showPreview}
-        currentHeading={currentHeading}
-        currentAlert={currentAlert}
-        isBold={isBold}
-        isItalic={isItalic}
-        isMath={isMath}
-        isCode={isCode}
-        isList={isList}
-        isNumList={isNumList}
-        isQuote={isQuote}
-        onSetHeading={(type) => handleAction((ed) => executeHeading(ed, type, currentHeading))}
-        onSetAlert={(type) => handleAction((ed) => executeAlert(ed, type, currentAlert))}
-        onToggleInline={(wrap, defaultText = "text") =>
-          handleAction((ed) => executeWrap(ed, wrap, defaultText))
-        }
-        onToggleLinePrefix={(prefix, isActive) =>
-          handleAction((ed) => executeLinePrefix(ed, prefix, isActive))
-        }
-        onInsertBlock={(block) => handleAction((ed) => executeInsertBlock(ed, block))}
-        onToggleEditorWindow={() => setShowEditor((prev) => (prev && !showPreview ? prev : !prev))}
-        onTogglePreviewWindow={() => setShowPreview((prev) => (prev && !showEditor ? prev : !prev))}
-      />
-
+    <MarkdownEditorContext.Provider value={contextValue}>
       <div
-        className={clsx(
-          styles["editor-area"],
-          showEditor && showPreview && styles["split-both"],
-          showEditor && !showPreview && styles["only-write"],
-          !showEditor && showPreview && styles["only-preview"],
-        )}
+        className={clsx(styles.container, className)}
+        style={{
+          position: "relative",
+          height,
+          minHeight,
+          maxHeight,
+          width,
+          maxWidth,
+          ...style,
+        }}
       >
-        {showEditor && (
-          <div className={clsx(styles.pane, styles["write-pane"])}>
-            <Editor
-              height="100%"
-              language="markdown"
-              theme="vs-dark"
-              value={value}
-              onChange={(val) => onChange(val ?? "")}
-              onMount={handleEditorMount}
-              loading={<Spinner />}
-              options={{
-                readOnly: disabled,
-                minimap: { enabled: false },
-                fontSize: 14,
-                fontFamily: '"Geist Mono", monospace',
-                wordWrap: "on",
-                scrollBeyondLastLine: false,
-                tabSize: 2,
-                automaticLayout: true,
-                lineNumbers: "on",
-              }}
-            />
-          </div>
-        )}
+        <EditorToolbar />
 
-        {showPreview && (
-          <div className={clsx(styles.pane, styles["preview-pane"])}>
-            {value.trim() ? (
-              <Markdown content={value} />
-            ) : (
-              <div className={styles["preview-empty"]}>Nothing to preview yet.</div>
-            )}
-          </div>
-        )}
+        <div
+          className={clsx(
+            styles["editor-area"],
+            showEditor && showPreview && styles["split-both"],
+            showEditor && !showPreview && styles["only-write"],
+            !showEditor && showPreview && styles["only-preview"],
+          )}
+        >
+          {showEditor && (
+            <div className={clsx(styles.pane, styles["write-pane"])}>
+              <Editor
+                height="100%"
+                language="markdown"
+                theme="vs-dark"
+                value={value}
+                onChange={(val) => onChange(val ?? "")}
+                onMount={handleEditorMount}
+                loading={<Spinner />}
+                options={{
+                  readOnly: disabled,
+                  minimap: { enabled: false },
+                  fontSize: 14,
+                  fontFamily: '"Geist Mono", monospace',
+                  wordWrap: "on",
+                  scrollBeyondLastLine: false,
+                  tabSize: 2,
+                  automaticLayout: true,
+                  lineNumbers: "on",
+                }}
+              />
+            </div>
+          )}
+
+          {showPreview && (
+            <div className={clsx(styles.pane, styles["preview-pane"])}>
+              {value.trim() ? (
+                <Markdown content={value} />
+              ) : (
+                <div className={styles["preview-empty"]}>Nothing to preview yet.</div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </MarkdownEditorContext.Provider>
   );
 }
 
