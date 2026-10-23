@@ -32,14 +32,20 @@ export const Route = createFileRoute("/(authed)/session/$id")({
 function RouteComponent() {
   const data = Route.useLoaderData();
   const abortSession = useAbortLearnSessionMutation();
+  const lessonId = data.lesson?.id;
+
+  const handleAbort = () => {
+    if (!lessonId) return;
+    abortSession.mutate({ sessionId: data.id, lessonId });
+  };
 
   return (
     <CollapsibleSidebarProvider>
       <div className="flex h-dvh">
         <SessionSidebar
           sessionId={data.id}
-          lessonId={data?.lesson?.id}
-          onAbort={() => abortSession.mutate(data.id)}
+          lessonId={lessonId}
+          onAbort={handleAbort}
           isAborting={abortSession.isPending}
         />
         <Outlet />

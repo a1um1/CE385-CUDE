@@ -53,6 +53,7 @@
   width: 88%;
   height: 88%;
   background-color: var(--bg-color);
+  background-image: var(--bg-gradient, none);
   clip-path: none;
   border-radius: calc(var(--hex-size)*0.28);
   display: flex;
