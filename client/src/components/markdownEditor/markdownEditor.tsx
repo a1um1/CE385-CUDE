@@ -19,8 +19,10 @@ import {
 } from "./editorActions";
 import { EditorToolbar } from "./editorToolbar";
 import { MarkdownEditorContext } from "./editorContext";
+import type { ToolbarActionConfig } from "./toolbarActions";
 
 export type { HeadingType, AlertType } from "./editorActions";
+export type { ToolbarActionConfig } from "./toolbarActions";
 
 export interface MarkdownEditorProps {
   value: string;
@@ -35,6 +37,7 @@ export interface MarkdownEditorProps {
   maxWidth?: number | string;
   defaultShowEditor?: boolean;
   defaultShowPreview?: boolean;
+  toolbarActions?: ToolbarActionConfig[];
   className?: string;
   style?: React.CSSProperties;
 }
@@ -51,6 +54,7 @@ export function MarkdownEditor({
   maxWidth,
   defaultShowEditor = true,
   defaultShowPreview = true,
+  toolbarActions,
   className,
   style,
 }: MarkdownEditorProps) {
@@ -171,7 +175,7 @@ export function MarkdownEditor({
           ...style,
         }}
       >
-        <EditorToolbar />
+        <EditorToolbar actions={toolbarActions} />
 
         <div
           className={clsx(
