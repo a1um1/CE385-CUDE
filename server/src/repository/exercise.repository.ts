@@ -35,6 +35,12 @@ export const exerciseRepository = {
   countCodeByLessonID: (lessonID: string, tx?: Db) =>
     client(tx).exercise.count({ where: { lessonID, type: "CODE" } }),
 
+  maxPosition: (lessonID: string) =>
+    client().exercise.aggregate({
+      _max: { position: true },
+      where: { lessonID },
+    }),
+
   /** Lessons among `lessonIDs` that have at least one CODE exercise. */
   findCodeLessonIDs: (lessonIDs: string[]) =>
     client().exercise.findMany({

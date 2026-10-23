@@ -6,16 +6,21 @@ import {
 import type zod from "zod";
 
 export const adminExerciseSchema = z
-  .looseObject({
+  .object({
     id: z.uuid().openapi({ example: "0192a000-0000-7000-8000-000000000001" }),
+    name: z.string().openapi({ example: "Exercise Name" }),
     lessonID: z.uuid().openapi({ example: "0192a000-0000-7000-8000-000000000002" }),
+    content: z.string().openapi({ example: "Exercise content" }),
+    position: z.number().int().openapi({ example: 0 }),
+    createdAt: z.date().openapi({ example: "2026-10-24T00:00:00Z" }),
+    updatedAt: z.date().openapi({ example: "2026-10-24T00:00:00Z" }),
   })
   .openapi("AdminExerciseObject");
 
 export type AdminExerciseSchema = zod.infer<typeof adminExerciseSchema>;
 
 export const AdminExerciseQuerySchema = createCursorPaginationQuerySchema(
-  ["createdAt", "updatedAt", "id"],
+  ["name", "position", "createdAt", "updatedAt", "id"],
   "AdminExerciseQuery",
 ).extend({
   lessonID: z.uuid().optional().openapi({
