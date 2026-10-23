@@ -3,6 +3,8 @@ import {
   TransactionQuerySchema,
 } from "#/service/transactions/transactions.schema";
 import UserService from "#/service/user";
+import RankingService from "#/service/ranking";
+import { weeklyRankingListSchema } from "#/service/ranking/ranking.schema";
 import {
   UserSafePublicSchema,
   UserSafeSchema,
@@ -121,6 +123,16 @@ const userRoute = new CustomRouter({
       const userStat = await user.getUserStat();
       return userStat.JSON;
     },
+  )
+  .get(
+    "/weekly-ranking",
+    {
+      summary: "Get the weekly exercise ranking",
+      description:
+        "Return the top weekly users by distinct exercises completed, including the current user if they are outside the top ten.",
+      response: weeklyRankingListSchema,
+    },
+    async ({ user }) => RankingService.getWeeklyRanking(user.JSON.id),
   )
   .get(
     "/transactions",
