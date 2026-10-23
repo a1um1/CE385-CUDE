@@ -83,7 +83,6 @@ export type CreateAdminExercise = zod.infer<typeof CreateAdminExerciseSchema>;
 export const UpdateAdminExerciseSchema = z
   .object({
     name: z.string().min(1).optional().openapi({ example: "Exercise Name" }),
-    type: z.enum(["NONE", "CODE"]).optional().openapi({ example: "CODE" }),
     content: z.string().optional().openapi({ example: "Exercise content" }),
     codeExercise: AdminCodeExerciseConfigSchema.optional(),
   })

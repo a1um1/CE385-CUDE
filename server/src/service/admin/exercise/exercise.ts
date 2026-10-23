@@ -127,7 +127,7 @@ export default class AdminExercisesService {
 
   async update(body: UpdateAdminExercise): Promise<void> {
     const { id } = this.data;
-    const type = body.type ?? (this.data.type as "NONE" | "CODE");
+    const type = this.data.type as "NONE" | "CODE";
 
     const updated = await transaction(async (tx) => {
       const exercise = await tx.exercise.update({
@@ -135,7 +135,6 @@ export default class AdminExercisesService {
         data: {
           name: body.name,
           content: body.content,
-          type: body.type,
         },
       });
 

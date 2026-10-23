@@ -65,7 +65,6 @@ function RouteComponent() {
           id,
           body: {
             name: value.name,
-            type: value.type,
             content: value.content,
             codeExercise: toCodeExerciseConfig(value),
           },

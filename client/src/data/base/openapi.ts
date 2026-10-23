@@ -6066,12 +6066,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-23T19:28:39.502Z
+             * @example 2026-10-23T19:47:55.796Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-23T19:28:39.503Z
+             * @example 2026-10-23T19:47:55.797Z
              */
             updatedAt: string;
         };
@@ -6455,11 +6455,6 @@ export interface components {
         UpdateAdminExercise: {
             /** @example Exercise Name */
             name?: string;
-            /**
-             * @example CODE
-             * @enum {string}
-             */
-            type?: "NONE" | "CODE";
             /** @example Exercise content */
             content?: string;
             codeExercise?: components["schemas"]["AdminCodeExerciseConfig"];
