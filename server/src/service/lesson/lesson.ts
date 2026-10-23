@@ -1,11 +1,10 @@
 import ExerciseService from "#/service/exercise";
 import type { LessonData, LessonStatus } from "#/service/lesson/lesson.schema";
-import { lessonIncludes } from "#/service/lesson/lesson.schema";
 import UnitService from "#/service/unit";
-import type { Prisma } from "#/generated/prisma/client";
-import { resolveInclude } from "#/lib/include";
-import { db } from "#/lib/prisma";
 import UserError from "#/lib/router/http/userError";
+import { lessonRepository } from "#/repository/lesson.repository";
+import { sessionRepository } from "#/repository/session.repository";
+import { exerciseRepository } from "#/repository/exercise.repository";
 interface LessonAttempt {
   passed: number;
   total: number;
@@ -24,21 +23,16 @@ export default class LessonService {
   }
 
   static async getById(id: string, include?: string | string[]): Promise<LessonService> {
-    const lesson = await db.lesson.findUnique({
-      where: { id },
-      include: resolveInclude<Prisma.LessonInclude>(include, lessonIncludes),
-    });
+    const lesson = await lessonRepository.findById(id, include);
     if (!lesson) throw new UserError(404, "Lesson not found");
-    return new LessonService(lesson as LessonData);
+    return new LessonService(lesson);
   }
 
   static async getByUnitIdRaw(unitID: string, include?: string | string[]): Promise<LessonData[]> {
-    const lessons = await db.lesson.findMany({
-      where: { unitID },
-      include: resolveInclude<Prisma.LessonInclude>(include, lessonIncludes),
+    return await lessonRepository.findManyByUnitID(unitID, {
+      include,
       orderBy: [{ position: "asc" }, { id: "asc" }],
     });
-    return lessons as LessonData[];
   }
 
   static async getByUnitId(unitID: string, include?: string | string[]): Promise<LessonService[]> {
@@ -55,10 +49,7 @@ export default class LessonService {
     if (lessons.length === 0) return [];
     const lessonIDs = lessons.map((lesson) => lesson.id);
 
-    const pending = await db.sessions.findFirst({
-      where: { userID, status: "PENDING" },
-      select: { LessonID: true },
-    });
+    const pending = await sessionRepository.findPending(userID);
 
     const prerequisites = await LessonService.getPrerequisites(lessonIDs);
     const requiredIDs = [...new Set([...prerequisites.values()].flat().map((entry) => entry.id))];
@@ -82,10 +73,7 @@ export default class LessonService {
     lessonIDs: string[],
   ): Promise<Map<string, { id: string; passThreshold: number }[]>> {
     if (lessonIDs.length === 0) return new Map();
-    const rows = await db.lessonPrerequisite.findMany({
-      where: { lessonID: { in: lessonIDs } },
-      select: { lessonID: true, prerequisite: { select: { id: true, passThreshold: true } } },
-    });
+    const rows = await lessonRepository.findPrerequisites(lessonIDs);
     const map = new Map<string, { id: string; passThreshold: number }[]>();
     for (const row of rows) {
       const entry = {
@@ -102,19 +90,9 @@ export default class LessonService {
     lessonIDs: string[],
   ): Promise<Map<string, LessonAttempt>> {
     if (lessonIDs.length === 0) return new Map();
-    const sessions = await db.sessions.findMany({
-      where: {
-        userID,
-        LessonID: { in: lessonIDs },
-        status: { in: ["SUBMITTED", "CANCELLED"] },
-      },
-      select: { LessonID: true, status: true, submissions: { select: { ok: true } } },
-    });
+    const sessions = await sessionRepository.findAttempts(userID, lessonIDs);
 
-    const codeExercises = await db.exercise.findMany({
-      where: { lessonID: { in: lessonIDs }, type: "CODE" },
-      select: { lessonID: true },
-    });
+    const codeExercises = await exerciseRepository.findCodeLessonIDs(lessonIDs);
     const totals = new Map<string, number>();
     for (const exercise of codeExercises) {
       totals.set(exercise.lessonID, (totals.get(exercise.lessonID) ?? 0) + 1);
@@ -161,10 +139,7 @@ export default class LessonService {
     const prerequisites = await LessonService.getPrerequisites([lesson.id]);
     const required = prerequisites.get(lesson.id) ?? [];
     const [pending, attempts] = await Promise.all([
-      db.sessions.findFirst({
-        where: { userID, status: "PENDING" },
-        select: { LessonID: true },
-      }),
+      sessionRepository.findPending(userID),
       LessonService.attemptsByLesson(userID, [lesson.id, ...required.map((entry) => entry.id)]),
     ]);
     return {

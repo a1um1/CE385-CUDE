@@ -3,9 +3,8 @@ import type {
   TransactionQuerySchema,
   TransactionListResponseSchema,
 } from "#/service/transactions/transactions.schema";
-import { TransactionQueryPayload } from "#/service/transactions/transactions.schema";
-import { db } from "#/lib/prisma";
 import type { Prisma } from "@prisma/client/extension";
+import { transactionRepository } from "#/repository/transaction.repository";
 
 export default class TransactionsService {
   private data: TransactionSchema;
@@ -22,15 +21,16 @@ export default class TransactionsService {
     tx: Prisma.TransactionClient,
     data: Omit<TransactionSchema, "id" | "createdAt" | "updatedAt">,
   ): Promise<TransactionsService> {
-    const transaction = await tx.transactions.create({
-      data: {
+    const transaction = await transactionRepository.create(
+      {
         userID: data.userID,
         type: data.type,
         amount: data.amount,
         afterAmount: data.afterAmount,
         reason: data.reason,
       },
-    });
+      tx,
+    );
     return new TransactionsService(transaction);
   }
 
@@ -40,12 +40,11 @@ export default class TransactionsService {
   ): Promise<TransactionListResponseSchema> {
     const isBackward = query.direction === "backward" && Boolean(query.cursor);
 
-    const users = await db.transactions.findMany({
+    const users = await transactionRepository.findPageByUser(userID, {
       take: query.perPage + 1,
       skip: query.cursor ? 1 : 0,
-      cursor: query.cursor ? { id: query.cursor, userID } : undefined,
+      cursorID: query.cursor,
       orderBy: { createdAt: isBackward ? "asc" : "desc" },
-      select: TransactionQueryPayload,
     });
 
     let nextCursor: string | undefined = undefined;

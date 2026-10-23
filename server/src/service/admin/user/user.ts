@@ -1,7 +1,6 @@
-import { db } from "#/lib/prisma";
 import bcrypt from "bcrypt";
 import { buildCursorOrderBy } from "#/lib/pagination.schema";
-import { userQueryPayload, type userSafeSchema } from "#/service/user/user.schema";
+import { type userSafeSchema } from "#/service/user/user.schema";
 import UserError from "#/lib/router/http/userError";
 import type {
   AdminUserDeactivateSchema,
@@ -9,6 +8,7 @@ import type {
   AdminUserQuery,
   AdminUserUpdatePasswordSchema,
 } from "#/service/admin/user/user.schema";
+import { userRepository } from "#/repository/user.repository";
 
 export default class AdminUserService {
   private user?: userSafeSchema;
@@ -24,21 +24,18 @@ export default class AdminUserService {
 
   async forceChangePassword(body: AdminUserUpdatePasswordSchema) {
     if (!this.user) throw new Error("User not found");
-    await db.$transaction([
-      db.user.update({
-        where: { id: this.user.id },
-        data: { password: bcrypt.hashSync(body.newPassword, 12), passwordChangedAt: new Date() },
-      }),
-      db.refreshToken.deleteMany({ where: { userID: this.user.id } }),
-    ]);
+    await userRepository.updatePasswordAndRevokeTokens(
+      this.user.id,
+      bcrypt.hashSync(body.newPassword, 12),
+    );
     return this;
   }
 
   async deactivate(body: AdminUserDeactivateSchema) {
     if (!this.user) throw new Error("User not found");
-    await db.user.update({
-      where: { id: this.user.id },
-      data: { isActive: false, deactivateReason: body.reason },
+    await userRepository.update(this.user.id, {
+      isActive: false,
+      deactivateReason: body.reason,
     });
     this.user.isActive = false;
     return this;
@@ -46,9 +43,9 @@ export default class AdminUserService {
 
   async reactivate() {
     if (!this.user) throw new Error("User not found");
-    await db.user.update({
-      where: { id: this.user.id },
-      data: { isActive: true, deactivateReason: null },
+    await userRepository.update(this.user.id, {
+      isActive: true,
+      deactivateReason: null,
     });
     this.user.isActive = true;
     this.user.deactivateReason = null;
@@ -56,10 +53,7 @@ export default class AdminUserService {
   }
 
   static async getById(userId: string): Promise<AdminUserService> {
-    const user = await db.user.findUnique({
-      where: { id: userId },
-      select: userQueryPayload,
-    });
+    const user = await userRepository.findAnyById(userId);
     if (!user) throw new UserError(404, "User not found");
     return new AdminUserService(user);
   }
@@ -68,12 +62,11 @@ export default class AdminUserService {
     const isBackward = query.direction === "backward" && Boolean(query.cursor);
     const orderBy = buildCursorOrderBy(query.sortBy, query.sortOrder, isBackward);
 
-    const users = await db.user.findMany({
+    const users = await userRepository.findPage({
       take: query.perPage + 1,
       skip: query.cursor ? 1 : 0,
       cursor: query.cursor ? { id: query.cursor } : undefined,
       orderBy,
-      select: userQueryPayload,
     });
 
     let nextCursor: string | undefined = undefined;

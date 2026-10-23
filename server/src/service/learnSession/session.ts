@@ -1,12 +1,10 @@
 import type { SessionData, SessionObject } from "#/service/learnSession/session.schema";
-import { sessionIncludes } from "#/service/learnSession/session.schema";
-import { db } from "#/lib/prisma";
 import UserError from "#/lib/router/http/userError";
 import lessonService from "#/service/lesson";
 import { Prisma } from "#/generated/prisma/client";
-import { resolveInclude } from "#/lib/include";
 import { z } from "#/lib/extendZod";
 import type { z as zod } from "zod";
+import { sessionRepository } from "#/repository/session.repository";
 type enrollmentStatus = "AVAILABLE" | "PENDING" | "NOT_AVAILABLE";
 
 export const enrollmentStatusSchema = z
@@ -36,12 +34,7 @@ export default class SessionService {
   }
 
   static async findUserPendingSession(props: { UserID: string }) {
-    const session = await db.sessions.findFirst({
-      where: {
-        userID: props.UserID,
-        status: "PENDING",
-      },
-    });
+    const session = await sessionRepository.findOpen(props.UserID);
     return session ? new SessionService(session) : null;
   }
 
@@ -66,11 +59,9 @@ export default class SessionService {
 
     const lesson = await lessonService.getById(props.LessonID);
     try {
-      const created = await db.sessions.create({
-        data: {
-          LessonID: lesson.JSON.id,
-          userID: props.UserID,
-        },
+      const created = await sessionRepository.create({
+        LessonID: lesson.JSON.id,
+        userID: props.UserID,
       });
       return created;
     } catch (error) {
@@ -83,44 +74,22 @@ export default class SessionService {
 
   async cancel(): Promise<void> {
     if (this.data.status !== "PENDING") throw new UserError(400, "Session is not in progress.");
-    await db.sessions.update({
-      where: {
-        id: this.data.id,
-        userID: this.data.userID,
-        status: "PENDING",
-      },
-      data: {
-        status: "CANCELLED",
-      },
-    });
+    await sessionRepository.setStatus(this.data.id, this.data.userID, "CANCELLED");
   }
 
   static async getByUserId(
     props: { UserID: string },
     include?: string | string[],
   ): Promise<SessionData[]> {
-    const sessions = await db.sessions.findMany({
-      where: {
-        userID: props.UserID,
-      },
-      orderBy: { createdAt: "desc" },
-      include: resolveInclude<Prisma.SessionsInclude>(include, sessionIncludes),
-    });
-    return sessions as SessionData[];
+    return await sessionRepository.findAllByUserID(props.UserID, include);
   }
 
   static async getById(
     props: { SessionID: string; userId: string },
     include?: string | string[],
   ): Promise<SessionService> {
-    const session = await db.sessions.findUnique({
-      where: {
-        id: props.SessionID,
-        userID: props.userId,
-      },
-      include: resolveInclude<Prisma.SessionsInclude>(include, sessionIncludes),
-    });
+    const session = await sessionRepository.findById(props.SessionID, props.userId, include);
     if (!session) throw new UserError(404, "Session not found.");
-    return new SessionService(session as SessionData);
+    return new SessionService(session);
   }
 }

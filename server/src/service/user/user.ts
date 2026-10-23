@@ -1,4 +1,3 @@
-import { db } from "#/lib/prisma";
 import bcrypt from "bcrypt";
 import UserError from "#/lib/router/http/userError";
 import {
@@ -8,13 +7,13 @@ import {
   type userUpdatePasswordSchema,
   type userValidationSchema,
   type userCreationSchema,
-  userQueryPayload,
   type userSafePublicSchema,
 } from "#/service/user/user.schema";
 import UserStatService from "#/service/userStat";
 import TransactionsService from "#/service/transactions";
 import type { TransactionQuerySchema } from "#/service/transactions/transactions.schema";
 import { Prisma } from "#/generated/prisma/client";
+import { userRepository } from "#/repository/user.repository";
 
 export default class UserService {
   private user: userSafeSchema;
@@ -41,60 +40,39 @@ export default class UserService {
   }
 
   async updateAvatar(data: userUpdateAvatarSchema) {
-    await db.user.update({
-      where: { id: this.user.id },
-      data: { profileImage: data.profileImageURL },
-    });
+    await userRepository.update(this.user.id, { profileImage: data.profileImageURL });
     this.user.profileImage = data.profileImageURL;
     return this;
   }
 
   async updateBackground(data: userUpdateBackgroundSchema) {
-    await db.user.update({
-      where: { id: this.user.id },
-      data: { backgroundImage: data.backgroundImageURL },
-    });
+    await userRepository.update(this.user.id, { backgroundImage: data.backgroundImageURL });
     this.user.backgroundImage = data.backgroundImageURL;
     return this;
   }
 
   async updatePassword(data: userUpdatePasswordSchema) {
-    const userRecord = await db.user.findUniqueOrThrow({
-      where: { id: this.user.id },
-      select: { password: true },
-    });
+    const userRecord = await userRepository.findByIdIncludingPassword(this.user.id);
     const isPasswordValid = await bcrypt.compare(data.currentPassword, userRecord.password);
     if (!isPasswordValid) throw new UserError(400, "Current password is incorrect");
     const hashedPassword = await bcrypt.hash(data.newPassword, 12);
-    await db.$transaction([
-      db.user.update({
-        where: { id: this.user.id },
-        data: { password: hashedPassword, passwordChangedAt: new Date() },
-      }),
-      db.refreshToken.deleteMany({ where: { userID: this.user.id } }),
-    ]);
+    await userRepository.updatePasswordAndRevokeTokens(this.user.id, hashedPassword);
   }
 
   static async getById(userId: string): Promise<UserService> {
-    const user = await db.user.findUnique({
-      where: { id: userId, isActive: true },
-      select: userQueryPayload,
-    });
+    const user = await userRepository.findById(userId);
     if (!user) throw new UserError(404, "User not found");
     return new UserService(user);
   }
 
   static async getByUsername(username: string): Promise<UserService> {
-    const user = await db.user.findUnique({
-      where: { username, isActive: true },
-      select: userQueryPayload,
-    });
+    const user = await userRepository.findByUsername(username);
     if (!user) throw new UserError(404, "User not found");
     return new UserService(user);
   }
 
   static async validateCredentials(credentials: userValidationSchema): Promise<UserService> {
-    const user = await db.user.findUnique({ where: { email: credentials.email } });
+    const user = await userRepository.findByEmail(credentials.email);
     if (!user) throw new UserError(400, "Email or Password is incorrect");
     const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
     if (!isPasswordValid) throw new UserError(400, "Email or Password is incorrect");
@@ -105,13 +83,11 @@ export default class UserService {
   static async create(userData: userCreationSchema): Promise<UserService> {
     try {
       const hashedPassword = await bcrypt.hash(userData.password, 12);
-      const created = await db.user.create({
-        data: {
-          name: userData.name,
-          username: userData.username,
-          email: userData.email,
-          password: hashedPassword,
-        },
+      const created = await userRepository.create({
+        name: userData.name,
+        username: userData.username,
+        email: userData.email,
+        password: hashedPassword,
       });
       return await UserService.getById(created.id);
     } catch (error) {

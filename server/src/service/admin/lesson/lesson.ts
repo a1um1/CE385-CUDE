@@ -5,12 +5,9 @@ import type {
   LessonUpdate,
   PaginatedLesson,
 } from "#/service/admin/lesson/lesson.schema";
-import { lessonIncludes } from "#/service/admin/lesson/lesson.schema";
 import UnitService from "#/service/unit";
-import type { Prisma } from "#/generated/prisma/client";
-import { resolveInclude } from "#/lib/include";
-import { db } from "#/lib/prisma";
 import UserError from "#/lib/router/http/userError";
+import { lessonRepository } from "#/repository/lesson.repository";
 
 export default class LessonService {
   private data: LessonData;
@@ -24,20 +21,13 @@ export default class LessonService {
   }
 
   static async getById(id: string, include?: string | string[]): Promise<LessonService> {
-    const lesson = await db.lesson.findUnique({
-      where: { id },
-      include: resolveInclude<Prisma.LessonInclude>(include, lessonIncludes),
-    });
+    const lesson = await lessonRepository.findById(id, include);
     if (!lesson) throw new UserError(404, "Lesson not found");
-    return new LessonService(lesson as LessonData);
+    return new LessonService(lesson);
   }
 
   static async getByUnitIdRaw(unitID: string, include?: string | string[]): Promise<LessonData[]> {
-    const lessons = await db.lesson.findMany({
-      where: { unitID },
-      include: resolveInclude<Prisma.LessonInclude>(include, lessonIncludes),
-    });
-    return lessons as LessonData[];
+    return await lessonRepository.findManyByUnitID(unitID, { include });
   }
 
   static async getByUnitId(unitID: string, include?: string | string[]): Promise<LessonService[]> {
@@ -53,16 +43,14 @@ export default class LessonService {
     const { page, limit, include } = options;
     await UnitService.getById(unitID); // 404 when the unit does not exist
 
-    const where = { unitID };
     const [rows, total] = await Promise.all([
-      db.lesson.findMany({
-        where,
-        include: resolveInclude<Prisma.LessonInclude>(include, lessonIncludes),
+      lessonRepository.findManyByUnitID(unitID, {
+        include,
         orderBy: { id: "asc" },
         skip: (page - 1) * limit,
         take: limit,
       }),
-      db.lesson.count({ where }),
+      lessonRepository.countByUnitID(unitID),
     ]);
 
     return {
@@ -76,26 +64,24 @@ export default class LessonService {
 
   static async create(input: LessonCreate): Promise<LessonService> {
     await UnitService.getById(input.unitID); // 404 when the unit does not exist
-    const lesson = await db.lesson.create({
-      data: {
-        name: input.name,
-        unitID: input.unitID,
-        passThreshold: input.passThreshold,
-        XPgiven: input.XPgiven,
-        gemsGiven: input.gemsGiven,
-      },
+    const lesson = await lessonRepository.create({
+      name: input.name,
+      unitID: input.unitID,
+      passThreshold: input.passThreshold,
+      XPgiven: input.XPgiven,
+      gemsGiven: input.gemsGiven,
     });
-    return new LessonService(lesson as LessonData);
+    return new LessonService(lesson);
   }
 
   static async update(id: string, input: LessonUpdate): Promise<LessonService> {
     await LessonService.getById(id); // 404 when the lesson does not exist
     if (input.unitID) await UnitService.getById(input.unitID);
-    const lesson = await db.lesson.update({
-      where: { id },
-      data: { name: input.name, unitID: input.unitID },
+    const lesson = await lessonRepository.update(id, {
+      name: input.name,
+      unitID: input.unitID,
     });
-    return new LessonService(lesson as LessonData);
+    return new LessonService(lesson);
   }
 
   async getAllExercise() {

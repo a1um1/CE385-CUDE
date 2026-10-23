@@ -1,14 +1,14 @@
 import TransactionsService from "#/service/transactions/index";
 import {
-  userStatQueryPayload,
   type spendEnergyProps,
   type userStatsExtendedQueryPayload,
   type userStatsQueryPayload,
 } from "#/service/userStat/userStat.schema";
 import type { Prisma } from "#/generated/prisma/client";
-import { db } from "#/lib/prisma";
 import UserError from "#/lib/router/http/userError";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
+import { transaction } from "#/repository/client";
+import { userStatRepository } from "#/repository/userStat.repository";
 
 export default class UserStatService {
   private data: userStatsQueryPayload;
@@ -77,7 +77,7 @@ export default class UserStatService {
   }
 
   async spendEnergy({ amount = 1, reason }: spendEnergyProps): Promise<void> {
-    await db.$transaction(async (tx) => {
+    await transaction(async (tx) => {
       const currentEnergy = await this.calculateCurrentEnergy(tx);
 
       if (currentEnergy < amount || amount <= 0) {
@@ -89,14 +89,13 @@ export default class UserStatService {
 
       if (wasFull) this.data.energyUpdatedAt = new Date();
 
-      const result = await tx.userStat
-        .update({
-          where: { userID: this.data.userID, energy: { gte: amount } },
-          data: {
-            energy: { decrement: amount },
-            energyUpdatedAt: wasFull ? this.data.energyUpdatedAt : undefined,
-          },
-        })
+      const result = await userStatRepository
+        .decrementEnergy(
+          this.data.userID,
+          amount,
+          wasFull ? this.data.energyUpdatedAt : undefined,
+          tx,
+        )
         .catch((error) => {
           if (error instanceof PrismaClientKnownRequestError) {
             throw new UserError(403, "Not enough energy to perform this action.");
@@ -124,22 +123,15 @@ export default class UserStatService {
   ): Promise<void> {
     if (props.xp === 0 && props.gems === 0) return;
 
-    const stat = await tx.userStat.upsert({
-      where: { userID: props.userID },
-      // The row is normally created by `getByUserId` at full energy; the column default would give
-      // a brand-new student 0 energy, so set it here too.
-      create: {
+    const stat = await userStatRepository.upsertReward(
+      {
         userID: props.userID,
-        energy: UserStatService.MAX_ENERGY,
-        energyUpdatedAt: new Date(),
-        totalXP: props.xp,
-        currentGems: props.gems,
+        xp: props.xp,
+        gems: props.gems,
+        initialEnergy: UserStatService.MAX_ENERGY,
       },
-      update: {
-        totalXP: { increment: props.xp },
-        currentGems: { increment: props.gems },
-      },
-    });
+      tx,
+    );
 
     if (props.xp !== 0) {
       await TransactionsService.createTransaction(tx, {
@@ -162,17 +154,7 @@ export default class UserStatService {
   }
 
   private async calculateCurrentEnergy(tx: Prisma.TransactionClient): Promise<number> {
-    const rows = await tx.$queryRaw<
-      {
-        energy: number;
-        energyUpdatedAt: Date;
-      }[]
-    >`
-				SELECT energy, "energyUpdatedAt"
-				FROM "UserStat"
-				WHERE "userID" = ${this.data.userID}
-				FOR UPDATE
-			`; // Lock the row for update to prevent race conditions
+    const rows = await userStatRepository.lockEnergy(this.data.userID, tx);
 
     const [row] = rows;
     if (!row) {
@@ -207,37 +189,24 @@ export default class UserStatService {
     this.data.energy = newEnergy;
     this.data.energyUpdatedAt = newEnergyUpdatedAt;
 
-    await tx.userStat.update({
-      where: { userID: this.data.userID },
-      data: {
-        energy: {
-          increment: incrementBy,
-        },
-        energyUpdatedAt: newEnergyUpdatedAt,
-      },
-    });
+    await userStatRepository.incrementEnergy(this.data.userID, incrementBy, newEnergyUpdatedAt, tx);
 
     return newEnergy;
   }
 
   private static async prepareData(data: userStatsQueryPayload): Promise<UserStatService> {
     const service = new UserStatService(data);
-    await db.$transaction((tx) => service.calculateCurrentEnergy(tx));
+    await transaction((tx) => service.calculateCurrentEnergy(tx));
 
     return service;
   }
 
   static async getByUserId(userID: string): Promise<UserStatService> {
-    const userStat = await db.userStat.findUnique({
-      where: { userID },
-      select: userStatQueryPayload,
-    });
+    const userStat = await userStatRepository.findByUserID(userID);
 
     if (!userStat) {
       // create if not exists
-      const data = await db.userStat.create({
-        data: { userID, energy: UserStatService.MAX_ENERGY, energyUpdatedAt: new Date() },
-      });
+      const data = await userStatRepository.create(userID, UserStatService.MAX_ENERGY);
       return await UserStatService.prepareData(data);
     }
 

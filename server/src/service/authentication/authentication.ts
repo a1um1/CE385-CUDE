@@ -4,12 +4,12 @@ import type {
 } from "#/service/authentication/authentication.schema";
 import UserService from "#/service/user";
 import type { userCreationSchema, userValidationSchema } from "#/service/user/user.schema";
-import type { Prisma } from "#/generated/prisma/client";
-import { db } from "#/lib/prisma";
 import userError from "#/lib/router/http/userError";
 import UserError from "#/lib/router/http/userError";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
+import { type Db, transaction } from "#/repository/client";
+import { refreshTokenRepository } from "#/repository/authentication.repository";
 
 export interface TokenContext {
   userAgent?: string;
@@ -22,11 +22,7 @@ export default class AuthenticationService {
   public static REFRESH_TOKEN_EXPIRATION_MS: number = 7 * 24 * 60 * 60 * 1000; // 7 days in ms
   private static TOKEN_EXPIRATION: jwt.SignOptions["expiresIn"] = "15m"; // 15 minutes in ms
 
-  async createRefreshToken(
-    userId: string,
-    context?: TokenContext,
-    client: Prisma.TransactionClient = db,
-  ): Promise<string> {
+  async createRefreshToken(userId: string, context?: TokenContext, tx?: Db): Promise<string> {
     if (!this.secret) throw new Error("JWT secret is not defined");
     const refreshToken = jwt.sign(
       { userId, salt: crypto.randomBytes(32).toString("hex") },
@@ -37,55 +33,32 @@ export default class AuthenticationService {
       },
     );
 
-    await client.refreshToken.create({
-      data: {
+    await refreshTokenRepository.create(
+      {
         token: refreshToken,
         userID: userId,
         userAgent: context?.userAgent,
         ipAddress: context?.ipAddress,
         expiresAt: new Date(Date.now() + AuthenticationService.REFRESH_TOKEN_EXPIRATION_MS),
       },
-    });
+      tx,
+    );
 
     return refreshToken;
   }
 
   async revokeRefreshToken(refreshToken: string) {
     if (!this.secret) throw new Error("JWT secret is not defined");
-    await db.refreshToken.deleteMany({
-      where: {
-        token: refreshToken,
-      },
-    });
+    await refreshTokenRepository.deleteByToken(refreshToken);
   }
 
   async validateRefreshToken(refreshToken: string): Promise<AuthenticationBody> {
     if (!this.secret) throw new Error("JWT secret is not defined");
-    const refreshTokenData = await db.refreshToken.findUnique({
-      where: {
-        token: refreshToken,
-      },
-      include: {
-        user: {
-          select: {
-            email: true,
-            id: true,
-            name: true,
-          },
-        },
-      },
-    });
+    const refreshTokenData = await refreshTokenRepository.findByToken(refreshToken);
 
     if (!refreshTokenData) throw new UserError(403, "Invalid refresh token");
     if (refreshTokenData.expiresAt < new Date()) {
-      await db.refreshToken.deleteMany({
-        where: {
-          userID: refreshTokenData.user.id,
-          expiresAt: {
-            lt: new Date(),
-          },
-        },
-      });
+      await refreshTokenRepository.deleteExpiredByUser(refreshTokenData.user.id);
       throw new UserError(403, "Refresh token expired");
     }
 
@@ -106,8 +79,8 @@ export default class AuthenticationService {
     const refreshTokenData = await this.validateRefreshToken(refreshToken);
     const accessToken = await this.generateToken(refreshTokenData);
 
-    const newRefreshToken = await db.$transaction(async (tx) => {
-      const consumed = await tx.refreshToken.deleteMany({ where: { token: refreshToken } });
+    const newRefreshToken = await transaction(async (tx) => {
+      const consumed = await refreshTokenRepository.deleteByToken(refreshToken, tx);
       if (consumed.count === 0) throw new UserError(403, "Invalid refresh token");
       return this.createRefreshToken(refreshTokenData.userId, context, tx);
     });

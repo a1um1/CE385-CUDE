@@ -9,8 +9,12 @@ import {
 } from "#/service/learnSession/session.schema";
 import UserStatService from "#/service/userStat";
 import type { Prisma, Submission } from "#/generated/prisma/client";
-import { db } from "#/lib/prisma";
 import UserError from "#/lib/router/http/userError";
+import { transaction } from "#/repository/client";
+import { submissionRepository } from "#/repository/submission.repository";
+import { sessionRepository } from "#/repository/session.repository";
+import { exerciseRepository } from "#/repository/exercise.repository";
+import { lessonRepository } from "#/repository/lesson.repository";
 
 export default class SubmissionService {
   private data: Submission;
@@ -40,14 +44,7 @@ export default class SubmissionService {
     });
     await this.assertExerciseInSession(session, props.exerciseID);
 
-    const submission = await db.submission.findUnique({
-      where: {
-        SessionID_exerciseID: {
-          SessionID: props.SessionID,
-          exerciseID: props.exerciseID,
-        },
-      },
-    });
+    const submission = await submissionRepository.findByExercise(props.SessionID, props.exerciseID);
     return submission && new SubmissionService(submission);
   }
 
@@ -67,22 +64,11 @@ export default class SubmissionService {
 
     await this.assertExerciseInSession(session, props.exerciseID);
 
-    const submission = await db.submission.upsert({
-      where: {
-        SessionID_exerciseID: {
-          SessionID: props.SessionID,
-          exerciseID: props.exerciseID,
-        },
-      },
-      create: {
-        userID: props.userID,
-        SessionID: props.SessionID,
-        exerciseID: props.exerciseID,
-        content: props.content,
-      },
-      update: {
-        content: props.content,
-      },
+    const submission = await submissionRepository.upsert({
+      userID: props.userID,
+      SessionID: props.SessionID,
+      exerciseID: props.exerciseID,
+      content: props.content,
     });
     return new SubmissionService(submission);
   }
@@ -99,19 +85,14 @@ export default class SubmissionService {
       throw new UserError(400, "Session are not available for submission.");
     }
 
-    return await db.$transaction(
+    return await transaction(
       async (tx) => {
-        const claimed = await tx.sessions.updateMany({
-          where: { id: props.SessionID, userID: props.userID, status: "PENDING" },
-          data: { status: "SUBMITTED" },
-        });
+        const claimed = await sessionRepository.claimForSubmit(props.SessionID, props.userID, tx);
         if (claimed.count === 0) {
           throw new UserError(400, "Session are not available for submission.");
         }
 
-        const submissions = await tx.submission.findMany({
-          where: { SessionID: props.SessionID },
-        });
+        const submissions = await submissionRepository.findAllBySession(props.SessionID, tx);
 
         const graded = await Promise.all(
           submissions.map(async (submission) => {
@@ -124,10 +105,7 @@ export default class SubmissionService {
             if (!grade) return null;
 
             const ok = grade.total > 0 && grade.failed === 0;
-            await tx.submission.update({
-              where: { id: submission.id },
-              data: { isGraded: true, ok },
-            });
+            await submissionRepository.setGrade(submission.id, ok, tx);
 
             return {
               exerciseID: submission.exerciseID,
@@ -140,9 +118,10 @@ export default class SubmissionService {
 
         const exercises = graded.filter((entry) => entry !== null);
         const passed = exercises.filter((entry) => entry.ok).length;
-        const totalCodeExercises = await tx.exercise.count({
-          where: { lessonID: session.JSON.LessonID, type: "CODE" },
-        });
+        const totalCodeExercises = await exerciseRepository.countCodeByLessonID(
+          session.JSON.LessonID,
+          tx,
+        );
         const reward = await this.grantLessonReward(tx, {
           SessionID: props.SessionID,
           userID: props.userID,
@@ -164,7 +143,7 @@ export default class SubmissionService {
     tx: Prisma.TransactionClient,
     props: { SessionID: string; userID: string; LessonID: string; passed: number; total: number },
   ): Promise<LessonReward | undefined> {
-    const lesson = await tx.lesson.findUnique({ where: { id: props.LessonID } });
+    const lesson = await lessonRepository.findRawById(props.LessonID, tx);
     if (!lesson) return undefined;
     const passedLesson = LessonService.isPassed(
       { passed: props.passed, total: props.total, givenUp: false },
@@ -172,13 +151,10 @@ export default class SubmissionService {
     );
     if (!passedLesson) return undefined;
 
-    const rewarded = await tx.sessions.findFirst({
-      where: { userID: props.userID, LessonID: lesson.id, rewarded: true },
-      select: { id: true },
-    });
+    const rewarded = await sessionRepository.findRewardedByLesson(props.userID, lesson.id, tx);
     if (rewarded) return undefined;
 
-    await tx.sessions.update({ where: { id: props.SessionID }, data: { rewarded: true } });
+    await sessionRepository.markRewarded(props.SessionID, tx);
 
     await UserStatService.grantReward(tx, {
       userID: props.userID,

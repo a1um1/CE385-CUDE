@@ -5,10 +5,10 @@ import type {
   AdminUnitCreateSchema,
   AdminUnitUpdateSchema,
 } from "#/service/admin/unit/unit.schema";
-import { unitQueryPayload } from "#/service/admin/unit/unit.schema";
 import { buildCursorOrderBy } from "#/lib/pagination.schema";
-import { db } from "#/lib/prisma";
 import UserError from "#/lib/router/http/userError";
+import { unitRepository } from "#/repository/unit.repository";
+import { courseRepository } from "#/repository/course.repository";
 
 export default class AdminUnitsService {
   private data: AdminUnitSchema;
@@ -23,9 +23,7 @@ export default class AdminUnitsService {
 
   //เรียกดูข้อมูล Unit ทีละตัวด้วย id
   static async getById(id: string): Promise<AdminUnitsService> {
-    const unit = await db.unit.findUnique({
-      where: { id },
-    });
+    const unit = await unitRepository.findById(id);
     if (!unit) throw new UserError(404, "Unit not found");
     return new AdminUnitsService(unit);
   }
@@ -34,15 +32,13 @@ export default class AdminUnitsService {
     // เช็คว่า Course ที่จะผูก Unit นี้เข้าไปมีจริงก่อน - ถ้าไม่เช็คแล้วส่ง
     // courseID ปลอมเข้ามา Prisma จะ throw raw foreign-key error ที่อ่านยาก
     // แทนที่จะได้ 404 ที่สื่อความหมายชัดเจนแบบนี้
-    const course = await db.course.findUnique({ where: { id: data.courseID } });
+    const course = await courseRepository.findById(data.courseID);
     if (!course) throw new UserError(404, "Course not found");
 
-    const { _max } = await db.unit.aggregate({
-      _max: { position: true },
-      where: { courseID: data.courseID },
-    });
-    const unit = await db.unit.create({
-      data: { ...data, position: (_max.position ?? -1) + 1 },
+    const { _max } = await unitRepository.maxPosition(data.courseID);
+    const unit = await unitRepository.create({
+      ...data,
+      position: (_max.position ?? -1) + 1,
     });
     return new AdminUnitsService(unit);
   }
@@ -50,13 +46,10 @@ export default class AdminUnitsService {
   static async update(id: string, data: AdminUnitUpdateSchema): Promise<AdminUnitsService> {
     await AdminUnitsService.getById(id);
 
-    const course = await db.course.findUnique({ where: { id: data.courseID } });
+    const course = await courseRepository.findById(data.courseID);
     if (!course) throw new UserError(404, "Course not found");
 
-    const unit = await db.unit.update({
-      where: { id },
-      data,
-    });
+    const unit = await unitRepository.update(id, data);
 
     return new AdminUnitsService(unit);
   }
@@ -65,13 +58,12 @@ export default class AdminUnitsService {
     const isBackward = query.direction === "backward" && Boolean(query.cursor);
     const orderBy = buildCursorOrderBy(query.sortBy, query.sortOrder, isBackward);
 
-    const data = await db.unit.findMany({
+    const data = await unitRepository.findPage({
       where: query.courseID ? { courseID: query.courseID } : undefined,
       take: query.perPage + 1,
       skip: query.cursor ? 1 : 0,
       cursor: query.cursor ? { id: query.cursor } : undefined,
       orderBy,
-      select: unitQueryPayload,
     });
 
     let nextCursor: string | undefined = undefined;
