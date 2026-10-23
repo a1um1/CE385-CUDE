@@ -7,6 +7,29 @@ const createExerciseSearchSchema = z.object({
   lessonID: z.string().optional(),
 });
 
+function toCodeExerciseConfig(value: {
+  type: "NONE" | "CODE";
+  language: "python" | "c";
+  timeLimitMs: number;
+  memoryLimitMb: number;
+  starterCode: string;
+  testCases: { id?: string; input: string; output: string; isPublic: boolean }[];
+}) {
+  if (value.type !== "CODE") return undefined;
+  return {
+    language: value.language,
+    timeLimitMs: value.timeLimitMs,
+    memoryLimitMb: value.memoryLimitMb,
+    starterCode: value.starterCode.trim() ? value.starterCode : null,
+    testCases: value.testCases.map((tc) => ({
+      id: tc.id,
+      input: tc.input,
+      output: tc.output,
+      isPublic: tc.isPublic,
+    })),
+  };
+}
+
 export const Route = createFileRoute("/admin/exercise/create")({
   validateSearch: (search) => createExerciseSearchSchema.parse(search),
   component: RouteComponent,
@@ -26,12 +49,24 @@ function RouteComponent() {
       defaultValues={{
         name: "",
         lessonID: lessonID ?? "",
+        type: "NONE",
         content: "",
+        language: "python",
+        timeLimitMs: 2000,
+        memoryLimitMb: 256,
+        starterCode: "",
+        testCases: [],
       }}
       submitLabel="Create Exercise"
       isPending={createMutation.isPending}
       onSubmit={async (value) => {
-        await createMutation.mutateAsync(value);
+        await createMutation.mutateAsync({
+          name: value.name,
+          lessonID: value.lessonID,
+          type: value.type,
+          content: value.content,
+          codeExercise: toCodeExerciseConfig(value),
+        });
         navigate({
           to: "/admin/exercise",
           search: {

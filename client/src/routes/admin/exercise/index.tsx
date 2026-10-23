@@ -1,6 +1,7 @@
 import * as React from "react";
 import ButtonLink from "#/components/buttonLink";
 import DataTable from "#/components/table";
+import Badge from "#/components/badge";
 import { createTableColumnHelper } from "#/components/table/features";
 import { useAdminExerciseListQuery } from "#/data/admin/exercise.data";
 import { useAdminLessonListQuery } from "#/data/admin/lesson.data";
@@ -40,6 +41,17 @@ const buildColumns = (lessonMap: Map<string, string>) =>
     columnHelper.text("name", {
       header: "Name",
       strong: true,
+    }),
+    columnHelper.display({
+      id: "type",
+      header: "Type",
+      cell: (info) => (
+        <Badge
+          color={info.row.original.type === "CODE" ? "var(--color-primary)" : "var(--color-muted)"}
+        >
+          {info.row.original.type === "CODE" ? "CODE" : "READING"}
+        </Badge>
+      ),
     }),
     columnHelper.number("position", {
       header: "Position",
