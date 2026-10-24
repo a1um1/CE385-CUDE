@@ -1,5 +1,4 @@
 import * as React from "react";
-import ButtonLink from "#/components/buttonLink";
 import { useAppForm } from "#/components/form";
 import { useAdminCourseListQuery } from "#/data/admin/course.data";
 import {
@@ -120,17 +119,7 @@ export function UnitForm({
           }}
         >
           <form.SubmitButton label={submitLabel} isPending={isPending} />
-          <ButtonLink
-            to="/admin/unit"
-            search={{
-              cursor: undefined,
-              perPage: 20,
-              direction: "forward",
-            }}
-            variant="secondary"
-          >
-            Cancel
-          </ButtonLink>
+          <form.CancelButton fallbackUrl="/admin/unit" />
         </div>
       </form.AppForm>
     </form>

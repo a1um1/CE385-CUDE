@@ -4,7 +4,9 @@ import { TextField } from "./input/textInput";
 import { ColorField } from "./input/colorInput";
 import { PasswordField } from "./input/passwordInput";
 import { SubmitButton } from "./input/submitButton";
+import { CancelButton } from "./input/cancelButton";
 import { FormError } from "./input/formError";
+import { LeavePrompt } from "./input/leavePrompt";
 
 export const { fieldContext, formContext, useFieldContext, useFormContext } =
   createFormHookContexts();
@@ -19,18 +21,24 @@ const { useAppForm: useAppFormBase } = createFormHook({
   },
   formComponents: {
     SubmitButton,
+    CancelButton,
     FormError,
+    LeavePrompt,
   },
 });
 
-export const useAppForm: typeof useAppFormBase = (options) =>
-  useAppFormBase({
+export const useAppForm: typeof useAppFormBase = (options) => {
+  const form = useAppFormBase({
     ...options,
     onSubmit: async (ctx) => {
       ctx.formApi.setErrorMap({ onSubmit: undefined });
       await options.onSubmit?.(ctx);
+      ctx.formApi.reset(ctx.formApi.state.values);
     },
   });
+
+  return form;
+};
 
 type ErrorResponse = components["schemas"]["ErrorResponse"];
 type ValidationIssue = NonNullable<ErrorResponse["details"]>[number];

@@ -4,6 +4,7 @@ import DataTable from "#/components/table";
 import { createTableColumnHelper } from "#/components/table/features";
 import { useAdminLessonListQuery } from "#/data/admin/lesson.data";
 import { useAdminUnitListQuery } from "#/data/admin/unit.data";
+import { useAdminCourseListQuery } from "#/data/admin/course.data";
 import {
   SelectRoot,
   SelectTrigger,
@@ -17,6 +18,7 @@ import { z } from "zod";
 const lessonPaginationSchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(20),
+  courseId: z.string().optional(),
   unitId: z.string().optional(),
 });
 
@@ -112,9 +114,15 @@ function RouteComponent() {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
 
+  const coursesQuery = useAdminCourseListQuery({
+    perPage: 100,
+    direction: "forward",
+  });
+
   const unitsQuery = useAdminUnitListQuery({
     perPage: 100,
     direction: "forward",
+    courseID: search.courseId,
   });
 
   const unitMap = React.useMemo(() => {
@@ -125,6 +133,14 @@ function RouteComponent() {
     return map;
   }, [unitsQuery.data?.data]);
 
+  const courseFilterItems = React.useMemo(() => {
+    const items = [{ value: "ALL", label: "All Courses" }];
+    for (const course of coursesQuery.data?.data ?? []) {
+      items.push({ value: course.id, label: course.name });
+    }
+    return items;
+  }, [coursesQuery.data?.data]);
+
   const unitFilterItems = React.useMemo(() => {
     const items = [{ value: "ALL", label: "All Units" }];
     for (const unit of unitsQuery.data?.data ?? []) {
@@ -134,6 +150,17 @@ function RouteComponent() {
   }, [unitsQuery.data?.data]);
 
   const typedColumns = React.useMemo(() => buildColumns(unitMap), [unitMap]);
+
+  const handleCourseFilterChange = (courseId: string | null) => {
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        courseId: courseId === "ALL" || !courseId ? undefined : courseId,
+        unitId: undefined,
+        page: 1,
+      }),
+    });
+  };
 
   const handleUnitFilterChange = (unitId: string | null) => {
     navigate({
@@ -186,28 +213,54 @@ function RouteComponent() {
             gap: "1rem",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-            <span style={{ fontSize: "0.875rem", fontWeight: 500, whiteSpace: "nowrap" }}>
-              Unit:
-            </span>
-            <SelectRoot
-              value={search.unitId ?? "ALL"}
-              onValueChange={handleUnitFilterChange}
-              size="sm"
-              items={unitFilterItems}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="All Units" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="ALL">All Units</SelectItem>
-                {unitsQuery.data?.data?.map((u) => (
-                  <SelectItem key={u.id} value={u.id}>
-                    {u.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </SelectRoot>
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              <span style={{ fontSize: "0.875rem", fontWeight: 500, whiteSpace: "nowrap" }}>
+                Course:
+              </span>
+              <SelectRoot
+                value={search.courseId ?? "ALL"}
+                onValueChange={handleCourseFilterChange}
+                size="sm"
+                items={courseFilterItems}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="All Courses" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ALL">All Courses</SelectItem>
+                  {coursesQuery.data?.data?.map((c) => (
+                    <SelectItem key={c.id} value={c.id}>
+                      {c.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </SelectRoot>
+            </div>
+
+            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              <span style={{ fontSize: "0.875rem", fontWeight: 500, whiteSpace: "nowrap" }}>
+                Unit:
+              </span>
+              <SelectRoot
+                value={search.unitId ?? "ALL"}
+                onValueChange={handleUnitFilterChange}
+                size="sm"
+                items={unitFilterItems}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="All Units" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ALL">All Units</SelectItem>
+                  {unitsQuery.data?.data?.map((u) => (
+                    <SelectItem key={u.id} value={u.id}>
+                      {u.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </SelectRoot>
+            </div>
           </div>
 
           <ButtonLink

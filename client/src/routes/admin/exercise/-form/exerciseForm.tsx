@@ -1,5 +1,4 @@
 import * as React from "react";
-import ButtonLink from "#/components/buttonLink";
 import Button from "#/components/button";
 import Input from "#/components/input";
 import formStyles from "#/components/form/form.module.css";
@@ -771,17 +770,7 @@ export function ExerciseForm({
 
         {/* STICKY BOTTOM BAR (Cancel on left, Save Changes on right) */}
         <div className={styles["bottom-bar"]}>
-          <ButtonLink
-            to="/admin/exercise"
-            search={{
-              cursor: undefined,
-              perPage: 20,
-              direction: "forward",
-            }}
-            variant="secondary"
-          >
-            Cancel
-          </ButtonLink>
+          <form.CancelButton fallbackUrl="/admin/exercise" />
 
           <form.SubmitButton label={submitLabel} isPending={isPending} />
         </div>
