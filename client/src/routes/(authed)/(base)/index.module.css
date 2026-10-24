@@ -19,6 +19,7 @@
 .course-card {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   align-items: flex-start;
   gap: 1.5rem;
   padding: 1.5rem;
@@ -35,6 +36,7 @@
   transition:
     transform 150ms,
     box-shadow 150ms;
+  aspect-ratio: 1.25 / 1;
 }
 
 .course-card:hover {
@@ -43,12 +45,11 @@
 }
 
 .course-icon {
-  width: 3.5rem;
-  height: 3.5rem;
+  width: 5rem;
+  height: 5rem;
 }
 
 .course-name {
-  align-self: flex-end;
-  font-size: 1.125rem;
+  font-size: 1.25rem;
   font-weight: 600;
 }
