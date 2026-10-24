@@ -83,11 +83,6 @@ export function UnitForm({
             >
               <label style={{ fontSize: "0.875rem", fontWeight: 500 }}>
                 Course <span style={{ color: "red" }}>*</span>
-                {isEdit && (
-                  <span style={{ fontSize: "0.75rem", color: "#888", marginLeft: "0.5rem" }}>
-                    (Cannot be changed once created)
-                  </span>
-                )}
               </label>
               <SelectRoot
                 value={field.state.value || null}

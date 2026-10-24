@@ -122,11 +122,6 @@ export function LessonForm({
             >
               <label style={{ fontSize: "0.875rem", fontWeight: 500 }}>
                 Unit <span style={{ color: "red" }}>*</span>
-                {isEdit && (
-                  <span style={{ fontSize: "0.75rem", color: "#888", marginLeft: "0.5rem" }}>
-                    (Cannot be changed once created)
-                  </span>
-                )}
               </label>
               <SelectRoot
                 value={field.state.value || null}
@@ -229,7 +224,7 @@ export function LessonForm({
             {(field) => (
               <div className={formStyles["form-field"]}>
                 <label htmlFor="startAt" className={formStyles.label}>
-                  Start Date/Time (optional)
+                  Start Date/Time
                 </label>
                 <Input
                   id="startAt"
@@ -246,7 +241,7 @@ export function LessonForm({
             {(field) => (
               <div className={formStyles["form-field"]}>
                 <label htmlFor="endAt" className={formStyles.label}>
-                  End Date/Time (optional)
+                  End Date/Time
                 </label>
                 <Input
                   id="endAt"
@@ -274,9 +269,7 @@ export function LessonForm({
                   marginTop: "0.75rem",
                 }}
               >
-                <label style={{ fontSize: "0.875rem", fontWeight: 500 }}>
-                  Prerequisites (Lessons required before this one)
-                </label>
+                <label style={{ fontSize: "0.875rem", fontWeight: 500 }}>Prerequisites</label>
 
                 {selected.length > 0 && (
                   <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
