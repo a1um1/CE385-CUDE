@@ -10,12 +10,17 @@
 
   background-color: var(--input-color);
   color: var(--input-text-color);
+  color-scheme: dark;
   padding: var(--input-sizing);
   font-size: var(--input-font-size);
   border-radius: var(--input-radius);
   border: 2px solid var(--input-border-color);
   transition: outline-offset 0.2s ease-in-out;
   width: 100%;
+
+  &::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+  }
 
   &:focus {
     outline: 2px solid color-mix(in oklch, var(--input-border-color) 50%, transparent);

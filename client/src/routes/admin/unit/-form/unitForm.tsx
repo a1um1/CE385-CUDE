@@ -1,5 +1,4 @@
 import * as React from "react";
-import ButtonLink from "#/components/buttonLink";
 import { useAppForm } from "#/components/form";
 import { useAdminCourseListQuery } from "#/data/admin/course.data";
 import {
@@ -84,11 +83,6 @@ export function UnitForm({
             >
               <label style={{ fontSize: "0.875rem", fontWeight: 500 }}>
                 Course <span style={{ color: "red" }}>*</span>
-                {isEdit && (
-                  <span style={{ fontSize: "0.75rem", color: "#888", marginLeft: "0.5rem" }}>
-                    (Cannot be changed once created)
-                  </span>
-                )}
               </label>
               <SelectRoot
                 value={field.state.value || null}
@@ -120,17 +114,7 @@ export function UnitForm({
           }}
         >
           <form.SubmitButton label={submitLabel} isPending={isPending} />
-          <ButtonLink
-            to="/admin/unit"
-            search={{
-              cursor: undefined,
-              perPage: 20,
-              direction: "forward",
-            }}
-            variant="secondary"
-          >
-            Cancel
-          </ButtonLink>
+          <form.CancelButton fallbackUrl="/admin/unit" />
         </div>
       </form.AppForm>
     </form>

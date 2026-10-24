@@ -1,0 +1,88 @@
+@reference "#/styles/main.css";
+
+.card {
+  display: flex;
+  height: 100px;
+  width: 100%;
+  align-items: stretch;
+  overflow: hidden;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-input);
+  text-align: left;
+  transition:
+    transform 150ms ease,
+    box-shadow 150ms ease,
+    border-color 150ms ease;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px -4px rgb(0 0 0 / 0.3);
+  border-color: var(--color-primary);
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.dateBlock {
+  display: flex;
+  aspect-ratio: 1 / 1;
+  height: 100%;
+  flex-shrink: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--date-color, var(--color-primary));
+  color: black;
+  user-select: none;
+}
+
+.day {
+  font-family: var(--font-mono);
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.month {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.content {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.5rem 1.25rem;
+}
+
+.title {
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-background-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.location {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  color: color-mix(in srgb, var(--color-background-text) 80%, transparent);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

@@ -1,5 +1,4 @@
 import * as React from "react";
-import ButtonLink from "#/components/buttonLink";
 import Button from "#/components/button";
 import Input from "#/components/input";
 import formStyles from "#/components/form/form.module.css";
@@ -241,11 +240,6 @@ export function ExerciseForm({
                 >
                   <label style={{ fontSize: "0.875rem", fontWeight: 500 }}>
                     Lesson <span style={{ color: "red" }}>*</span>
-                    {isEdit && (
-                      <span style={{ fontSize: "0.75rem", color: "#888", marginLeft: "0.5rem" }}>
-                        (Cannot be changed once created)
-                      </span>
-                    )}
                   </label>
                   <SelectRoot
                     value={field.state.value || null}
@@ -280,11 +274,6 @@ export function ExerciseForm({
                 >
                   <label style={{ fontSize: "0.875rem", fontWeight: 500 }}>
                     Exercise Type <span style={{ color: "red" }}>*</span>
-                    {isEdit && (
-                      <span style={{ fontSize: "0.75rem", color: "#888", marginLeft: "0.5rem" }}>
-                        (Cannot be changed once created)
-                      </span>
-                    )}
                   </label>
                   <SelectRoot
                     value={field.state.value}
@@ -771,17 +760,7 @@ export function ExerciseForm({
 
         {/* STICKY BOTTOM BAR (Cancel on left, Save Changes on right) */}
         <div className={styles["bottom-bar"]}>
-          <ButtonLink
-            to="/admin/exercise"
-            search={{
-              cursor: undefined,
-              perPage: 20,
-              direction: "forward",
-            }}
-            variant="secondary"
-          >
-            Cancel
-          </ButtonLink>
+          <form.CancelButton fallbackUrl="/admin/exercise" />
 
           <form.SubmitButton label={submitLabel} isPending={isPending} />
         </div>

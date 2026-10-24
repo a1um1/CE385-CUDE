@@ -35,13 +35,13 @@ const columnHelper = createTableColumnHelper<AdminUnit>();
 
 const buildColumns = (courseMap: Map<string, string>) =>
   columnHelper.columns([
+    columnHelper.number("position", {
+      header: "#",
+      align: "center",
+    }),
     columnHelper.text("name", {
       header: "Name",
       strong: true,
-    }),
-    columnHelper.number("position", {
-      header: "Position",
-      align: "center",
     }),
     columnHelper.display({
       id: "course",
@@ -111,8 +111,9 @@ function RouteComponent() {
   const typedColumns = React.useMemo(() => buildColumns(courseMap), [courseMap]);
 
   const sorting: SortingState = React.useMemo(() => {
-    if (!search.sortBy) return [];
-    return [{ id: search.sortBy, desc: search.sortOrder === "desc" }];
+    const sortBy = search.sortBy ?? "position";
+    const sortOrder = search.sortOrder ?? "asc";
+    return [{ id: sortBy, desc: sortOrder === "desc" }];
   }, [search.sortBy, search.sortOrder]);
 
   const handleSortingChange: OnChangeFn<SortingState> = (updaterOrValue) => {
@@ -145,8 +146,8 @@ function RouteComponent() {
     perPage: search.perPage,
     cursor: search.cursor,
     direction: search.direction,
-    sortBy: search.sortBy as any,
-    sortOrder: search.sortOrder,
+    sortBy: (search.sortBy ?? "position") as any,
+    sortOrder: search.sortOrder ?? "asc",
     courseID: search.courseID,
   });
 
@@ -195,28 +196,32 @@ function RouteComponent() {
             gap: "1rem",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-            <span style={{ fontSize: "0.875rem", fontWeight: 500, whiteSpace: "nowrap" }}>
-              Course:
-            </span>
-            <SelectRoot
-              value={search.courseID ?? "ALL"}
-              onValueChange={handleCourseFilterChange}
-              size="sm"
-              items={courseFilterItems}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="All Courses" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="ALL">All Courses</SelectItem>
-                {coursesQuery.data?.data?.map((c) => (
-                  <SelectItem key={c.id} value={c.id}>
-                    {c.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </SelectRoot>
+          <div style={{ display: "flex", alignItems: "flex-end", gap: "1rem", flexWrap: "wrap" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+              <span
+                style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--color-muted-text)" }}
+              >
+                Course
+              </span>
+              <SelectRoot
+                value={search.courseID ?? "ALL"}
+                onValueChange={handleCourseFilterChange}
+                size="sm"
+                items={courseFilterItems}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="All Courses" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ALL">All Courses</SelectItem>
+                  {coursesQuery.data?.data?.map((c) => (
+                    <SelectItem key={c.id} value={c.id}>
+                      {c.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </SelectRoot>
+            </div>
           </div>
 
           <ButtonLink

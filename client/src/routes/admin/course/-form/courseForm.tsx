@@ -1,4 +1,3 @@
-import ButtonLink from "#/components/buttonLink";
 import { useAppForm } from "#/components/form";
 
 export interface CourseFormValues {
@@ -58,17 +57,7 @@ export function CourseForm({
         </form.AppField>
         <div style={{ display: "flex", gap: "0.75rem", alignItems: "center", marginTop: "1rem" }}>
           <form.SubmitButton label={submitLabel} isPending={isPending} />
-          <ButtonLink
-            to="/admin/course"
-            search={{
-              cursor: undefined,
-              perPage: 20,
-              direction: "forward",
-            }}
-            variant="secondary"
-          >
-            Cancel
-          </ButtonLink>
+          <form.CancelButton fallbackUrl="/admin/course" />
         </div>
       </form.AppForm>
     </form>

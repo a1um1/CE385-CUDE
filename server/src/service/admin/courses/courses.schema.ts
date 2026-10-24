@@ -35,7 +35,7 @@ export const courseQueryPayload = {
 export type courseQueryPayload = Prisma.CourseGetPayload<{ select: typeof courseQueryPayload }>;
 
 export const AdminCourseQuerySchema = createCursorPaginationQuerySchema(
-  ["name", "createdAt", "updatedAt", "id"],
+  ["position", "name", "createdAt", "updatedAt", "id"],
   "AdminCourseQuery",
 );
 
