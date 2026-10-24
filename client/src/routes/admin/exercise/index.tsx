@@ -42,6 +42,10 @@ const columnHelper = createTableColumnHelper<AdminExercise>();
 
 const buildColumns = (lessonMap: Map<string, string>) =>
   columnHelper.columns([
+    columnHelper.number("position", {
+      header: "#",
+      align: "center",
+    }),
     columnHelper.text("name", {
       header: "Name",
       strong: true,
@@ -56,10 +60,6 @@ const buildColumns = (lessonMap: Map<string, string>) =>
           {info.row.original.type === "CODE" ? "CODE" : "READING"}
         </Badge>
       ),
-    }),
-    columnHelper.number("position", {
-      header: "Position",
-      align: "center",
     }),
     columnHelper.display({
       id: "lesson",
@@ -145,8 +145,9 @@ function RouteComponent() {
   const typedColumns = React.useMemo(() => buildColumns(lessonMap), [lessonMap]);
 
   const sorting: SortingState = React.useMemo(() => {
-    if (!search.sortBy) return [];
-    return [{ id: search.sortBy, desc: search.sortOrder === "desc" }];
+    const sortBy = search.sortBy ?? "position";
+    const sortOrder = search.sortOrder ?? "asc";
+    return [{ id: sortBy, desc: sortOrder === "desc" }];
   }, [search.sortBy, search.sortOrder]);
 
   const handleSortingChange: OnChangeFn<SortingState> = (updaterOrValue) => {
@@ -204,8 +205,8 @@ function RouteComponent() {
     perPage: search.perPage,
     cursor: search.cursor,
     direction: search.direction,
-    sortBy: search.sortBy as any,
-    sortOrder: search.sortOrder,
+    sortBy: (search.sortBy ?? "position") as any,
+    sortOrder: search.sortOrder ?? "asc",
     lessonID: search.lessonID,
   });
 

@@ -37,13 +37,13 @@ const columnHelper = createTableColumnHelper<AdminLesson>();
 
 const buildColumns = (unitMap: Map<string, string>) =>
   columnHelper.columns([
+    columnHelper.number("position", {
+      header: "#",
+      align: "center",
+    }),
     columnHelper.text("name", {
       header: "Name",
       strong: true,
-    }),
-    columnHelper.number("position", {
-      header: "Position",
-      align: "center",
     }),
     columnHelper.display({
       id: "unit",
