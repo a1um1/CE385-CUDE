@@ -29,7 +29,7 @@ function Home() {
         {!courseId ? <HomePanel /> : <LessonsPanel courseId={courseId} />}
       </div>
 
-      <aside className="min-w-0 flex-1 flex flex-col gap-4">
+      <aside className="min-w-0 flex-1 flex flex-col bg-[#131722]  shadow-xl rounded-xl overflow-hidden">
         <LevelCard />
         <RankingCard />
         <DailyQuest />
