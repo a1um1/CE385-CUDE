@@ -24,12 +24,12 @@ function Home() {
   }, [courseId, courses.data, setCourse]);
 
   return (
-    <div className="flex flex-col gap-6 lg:flex-row">
+    <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
       <div className="flex min-w-0 flex-[2] flex-col gap-6">
         {!courseId ? <HomePanel /> : <LessonsPanel courseId={courseId} />}
       </div>
 
-      <aside className="min-w-0 flex-1 flex flex-col bg-[#131722]  shadow-xl rounded-xl overflow-hidden">
+      <aside className="min-w-0 flex-1 flex flex-col bg-[#131722] shadow-xl rounded-xl overflow-hidden lg:sticky lg:top-6 lg:h-fit">
         <LevelCard />
         <RankingCard />
         <DailyQuest />
