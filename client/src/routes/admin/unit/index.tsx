@@ -196,28 +196,32 @@ function RouteComponent() {
             gap: "1rem",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-            <span style={{ fontSize: "0.875rem", fontWeight: 500, whiteSpace: "nowrap" }}>
-              Course:
-            </span>
-            <SelectRoot
-              value={search.courseID ?? "ALL"}
-              onValueChange={handleCourseFilterChange}
-              size="sm"
-              items={courseFilterItems}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="All Courses" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="ALL">All Courses</SelectItem>
-                {coursesQuery.data?.data?.map((c) => (
-                  <SelectItem key={c.id} value={c.id}>
-                    {c.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </SelectRoot>
+          <div style={{ display: "flex", alignItems: "flex-end", gap: "1rem", flexWrap: "wrap" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+              <span
+                style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--color-muted-text)" }}
+              >
+                Course
+              </span>
+              <SelectRoot
+                value={search.courseID ?? "ALL"}
+                onValueChange={handleCourseFilterChange}
+                size="sm"
+                items={courseFilterItems}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="All Courses" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ALL">All Courses</SelectItem>
+                  {coursesQuery.data?.data?.map((c) => (
+                    <SelectItem key={c.id} value={c.id}>
+                      {c.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </SelectRoot>
+            </div>
           </div>
 
           <ButtonLink

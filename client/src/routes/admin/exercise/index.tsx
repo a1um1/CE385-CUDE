@@ -255,10 +255,12 @@ function RouteComponent() {
             gap: "1rem",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-              <span style={{ fontSize: "0.875rem", fontWeight: 500, whiteSpace: "nowrap" }}>
-                Course:
+          <div style={{ display: "flex", alignItems: "flex-end", gap: "1rem", flexWrap: "wrap" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+              <span
+                style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--color-muted-text)" }}
+              >
+                Course
               </span>
               <SelectRoot
                 value={search.courseID ?? "ALL"}
@@ -280,9 +282,11 @@ function RouteComponent() {
               </SelectRoot>
             </div>
 
-            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-              <span style={{ fontSize: "0.875rem", fontWeight: 500, whiteSpace: "nowrap" }}>
-                Unit:
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+              <span
+                style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--color-muted-text)" }}
+              >
+                Unit
               </span>
               <SelectRoot
                 value={search.unitID ?? "ALL"}
@@ -304,9 +308,11 @@ function RouteComponent() {
               </SelectRoot>
             </div>
 
-            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-              <span style={{ fontSize: "0.875rem", fontWeight: 500, whiteSpace: "nowrap" }}>
-                Lesson:
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+              <span
+                style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--color-muted-text)" }}
+              >
+                Lesson
               </span>
               <SelectRoot
                 value={search.lessonID ?? "ALL"}

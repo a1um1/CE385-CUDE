@@ -5,6 +5,7 @@ import { createTableColumnHelper } from "#/components/table/features";
 import { useAdminLessonListQuery } from "#/data/admin/lesson.data";
 import { useAdminUnitListQuery } from "#/data/admin/unit.data";
 import { useAdminCourseListQuery } from "#/data/admin/course.data";
+import styles from "./lessonList.module.css";
 import {
   SelectRoot,
   SelectTrigger,
@@ -204,20 +205,10 @@ function RouteComponent() {
   return (
     <DataTable
       toolbarActions={
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            width: "100%",
-            gap: "1rem",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-              <span style={{ fontSize: "0.875rem", fontWeight: 500, whiteSpace: "nowrap" }}>
-                Course:
-              </span>
+        <div className={styles.toolbarContainer}>
+          <div className={styles.filtersGroup}>
+            <div className={styles.filterField}>
+              <span className={styles.filterLabel}>Course</span>
               <SelectRoot
                 value={search.courseId ?? "ALL"}
                 onValueChange={handleCourseFilterChange}
@@ -238,10 +229,8 @@ function RouteComponent() {
               </SelectRoot>
             </div>
 
-            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-              <span style={{ fontSize: "0.875rem", fontWeight: 500, whiteSpace: "nowrap" }}>
-                Unit:
-              </span>
+            <div className={styles.filterField}>
+              <span className={styles.filterLabel}>Unit</span>
               <SelectRoot
                 value={search.unitId ?? "ALL"}
                 onValueChange={handleUnitFilterChange}
