@@ -1,5 +1,7 @@
 import { CompilerType } from "#/service/go-judge/go-judge.enum";
 import type { LanguageConfig } from "#/service/go-judge/go-judge.schema";
+import type { PROGRAMMING_LANGUAGE_ICONS } from "#/../../shared/courseIcon";
+
 export const GoJudgeLanguagesConfig = {
   python: {
     args: ["/usr/bin/python3", "-I", "-B", "$tempFile"],
@@ -21,4 +23,4 @@ export const GoJudgeLanguagesConfig = {
     args: ["./$tempFile"],
     type: CompilerType.Compile,
   },
-} as const satisfies Record<string, LanguageConfig>;
+} as const satisfies Record<(typeof PROGRAMMING_LANGUAGE_ICONS)[number], LanguageConfig>;

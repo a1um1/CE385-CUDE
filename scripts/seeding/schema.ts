@@ -1,5 +1,6 @@
 import { parse as parseYaml } from "yaml";
 import { z } from "zod";
+import { PROGRAMMING_LANGUAGE_ICONS } from "../../shared/courseIcon";
 
 const FRONT_MATTER = /^---\r?\n(?<data>[\s\S]*?)\r?\n---\r?\n?/;
 
@@ -13,7 +14,7 @@ export function parseMarkdown(text: string): { data: unknown; body: string } {
 export const courseMeta = z.object({
   title: z.string(),
   color: z.string(),
-  icon: z.string(),
+  icon: z.enum(PROGRAMMING_LANGUAGE_ICONS),
 });
 
 export const unitMeta = z.object({ title: z.string() });
@@ -32,7 +33,7 @@ export const lessonMeta = z.object({
 export const exerciseMeta = z.object({
   title: z.string(),
   type: z.enum(["normal", "code"]),
-  language: z.enum(["python", "c"]).default("python"),
+  language: z.enum(PROGRAMMING_LANGUAGE_ICONS).default("python"),
   starterCode: z.string().optional(),
   testerCode: z.string().optional(),
   allowedFunctions: z.array(z.string()).default([]),

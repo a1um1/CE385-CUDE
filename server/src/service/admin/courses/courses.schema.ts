@@ -5,13 +5,17 @@ import {
   createCursorPaginationResponseSchema,
 } from "#/lib/pagination.schema";
 import type zod from "zod";
+import { PROGRAMMING_LANGUAGE_ICONS } from "#/../../shared/courseIcon";
+
+export const COURSE_LANGUAGE_ICONS = PROGRAMMING_LANGUAGE_ICONS;
+export type CourseLanguageIcon = (typeof COURSE_LANGUAGE_ICONS)[number];
 
 export const adminCourseSchema = z
   .object({
     id: z.string().openapi({ example: "course_id" }),
     name: z.string().openapi({ example: "Course Name" }),
     color: z.string().openapi({ example: "#FFFFFF" }),
-    icon: z.string().openapi({ example: "icon_name" }),
+    icon: z.enum(COURSE_LANGUAGE_ICONS).openapi({ example: "python" }),
     position: z.number().int().openapi({ example: 0 }),
     createdByID: z.uuid().openapi({ example: "user_id" }),
     createdAt: z.date().openapi({ example: "2023-01-01T00:00:00Z" }),
@@ -57,7 +61,7 @@ export const AdminCourseCreateSchema = z
   .object({
     name: z.string().openapi({ example: "Course Name" }),
     color: z.string().openapi({ example: "#FFFFFF" }),
-    icon: z.string().openapi({ example: "icon_name" }),
+    icon: z.enum(COURSE_LANGUAGE_ICONS).openapi({ example: "python" }),
   })
   .openapi("AdminCourseCreate") satisfies zod.ZodType<adminCourseCreatePayload>;
 
@@ -69,7 +73,7 @@ export const AdminCourseUpdateSchema = z
   .object({
     name: z.string().openapi({ example: "Course Name" }),
     color: z.string().openapi({ example: "#FFFFFF" }),
-    icon: z.string().openapi({ example: "icon_name" }),
+    icon: z.enum(COURSE_LANGUAGE_ICONS).openapi({ example: "python" }),
   })
   .openapi("AdminCourseUpdate") satisfies zod.ZodType<adminCourseUpdatePayload>;
 

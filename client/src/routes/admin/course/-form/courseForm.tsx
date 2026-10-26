@@ -1,4 +1,5 @@
 import { FormRoot, useAppForm } from "#/components/form";
+import { COURSE_LANGUAGE_ICONS } from "#/data/course";
 
 export interface CourseFormValues {
   name: string;
@@ -17,6 +18,11 @@ const defaultFormValues: CourseFormValues = {
   color: "",
   icon: "",
 };
+
+const languageIconOptions = COURSE_LANGUAGE_ICONS.map((icon) => ({
+  value: icon,
+  label: icon === "python" ? "Python" : icon === "c" ? "C" : icon,
+}));
 
 export function CourseForm({
   defaultValues = defaultFormValues,
@@ -41,7 +47,7 @@ export function CourseForm({
           {(field) => <field.ColorField label="Course Color" required />}
         </form.AppField>
         <form.AppField name="icon">
-          {(field) => <field.TextField label="Course Icon" type="text" required />}
+          {(field) => <field.SelectField label="Programming Language Icon" items={languageIconOptions} required />}
         </form.AppField>
         <form.FormActions fallbackUrl="/admin/course" submitLabel={submitLabel} />
       </form.AppForm>
