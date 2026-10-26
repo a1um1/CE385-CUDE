@@ -1,6 +1,6 @@
 import * as React from "react";
 import clsx from "clsx";
-import { useFieldContext } from "../form";
+import { useFieldContext, useFormPending } from "../form";
 import formStyles from "../form.module.css";
 import styles from "./colorInput.module.css";
 import Input, { type InputProps } from "#/components/input/input";
@@ -46,8 +46,10 @@ export function ColorField({
   ...props
 }: ColorFieldProps) {
   const field = useFieldContext<string>();
+  const pending = useFormPending();
   const { errors, isTouched } = field.state.meta;
   const hasError = isTouched && errors.length > 0;
+  const isDisabled = disabled || pending;
 
   const currentValue = field.state.value ?? "";
   const pickerValue = isValidHex(currentValue)
@@ -114,7 +116,7 @@ export function ColorField({
               type="color"
               className={styles.nativePickerInput}
               value={pickerValue}
-              disabled={disabled}
+              disabled={isDisabled}
               onChange={handlePickerChange}
               tabIndex={-1}
               aria-hidden="true"
@@ -125,7 +127,7 @@ export function ColorField({
             id={field.name}
             name={field.name}
             type="text"
-            disabled={disabled}
+            disabled={isDisabled}
             value={currentValue}
             placeholder={placeholder}
             onBlur={handleBlur}
