@@ -2,7 +2,6 @@ import * as React from "react";
 import Badge from "#/components/badge";
 import Energy from "#/components/icon/energy";
 import Gem from "#/components/icon/gem";
-import Input from "#/components/input";
 import {
   SelectContent,
   SelectItem,
@@ -11,9 +10,11 @@ import {
   SelectValue,
 } from "#/components/select";
 import DataTable, { createTableColumnHelper } from "#/components/table";
+import { Autocomplete } from "#/components/autocomplete";
 import { useAdminUserListQuery } from "#/data/admin/user.data";
 import { useAdminTransactionListQuery } from "#/data/admin/transaction.data";
 import { basicPaginationSchema } from "#/lib/pagination.schema";
+import { useDebouncedValue } from "#/lib/useDebouncedValue";
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 
@@ -107,23 +108,22 @@ function RouteComponent() {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
   const [userSearch, setUserSearch] = React.useState(search.userSearch ?? "");
+  const debouncedUserSearch = useDebouncedValue(userSearch);
 
-  // Debounce keystrokes into the URL so cursor pagination stays linkable.
+  // Keep the URL (and therefore cursor pagination) linkable without a request per keystroke.
   React.useEffect(() => {
-    if (userSearch === (search.userSearch ?? "")) return;
-    const timeout = setTimeout(() => {
-      navigate({
-        search: (prev) => ({
-          ...prev,
-          userSearch: userSearch.trim() || undefined,
-          cursor: undefined,
-          direction: "forward",
-        }),
-        replace: true,
-      });
-    }, 300);
-    return () => clearTimeout(timeout);
-  }, [userSearch, search.userSearch, navigate]);
+    const next = debouncedUserSearch.trim() || undefined;
+    if (next === search.userSearch) return;
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        userSearch: next,
+        cursor: undefined,
+        direction: "forward",
+      }),
+      replace: true,
+    });
+  }, [debouncedUserSearch, search.userSearch, navigate]);
 
   const query = useAdminTransactionListQuery({
     perPage: search.perPage,
@@ -204,20 +204,18 @@ function RouteComponent() {
             >
               User
             </span>
-            <Input
+            <Autocomplete
               size="sm"
-              list="admin-transaction-users"
               placeholder="Search name or email"
               value={userSearch}
-              onChange={(event) => setUserSearch(event.target.value)}
+              onValueChange={setUserSearch}
+              items={(suggestions.data?.data ?? []).map((user) => ({
+                value: user.email,
+                label: user.name,
+                description: user.email,
+              }))}
+              emptyText="No matching user"
             />
-            <datalist id="admin-transaction-users">
-              {suggestions.data?.data.map((user) => (
-                <option key={user.id} value={user.email}>
-                  {user.name}
-                </option>
-              ))}
-            </datalist>
           </div>
         </div>
       }

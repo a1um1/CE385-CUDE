@@ -5,6 +5,7 @@ import { useAdminUserListQuery } from "#/data/admin/user.data";
 import ButtonLink from "#/components/buttonLink";
 import Input from "#/components/input";
 import { basicPaginationSchema } from "#/lib/pagination.schema";
+import { useDebouncedValue } from "#/lib/useDebouncedValue";
 import type { OnChangeFn, SortingState } from "@tanstack/react-table";
 import { z } from "zod";
 
@@ -72,23 +73,22 @@ function RouteComponent() {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
   const [nameSearch, setNameSearch] = React.useState(search.search ?? "");
+  const debouncedSearch = useDebouncedValue(nameSearch);
 
-  // Debounce keystrokes into the URL so cursor pagination stays linkable.
+  // Keep the URL (and therefore cursor pagination) linkable without a request per keystroke.
   React.useEffect(() => {
-    if (nameSearch === (search.search ?? "")) return;
-    const timeout = setTimeout(() => {
-      navigate({
-        search: (prev) => ({
-          ...prev,
-          search: nameSearch.trim() || undefined,
-          cursor: undefined,
-          direction: "forward",
-        }),
-        replace: true,
-      });
-    }, 300);
-    return () => clearTimeout(timeout);
-  }, [nameSearch, search.search, navigate]);
+    const next = debouncedSearch.trim() || undefined;
+    if (next === search.search) return;
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        search: next,
+        cursor: undefined,
+        direction: "forward",
+      }),
+      replace: true,
+    });
+  }, [debouncedSearch, search.search, navigate]);
 
   const sorting: SortingState = React.useMemo(() => {
     if (!search.sortBy) return [];
