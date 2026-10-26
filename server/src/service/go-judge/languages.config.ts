@@ -1,6 +1,6 @@
+import { z } from "#/lib/extendZod";
 import { CompilerType } from "#/service/go-judge/go-judge.enum";
 import type { LanguageConfig } from "#/service/go-judge/go-judge.schema";
-import type { PROGRAMMING_LANGUAGE_ICONS } from "#/../../shared/courseIcon";
 
 export const GoJudgeLanguagesConfig = {
   python: {
@@ -23,4 +23,14 @@ export const GoJudgeLanguagesConfig = {
     args: ["./$tempFile"],
     type: CompilerType.Compile,
   },
-} as const satisfies Record<(typeof PROGRAMMING_LANGUAGE_ICONS)[number], LanguageConfig>;
+} as const satisfies Record<string, LanguageConfig>;
+
+export const LANGUAGE_KEY = Object.keys(
+  GoJudgeLanguagesConfig,
+) as (keyof typeof GoJudgeLanguagesConfig)[];
+
+export type GoJudgeLanguageSupportKey = (typeof LANGUAGE_KEY)[number];
+
+export const ZOD_LANGUAGE_SUPPORT_KEY = z.enum(LANGUAGE_KEY).openapi("GoJudgeLanguage", {
+  example: "python",
+});

@@ -6,8 +6,9 @@ import Skeleton from "#/components/skeleton";
 import { useCourses } from "#/data/course.data";
 import { useHomeSelection } from "#/store/homeSelection";
 import styles from "#/routes/(authed)/(base)/index.module.css";
+import type { availableLanguageKey } from "#/data/code.data";
 
-const courseIcons: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
+const courseIcons: Record<availableLanguageKey, ComponentType<SVGProps<SVGSVGElement>>> = {
   python: PythonIcon,
   c: CIcon,
 };
