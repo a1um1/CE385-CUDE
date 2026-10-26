@@ -38,7 +38,7 @@ export function DropdownContent({
         side={side}
         sideOffset={sideOffset}
         alignOffset={alignOffset}
-        className={positionerClassName}
+        className={clsx(styles.positioner, positionerClassName)}
       >
         <Menu.Popup className={clsx(styles.popup, className)} {...props}>
           {children}

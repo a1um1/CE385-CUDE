@@ -6,8 +6,8 @@ import type { LessonData } from "#/service/lesson/lesson.schema";
 import { lessonIncludes } from "#/service/lesson/lesson.schema";
 
 export const lessonRepository = {
-  findById: async (id: string, include?: string | string[]): Promise<LessonData | null> =>
-    (await client().lesson.findUnique({
+  findById: async (id: string, include?: string | string[], tx?: Db): Promise<LessonData | null> =>
+    (await client(tx).lesson.findUnique({
       where: { id },
       include: resolveInclude<Prisma.LessonInclude>(include, lessonIncludes),
     })) as LessonData | null,
@@ -23,8 +23,9 @@ export const lessonRepository = {
       skip?: number;
       take?: number;
     } = {},
+    tx?: Db,
   ): Promise<LessonData[]> =>
-    (await client().lesson.findMany({
+    (await client(tx).lesson.findMany({
       where: { unitID },
       include: resolveInclude<Prisma.LessonInclude>(args.include, lessonIncludes),
       orderBy: args.orderBy,
@@ -32,13 +33,28 @@ export const lessonRepository = {
       take: args.take,
     })) as LessonData[],
 
-  countByUnitID: (unitID: string) => client().lesson.count({ where: { unitID } }),
+  countByUnitID: (unitID: string, tx?: Db) => client(tx).lesson.count({ where: { unitID } }),
 
-  findPrerequisites: (lessonIDs: string[]) =>
-    client().lessonPrerequisite.findMany({
+  findPrerequisites: (lessonIDs: string[], tx?: Db) =>
+    client(tx).lessonPrerequisite.findMany({
       where: { lessonID: { in: lessonIDs } },
       select: { lessonID: true, prerequisite: { select: { id: true, passThreshold: true } } },
     }),
+
+  setPrerequisites: async (lessonID: string, prerequisiteLessonIDs: string[], tx?: Db) => {
+    await client(tx).lessonPrerequisite.deleteMany({
+      where: { lessonID },
+    });
+    if (prerequisiteLessonIDs.length > 0) {
+      await client(tx).lessonPrerequisite.createMany({
+        data: prerequisiteLessonIDs.map((prerequisiteLessonID) => ({
+          lessonID,
+          prerequisiteLessonID,
+        })),
+        skipDuplicates: true,
+      });
+    }
+  },
 
   create: (data: Prisma.LessonUncheckedCreateInput, tx?: Db) => client(tx).lesson.create({ data }),
 

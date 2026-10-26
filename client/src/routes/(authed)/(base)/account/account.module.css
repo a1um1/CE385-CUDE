@@ -13,6 +13,8 @@
 .banner-trigger {
   position: absolute;
   inset: 0;
+  /* above UserBackground's ::before overlay (z-index: 1) */
+  z-index: 2;
   display: flex;
   align-items: flex-end;
   justify-content: flex-end;

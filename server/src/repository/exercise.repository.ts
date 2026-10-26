@@ -7,6 +7,20 @@ export const exerciseRepository = {
   findById: (id: string, tx?: Db) =>
     client(tx).exercise.findUnique({ select: ExerciseSelection, where: { id } }),
 
+  findAdminById: (id: string, tx?: Db) =>
+    client(tx).exercise.findUnique({
+      where: { id },
+      include: {
+        codeExercises: {
+          include: {
+            testCases: {
+              orderBy: { createdAt: "asc" },
+            },
+          },
+        },
+      },
+    }),
+
   findRawById: (id: string, tx?: Db) => client(tx).exercise.findUnique({ where: { id } }),
 
   findAllByLessonID: (lessonID: string, tx?: Db) =>
@@ -34,6 +48,12 @@ export const exerciseRepository = {
 
   countCodeByLessonID: (lessonID: string, tx?: Db) =>
     client(tx).exercise.count({ where: { lessonID, type: "CODE" } }),
+
+  maxPosition: (lessonID: string) =>
+    client().exercise.aggregate({
+      _max: { position: true },
+      where: { lessonID },
+    }),
 
   /** Lessons among `lessonIDs` that have at least one CODE exercise. */
   findCodeLessonIDs: (lessonIDs: string[]) =>

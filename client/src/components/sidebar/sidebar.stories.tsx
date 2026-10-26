@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Sidebar from "./sidebar";
+import { CollapsibleSidebarProvider } from "#/components/collapsibleSidebar";
 import type { Meta, StoryObj } from "@storybook/react";
 import type { paths } from "#/data/base/openapi";
 
@@ -42,7 +43,9 @@ export const Playground: Story = {
       } satisfies paths["/user"]["get"]["responses"]["200"]["content"]["application/json"]);
       return (
         <QueryClientProvider client={queryClient}>
-          <Story />
+          <CollapsibleSidebarProvider>
+            <Story />
+          </CollapsibleSidebarProvider>
         </QueryClientProvider>
       );
     },

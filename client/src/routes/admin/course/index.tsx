@@ -21,6 +21,10 @@ type AdminCourse = NonNullable<ReturnType<typeof useAdminCourseListQuery>["data"
 const columnHelper = createTableColumnHelper<AdminCourse>();
 
 const typedColumns = columnHelper.columns([
+  columnHelper.number("position", {
+    header: "#",
+    align: "center",
+  }),
   columnHelper.text("name", {
     header: "Name",
     strong: true,
@@ -44,6 +48,19 @@ const typedColumns = columnHelper.columns([
         <ButtonLink
           size="xs"
           variant="secondary"
+          to="/admin/unit"
+          search={{
+            cursor: undefined,
+            perPage: 20,
+            direction: "forward",
+            courseID: _info.row.original.id,
+          }}
+        >
+          Units
+        </ButtonLink>
+        <ButtonLink
+          size="xs"
+          variant="secondary"
           to="/admin/course/$id"
           params={{ id: _info.row.original.id }}
         >
@@ -59,8 +76,9 @@ function RouteComponent() {
   const navigate = Route.useNavigate();
 
   const sorting: SortingState = React.useMemo(() => {
-    if (!search.sortBy) return [];
-    return [{ id: search.sortBy, desc: search.sortOrder === "desc" }];
+    const sortBy = search.sortBy ?? "position";
+    const sortOrder = search.sortOrder ?? "asc";
+    return [{ id: sortBy, desc: sortOrder === "desc" }];
   }, [search.sortBy, search.sortOrder]);
 
   const handleSortingChange: OnChangeFn<SortingState> = (updaterOrValue) => {
@@ -115,8 +133,8 @@ function RouteComponent() {
     perPage: search.perPage,
     cursor: search.cursor,
     direction: search.direction,
-    sortBy: search.sortBy as any,
-    sortOrder: search.sortOrder,
+    sortBy: (search.sortBy ?? "position") as any,
+    sortOrder: search.sortOrder ?? "asc",
   });
 
   return (

@@ -30,7 +30,7 @@ model User {
 model refreshToken {
   id        String   @id @default(uuid(7)) @db.Uuid
   userID    String   @db.Uuid
-  user      User     @relation(fields: [userID], references: [id])
+  user      User     @relation(fields: [userID], references: [id], onDelete: Cascade)
   token     String   @unique
   userAgent String?
   ipAddress String?
