@@ -25,9 +25,10 @@ export const transactionRepository = {
     },
   ) =>
     client().transactions.findMany({
+      where: { userID },
       take: args.take,
       skip: args.skip,
-      cursor: args.cursor ? { id: args.cursor.id, userID } : undefined,
+      cursor: args.cursor,
       orderBy: args.orderBy,
       select: TransactionQueryPayload,
     }),
