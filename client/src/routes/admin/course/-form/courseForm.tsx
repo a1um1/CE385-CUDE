@@ -1,10 +1,11 @@
 import { FormRoot, useAppForm } from "#/components/form";
 import { languageIconOptions } from "#/data/code.data";
+import type { availableLanguageKey } from "#/data/code.data";
 
 export interface CourseFormValues {
   name: string;
   color: string;
-  icon: string;
+  icon: availableLanguageKey;
 }
 
 export interface CourseFormProps {
@@ -16,7 +17,7 @@ export interface CourseFormProps {
 const defaultFormValues: CourseFormValues = {
   name: "",
   color: "",
-  icon: "",
+  icon: "c",
 };
 
 export function CourseForm({

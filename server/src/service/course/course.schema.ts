@@ -34,7 +34,9 @@ export const CourseSchema = z
 export type CourseSchema = zod.infer<typeof CourseSchema>;
 
 /** Course row as stored, plus relations added by `?include=`. */
-export type CourseData = Course & {
+export type CourseData = Omit<Course, "icon"> & {
+  /** The column is plain text; write paths validate it against the supported languages. */
+  icon: CourseSchema["icon"];
   units?: (Unit & { lessons?: Lesson[] })[];
 };
 
