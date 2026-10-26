@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from "#/components/select";
 import DataTable, { createTableColumnHelper } from "#/components/table";
+import { useAdminUserListQuery } from "#/data/admin/user.data";
 import { useAdminTransactionListQuery } from "#/data/admin/transaction.data";
 import { basicPaginationSchema } from "#/lib/pagination.schema";
 import { createFileRoute } from "@tanstack/react-router";
@@ -132,6 +133,11 @@ function RouteComponent() {
     userSearch: search.userSearch,
   });
 
+  const suggestions = useAdminUserListQuery(
+    { perPage: 10, direction: "forward", search: search.userSearch },
+    { enabled: (search.userSearch?.length ?? 0) >= 2 },
+  );
+
   const handleTypeChange = (type: string | null) => {
     navigate({
       search: (prev) => ({
@@ -200,10 +206,18 @@ function RouteComponent() {
             </span>
             <Input
               size="sm"
+              list="admin-transaction-users"
               placeholder="Search name or email"
               value={userSearch}
               onChange={(event) => setUserSearch(event.target.value)}
             />
+            <datalist id="admin-transaction-users">
+              {suggestions.data?.data.map((user) => (
+                <option key={user.id} value={user.email}>
+                  {user.name}
+                </option>
+              ))}
+            </datalist>
           </div>
         </div>
       }

@@ -1896,6 +1896,8 @@ export interface paths {
                     direction?: "forward" | "backward";
                     sortBy?: "name" | "email" | "role" | "createdAt" | "isActive" | "id";
                     sortOrder?: "asc" | "desc";
+                    /** @description Case-insensitive match on name or email. */
+                    search?: string;
                 };
                 header?: never;
                 path?: never;
@@ -6248,12 +6250,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-26T18:11:24.527Z
+             * @example 2026-10-26T18:20:09.154Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-26T18:11:24.528Z
+             * @example 2026-10-26T18:20:09.155Z
              */
             updatedAt: string;
         };

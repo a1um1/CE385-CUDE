@@ -35,9 +35,11 @@ export const userRepository = {
     take: number;
     skip: number;
     cursor?: { id: string };
+    where: Prisma.UserWhereInput;
     orderBy: Prisma.UserOrderByWithRelationInput | Prisma.UserOrderByWithRelationInput[];
   }) =>
     client().user.findMany({
+      where: args.where,
       take: args.take,
       skip: args.skip,
       cursor: args.cursor,
