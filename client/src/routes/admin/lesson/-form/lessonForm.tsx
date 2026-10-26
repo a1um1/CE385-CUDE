@@ -1,5 +1,6 @@
 import * as React from "react";
-import { useAppForm, useFormPending } from "#/components/form";
+import { FormRoot, useAppForm, useFormPending } from "#/components/form";
+import formStyles from "#/components/form/form.module.css";
 import { useAdminUnitListQuery } from "#/data/admin/unit.data";
 import { useAdminLessonListQuery } from "#/data/admin/lesson.data";
 import Badge from "#/components/badge";
@@ -92,13 +93,7 @@ export function LessonForm({
   }, [lessonsQuery.data?.items]);
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        form.handleSubmit();
-      }}
-    >
+    <FormRoot form={form}>
       <form.AppForm>
         <form.FormError />
         <form.AppField name="name">
@@ -129,14 +124,7 @@ export function LessonForm({
           )}
         </form.AppField>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "1rem",
-            marginTop: "0.75rem",
-          }}
-        >
+        <form.FormRow>
           <form.AppField name="XPgiven">
             {(field) => <field.NumberField label="XP Reward" min={0} required parseAs="int" />}
           </form.AppField>
@@ -144,16 +132,9 @@ export function LessonForm({
           <form.AppField name="gemsGiven">
             {(field) => <field.NumberField label="Gems Reward" min={0} required parseAs="int" />}
           </form.AppField>
-        </div>
+        </form.FormRow>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "1rem",
-            marginTop: "0.75rem",
-          }}
-        >
+        <form.FormRow>
           <form.AppField name="startAt">
             {(field) => <field.TextField label="Start Date/Time" type="datetime-local" />}
           </form.AppField>
@@ -161,7 +142,7 @@ export function LessonForm({
           <form.AppField name="endAt">
             {(field) => <field.TextField label="End Date/Time" type="datetime-local" />}
           </form.AppField>
-        </div>
+        </form.FormRow>
 
         <form.Field name="prerequisiteLessonIDs">
           {(field) => {
@@ -171,15 +152,8 @@ export function LessonForm({
             );
 
             return (
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "0.5rem",
-                  marginTop: "0.75rem",
-                }}
-              >
-                <label style={{ fontSize: "0.875rem", fontWeight: 500 }}>Prerequisites</label>
+              <div className={formStyles["form-field"]}>
+                <span className={formStyles.label}>Prerequisites</span>
 
                 {selected.length > 0 && (
                   <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
@@ -249,19 +223,9 @@ export function LessonForm({
           }}
         </form.Field>
 
-        <div
-          style={{
-            display: "flex",
-            gap: "0.75rem",
-            alignItems: "center",
-            marginTop: "1.25rem",
-          }}
-        >
-          <form.SubmitButton label={submitLabel} />
-          <form.CancelButton fallbackUrl="/admin/lesson" />
-        </div>
+        <form.FormActions fallbackUrl="/admin/lesson" submitLabel={submitLabel} />
       </form.AppForm>
-    </form>
+    </FormRoot>
   );
 }
 

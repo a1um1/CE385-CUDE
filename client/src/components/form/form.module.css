@@ -1,5 +1,28 @@
 @reference "#/styles/main.css";
 
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.required {
+  color: var(--color-danger);
+}
+
 .form-field {
   display: flex;
   flex-direction: column;

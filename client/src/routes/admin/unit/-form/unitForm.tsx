@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useAppForm } from "#/components/form";
+import { FormRoot, useAppForm } from "#/components/form";
 import { useAdminCourseListQuery } from "#/data/admin/course.data";
 
 export interface UnitFormValues {
@@ -47,13 +47,7 @@ export function UnitForm({
   });
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        form.handleSubmit();
-      }}
-    >
+    <FormRoot form={form}>
       <form.AppForm>
         <form.FormError />
         <form.AppField name="name">
@@ -72,19 +66,9 @@ export function UnitForm({
           )}
         </form.AppField>
 
-        <div
-          style={{
-            display: "flex",
-            gap: "0.75rem",
-            alignItems: "center",
-            marginTop: "1.25rem",
-          }}
-        >
-          <form.SubmitButton label={submitLabel} />
-          <form.CancelButton fallbackUrl="/admin/unit" />
-        </div>
+        <form.FormActions fallbackUrl="/admin/unit" submitLabel={submitLabel} />
       </form.AppForm>
-    </form>
+    </FormRoot>
   );
 }
 

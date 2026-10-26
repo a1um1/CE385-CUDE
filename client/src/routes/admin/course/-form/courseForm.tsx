@@ -1,4 +1,4 @@
-import { useAppForm } from "#/components/form";
+import { FormRoot, useAppForm } from "#/components/form";
 
 export interface CourseFormValues {
   name: string;
@@ -31,13 +31,7 @@ export function CourseForm({
   });
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        form.handleSubmit();
-      }}
-    >
+    <FormRoot form={form}>
       <form.AppForm>
         <form.FormError />
         <form.AppField name="name">
@@ -49,12 +43,9 @@ export function CourseForm({
         <form.AppField name="icon">
           {(field) => <field.TextField label="Course Icon" type="text" required />}
         </form.AppField>
-        <div style={{ display: "flex", gap: "0.75rem", alignItems: "center", marginTop: "1rem" }}>
-          <form.SubmitButton label={submitLabel} />
-          <form.CancelButton fallbackUrl="/admin/course" />
-        </div>
+        <form.FormActions fallbackUrl="/admin/course" submitLabel={submitLabel} />
       </form.AppForm>
-    </form>
+    </FormRoot>
   );
 }
 

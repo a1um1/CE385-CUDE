@@ -24,7 +24,7 @@ export function MarkdownField({
     <div className={formStyles["form-field"]}>
       <label className={formStyles.label}>
         {label}
-        {required && <span style={{ color: "red" }}> *</span>}
+        {required && <span className={formStyles.required}> *</span>}
       </label>
       <MarkdownEditor
         value={field.state.value ?? ""}

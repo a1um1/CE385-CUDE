@@ -12,6 +12,9 @@ import { SubmitButton } from "./input/submitButton";
 import { CancelButton } from "./input/cancelButton";
 import { FormError } from "./input/formError";
 import { LeavePrompt } from "./input/leavePrompt";
+import { FormActions, FormRow } from "./formLayout";
+
+export { FormRoot } from "./formLayout";
 
 /**
  * Any react-query mutation in flight is "the form is busy". Field components default their
@@ -41,6 +44,8 @@ const { useAppForm: useAppFormBase } = createFormHook({
     CancelButton,
     FormError,
     LeavePrompt,
+    FormActions,
+    FormRow,
   },
 });
 

@@ -39,7 +39,7 @@ export function SelectField({
     <div className={formStyles["form-field"]}>
       <label htmlFor={field.name} className={formStyles.label}>
         {label}
-        {required && <span style={{ color: "red" }}> *</span>}
+        {required && <span className={formStyles.required}> *</span>}
       </label>
       <SelectRoot
         value={field.state.value || null}
