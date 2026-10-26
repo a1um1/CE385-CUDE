@@ -27,8 +27,8 @@ const mockAvailableLesson = () => {
   mockDB.exercise.findMany.mockResolvedValue([] as never);
 };
 
-/** Mocks for UserStatService.getByUserId + spendEnergy (one energy unit at max). */
-const mockSpendEnergy = () => {
+/** Mocks for UserStatService.getByUserId (existing stat at max energy, no regen write). */
+const mockUserStatRead = () => {
   const energyUpdatedAt = new Date(Date.now() - 5 * 60 * 1000);
   mockDB.userStat.findUnique.mockResolvedValueOnce({
     ...fakeUserStat,
@@ -40,6 +40,12 @@ const mockSpendEnergy = () => {
   mockDB.$queryRaw.mockResolvedValueOnce([
     { energy: UserStatService.MAX_ENERGY, energyUpdatedAt },
   ] as never);
+};
+
+/** Mocks for UserStatService.getByUserId + spendEnergy (one energy unit at max). */
+const mockSpendEnergy = () => {
+  mockUserStatRead();
+  const energyUpdatedAt = new Date(Date.now() - 5 * 60 * 1000);
   // spendEnergy: lockEnergy again + decrementEnergy
   mockDB.$queryRaw.mockResolvedValueOnce([
     { energy: UserStatService.MAX_ENERGY, energyUpdatedAt },
@@ -60,6 +66,7 @@ describe("SessionService.createSession", () => {
 
   it("returns 400 when the pending-session index rejects a concurrent create", async () => {
     mockAvailableLesson();
+    mockUserStatRead();
     mockDB.sessions.create.mockRejectedValueOnce(
       new PrismaClientKnownRequestError("Unique constraint failed", {
         code: "P2002",
