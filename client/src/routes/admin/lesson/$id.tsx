@@ -54,7 +54,6 @@ function RouteComponent() {
       }}
       isEdit
       submitLabel="Save Changes"
-      isPending={updateMutation.isPending}
       onSubmit={async (value) => {
         await updateMutation.mutateAsync({
           lessonId: id,

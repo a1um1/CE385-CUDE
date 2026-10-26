@@ -1,7 +1,7 @@
 import { useState } from "react";
 import clsx from "clsx";
 import { Eye, EyeOff } from "lucide-react";
-import { useFieldContext } from "../form";
+import { useFieldContext, useFormPending } from "../form";
 import formStyles from "../form.module.css";
 import styles from "./passwordInput.module.css";
 import Input from "#/components/input";
@@ -28,9 +28,11 @@ export function PasswordField({
 }: PasswordFieldProps) {
   const field = useFieldContext<string>();
   const [revealed, setRevealed] = useState(false);
+  const pending = useFormPending();
   const { errors, isTouched } = field.state.meta;
   const hasError = isTouched && errors.length > 0;
   const value = field.state.value ?? "";
+  const isDisabled = disabled || pending;
 
   return (
     <div className={formStyles["form-field"]}>
@@ -43,7 +45,7 @@ export function PasswordField({
           id={field.name}
           name={field.name}
           type={revealed ? "text" : "password"}
-          disabled={disabled}
+          disabled={isDisabled}
           value={value}
           onBlur={field.handleBlur}
           onChange={(e) => {
@@ -63,7 +65,7 @@ export function PasswordField({
           type="button"
           className={styles.revealToggle}
           onClick={() => setRevealed((prev) => !prev)}
-          disabled={disabled}
+          disabled={isDisabled}
           aria-pressed={revealed}
           aria-label={revealed ? `Hide ${label}` : `Show ${label}`}
           tabIndex={-1}

@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { useFieldContext } from "../form";
+import { useFieldContext, useFormPending } from "../form";
 import styles from "../form.module.css";
 import type { InputProps } from "#/components/input";
 import Input from "#/components/input";
@@ -8,8 +8,9 @@ export interface TextFieldProps extends Omit<InputProps, "value" | "onChange" | 
   label: string;
 }
 
-export function TextField({ label, className, ...props }: TextFieldProps) {
+export function TextField({ label, className, disabled, ...props }: TextFieldProps) {
   const field = useFieldContext<any>();
+  const pending = useFormPending();
   const { errors, isTouched } = field.state.meta;
   const hasError = isTouched && errors.length > 0;
 
@@ -23,6 +24,7 @@ export function TextField({ label, className, ...props }: TextFieldProps) {
           {...props}
           id={field.name}
           name={field.name}
+          disabled={disabled || pending}
           value={field.state.value ?? ""}
           onBlur={field.handleBlur}
           onChange={(e) => {

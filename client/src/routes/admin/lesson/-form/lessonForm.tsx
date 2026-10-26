@@ -1,11 +1,9 @@
 import * as React from "react";
-import { useAppForm } from "#/components/form";
+import { useAppForm, useFormPending } from "#/components/form";
 import { useAdminUnitListQuery } from "#/data/admin/unit.data";
 import { useAdminLessonListQuery } from "#/data/admin/lesson.data";
-import Input from "#/components/input";
 import Badge from "#/components/badge";
 import { X } from "lucide-react";
-import formStyles from "#/components/form/form.module.css";
 import {
   SelectRoot,
   SelectTrigger,
@@ -30,7 +28,6 @@ export interface LessonFormProps {
   defaultValues?: LessonFormValues;
   onSubmit: (values: LessonFormValues) => void | Promise<void>;
   submitLabel?: string;
-  isPending?: boolean;
   isEdit?: boolean;
 }
 
@@ -50,9 +47,9 @@ export function LessonForm({
   defaultValues = defaultValuesFallback,
   onSubmit,
   submitLabel = "Submit",
-  isPending,
   isEdit = false,
 }: LessonFormProps) {
+  const pending = useFormPending();
   const unitsQuery = useAdminUnitListQuery({
     perPage: 100,
     direction: "forward",
@@ -60,9 +57,9 @@ export function LessonForm({
 
   const unitItems = React.useMemo(
     () =>
-      (unitsQuery.data?.data ?? []).map((u) => ({
-        value: u.id,
-        label: u.name,
+      (unitsQuery.data?.data ?? []).map((unit) => ({
+        value: unit.id,
+        label: unit.name,
       })),
     [unitsQuery.data?.data],
   );
@@ -82,14 +79,14 @@ export function LessonForm({
   });
 
   const availableLessons = React.useMemo(
-    () => (lessonsQuery.data?.items ?? []).filter((l) => l.id !== currentLessonId),
+    () => (lessonsQuery.data?.items ?? []).filter((lesson) => lesson.id !== currentLessonId),
     [lessonsQuery.data?.items, currentLessonId],
   );
 
   const lessonMap = React.useMemo(() => {
     const map = new Map<string, string>();
-    for (const l of lessonsQuery.data?.items ?? []) {
-      map.set(l.id, l.name);
+    for (const lesson of lessonsQuery.data?.items ?? []) {
+      map.set(lesson.id, lesson.name);
     }
     return map;
   }, [lessonsQuery.data?.items]);
@@ -105,65 +102,32 @@ export function LessonForm({
       <form.AppForm>
         <form.FormError />
         <form.AppField name="name">
+          {(field) => <field.TextField label="Lesson Name" type="text" required />}
+        </form.AppField>
+
+        <form.AppField name="unitID">
           {(field) => (
-            <field.TextField label="Lesson Name" type="text" required disabled={isPending} />
+            <field.SelectField
+              label="Unit"
+              required
+              placeholder="Select a unit..."
+              items={unitItems}
+              disabled={isEdit || unitsQuery.isLoading}
+            />
           )}
         </form.AppField>
 
-        <form.Field name="unitID">
+        <form.AppField name="passThreshold">
           {(field) => (
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.25rem",
-                marginTop: "0.75rem",
-              }}
-            >
-              <label style={{ fontSize: "0.875rem", fontWeight: 500 }}>
-                Unit <span style={{ color: "red" }}>*</span>
-              </label>
-              <SelectRoot
-                value={field.state.value || null}
-                onValueChange={(val) => field.handleChange(val ?? "")}
-                disabled={isPending || isEdit || unitsQuery.isLoading}
-                items={unitItems}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a unit..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {unitsQuery.data?.data?.map((u) => (
-                    <SelectItem key={u.id} value={u.id}>
-                      {u.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </SelectRoot>
-            </div>
+            <field.NumberField
+              label="Pass Threshold (0.00 to 1.00, e.g. 0.75 = 75%)"
+              step={0.01}
+              min={0}
+              max={1}
+              required
+            />
           )}
-        </form.Field>
-
-        <form.Field name="passThreshold">
-          {(field) => (
-            <div className={formStyles["form-field"]} style={{ marginTop: "0.75rem" }}>
-              <label htmlFor="passThreshold" className={formStyles.label}>
-                Pass Threshold (0.00 to 1.00, e.g. 0.75 = 75%)
-              </label>
-              <Input
-                id="passThreshold"
-                type="number"
-                step="0.01"
-                min="0"
-                max="1"
-                required
-                disabled={isPending}
-                value={field.state.value}
-                onChange={(e) => field.handleChange(Number.parseFloat(e.target.value) || 0)}
-              />
-            </div>
-          )}
-        </form.Field>
+        </form.AppField>
 
         <div
           style={{
@@ -173,43 +137,13 @@ export function LessonForm({
             marginTop: "0.75rem",
           }}
         >
-          <form.Field name="XPgiven">
-            {(field) => (
-              <div className={formStyles["form-field"]}>
-                <label htmlFor="XPgiven" className={formStyles.label}>
-                  XP Reward
-                </label>
-                <Input
-                  id="XPgiven"
-                  type="number"
-                  min="0"
-                  required
-                  disabled={isPending}
-                  value={field.state.value}
-                  onChange={(e) => field.handleChange(Number.parseInt(e.target.value, 10) || 0)}
-                />
-              </div>
-            )}
-          </form.Field>
+          <form.AppField name="XPgiven">
+            {(field) => <field.NumberField label="XP Reward" min={0} required parseAs="int" />}
+          </form.AppField>
 
-          <form.Field name="gemsGiven">
-            {(field) => (
-              <div className={formStyles["form-field"]}>
-                <label htmlFor="gemsGiven" className={formStyles.label}>
-                  Gems Reward
-                </label>
-                <Input
-                  id="gemsGiven"
-                  type="number"
-                  min="0"
-                  required
-                  disabled={isPending}
-                  value={field.state.value}
-                  onChange={(e) => field.handleChange(Number.parseInt(e.target.value, 10) || 0)}
-                />
-              </div>
-            )}
-          </form.Field>
+          <form.AppField name="gemsGiven">
+            {(field) => <field.NumberField label="Gems Reward" min={0} required parseAs="int" />}
+          </form.AppField>
         </div>
 
         <div
@@ -220,45 +154,21 @@ export function LessonForm({
             marginTop: "0.75rem",
           }}
         >
-          <form.Field name="startAt">
-            {(field) => (
-              <div className={formStyles["form-field"]}>
-                <label htmlFor="startAt" className={formStyles.label}>
-                  Start Date/Time
-                </label>
-                <Input
-                  id="startAt"
-                  type="datetime-local"
-                  disabled={isPending}
-                  value={field.state.value}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                />
-              </div>
-            )}
-          </form.Field>
+          <form.AppField name="startAt">
+            {(field) => <field.TextField label="Start Date/Time" type="datetime-local" />}
+          </form.AppField>
 
-          <form.Field name="endAt">
-            {(field) => (
-              <div className={formStyles["form-field"]}>
-                <label htmlFor="endAt" className={formStyles.label}>
-                  End Date/Time
-                </label>
-                <Input
-                  id="endAt"
-                  type="datetime-local"
-                  disabled={isPending}
-                  value={field.state.value}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                />
-              </div>
-            )}
-          </form.Field>
+          <form.AppField name="endAt">
+            {(field) => <field.TextField label="End Date/Time" type="datetime-local" />}
+          </form.AppField>
         </div>
 
         <form.Field name="prerequisiteLessonIDs">
           {(field) => {
             const selected = field.state.value || [];
-            const remainingLessons = availableLessons.filter((l) => !selected.includes(l.id));
+            const remainingLessons = availableLessons.filter(
+              (lesson) => !selected.includes(lesson.id),
+            );
 
             return (
               <div
@@ -284,7 +194,7 @@ export function LessonForm({
                         }}
                       >
                         <span>{lessonMap.get(prereqId) ?? prereqId}</span>
-                        {!isPending && (
+                        {!pending && (
                           <button
                             type="button"
                             onClick={() =>
@@ -311,21 +221,24 @@ export function LessonForm({
                 {remainingLessons.length > 0 && (
                   <SelectRoot
                     value={null}
-                    onValueChange={(val) => {
-                      if (val && !selected.includes(val)) {
-                        field.handleChange([...selected, val]);
+                    onValueChange={(value) => {
+                      if (value && !selected.includes(value)) {
+                        field.handleChange([...selected, value]);
                       }
                     }}
-                    disabled={isPending || lessonsQuery.isLoading}
-                    items={remainingLessons.map((l) => ({ value: l.id, label: l.name }))}
+                    disabled={pending || lessonsQuery.isLoading}
+                    items={remainingLessons.map((lesson) => ({
+                      value: lesson.id,
+                      label: lesson.name,
+                    }))}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Add a prerequisite lesson..." />
                     </SelectTrigger>
                     <SelectContent>
-                      {remainingLessons.map((l) => (
-                        <SelectItem key={l.id} value={l.id}>
-                          {l.name}
+                      {remainingLessons.map((lesson) => (
+                        <SelectItem key={lesson.id} value={lesson.id}>
+                          {lesson.name}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -344,7 +257,7 @@ export function LessonForm({
             marginTop: "1.25rem",
           }}
         >
-          <form.SubmitButton label={submitLabel} isPending={isPending} />
+          <form.SubmitButton label={submitLabel} />
           <form.CancelButton fallbackUrl="/admin/lesson" />
         </div>
       </form.AppForm>
