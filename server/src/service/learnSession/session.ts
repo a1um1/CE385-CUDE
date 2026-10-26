@@ -1,6 +1,7 @@
 import type { SessionData, SessionObject } from "#/service/learnSession/session.schema";
 import UserError from "#/lib/router/http/userError";
 import lessonService from "#/service/lesson";
+import UserStatService from "#/service/userStat";
 import { Prisma } from "#/generated/prisma/client";
 import { z } from "#/lib/extendZod";
 import type { z as zod } from "zod";
@@ -63,6 +64,10 @@ export default class SessionService {
         LessonID: lesson.JSON.id,
         userID: props.UserID,
       });
+
+      const userStat = await UserStatService.getByUserId(props.UserID);
+      await userStat.spendEnergy({ reason: "Start lesson session" });
+
       return created;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
