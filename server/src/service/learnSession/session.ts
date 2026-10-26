@@ -7,7 +7,6 @@ import { z } from "#/lib/extendZod";
 import type { z as zod } from "zod";
 import { sessionRepository } from "#/repository/session.repository";
 import { client } from "#/repository/client";
-import { text } from "stream/consumers";
 type enrollmentStatus = "AVAILABLE" | "PENDING" | "NOT_AVAILABLE";
 
 export const enrollmentStatusSchema = z
