@@ -1,6 +1,5 @@
 import { parse as parseYaml } from "yaml";
 import { z } from "zod";
-
 const FRONT_MATTER = /^---\r?\n(?<data>[\s\S]*?)\r?\n---\r?\n?/;
 
 /** Split a markdown file into its YAML front matter data and body. */
@@ -13,7 +12,7 @@ export function parseMarkdown(text: string): { data: unknown; body: string } {
 export const courseMeta = z.object({
   title: z.string(),
   color: z.string(),
-  icon: z.string(),
+  icon: z.enum(["python", "c"]),
 });
 
 export const unitMeta = z.object({ title: z.string() });

@@ -1,16 +1,9 @@
-import { Book, FaceSlightlyFrowning } from "lucide-react";
-import type { ComponentType, CSSProperties, SVGProps } from "react";
-import CIcon from "#/components/codeEditor/icons/CIcon";
-import PythonIcon from "#/components/codeEditor/icons/PythonIcon";
+import { FaceSlightlyFrowning } from "lucide-react";
 import Skeleton from "#/components/skeleton";
 import { useCourses } from "#/data/course.data";
 import { useHomeSelection } from "#/store/homeSelection";
 import styles from "#/routes/(authed)/(base)/index.module.css";
-
-const courseIcons: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
-  python: PythonIcon,
-  c: CIcon,
-};
+import { CourseCard } from "#/components/courseCard";
 
 export function CoursesSection() {
   const { setCourse } = useHomeSelection();
@@ -26,21 +19,15 @@ export function CoursesSection() {
         </div>
       ) : (
         <div className={styles["course-grid"]}>
-          {courses.data?.data.map((item) => {
-            const Icon = courseIcons[item.icon] ?? Book;
-            return (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => setCourse(item.id)}
-                style={{ "--course-color": item.color } as CSSProperties}
-                className={styles["course-card"]}
-              >
-                <Icon className={styles["course-icon"]} />
-                <span className={styles["course-name"]}>{item.name}</span>
-              </button>
-            );
-          })}
+          {courses.data?.data.map((item) => (
+            <CourseCard
+              key={item.id}
+              name={item.name}
+              color={item.color}
+              icon={item.icon}
+              onClick={() => setCourse(item.id)}
+            />
+          ))}
         </div>
       )}
       {(courses.data?.data ?? []).length === 0 && !courses.isLoading && (
