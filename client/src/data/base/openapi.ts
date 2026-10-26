@@ -3152,6 +3152,107 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/transaction": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List all transactions
+         * @description Cursor-paginated ledger of every user's currency and energy transactions, newest first. Requires an `ADMIN` token.
+         *
+         *     Filter by `type` (`ENERGY`, `GEM`, `XP`) and by `userSearch`, which matches the transaction owner's name or email (case-insensitive substring).
+         */
+        get: {
+            parameters: {
+                query?: {
+                    perPage?: number;
+                    cursor?: string;
+                    direction?: "forward" | "backward";
+                    type?: "ENERGY" | "GEM" | "XP";
+                    userSearch?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminTransactionListResponse"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin": {
         parameters: {
             query?: never;
@@ -6147,12 +6248,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-26T16:37:33.822Z
+             * @example 2026-10-26T18:11:24.527Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-26T16:37:33.822Z
+             * @example 2026-10-26T18:11:24.528Z
              */
             updatedAt: string;
         };
@@ -6553,6 +6654,22 @@ export interface components {
             /** @example Exercise content */
             content?: string;
             codeExercise?: components["schemas"]["AdminCodeExerciseConfig"];
+        };
+        AdminTransactionListResponse: {
+            /** @example [] */
+            data: components["schemas"]["AdminTransactionObject"][];
+            /** @example next_cursor_id */
+            nextCursor?: string;
+            /** @example prev_cursor_id */
+            prevCursor?: string;
+        };
+        AdminTransactionObject: components["schemas"]["TransactionObject"] & {
+            user: {
+                /** @example John Doe */
+                name: string;
+                /** @example john@example.com */
+                email: string;
+            };
         };
         AuthenticationResponseData: {
             message: components["schemas"]["SuccessMessage"];

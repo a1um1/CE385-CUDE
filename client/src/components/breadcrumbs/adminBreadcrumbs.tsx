@@ -9,6 +9,7 @@ const PATH_TITLES: Record<string, string> = {
   unit: "Units",
   lesson: "Lessons",
   exercise: "Exercises",
+  transaction: "Transactions",
   user: "Users",
   create: "Create",
 };
