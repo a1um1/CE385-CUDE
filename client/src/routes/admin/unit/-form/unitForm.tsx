@@ -1,13 +1,6 @@
 import * as React from "react";
-import { useAppForm } from "#/components/form";
+import { FormRoot, useAppForm } from "#/components/form";
 import { useAdminCourseListQuery } from "#/data/admin/course.data";
-import {
-  SelectRoot,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "#/components/select";
 
 export interface UnitFormValues {
   name: string;
@@ -18,7 +11,6 @@ export interface UnitFormProps {
   defaultValues?: UnitFormValues;
   onSubmit: (values: UnitFormValues) => void | Promise<void>;
   submitLabel?: string;
-  isPending?: boolean;
   isEdit?: boolean;
 }
 
@@ -31,7 +23,6 @@ export function UnitForm({
   defaultValues = defaultValuesFallback,
   onSubmit,
   submitLabel = "Submit",
-  isPending,
   isEdit = false,
 }: UnitFormProps) {
   const coursesQuery = useAdminCourseListQuery({
@@ -41,9 +32,9 @@ export function UnitForm({
 
   const courseItems = React.useMemo(
     () =>
-      (coursesQuery.data?.data ?? []).map((c) => ({
-        value: c.id,
-        label: c.name,
+      (coursesQuery.data?.data ?? []).map((course) => ({
+        value: course.id,
+        label: course.name,
       })),
     [coursesQuery.data?.data],
   );
@@ -56,68 +47,28 @@ export function UnitForm({
   });
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        form.handleSubmit();
-      }}
-    >
+    <FormRoot form={form}>
       <form.AppForm>
         <form.FormError />
         <form.AppField name="name">
+          {(field) => <field.TextField label="Unit Name" type="text" required />}
+        </form.AppField>
+
+        <form.AppField name="courseID">
           {(field) => (
-            <field.TextField label="Unit Name" type="text" required disabled={isPending} />
+            <field.SelectField
+              label="Course"
+              required
+              placeholder="Select a course..."
+              items={courseItems}
+              disabled={isEdit || coursesQuery.isLoading}
+            />
           )}
         </form.AppField>
 
-        <form.Field name="courseID">
-          {(field) => (
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.25rem",
-                marginTop: "0.75rem",
-              }}
-            >
-              <label style={{ fontSize: "0.875rem", fontWeight: 500 }}>
-                Course <span style={{ color: "red" }}>*</span>
-              </label>
-              <SelectRoot
-                value={field.state.value || null}
-                onValueChange={(val) => field.handleChange(val ?? "")}
-                disabled={isPending || isEdit || coursesQuery.isLoading}
-                items={courseItems}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a course..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {coursesQuery.data?.data?.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>
-                      {c.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </SelectRoot>
-            </div>
-          )}
-        </form.Field>
-
-        <div
-          style={{
-            display: "flex",
-            gap: "0.75rem",
-            alignItems: "center",
-            marginTop: "1.25rem",
-          }}
-        >
-          <form.SubmitButton label={submitLabel} isPending={isPending} />
-          <form.CancelButton fallbackUrl="/admin/unit" />
-        </div>
+        <form.FormActions fallbackUrl="/admin/unit" submitLabel={submitLabel} />
       </form.AppForm>
-    </form>
+    </FormRoot>
   );
 }
 
