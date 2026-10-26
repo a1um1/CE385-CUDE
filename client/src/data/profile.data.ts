@@ -18,18 +18,4 @@ export const profileQueryOptions = (username: string) =>
     staleTime: "static",
   });
 
-export const useQueryProfile = (username: string) =>
-  useQuery({
-    queryKey: ["profile", username],
-    queryFn: async () => {
-      const { data, error } = await APIclient.GET(`/user/get-profile/{username}`, {
-        params: {
-          path: {
-            username,
-          },
-        },
-      });
-      if (error) throw error;
-      return data;
-    },
-  });
+export const useQueryProfile = (username: string) => useQuery(profileQueryOptions(username));

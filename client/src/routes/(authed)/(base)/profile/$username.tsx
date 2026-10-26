@@ -1,9 +1,10 @@
 import Avatar from "#/components/avatar";
 import ButtonLink from "#/components/buttonLink";
 import UserBackground from "#/components/userBackground";
-import { profileQueryOptions } from "#/data/profile.data";
+import { profileQueryOptions, useQueryProfile } from "#/data/profile.data";
 import { useUser } from "#/data/user.data";
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
 import styles from "./profile.module.css";
 export const Route = createFileRoute("/(authed)/(base)/profile/$username")({
   component: RouteComponent,
@@ -14,9 +15,27 @@ export const Route = createFileRoute("/(authed)/(base)/profile/$username")({
 });
 
 function RouteComponent() {
-  const data = Route.useLoaderData();
+  const { username } = Route.useParams();
+  const initialData = Route.useLoaderData();
+  const { data = initialData, refetch } = useQueryProfile(username);
   const { data: me } = useUser();
   const isSelf = me != null && data?.id === me.id;
+
+  useEffect(() => {
+    if (
+      isSelf &&
+      (me?.profileImage !== data?.profileImage || me?.backgroundImage !== data?.backgroundImage)
+    ) {
+      refetch();
+    }
+  }, [
+    isSelf,
+    me?.profileImage,
+    me?.backgroundImage,
+    data?.profileImage,
+    data?.backgroundImage,
+    refetch,
+  ]);
   return (
     <>
       <div className={styles["breakout"]}>

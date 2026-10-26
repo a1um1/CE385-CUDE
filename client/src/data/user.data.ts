@@ -101,6 +101,7 @@ export const useUpdateAvatar = () => {
       });
       if (error) throw error;
       await queryClient.invalidateQueries({ queryKey: ["session"] });
+      await queryClient.invalidateQueries({ queryKey: ["profile"] });
       return data;
     },
   });
@@ -117,6 +118,7 @@ export const useUpdateBackground = () => {
       });
       if (error) throw error;
       await queryClient.invalidateQueries({ queryKey: ["session"] });
+      await queryClient.invalidateQueries({ queryKey: ["profile"] });
       return data;
     },
   });
