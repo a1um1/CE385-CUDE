@@ -9,7 +9,14 @@ import type Zod from "zod";
 export const AdminUserQuerySchema = createCursorPaginationQuerySchema(
   ["name", "email", "role", "createdAt", "isActive", "id"],
   "AdminUserQuery",
-);
+).extend({
+  search: z
+    .string()
+    .trim()
+    .max(100)
+    .optional()
+    .openapi({ example: "john", description: "Case-insensitive match on name or email." }),
+});
 
 export type AdminUserQuery = Zod.infer<typeof AdminUserQuerySchema>;
 

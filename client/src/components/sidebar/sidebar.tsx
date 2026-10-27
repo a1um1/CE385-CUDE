@@ -8,11 +8,13 @@ import {
 } from "#/components/collapsibleSidebar";
 import { Link, useMatches, type LinkProps } from "@tanstack/react-router";
 import {
+  BookOpenCheckIcon,
   BookOpenIcon,
   BookTextIcon,
   Code2Icon,
   GraduationCapIcon,
   LayoutDashboardIcon,
+  ListClockIcon,
   UsersIcon,
   type LucideIcon,
 } from "lucide-react";
@@ -68,6 +70,23 @@ const navSections: NavSection[] = [
         label: "Exercises",
         link: { to: "/admin/exercise" },
         icon: Code2Icon,
+      },
+    ],
+  },
+  {
+    title: "Reports",
+    items: [
+      {
+        key: "submissions-list",
+        label: "Submissions",
+        link: { to: "/admin/user" },
+        icon: BookOpenCheckIcon,
+      },
+      {
+        key: "transactions-list",
+        label: "Transactions",
+        link: { to: "/admin/transaction" },
+        icon: ListClockIcon,
       },
     ],
   },
