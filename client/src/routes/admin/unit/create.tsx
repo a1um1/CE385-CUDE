@@ -28,7 +28,6 @@ function RouteComponent() {
         courseID: courseID ?? "",
       }}
       submitLabel="Create"
-      isPending={createMutation.isPending}
       onSubmit={async (value) => {
         await createMutation.mutateAsync(value);
         navigate({

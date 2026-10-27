@@ -2,13 +2,14 @@ import type { Course, Lesson, Unit } from "#/generated/prisma/client";
 import { createIncludeQuerySchema } from "#/lib/include";
 import { z } from "#/lib/extendZod";
 import type zod from "zod";
+import { ZOD_LANGUAGE_SUPPORT_KEY } from "#/service/go-judge/languages.config";
 
 export const CourseSchema = z
   .object({
     id: z.uuidv7().openapi({ example: "course_id" }),
     name: z.string().openapi({ example: "Course_Name" }),
     color: z.string().openapi({ example: "#FFFFF" }),
-    icon: z.string().openapi({ example: "icon_name" }),
+    icon: ZOD_LANGUAGE_SUPPORT_KEY,
     units: z
       .array(
         z.object({
@@ -33,7 +34,9 @@ export const CourseSchema = z
 export type CourseSchema = zod.infer<typeof CourseSchema>;
 
 /** Course row as stored, plus relations added by `?include=`. */
-export type CourseData = Course & {
+export type CourseData = Omit<Course, "icon"> & {
+  /** The column is plain text; write paths validate it against the supported languages. */
+  icon: CourseSchema["icon"];
   units?: (Unit & { lessons?: Lesson[] })[];
 };
 

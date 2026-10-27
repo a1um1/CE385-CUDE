@@ -98,8 +98,9 @@ describe("Energy Calculation for UserStat Service", () => {
   });
 
   it("should recompute regeneration from the persisted row instead of accumulating in-memory", async () => {
-    const energyUpdatedAt = new Date(Date.now() - 20 * 60 * 1000); // 20 minutes ago
-    const regeneratedEnergyUpdatedAt = new Date(energyUpdatedAt.getTime() + 20 * 60 * 1000);
+    const twoTicks = 2 * UserStatService.ENERGY_REGEN_RATE * 60 * 1000;
+    const energyUpdatedAt = new Date(Date.now() - twoTicks);
+    const regeneratedEnergyUpdatedAt = new Date(energyUpdatedAt.getTime() + twoTicks);
 
     mockDB.userStat.findUnique.mockResolvedValue({
       ...fakeUserStat,

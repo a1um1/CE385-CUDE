@@ -32,13 +32,7 @@ export default function UpdatePasswordForm() {
         <form.AppForm>
           <form.FormError />
           <form.AppField name="currentPassword">
-            {(field) => (
-              <field.TextField
-                label="Current Password"
-                type="password"
-                disabled={updateMutation.isPending}
-              />
-            )}
+            {(field) => <field.TextField label="Current Password" type="password" />}
           </form.AppField>
 
           <form.AppField
@@ -53,12 +47,11 @@ export default function UpdatePasswordForm() {
                 autoComplete="new-password"
                 showStrength
                 showRequirements
-                disabled={updateMutation.isPending}
               />
             )}
           </form.AppField>
 
-          <form.SubmitButton label="Update Password" isPending={updateMutation.isPending} />
+          <form.SubmitButton label="Update Password" />
         </form.AppForm>
       </form>
     </>

@@ -1166,7 +1166,7 @@ export interface paths {
                     perPage?: number;
                     cursor?: string;
                     direction?: "forward" | "backward";
-                    sortBy?: "name" | "createdAt" | "updatedAt" | "id";
+                    sortBy?: "position" | "name" | "createdAt" | "updatedAt" | "id";
                     sortOrder?: "asc" | "desc";
                 };
                 header?: never;
@@ -6147,12 +6147,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-23T20:30:22.692Z
+             * @example 2026-10-26T16:37:33.822Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-23T20:30:22.693Z
+             * @example 2026-10-26T16:37:33.822Z
              */
             updatedAt: string;
         };
@@ -6197,8 +6197,7 @@ export interface components {
             name: string;
             /** @example #FFFFFF */
             color: string;
-            /** @example icon_name */
-            icon: string;
+            icon: components["schemas"]["GoJudgeLanguage"];
             /** @example 0 */
             position: number;
             /**
@@ -6217,21 +6216,24 @@ export interface components {
              */
             updatedAt: string;
         };
+        /**
+         * @example python
+         * @enum {string}
+         */
+        GoJudgeLanguage: "python" | "c";
         AdminCourseCreate: {
             /** @example Course Name */
             name: string;
             /** @example #FFFFFF */
             color: string;
-            /** @example icon_name */
-            icon: string;
+            icon: components["schemas"]["GoJudgeLanguage"];
         };
         AdminCourseUpdate: {
             /** @example Course Name */
             name: string;
             /** @example #FFFFFF */
             color: string;
-            /** @example icon_name */
-            icon: string;
+            icon: components["schemas"]["GoJudgeLanguage"];
         };
         PaginatedLesson: {
             items: components["schemas"]["Lesson"][];
@@ -6636,8 +6638,7 @@ export interface components {
             name: string;
             /** @example #FFFFF */
             color: string;
-            /** @example icon_name */
-            icon: string;
+            icon: components["schemas"]["GoJudgeLanguage"];
             units?: {
                 /**
                  * Format: uuid
@@ -6739,11 +6740,7 @@ export interface components {
             /** @example exercise content */
             content: string;
             codeExercise?: {
-                /**
-                 * @example python
-                 * @enum {string}
-                 */
-                language: "python" | "c";
+                language: components["schemas"]["GoJudgeLanguage"];
                 /** @example print('hello') */
                 starterCode: string | null;
                 /** @example 2000 */

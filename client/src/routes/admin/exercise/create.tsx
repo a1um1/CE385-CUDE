@@ -63,7 +63,6 @@ function RouteComponent() {
         testCases: [],
       }}
       submitLabel="Create Exercise"
-      isPending={createMutation.isPending}
       onSubmit={async (value) => {
         await createMutation.mutateAsync({
           name: value.name,

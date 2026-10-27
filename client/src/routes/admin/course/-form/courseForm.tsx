@@ -1,29 +1,29 @@
-import { useAppForm } from "#/components/form";
+import { FormRoot, useAppForm } from "#/components/form";
+import { languageIconOptions } from "#/data/code.data";
+import type { availableLanguageKey } from "#/data/code.data";
 
 export interface CourseFormValues {
   name: string;
   color: string;
-  icon: string;
+  icon: availableLanguageKey;
 }
 
 export interface CourseFormProps {
   defaultValues?: CourseFormValues;
   onSubmit: (values: CourseFormValues) => void | Promise<void>;
   submitLabel?: string;
-  isPending?: boolean;
 }
 
 const defaultFormValues: CourseFormValues = {
   name: "",
   color: "",
-  icon: "",
+  icon: "c",
 };
 
 export function CourseForm({
   defaultValues = defaultFormValues,
   onSubmit,
   submitLabel = "Submit",
-  isPending,
 }: CourseFormProps) {
   const form = useAppForm({
     defaultValues,
@@ -33,34 +33,27 @@ export function CourseForm({
   });
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        form.handleSubmit();
-      }}
-    >
+    <FormRoot form={form}>
       <form.AppForm>
         <form.FormError />
         <form.AppField name="name">
-          {(field) => (
-            <field.TextField label="Course Name" type="text" required disabled={isPending} />
-          )}
+          {(field) => <field.TextField label="Course Name" type="text" required />}
         </form.AppField>
         <form.AppField name="color">
-          {(field) => <field.ColorField label="Course Color" required disabled={isPending} />}
+          {(field) => <field.ColorField label="Course Color" required />}
         </form.AppField>
         <form.AppField name="icon">
           {(field) => (
-            <field.TextField label="Course Icon" type="text" required disabled={isPending} />
+            <field.SelectField
+              label="Programming Language Icon"
+              items={languageIconOptions}
+              required
+            />
           )}
         </form.AppField>
-        <div style={{ display: "flex", gap: "0.75rem", alignItems: "center", marginTop: "1rem" }}>
-          <form.SubmitButton label={submitLabel} isPending={isPending} />
-          <form.CancelButton fallbackUrl="/admin/course" />
-        </div>
+        <form.FormActions fallbackUrl="/admin/course" submitLabel={submitLabel} />
       </form.AppForm>
-    </form>
+    </FormRoot>
   );
 }
 

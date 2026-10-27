@@ -68,4 +68,11 @@ export const sessionRepository = {
       },
       select: { LessonID: true, status: true, submissions: { select: { ok: true } } },
     }),
+
+  getCurrentAttempt: async (userID: string, lessonID: string, tx?: Db): Promise<number> => {
+    const count = await client(tx).sessions.count({
+      where: { userID, LessonID: lessonID },
+    });
+    return count;
+  },
 };

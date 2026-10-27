@@ -13,7 +13,7 @@ import { userStatRepository } from "#/repository/userStat.repository";
 export default class UserStatService {
   private data: userStatsQueryPayload;
   static readonly MAX_ENERGY = 5;
-  static readonly ENERGY_REGEN_RATE = 10;
+  static readonly ENERGY_REGEN_RATE = 60;
   static readonly XP_LEVEL_BASE = 42;
   static readonly XP_LEVEL_EXPONENT = 1.67;
 

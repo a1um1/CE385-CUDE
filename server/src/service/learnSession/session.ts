@@ -1,10 +1,12 @@
 import type { SessionData, SessionObject } from "#/service/learnSession/session.schema";
 import UserError from "#/lib/router/http/userError";
 import lessonService from "#/service/lesson";
+import UserStatService from "#/service/userStat";
 import { Prisma } from "#/generated/prisma/client";
 import { z } from "#/lib/extendZod";
 import type { z as zod } from "zod";
 import { sessionRepository } from "#/repository/session.repository";
+import { client } from "#/repository/client";
 type enrollmentStatus = "AVAILABLE" | "PENDING" | "NOT_AVAILABLE";
 
 export const enrollmentStatusSchema = z
@@ -58,18 +60,34 @@ export default class SessionService {
     if (!check.isAvailable) throw new UserError(400, "Lesson is not available to start.");
 
     const lesson = await lessonService.getById(props.LessonID);
-    try {
-      const created = await sessionRepository.create({
-        LessonID: lesson.JSON.id,
-        userID: props.UserID,
-      });
-      return created;
-    } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
-        throw new UserError(400, "Lesson is not available to start.");
+    return await client().$transaction(async (tx) => {
+      try {
+        const userStat = await UserStatService.getByUserId(props.UserID);
+        const created = await sessionRepository.create(
+          {
+            LessonID: lesson.JSON.id,
+            userID: props.UserID,
+          },
+          tx,
+        );
+        const attemptNumber = await sessionRepository.getCurrentAttempt(
+          props.UserID,
+          props.LessonID,
+          tx,
+        );
+
+        await userStat.spendEnergy({
+          reason: `Start lesson session (${lesson.JSON.name}, Attempt #${attemptNumber})`,
+        });
+
+        return created;
+      } catch (error) {
+        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+          throw new UserError(400, "Lesson is not available to start.");
+        }
+        throw error;
       }
-      throw error;
-    }
+    });
   }
 
   async cancel(): Promise<void> {
