@@ -1,5 +1,6 @@
 export class GoJudgeHTTpClient {
-  private readonly hostUrl = "http://localhost:5050";
+  private readonly hostUrl = process.env.GOJUDGE_URL || "http://localhost:5050";
+  private readonly token = process.env.GOJUDGE_TOKEN || "";
 
   async sendRequest<T>(
     method: string,
@@ -11,6 +12,7 @@ export class GoJudgeHTTpClient {
     const response = await fetch(`${this.hostUrl}${endpoint}`, {
       method,
       headers: {
+        Authorization: `Bearer ${this.token}`,
         "Content-Type": "application/json",
       },
       body: bodyContent,
