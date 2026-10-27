@@ -31,6 +31,7 @@ import { Route as AdminExerciseCreateRouteImport } from './routes/admin/exercise
 import { Route as AdminLessonIndexRouteImport } from './routes/admin/lesson/index'
 import { Route as AdminLessonIdRouteImport } from './routes/admin/lesson/$id'
 import { Route as AdminLessonCreateRouteImport } from './routes/admin/lesson/create'
+import { Route as AdminTransactionIndexRouteImport } from './routes/admin/transaction/index'
 import { Route as AdminUnitIndexRouteImport } from './routes/admin/unit/index'
 import { Route as AdminUnitIdRouteImport } from './routes/admin/unit/$id'
 import { Route as AdminUnitCreateRouteImport } from './routes/admin/unit/create'
@@ -155,6 +156,11 @@ const AdminLessonCreateRoute = AdminLessonCreateRouteImport.update({
   path: '/lesson/create',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminTransactionIndexRoute = AdminTransactionIndexRouteImport.update({
+  id: '/transaction/',
+  path: '/transaction/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminUnitIndexRoute = AdminUnitIndexRouteImport.update({
   id: '/unit/',
   path: '/unit/',
@@ -262,6 +268,7 @@ export interface FileRoutesByFullPath {
   '/admin/course/': typeof AdminCourseIndexRoute
   '/admin/exercise/': typeof AdminExerciseIndexRoute
   '/admin/lesson/': typeof AdminLessonIndexRoute
+  '/admin/transaction/': typeof AdminTransactionIndexRoute
   '/admin/unit/': typeof AdminUnitIndexRoute
   '/admin/user/': typeof AdminUserIndexRoute
   '/lesson/$lessonId': typeof authedbaseLessonLessonIdRouteRouteWithChildren
@@ -295,6 +302,7 @@ export interface FileRoutesByTo {
   '/admin/course': typeof AdminCourseIndexRoute
   '/admin/exercise': typeof AdminExerciseIndexRoute
   '/admin/lesson': typeof AdminLessonIndexRoute
+  '/admin/transaction': typeof AdminTransactionIndexRoute
   '/admin/unit': typeof AdminUnitIndexRoute
   '/admin/user': typeof AdminUserIndexRoute
   '/account/security': typeof authedbaseAccountSecurityRoute
@@ -334,6 +342,7 @@ export interface FileRoutesById {
   '/admin/course/': typeof AdminCourseIndexRoute
   '/admin/exercise/': typeof AdminExerciseIndexRoute
   '/admin/lesson/': typeof AdminLessonIndexRoute
+  '/admin/transaction/': typeof AdminTransactionIndexRoute
   '/admin/unit/': typeof AdminUnitIndexRoute
   '/admin/user/': typeof AdminUserIndexRoute
   '/(authed)/(base)/lesson/$lessonId': typeof authedbaseLessonLessonIdRouteRouteWithChildren
@@ -373,6 +382,7 @@ export interface FileRouteTypes {
     | '/admin/course/'
     | '/admin/exercise/'
     | '/admin/lesson/'
+    | '/admin/transaction/'
     | '/admin/unit/'
     | '/admin/user/'
     | '/lesson/$lessonId'
@@ -406,6 +416,7 @@ export interface FileRouteTypes {
     | '/admin/course'
     | '/admin/exercise'
     | '/admin/lesson'
+    | '/admin/transaction'
     | '/admin/unit'
     | '/admin/user'
     | '/account/security'
@@ -444,6 +455,7 @@ export interface FileRouteTypes {
     | '/admin/course/'
     | '/admin/exercise/'
     | '/admin/lesson/'
+    | '/admin/transaction/'
     | '/admin/unit/'
     | '/admin/user/'
     | '/(authed)/(base)/lesson/$lessonId'
@@ -618,6 +630,13 @@ declare module '@tanstack/react-router' {
       path: '/lesson/create'
       fullPath: '/admin/lesson/create'
       preLoaderRoute: typeof AdminLessonCreateRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/transaction/': {
+      id: '/admin/transaction/'
+      path: '/transaction'
+      fullPath: '/admin/transaction/'
+      preLoaderRoute: typeof AdminTransactionIndexRouteImport
       parentRoute: typeof AdminRouteRoute
     }
     '/admin/unit/': {
@@ -829,6 +848,7 @@ interface AdminRouteRouteChildren {
   AdminCourseIndexRoute: typeof AdminCourseIndexRoute
   AdminExerciseIndexRoute: typeof AdminExerciseIndexRoute
   AdminLessonIndexRoute: typeof AdminLessonIndexRoute
+  AdminTransactionIndexRoute: typeof AdminTransactionIndexRoute
   AdminUnitIndexRoute: typeof AdminUnitIndexRoute
   AdminUserIndexRoute: typeof AdminUserIndexRoute
 }
@@ -847,6 +867,7 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminCourseIndexRoute: AdminCourseIndexRoute,
   AdminExerciseIndexRoute: AdminExerciseIndexRoute,
   AdminLessonIndexRoute: AdminLessonIndexRoute,
+  AdminTransactionIndexRoute: AdminTransactionIndexRoute,
   AdminUnitIndexRoute: AdminUnitIndexRoute,
   AdminUserIndexRoute: AdminUserIndexRoute,
 }
