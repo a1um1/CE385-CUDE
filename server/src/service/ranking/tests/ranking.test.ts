@@ -7,6 +7,107 @@ describe("RankingService", () => {
     vi.useRealTimers();
   });
 
+  it("ranks weekly XP earned by successful submissions and returns period and total XP", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-10-23T16:00:00.000Z"));
+
+    mockDB.transactions.findMany.mockResolvedValueOnce([
+      {
+        userID: "user-a",
+        amount: 100,
+        user: {
+          id: "user-a",
+          username: "alice",
+          profileImage: "alice.jpg",
+          backgroundImage: "alice-background.jpg",
+          userStats: [{ totalXP: 700 }],
+        },
+      },
+      {
+        userID: "user-a",
+        amount: 50,
+        user: {
+          id: "user-a",
+          username: "alice",
+          profileImage: "alice.jpg",
+          backgroundImage: "alice-background.jpg",
+          userStats: [{ totalXP: 700 }],
+        },
+      },
+      {
+        userID: "user-b",
+        amount: 120,
+        user: {
+          id: "user-b",
+          username: "bob",
+          profileImage: null,
+          backgroundImage: null,
+          userStats: [{ totalXP: 500 }],
+        },
+      },
+    ] as never);
+
+    await expect(RankingService.getXpRanking({ period: "weekly", limit: 1 })).resolves.toEqual([
+      {
+        rank: 1,
+        user: {
+          id: "user-a",
+          username: "alice",
+          profileImage: "alice.jpg",
+          backgroundImage: "alice-background.jpg",
+        },
+        xpEarned: 150,
+        totalXP: 700,
+      },
+    ]);
+
+    expect(mockDB.transactions.findMany).toHaveBeenCalledWith({
+      where: {
+        type: "XP",
+        amount: { gt: 0 },
+        createdAt: {
+          gte: new Date(2026, 9, 19),
+          lte: new Date("2026-10-23T16:00:00.000Z"),
+        },
+        user: { isActive: true },
+      },
+      select: {
+        userID: true,
+        amount: true,
+        user: {
+          select: {
+            id: true,
+            username: true,
+            profileImage: true,
+            backgroundImage: true,
+            userStats: { select: { totalXP: true }, take: 1 },
+          },
+        },
+      },
+    });
+  });
+
+  it("uses the first day of the current server-time month for monthly rankings", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-10-23T16:00:00.000Z"));
+    mockDB.transactions.findMany.mockResolvedValueOnce([]);
+
+    await expect(RankingService.getXpRanking({ period: "monthly", limit: 10 })).resolves.toEqual(
+      [],
+    );
+
+    expect(mockDB.transactions.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          createdAt: {
+            gte: new Date(2026, 9, 1),
+            lte: new Date("2026-10-23T16:00:00.000Z"),
+          },
+        }),
+      }),
+    );
+  });
+
   it("ranks distinct graded exercises completed since Monday and includes the current user", async () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-10-23T16:00:00.000Z"));

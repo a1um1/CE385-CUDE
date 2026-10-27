@@ -576,6 +576,221 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/user/ranking": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get the XP ranking
+         * @description Return the top users ranked by XP earned from successful lesson submissions during the current server-time week (Monday start) or calendar month. The response includes XP earned in the period separately from each user's all-time total XP and public profile images.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    period?: "weekly" | "monthly";
+                    limit?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @example 1 */
+                            rank: number;
+                            user: {
+                                /** @example user_id */
+                                id: string;
+                                /** @example john */
+                                username: string;
+                                /** @example https://example.com/profile.jpg */
+                                profileImage: string | null;
+                                /** @example https://example.com/background.jpg */
+                                backgroundImage: string | null;
+                            };
+                            /** @example 250 */
+                            xpEarned: number;
+                            /** @example 1200 */
+                            totalXP: number;
+                        }[];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/user/weekly-ranking": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get the weekly exercise ranking
+         * @description Return the top weekly users by distinct exercises completed, including the current user if they are outside the top ten.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @example 1 */
+                            rank: number;
+                            /** @example user_id */
+                            userId: string;
+                            /** @example john */
+                            username: string;
+                            /** @example 45 */
+                            completedExercises: number;
+                        }[];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/user/transactions": {
         parameters: {
             query?: never;
@@ -1166,7 +1381,7 @@ export interface paths {
                     perPage?: number;
                     cursor?: string;
                     direction?: "forward" | "backward";
-                    sortBy?: "name" | "createdAt" | "updatedAt" | "id";
+                    sortBy?: "position" | "name" | "createdAt" | "updatedAt" | "id";
                     sortOrder?: "asc" | "desc";
                 };
                 header?: never;
@@ -2797,6 +3012,115 @@ export interface paths {
                 };
             };
         };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/user/{userId}/submission-calendar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get a user's submission calendar
+         * @description Return daily activity normalized to 0–1 for one user. `months` selects a rolling period of 1–3 months (defaults to 3); each returned date includes `active`, the day's submission count divided by the maximum daily count in that period. Requires an `ADMIN` token.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description จำนวนเดือนย้อนหลังที่ต้องการ (1–3 เดือน) */
+                    months?: number;
+                };
+                header?: never;
+                path: {
+                    userId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /**
+                             * @description วันที่ส่งงาน
+                             * @example 2026-10-23
+                             */
+                            date: string;
+                            /**
+                             * @description จำนวน submission ของวันนี้หารด้วยจำนวนสูงสุดในช่วงวันที่เลือก ปัดเป็นทศนิยม 2 ตำแหน่ง
+                             * @example 0.5
+                             */
+                            active: number;
+                        }[];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
         post?: never;
         delete?: never;
         options?: never;
@@ -6147,12 +6471,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-23T20:30:22.692Z
+             * @example 2026-10-27T01:23:52.728Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-23T20:30:22.693Z
+             * @example 2026-10-27T01:23:52.730Z
              */
             updatedAt: string;
         };

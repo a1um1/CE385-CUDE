@@ -6,9 +6,9 @@ export const userSubmissionCalendarSchema = z.object({
     example: "2026-10-23",
     description: "วันที่ส่งงาน",
   }),
-  count: z.number().int().openapi({
-    example: 5,
-    description: "จำนวนงานที่ส่งในวันนั้น",
+  active: z.number().min(0).max(1).openapi({
+    example: 0.5,
+    description: "จำนวน submission ของวันนี้หารด้วยจำนวนสูงสุดในช่วงวันที่เลือก ปัดเป็นทศนิยม 2 ตำแหน่ง",
   }),
 });
 
