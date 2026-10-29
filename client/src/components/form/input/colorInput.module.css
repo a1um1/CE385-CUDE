@@ -12,8 +12,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.75rem;
-  height: 2.75rem;
+  width: var(--size-md-height);
+  height: var(--size-md-height);
   border-radius: var(--radius);
   border: 1px solid var(--color-border);
   background-color: var(--color-input);
