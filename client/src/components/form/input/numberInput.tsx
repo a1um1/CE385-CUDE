@@ -11,7 +11,7 @@ export interface NumberFieldProps {
   disabled?: boolean;
   /** Value stored when the input is empty or not a number. */
   fallback?: number;
-  /** `int` truncates typed decimals, matching `parseInt`; `float` keeps them. */
+  /** `int` truncates typed decimals, matching `Number.parseInt`; `float` keeps them. */
   parseAs?: "int" | "float";
 }
 
