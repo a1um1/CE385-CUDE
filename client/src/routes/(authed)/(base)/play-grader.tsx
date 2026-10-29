@@ -81,7 +81,7 @@ function RouteComponent() {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const index = parseInt(e.target.getAttribute("data-index") || "-1");
+    const index = Number.parseInt(e.target.getAttribute("data-index") || "-1", 10);
     const name = e.target.name as keyof (typeof testCases)[number];
     const val = e.target.value;
     setTestCases((base) =>

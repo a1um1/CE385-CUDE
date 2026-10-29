@@ -22,11 +22,11 @@ export default function formatFileSize(
 
   // 3. Compute value and handle rollover (e.g., 1023.99 -> 1024)
   let scaledValue = rawBytes / 1024 ** unitIndex;
-  if (parseFloat(scaledValue.toFixed(dm)) >= 1024 && unitIndex < SIZES.length - 1) {
+  if (Number.parseFloat(scaledValue.toFixed(dm)) >= 1024 && unitIndex < SIZES.length - 1) {
     unitIndex += 1;
     scaledValue /= 1024;
   }
 
   const sign = isNegative ? "-" : "";
-  return `${sign}${parseFloat(scaledValue.toFixed(dm))} ${SIZES[unitIndex]}`;
+  return `${sign}${Number.parseFloat(scaledValue.toFixed(dm))} ${SIZES[unitIndex]}`;
 }
