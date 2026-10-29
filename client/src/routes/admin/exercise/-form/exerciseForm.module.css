@@ -43,7 +43,7 @@
   color: var(--color-foreground-muted, #aaa);
   background: transparent;
   border: none;
-  border-bottom: 2px solid transparent;
+  border-bottom: 1px solid transparent;
   cursor: pointer;
   transition: all 0.15s ease-in-out;
 
