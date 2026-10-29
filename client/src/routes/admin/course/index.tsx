@@ -4,8 +4,7 @@ import DataTable from "#/components/table";
 import { createTableColumnHelper } from "#/components/table/features";
 import { useAdminCourseListQuery } from "#/data/admin/course.data";
 import { basicPaginationSchema } from "#/lib/pagination.schema";
-import Input from "#/components/input";
-import Button from "#/components/button";
+import SearchField from "#/components/searchField/searchField";
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import type { OnChangeFn, SortingState } from "@tanstack/react-table";
@@ -81,14 +80,6 @@ const typedColumns = columnHelper.columns([
 function RouteComponent() {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
-  const [nameSearch, setNameSearch] = React.useState(search.search ?? "");
-
-  const handleSearch = () => {
-    const next = nameSearch.trim() || undefined;
-    navigate({
-      search: (prev) => ({ ...prev, search: next, cursor: undefined, direction: "forward" }),
-    });
-  };
 
   const sorting: SortingState = React.useMemo(() => {
     const sortBy = search.sortBy ?? "position";
@@ -156,25 +147,20 @@ function RouteComponent() {
   return (
     <>
       <div className="flex justify-between items-center">
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
-          <span style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--color-muted-text)" }}>
-            Search
-          </span>
-          <div style={{ display: "flex", gap: "0.5rem" }}>
-            <Input
-              size="sm"
-              placeholder="Search courses"
-              value={nameSearch}
-              onChange={(e) => setNameSearch(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") handleSearch();
-              }}
-            />
-            <Button size="sm" onClick={handleSearch}>
-              Search
-            </Button>
-          </div>
-        </div>
+        <SearchField
+          placeholder="Search courses"
+          initialValue={search.search}
+          onSearch={(next) =>
+            navigate({
+              search: (prev) => ({
+                ...prev,
+                search: next,
+                cursor: undefined,
+                direction: "forward",
+              }),
+            })
+          }
+        />
         <ButtonLink to="/admin/course/create" variant="primary">
           Create New Course
         </ButtonLink>

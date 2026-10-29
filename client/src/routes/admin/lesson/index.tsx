@@ -15,8 +15,7 @@ import {
 } from "#/components/select";
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
-import Input from "#/components/input";
-import Button from "#/components/button";
+import SearchField from "#/components/searchField/searchField";
 
 const lessonPaginationSchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
@@ -117,14 +116,6 @@ const buildColumns = (unitMap: Map<string, string>) =>
 function RouteComponent() {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
-  const [nameSearch, setNameSearch] = React.useState(search.search ?? "");
-
-  const handleSearch = () => {
-    const next = nameSearch.trim() || undefined;
-    navigate({
-      search: (prev) => ({ ...prev, search: next, page: 1 }),
-    });
-  };
 
   const coursesQuery = useAdminCourseListQuery({
     perPage: 100,
@@ -220,18 +211,6 @@ function RouteComponent() {
         <div className={styles.toolbarContainer}>
           <div className={styles.filtersGroup}>
             <div className={styles.filterField}>
-              <span className={styles.filterLabel}>Search</span>
-              <Input
-                size="sm"
-                placeholder="Search lessons"
-                value={nameSearch}
-                onChange={(e) => setNameSearch(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") handleSearch();
-                }}
-              />
-            </div>
-            <div className={styles.filterField}>
               <span className={styles.filterLabel}>Course</span>
               <SelectRoot
                 value={search.courseId ?? "ALL"}
@@ -274,9 +253,16 @@ function RouteComponent() {
                 </SelectContent>
               </SelectRoot>
             </div>
-            <Button size="sm" onClick={handleSearch}>
-              Search
-            </Button>
+            <SearchField
+              className={styles.filterField}
+              placeholder="Search lessons"
+              initialValue={search.search}
+              onSearch={(next) =>
+                navigate({
+                  search: (prev) => ({ ...prev, search: next, page: 1 }),
+                })
+              }
+            />
           </div>
 
           <ButtonLink
