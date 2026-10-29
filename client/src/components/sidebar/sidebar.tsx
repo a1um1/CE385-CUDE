@@ -79,7 +79,7 @@ const navSections: NavSection[] = [
       {
         key: "submissions-list",
         label: "Submissions",
-        link: { to: "/admin/user" },
+        link: { to: "/admin/submission" },
         icon: BookOpenCheckIcon,
       },
       {

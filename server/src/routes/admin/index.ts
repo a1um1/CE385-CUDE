@@ -5,6 +5,7 @@ import { adminUserRoute } from "#/routes/admin/user.admin";
 import { adminUnitRoute } from "#/routes/admin/unit.admin";
 import { adminExerciseRoute } from "./exercise.admin";
 import { adminTransactionRoute } from "./transaction.admin";
+import { adminSubmissionRoute } from "./submission.admin";
 const adminRouter = new CustomRouter({
   prefix: "/admin",
   tags: ["Admin"],
@@ -31,6 +32,7 @@ const adminRouter = new CustomRouter({
   .use(adminExerciseRoute)
   .use(adminCourseRoute)
   .use(adminLessonRoute)
-  .use(adminTransactionRoute);
+  .use(adminTransactionRoute)
+  .use(adminSubmissionRoute);
 
 export const adminRoute = adminRouter.route;

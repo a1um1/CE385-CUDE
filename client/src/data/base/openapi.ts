@@ -3263,6 +3263,201 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/submission": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List all submissions
+         * @description Cursor-paginated list of every submission, newest first. Requires an ADMIN token.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    perPage?: number;
+                    cursor?: string;
+                    direction?: "forward" | "backward";
+                    userSearch?: string;
+                    exerciseSearch?: string;
+                    result?: "PASSED" | "FAILED" | "UNGRADED";
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminSubmissionListResponse"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/submission/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get submission by ID
+         * @description Return one submission by ID in the admin shape. Requires an ADMIN token.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminSubmissionDetail"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin": {
         parameters: {
             query?: never;
@@ -6258,12 +6453,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-29T14:05:24.530Z
+             * @example 2026-10-29T14:53:04.328Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-29T14:05:24.539Z
+             * @example 2026-10-29T14:53:04.330Z
              */
             updatedAt: string;
         };
@@ -6679,6 +6874,90 @@ export interface components {
                 name: string;
                 /** @example john@example.com */
                 email: string;
+            };
+        };
+        AdminSubmissionListResponse: {
+            /** @example [] */
+            data: components["schemas"]["AdminSubmissionObject"][];
+            /** @example next_cursor_id */
+            nextCursor?: string;
+            /** @example prev_cursor_id */
+            prevCursor?: string;
+        };
+        AdminSubmissionObject: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            userID: string;
+            /** Format: uuid */
+            SessionID: string;
+            /** Format: uuid */
+            exerciseID: string;
+            isGraded: boolean;
+            ok: boolean;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            user: {
+                name: string;
+                email: string;
+            };
+            exercise: {
+                name: string;
+                lesson?: {
+                    /** Format: uuid */
+                    id: string;
+                    name: string;
+                    unit?: {
+                        /** Format: uuid */
+                        id: string;
+                        name: string;
+                        course?: {
+                            /** Format: uuid */
+                            id: string;
+                            name: string;
+                            color: string;
+                            icon: string;
+                        };
+                    };
+                };
+            };
+        };
+        AdminSubmissionDetail: components["schemas"]["AdminSubmissionObject"] & {
+            exercise?: {
+                name: string;
+                lesson?: {
+                    /** Format: uuid */
+                    id: string;
+                    name: string;
+                    unit?: {
+                        /** Format: uuid */
+                        id: string;
+                        name: string;
+                        course?: {
+                            /** Format: uuid */
+                            id: string;
+                            name: string;
+                            color: string;
+                            icon: string;
+                        };
+                    };
+                };
+                content: string;
+                codeExercise?: {
+                    language?: string | null;
+                } | null;
+            };
+            content: {
+                /** @example print("hello") */
+                code: string;
+            };
+            session: {
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                status: "PENDING" | "SUBMITTED" | "GRADED" | "CANCELLED";
             };
         };
         AuthenticationResponseData: {
