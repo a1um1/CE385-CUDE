@@ -3,9 +3,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import DataTable, { createTableColumnHelper } from "#/components/table";
 import { useAdminUserListQuery } from "#/data/admin/user.data";
 import ButtonLink from "#/components/buttonLink";
-import Input from "#/components/input";
+import SearchField from "#/components/searchField/searchField";
 import { basicPaginationSchema } from "#/lib/pagination.schema";
-import { useDebouncedValue } from "#/lib/useDebouncedValue";
 import type { OnChangeFn, SortingState } from "@tanstack/react-table";
 import { z } from "zod";
 
@@ -72,23 +71,12 @@ const typedColumns = columnHelper.columns([
 function RouteComponent() {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
-  const [nameSearch, setNameSearch] = React.useState(search.search ?? "");
-  const debouncedSearch = useDebouncedValue(nameSearch);
 
-  // Keep the URL (and therefore cursor pagination) linkable without a request per keystroke.
-  React.useEffect(() => {
-    const next = debouncedSearch.trim() || undefined;
-    if (next === search.search) return;
+  const handleSearch = (value: string | undefined) => {
     navigate({
-      search: (prev) => ({
-        ...prev,
-        search: next,
-        cursor: undefined,
-        direction: "forward",
-      }),
-      replace: true,
+      search: (prev) => ({ ...prev, search: value, cursor: undefined, direction: "forward" }),
     });
-  }, [debouncedSearch, search.search, navigate]);
+  };
 
   const sorting: SortingState = React.useMemo(() => {
     if (!search.sortBy) return [];
@@ -162,11 +150,10 @@ function RouteComponent() {
         onSortingChange={handleSortingChange}
         manualSorting
         toolbarActions={
-          <Input
-            size="sm"
-            placeholder="Search name or email"
-            value={nameSearch}
-            onChange={(event) => setNameSearch(event.target.value)}
+          <SearchField
+            placeholder="Name or email"
+            initialValue={search.search}
+            onSearch={handleSearch}
           />
         }
         cursorPagination={{

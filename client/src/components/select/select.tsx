@@ -10,12 +10,18 @@ import type {
   SelectRootProps,
   SelectTriggerProps,
 } from "#/components/select/select.schema";
-import { SelectContext, SelectSizes, SelectRadius } from "#/components/select/select.schema";
+import {
+  SelectContext,
+  SelectSizes,
+  SelectRadius,
+} from "#/components/select/select.schema";
 
 function useSelectContext() {
   const context = React.useContext(SelectContext);
   if (!context) {
-    throw new Error("Select compound components must be used within a Select.Root");
+    throw new Error(
+      "Select compound components must be used within a Select.Root",
+    );
   }
   return context;
 }
@@ -32,7 +38,8 @@ export function SelectRoot({
   children,
   ...props
 }: SelectRootProps) {
-  const [uncontrolledValue, setUncontrolledValue] = React.useState(defaultValue);
+  const [uncontrolledValue, setUncontrolledValue] =
+    React.useState(defaultValue);
   const isControlled = controlledValue !== undefined;
   const currentValue = isControlled ? controlledValue : uncontrolledValue;
 
@@ -85,7 +92,12 @@ export function SelectTrigger({
 
   return (
     <SelectPrimitive.Trigger
-      className={clsx(styles.trigger, SelectSizes[size], radius && SelectRadius[radius], className)}
+      className={clsx(
+        styles.trigger,
+        SelectSizes[size],
+        radius && SelectRadius[radius],
+        className,
+      )}
       disabled={context.disabled || props.disabled}
       {...props}
     >
@@ -96,7 +108,12 @@ export function SelectTrigger({
 }
 
 export function SelectValue({ className, ...props }: SelectValueProps) {
-  return <SelectPrimitive.Value className={clsx(styles.value, className)} {...props} />;
+  return (
+    <SelectPrimitive.Value
+      className={clsx(styles.value, className)}
+      {...props}
+    />
+  );
 }
 
 export function SelectContent({
@@ -114,11 +131,15 @@ export function SelectContent({
       <SelectPrimitive.Positioner
         align={align}
         side={side}
+        alignItemWithTrigger={false}
         sideOffset={sideOffset}
         alignOffset={alignOffset}
         className={positionerClassName}
       >
-        <SelectPrimitive.Popup className={clsx(styles.popup, className)} {...props}>
+        <SelectPrimitive.Popup
+          className={clsx(styles.popup, className)}
+          {...props}
+        >
           {children}
         </SelectPrimitive.Popup>
       </SelectPrimitive.Positioner>
@@ -143,8 +164,14 @@ export function SelectItem({
   ...props
 }: SelectItemProps) {
   return (
-    <SelectPrimitive.Item value={value} className={clsx(styles.item, className)} {...props}>
-      <SelectPrimitive.ItemText className={styles.itemText}>{children}</SelectPrimitive.ItemText>
+    <SelectPrimitive.Item
+      value={value}
+      className={clsx(styles.item, className)}
+      {...props}
+    >
+      <SelectPrimitive.ItemText className={styles.itemText}>
+        {children}
+      </SelectPrimitive.ItemText>
       {showIndicator && (
         <SelectPrimitive.ItemIndicator className={styles.itemCheck}>
           <Check size={16} />
@@ -154,24 +181,50 @@ export function SelectItem({
   );
 }
 
-export type SelectItemTextProps = React.ComponentProps<typeof SelectPrimitive.ItemText>;
+export type SelectItemTextProps = React.ComponentProps<
+  typeof SelectPrimitive.ItemText
+>;
 export function SelectItemText({ className, ...props }: SelectItemTextProps) {
-  return <SelectPrimitive.ItemText className={clsx(styles.itemText, className)} {...props} />;
+  return (
+    <SelectPrimitive.ItemText
+      className={clsx(styles.itemText, className)}
+      {...props}
+    />
+  );
 }
 
-export type SelectSeparatorProps = React.ComponentProps<typeof SelectPrimitive.Separator>;
+export type SelectSeparatorProps = React.ComponentProps<
+  typeof SelectPrimitive.Separator
+>;
 export function SelectSeparator({ className, ...props }: SelectSeparatorProps) {
-  return <SelectPrimitive.Separator className={clsx(styles.separator, className)} {...props} />;
+  return (
+    <SelectPrimitive.Separator
+      className={clsx(styles.separator, className)}
+      {...props}
+    />
+  );
 }
 
-export type SelectGroupProps = React.ComponentProps<typeof SelectPrimitive.Group>;
+export type SelectGroupProps = React.ComponentProps<
+  typeof SelectPrimitive.Group
+>;
 export function SelectGroup({ className, ...props }: SelectGroupProps) {
   return <SelectPrimitive.Group className={className} {...props} />;
 }
 
-export type SelectGroupLabelProps = React.ComponentProps<typeof SelectPrimitive.GroupLabel>;
-export function SelectGroupLabel({ className, ...props }: SelectGroupLabelProps) {
-  return <SelectPrimitive.GroupLabel className={clsx(styles.groupLabel, className)} {...props} />;
+export type SelectGroupLabelProps = React.ComponentProps<
+  typeof SelectPrimitive.GroupLabel
+>;
+export function SelectGroupLabel({
+  className,
+  ...props
+}: SelectGroupLabelProps) {
+  return (
+    <SelectPrimitive.GroupLabel
+      className={clsx(styles.groupLabel, className)}
+      {...props}
+    />
+  );
 }
 
 export const Select = {
