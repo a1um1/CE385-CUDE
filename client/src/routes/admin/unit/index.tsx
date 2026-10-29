@@ -133,11 +133,19 @@ function RouteComponent() {
     });
   };
 
+  const [pendingCourseID, setPendingCourseID] = React.useState(search.courseID ?? "ALL");
+
   const handleCourseFilterChange = (courseID: string | null) => {
+    setPendingCourseID(courseID ?? "ALL");
+  };
+
+  const handleSearch = (searchTerm: string | undefined) => {
+    const courseID = pendingCourseID === "ALL" ? undefined : pendingCourseID;
     navigate({
       search: (prev) => ({
         ...prev,
-        courseID: courseID === "ALL" || !courseID ? undefined : courseID,
+        search: searchTerm,
+        courseID,
         cursor: undefined,
         direction: "forward",
       }),
@@ -207,7 +215,7 @@ function RouteComponent() {
                 Course
               </span>
               <SelectRoot
-                value={search.courseID ?? "ALL"}
+                value={pendingCourseID}
                 onValueChange={handleCourseFilterChange}
                 size="sm"
                 items={courseFilterItems}
@@ -228,16 +236,7 @@ function RouteComponent() {
             <SearchField
               placeholder="Search units"
               initialValue={search.search}
-              onSearch={(next) =>
-                navigate({
-                  search: (prev) => ({
-                    ...prev,
-                    search: next,
-                    cursor: undefined,
-                    direction: "forward",
-                  }),
-                })
-              }
+              onSearch={handleSearch}
             />
           </div>
 

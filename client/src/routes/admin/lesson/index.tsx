@@ -122,10 +122,13 @@ function RouteComponent() {
     direction: "forward",
   });
 
+  const [pendingCourseId, setPendingCourseId] = React.useState(search.courseId ?? "ALL");
+  const [pendingUnitId, setPendingUnitId] = React.useState(search.unitId ?? "ALL");
+
   const unitsQuery = useAdminUnitListQuery({
     perPage: 100,
     direction: "forward",
-    courseID: search.courseId,
+    courseID: pendingCourseId === "ALL" ? undefined : pendingCourseId,
   });
 
   const unitMap = React.useMemo(() => {
@@ -155,21 +158,21 @@ function RouteComponent() {
   const typedColumns = React.useMemo(() => buildColumns(unitMap), [unitMap]);
 
   const handleCourseFilterChange = (courseId: string | null) => {
-    navigate({
-      search: (prev) => ({
-        ...prev,
-        courseId: courseId === "ALL" || !courseId ? undefined : courseId,
-        unitId: undefined,
-        page: 1,
-      }),
-    });
+    setPendingCourseId(courseId ?? "ALL");
+    setPendingUnitId("ALL");
   };
 
   const handleUnitFilterChange = (unitId: string | null) => {
+    setPendingUnitId(unitId ?? "ALL");
+  };
+
+  const handleSearch = (searchTerm: string | undefined) => {
     navigate({
       search: (prev) => ({
         ...prev,
-        unitId: unitId === "ALL" || !unitId ? undefined : unitId,
+        search: searchTerm,
+        courseId: pendingCourseId === "ALL" ? undefined : pendingCourseId,
+        unitId: pendingUnitId === "ALL" ? undefined : pendingUnitId,
         page: 1,
       }),
     });
@@ -213,7 +216,7 @@ function RouteComponent() {
             <div className={styles.filterField}>
               <span className={styles.filterLabel}>Course</span>
               <SelectRoot
-                value={search.courseId ?? "ALL"}
+                value={pendingCourseId}
                 onValueChange={handleCourseFilterChange}
                 size="sm"
                 items={courseFilterItems}
@@ -235,7 +238,7 @@ function RouteComponent() {
             <div className={styles.filterField}>
               <span className={styles.filterLabel}>Unit</span>
               <SelectRoot
-                value={search.unitId ?? "ALL"}
+                value={pendingUnitId}
                 onValueChange={handleUnitFilterChange}
                 size="sm"
                 items={unitFilterItems}
@@ -257,11 +260,7 @@ function RouteComponent() {
               className={styles.filterField}
               placeholder="Search lessons"
               initialValue={search.search}
-              onSearch={(next) =>
-                navigate({
-                  search: (prev) => ({ ...prev, search: next, page: 1 }),
-                })
-              }
+              onSearch={handleSearch}
             />
           </div>
 
