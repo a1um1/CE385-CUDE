@@ -40,17 +40,22 @@ export default class LessonService {
 
   static async getByUnitIdPaginated(
     unitID: string | undefined,
-    options: { page: number; limit: number; include?: string | string[] },
+    options: { page: number; limit: number; include?: string | string[]; search?: string },
   ): Promise<PaginatedLesson> {
-    const { page, limit, include } = options;
+    const { page, limit, include, search } = options;
     if (unitID) {
       await UnitService.getById(unitID);
     }
 
-    const where = unitID ? { unitID } : undefined;
+    const searchQuery = search?.trim();
+    const where: Prisma.LessonWhereInput = {
+      ...(unitID ? { unitID } : {}),
+      ...(searchQuery ? { name: { contains: searchQuery, mode: "insensitive" as const } } : {}),
+    };
+    const whereFinal = Object.keys(where).length ? where : undefined;
     const [rows, total] = await Promise.all([
       client().lesson.findMany({
-        where,
+        where: whereFinal,
         include: {
           ...resolveInclude<Prisma.LessonInclude>(include, lessonIncludes),
           prerequisites: { select: { prerequisiteLessonID: true } },
@@ -59,7 +64,7 @@ export default class LessonService {
         skip: (page - 1) * limit,
         take: limit,
       }),
-      client().lesson.count({ where }),
+      client().lesson.count({ where: whereFinal }),
     ]);
 
     return {

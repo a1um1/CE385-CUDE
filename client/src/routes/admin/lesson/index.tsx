@@ -15,12 +15,14 @@ import {
 } from "#/components/select";
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
+import SearchField from "#/components/searchField/searchField";
 
 const lessonPaginationSchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(20),
   courseId: z.string().optional(),
   unitId: z.string().optional(),
+  search: z.string().optional(),
 });
 
 export const Route = createFileRoute("/admin/lesson/")({
@@ -120,10 +122,13 @@ function RouteComponent() {
     direction: "forward",
   });
 
+  const [pendingCourseId, setPendingCourseId] = React.useState(search.courseId ?? "ALL");
+  const [pendingUnitId, setPendingUnitId] = React.useState(search.unitId ?? "ALL");
+
   const unitsQuery = useAdminUnitListQuery({
     perPage: 100,
     direction: "forward",
-    courseID: search.courseId,
+    courseID: pendingCourseId === "ALL" ? undefined : pendingCourseId,
   });
 
   const unitMap = React.useMemo(() => {
@@ -153,21 +158,21 @@ function RouteComponent() {
   const typedColumns = React.useMemo(() => buildColumns(unitMap), [unitMap]);
 
   const handleCourseFilterChange = (courseId: string | null) => {
-    navigate({
-      search: (prev) => ({
-        ...prev,
-        courseId: courseId === "ALL" || !courseId ? undefined : courseId,
-        unitId: undefined,
-        page: 1,
-      }),
-    });
+    setPendingCourseId(courseId ?? "ALL");
+    setPendingUnitId("ALL");
   };
 
   const handleUnitFilterChange = (unitId: string | null) => {
+    setPendingUnitId(unitId ?? "ALL");
+  };
+
+  const handleSearch = (searchTerm: string | undefined) => {
     navigate({
       search: (prev) => ({
         ...prev,
-        unitId: unitId === "ALL" || !unitId ? undefined : unitId,
+        search: searchTerm,
+        courseId: pendingCourseId === "ALL" ? undefined : pendingCourseId,
+        unitId: pendingUnitId === "ALL" ? undefined : pendingUnitId,
         page: 1,
       }),
     });
@@ -177,6 +182,7 @@ function RouteComponent() {
     page: search.page,
     limit: search.limit,
     unitId: search.unitId,
+    search: search.search,
     include: ["unit", "unit.course"],
   });
 
@@ -210,7 +216,7 @@ function RouteComponent() {
             <div className={styles.filterField}>
               <span className={styles.filterLabel}>Course</span>
               <SelectRoot
-                value={search.courseId ?? "ALL"}
+                value={pendingCourseId}
                 onValueChange={handleCourseFilterChange}
                 size="sm"
                 items={courseFilterItems}
@@ -232,7 +238,7 @@ function RouteComponent() {
             <div className={styles.filterField}>
               <span className={styles.filterLabel}>Unit</span>
               <SelectRoot
-                value={search.unitId ?? "ALL"}
+                value={pendingUnitId}
                 onValueChange={handleUnitFilterChange}
                 size="sm"
                 items={unitFilterItems}
@@ -250,6 +256,12 @@ function RouteComponent() {
                 </SelectContent>
               </SelectRoot>
             </div>
+            <SearchField
+              className={styles.filterField}
+              placeholder="Search lessons"
+              initialValue={search.search}
+              onSearch={handleSearch}
+            />
           </div>
 
           <ButtonLink

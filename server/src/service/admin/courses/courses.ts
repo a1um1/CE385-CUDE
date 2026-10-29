@@ -29,7 +29,9 @@ export default class AdminCoursesService {
 
   static async getPaginateLists(query: AdminCourseQuery): Promise<AdminCourseListResponseSchema> {
     const orderBy = buildCursorOrderBy(query.sortBy, query.sortOrder, isBackward(query));
-    const data = await courseRepository.findPage({ ...cursorArgs(query), orderBy });
+    const search = query.search?.trim();
+    const where = search ? { name: { contains: search, mode: "insensitive" as const } } : undefined;
+    const data = await courseRepository.findPage({ ...cursorArgs(query), orderBy, where });
 
     return paginate(data, query);
   }

@@ -5,6 +5,7 @@ import { createTableColumnHelper } from "#/components/table/features";
 import { useAdminUnitListQuery } from "#/data/admin/unit.data";
 import { useAdminCourseListQuery } from "#/data/admin/course.data";
 import { basicPaginationSchema } from "#/lib/pagination.schema";
+import SearchField from "#/components/searchField/searchField";
 import {
   SelectRoot,
   SelectTrigger,
@@ -18,6 +19,7 @@ import { z } from "zod";
 
 const unitPaginationSchema = basicPaginationSchema.extend({
   courseID: z.string().optional(),
+  search: z.string().optional(),
 });
 
 export const Route = createFileRoute("/admin/unit/")({
@@ -131,11 +133,19 @@ function RouteComponent() {
     });
   };
 
+  const [pendingCourseID, setPendingCourseID] = React.useState(search.courseID ?? "ALL");
+
   const handleCourseFilterChange = (courseID: string | null) => {
+    setPendingCourseID(courseID ?? "ALL");
+  };
+
+  const handleSearch = (searchTerm: string | undefined) => {
+    const courseID = pendingCourseID === "ALL" ? undefined : pendingCourseID;
     navigate({
       search: (prev) => ({
         ...prev,
-        courseID: courseID === "ALL" || !courseID ? undefined : courseID,
+        search: searchTerm,
+        courseID,
         cursor: undefined,
         direction: "forward",
       }),
@@ -149,6 +159,7 @@ function RouteComponent() {
     sortBy: (search.sortBy ?? "position") as any,
     sortOrder: search.sortOrder ?? "asc",
     courseID: search.courseID,
+    search: search.search,
   });
 
   const handleNextPage = () => {
@@ -204,7 +215,7 @@ function RouteComponent() {
                 Course
               </span>
               <SelectRoot
-                value={search.courseID ?? "ALL"}
+                value={pendingCourseID}
                 onValueChange={handleCourseFilterChange}
                 size="sm"
                 items={courseFilterItems}
@@ -222,6 +233,11 @@ function RouteComponent() {
                 </SelectContent>
               </SelectRoot>
             </div>
+            <SearchField
+              placeholder="Search units"
+              initialValue={search.search}
+              onSearch={handleSearch}
+            />
           </div>
 
           <ButtonLink

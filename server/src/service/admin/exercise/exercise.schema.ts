@@ -54,6 +54,12 @@ export const AdminExerciseQuerySchema = createCursorPaginationQuerySchema(
     example: "0192a000-0000-7000-8000-000000000002",
     description: "Filter by Lesson ID",
   }),
+  search: z
+    .string()
+    .trim()
+    .max(100)
+    .optional()
+    .openapi({ example: "exercise", description: "Full-text search on name." }),
 });
 
 export type AdminExerciseQuery = zod.infer<typeof AdminExerciseQuerySchema>;

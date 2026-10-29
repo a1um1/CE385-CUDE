@@ -33,6 +33,7 @@ const adminLessonRouter = new CustomRouter({
         page: query.page,
         limit: query.limit,
         include: query.include,
+        search: query.search,
       }),
   )
   .get(

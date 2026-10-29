@@ -6,6 +6,7 @@ import type {
   AdminUnitUpdateSchema,
 } from "#/service/admin/unit/unit.schema";
 import { buildCursorOrderBy } from "#/lib/pagination.schema";
+import type { Prisma } from "#/generated/prisma/client";
 import { cursorArgs, isBackward, paginate } from "#/lib/pagination";
 import UserError from "#/lib/router/http/userError";
 import { unitRepository } from "#/repository/unit.repository";
@@ -54,8 +55,13 @@ export default class AdminUnitsService {
 
   static async getPaginateLists(query: AdminUnitQuery): Promise<AdminUnitListResponseSchema> {
     const orderBy = buildCursorOrderBy(query.sortBy, query.sortOrder, isBackward(query));
+    const search = query.search?.trim();
+    const where: Prisma.UnitWhereInput = {
+      ...(query.courseID ? { courseID: query.courseID } : {}),
+      ...(search ? { name: { contains: search, mode: "insensitive" as const } } : {}),
+    };
     const data = await unitRepository.findPage({
-      where: query.courseID ? { courseID: query.courseID } : undefined,
+      where: Object.keys(where).length ? where : undefined,
       ...cursorArgs(query),
       orderBy,
     });

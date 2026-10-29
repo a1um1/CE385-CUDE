@@ -8,6 +8,7 @@ import { useAdminLessonListQuery } from "#/data/admin/lesson.data";
 import { useAdminUnitListQuery } from "#/data/admin/unit.data";
 import { useAdminCourseListQuery } from "#/data/admin/course.data";
 import { basicPaginationSchema } from "#/lib/pagination.schema";
+import SearchField from "#/components/searchField/searchField";
 import {
   SelectRoot,
   SelectTrigger,
@@ -23,6 +24,7 @@ const exercisePaginationSchema = basicPaginationSchema.extend({
   courseID: z.string().optional(),
   unitID: z.string().optional(),
   lessonID: z.string().optional(),
+  search: z.string().optional(),
 });
 
 export const Route = createFileRoute("/admin/exercise/")({
@@ -98,16 +100,20 @@ function RouteComponent() {
     direction: "forward",
   });
 
+  const [pendingCourseID, setPendingCourseID] = React.useState(search.courseID ?? "ALL");
+  const [pendingUnitID, setPendingUnitID] = React.useState(search.unitID ?? "ALL");
+  const [pendingLessonID, setPendingLessonID] = React.useState(search.lessonID ?? "ALL");
+
   const unitsQuery = useAdminUnitListQuery({
     perPage: 100,
     direction: "forward",
-    courseID: search.courseID,
+    courseID: pendingCourseID === "ALL" ? undefined : pendingCourseID,
   });
 
   const lessonsQuery = useAdminLessonListQuery({
     page: 1,
     limit: 100,
-    unitId: search.unitID,
+    unitId: pendingUnitID === "ALL" ? undefined : pendingUnitID,
   });
 
   const lessonMap = React.useMemo(() => {
@@ -166,35 +172,28 @@ function RouteComponent() {
   };
 
   const handleCourseFilterChange = (courseID: string | null) => {
-    navigate({
-      search: (prev) => ({
-        ...prev,
-        courseID: courseID === "ALL" || !courseID ? undefined : courseID,
-        unitID: undefined,
-        lessonID: undefined,
-        cursor: undefined,
-        direction: "forward",
-      }),
-    });
+    setPendingCourseID(courseID ?? "ALL");
+    setPendingUnitID("ALL");
+    setPendingLessonID("ALL");
   };
 
   const handleUnitFilterChange = (unitID: string | null) => {
-    navigate({
-      search: (prev) => ({
-        ...prev,
-        unitID: unitID === "ALL" || !unitID ? undefined : unitID,
-        lessonID: undefined,
-        cursor: undefined,
-        direction: "forward",
-      }),
-    });
+    setPendingUnitID(unitID ?? "ALL");
+    setPendingLessonID("ALL");
   };
 
   const handleLessonFilterChange = (lessonID: string | null) => {
+    setPendingLessonID(lessonID ?? "ALL");
+  };
+
+  const handleSearch = (searchTerm: string | undefined) => {
     navigate({
       search: (prev) => ({
         ...prev,
-        lessonID: lessonID === "ALL" || !lessonID ? undefined : lessonID,
+        search: searchTerm,
+        courseID: pendingCourseID === "ALL" ? undefined : pendingCourseID,
+        unitID: pendingUnitID === "ALL" ? undefined : pendingUnitID,
+        lessonID: pendingLessonID === "ALL" ? undefined : pendingLessonID,
         cursor: undefined,
         direction: "forward",
       }),
@@ -208,6 +207,7 @@ function RouteComponent() {
     sortBy: (search.sortBy ?? "position") as any,
     sortOrder: search.sortOrder ?? "asc",
     lessonID: search.lessonID,
+    search: search.search,
   });
 
   const handleNextPage = () => {
@@ -263,7 +263,7 @@ function RouteComponent() {
                 Course
               </span>
               <SelectRoot
-                value={search.courseID ?? "ALL"}
+                value={pendingCourseID}
                 onValueChange={handleCourseFilterChange}
                 size="sm"
                 items={courseFilterItems}
@@ -289,7 +289,7 @@ function RouteComponent() {
                 Unit
               </span>
               <SelectRoot
-                value={search.unitID ?? "ALL"}
+                value={pendingUnitID}
                 onValueChange={handleUnitFilterChange}
                 size="sm"
                 items={unitFilterItems}
@@ -315,7 +315,7 @@ function RouteComponent() {
                 Lesson
               </span>
               <SelectRoot
-                value={search.lessonID ?? "ALL"}
+                value={pendingLessonID}
                 onValueChange={handleLessonFilterChange}
                 size="sm"
                 items={lessonFilterItems}
@@ -333,6 +333,11 @@ function RouteComponent() {
                 </SelectContent>
               </SelectRoot>
             </div>
+            <SearchField
+              placeholder="Search exercises"
+              initialValue={search.search}
+              onSearch={handleSearch}
+            />
           </div>
 
           <ButtonLink
