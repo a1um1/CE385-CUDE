@@ -39,7 +39,6 @@ function RouteComponent() {
         prerequisiteLessonIDs: [],
       }}
       submitLabel="Create Lesson"
-      isPending={createMutation.isPending}
       onSubmit={async (value) => {
         await createMutation.mutateAsync({
           name: value.name,

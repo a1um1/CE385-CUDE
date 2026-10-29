@@ -19,24 +19,25 @@ export const courseRepository = {
       orderBy: [{ position: "asc" }, { id: "asc" }],
     })) as CourseData[],
 
-  findPage: (args: {
+  findPage: async (args: {
     take: number;
     skip: number;
     cursor?: { id: string };
     orderBy: Prisma.CourseOrderByWithRelationInput | Prisma.CourseOrderByWithRelationInput[];
   }): Promise<AdminCourseSchema[]> =>
-    client().course.findMany({
+    (await client().course.findMany({
       take: args.take,
       skip: args.skip,
       cursor: args.cursor,
       orderBy: args.orderBy,
       select: courseQueryPayload,
-    }),
+    })) as AdminCourseSchema[],
 
   maxPosition: () => client().course.aggregate({ _max: { position: true } }),
 
-  create: (data: Prisma.CourseUncheckedCreateInput, tx?: Db) => client(tx).course.create({ data }),
+  create: async (data: Prisma.CourseUncheckedCreateInput, tx?: Db): Promise<AdminCourseSchema> =>
+    (await client(tx).course.create({ data })) as AdminCourseSchema,
 
-  update: (id: string, data: Prisma.CourseUpdateInput, tx?: Db) =>
-    client(tx).course.update({ where: { id }, data }),
+  update: async (id: string, data: Prisma.CourseUpdateInput, tx?: Db): Promise<AdminCourseSchema> =>
+    (await client(tx).course.update({ where: { id }, data })) as AdminCourseSchema,
 };

@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import type { Prisma } from "#/generated/prisma/client";
 import { buildCursorOrderBy } from "#/lib/pagination.schema";
 import { cursorArgs, isBackward, paginate } from "#/lib/pagination";
 import { type userSafeSchema } from "#/service/user/user.schema";
@@ -77,7 +78,17 @@ export default class AdminUserService {
 
   static async queryUser(query: AdminUserQuery): Promise<AdminUserListResponseSchema> {
     const orderBy = buildCursorOrderBy(query.sortBy, query.sortOrder, isBackward(query));
-    const users = await userRepository.findPage({ ...cursorArgs(query), orderBy });
+    const search = query.search?.trim();
+    const where: Prisma.UserWhereInput = search
+      ? {
+          OR: [
+            { name: { contains: search, mode: "insensitive" } },
+            { email: { contains: search, mode: "insensitive" } },
+          ],
+        }
+      : {};
+
+    const users = await userRepository.findPage({ ...cursorArgs(query), where, orderBy });
 
     return paginate(users, query);
   }

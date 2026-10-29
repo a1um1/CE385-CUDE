@@ -2,9 +2,13 @@ import type { ExtractRequestQuery, ExtractRequestBody } from "#/data/base/apiUti
 import { APIclient } from "#/data/base/baseAPI";
 import { queryOptions, useMutation, useQuery } from "@tanstack/react-query";
 
-export const useAdminUserListQuery = (props: ExtractRequestQuery<"/admin/user", "get">) =>
+export const useAdminUserListQuery = (
+  props: ExtractRequestQuery<"/admin/user", "get">,
+  options?: { enabled?: boolean },
+) =>
   useQuery({
     queryKey: ["admin", "user", "list", props],
+    enabled: options?.enabled ?? true,
     queryFn: async () => {
       const { data, error } = await APIclient.GET("/admin/user", {
         params: {

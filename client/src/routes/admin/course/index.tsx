@@ -139,9 +139,11 @@ function RouteComponent() {
 
   return (
     <>
-      <ButtonLink to="/admin/course/create" variant="primary">
-        Create New Course
-      </ButtonLink>
+      <div className="flex justify-end">
+        <ButtonLink to="/admin/course/create" variant="primary">
+          Create New Course
+        </ButtonLink>
+      </div>
       <DataTable
         data={data?.data ?? []}
         columns={typedColumns}

@@ -1,11 +1,8 @@
 import * as React from "react";
 import Button from "#/components/button";
-import Input from "#/components/input";
-import formStyles from "#/components/form/form.module.css";
 import styles from "./exerciseForm.module.css";
-import { useAppForm } from "#/components/form";
+import { useAppForm, useFormPending } from "#/components/form";
 import { useAdminLessonListQuery } from "#/data/admin/lesson.data";
-import MarkdownEditor from "#/components/markdownEditor";
 import { Editor } from "@monaco-editor/react";
 import {
   Plus,
@@ -23,13 +20,6 @@ import { APIclient } from "#/data/base/baseAPI";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import formatNstoMs from "#/lib/formatNs";
-import {
-  SelectRoot,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "#/components/select";
 
 export interface FormTestCase {
   id?: string;
@@ -55,7 +45,6 @@ export interface ExerciseFormProps {
   defaultValues?: ExerciseFormValues;
   onSubmit: (values: ExerciseFormValues) => void | Promise<void>;
   submitLabel?: string;
-  isPending?: boolean;
   isEdit?: boolean;
 }
 
@@ -88,9 +77,9 @@ export function ExerciseForm({
   defaultValues = defaultValuesFallback,
   onSubmit,
   submitLabel = "Save Changes",
-  isPending,
   isEdit = false,
 }: ExerciseFormProps) {
+  const pending = useFormPending();
   const [activeTab, setActiveTab] = React.useState<TabKey>("metadata");
   const [solutionCode, setSolutionCode] = React.useState<string>(defaultValues.starterCode || "");
 
@@ -101,9 +90,9 @@ export function ExerciseForm({
 
   const lessonItems = React.useMemo(
     () =>
-      (lessonsQuery.data?.items ?? []).map((l) => ({
-        value: l.id,
-        label: l.name,
+      (lessonsQuery.data?.items ?? []).map((lesson) => ({
+        value: lesson.id,
+        label: lesson.name,
       })),
     [lessonsQuery.data?.items],
   );
@@ -139,9 +128,9 @@ export function ExerciseForm({
   const handleRunTestCases = () => {
     const code = solutionCode.trim() ? solutionCode : form.getFieldValue("starterCode") || "";
     const language = form.getFieldValue("language") || "python";
-    const testCases = (form.getFieldValue("testCases") || []).map((tc: FormTestCase) => ({
-      input: tc.input,
-      output: tc.output,
+    const testCases = (form.getFieldValue("testCases") || []).map((testCase: FormTestCase) => ({
+      input: testCase.input,
+      output: testCase.output,
     }));
 
     if (!code.trim()) {
@@ -223,84 +212,37 @@ export function ExerciseForm({
             style={{ display: activeTab === "metadata" ? "flex" : "none", maxWidth: 760 }}
           >
             <form.AppField name="name">
+              {(field) => <field.TextField label="Exercise Name" type="text" required />}
+            </form.AppField>
+
+            <form.AppField name="lessonID">
               {(field) => (
-                <field.TextField label="Exercise Name" type="text" required disabled={isPending} />
+                <field.SelectField
+                  label="Lesson"
+                  required
+                  placeholder="Select a lesson..."
+                  items={lessonItems}
+                  disabled={isEdit || lessonsQuery.isLoading}
+                />
               )}
             </form.AppField>
 
-            <form.Field name="lessonID">
+            <form.AppField name="type">
               {(field) => (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "0.25rem",
-                    marginTop: "0.75rem",
+                <field.SelectField
+                  label="Exercise Type"
+                  required
+                  placeholder="Select exercise type..."
+                  items={typeItems}
+                  disabled={isEdit}
+                  onValueChange={(value) => {
+                    if (value === "NONE" && (activeTab === "code" || activeTab === "testcases")) {
+                      setActiveTab("metadata");
+                    }
                   }}
-                >
-                  <label style={{ fontSize: "0.875rem", fontWeight: 500 }}>
-                    Lesson <span style={{ color: "red" }}>*</span>
-                  </label>
-                  <SelectRoot
-                    value={field.state.value || null}
-                    onValueChange={(val) => field.handleChange(val ?? "")}
-                    disabled={isPending || isEdit || lessonsQuery.isLoading}
-                    items={lessonItems}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a lesson..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {lessonsQuery.data?.items?.map((l) => (
-                        <SelectItem key={l.id} value={l.id}>
-                          {l.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </SelectRoot>
-                </div>
+                />
               )}
-            </form.Field>
-
-            <form.Field name="type">
-              {(field) => (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "0.25rem",
-                    marginTop: "0.75rem",
-                  }}
-                >
-                  <label style={{ fontSize: "0.875rem", fontWeight: 500 }}>
-                    Exercise Type <span style={{ color: "red" }}>*</span>
-                  </label>
-                  <SelectRoot
-                    value={field.state.value}
-                    onValueChange={(val) => {
-                      const newType = (val as "NONE" | "CODE") ?? "NONE";
-                      field.handleChange(newType);
-                      if (
-                        newType === "NONE" &&
-                        (activeTab === "code" || activeTab === "testcases")
-                      ) {
-                        setActiveTab("metadata");
-                      }
-                    }}
-                    disabled={isPending || isEdit}
-                    items={typeItems}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select exercise type..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="NONE">Reading Only (Markdown)</SelectItem>
-                      <SelectItem value="CODE">Code Exercise (Programming)</SelectItem>
-                    </SelectContent>
-                  </SelectRoot>
-                </div>
-              )}
-            </form.Field>
+            </form.AppField>
           </div>
 
           {/* TAB 2: CONTENT */}
@@ -308,30 +250,16 @@ export function ExerciseForm({
             className={styles["tab-content"]}
             style={{ display: activeTab === "content" ? "flex" : "none" }}
           >
-            <form.Field name="content">
+            <form.AppField name="content">
               {(field) => (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "0.35rem",
-                    width: "100%",
-                  }}
-                >
-                  <label style={{ fontSize: "0.875rem", fontWeight: 500 }}>
-                    Exercise Content / Problem Statement (Markdown){" "}
-                    <span style={{ color: "red" }}>*</span>
-                  </label>
-                  <MarkdownEditor
-                    value={field.state.value}
-                    onChange={(val) => field.handleChange(val)}
-                    disabled={isPending}
-                    height="calc(100vh - 250px)"
-                    minHeight={450}
-                  />
-                </div>
+                <field.MarkdownField
+                  label="Exercise Content / Problem Statement (Markdown)"
+                  required
+                  height="calc(100vh - 250px)"
+                  minHeight={450}
+                />
               )}
-            </form.Field>
+            </form.AppField>
           </div>
 
           {/* TAB 3: CODE CONFIG (Starter Code & Limits) */}
@@ -348,77 +276,44 @@ export function ExerciseForm({
                   maxWidth: 800,
                 }}
               >
-                <form.Field name="language">
+                <form.AppField name="language">
                   {(field) => (
-                    <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
-                      <label style={{ fontSize: "0.875rem", fontWeight: 500 }}>
-                        Language <span style={{ color: "red" }}>*</span>
-                      </label>
-                      <SelectRoot
-                        value={field.state.value}
-                        onValueChange={(val) =>
-                          field.handleChange((val as "python" | "c") ?? "python")
-                        }
-                        disabled={isPending}
-                        items={languageItems}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Language" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="python">Python (3.11)</SelectItem>
-                          <SelectItem value="c">C (C11)</SelectItem>
-                        </SelectContent>
-                      </SelectRoot>
-                    </div>
+                    <field.SelectField
+                      label="Language"
+                      required
+                      placeholder="Language"
+                      items={languageItems}
+                    />
                   )}
-                </form.Field>
+                </form.AppField>
 
-                <form.Field name="timeLimitMs">
+                <form.AppField name="timeLimitMs">
                   {(field) => (
-                    <div className={formStyles["form-field"]}>
-                      <label htmlFor="timeLimitMs" className={formStyles.label}>
-                        Time Limit (ms)
-                      </label>
-                      <Input
-                        id="timeLimitMs"
-                        type="number"
-                        min={100}
-                        max={10_000}
-                        step={100}
-                        required
-                        disabled={isPending}
-                        value={field.state.value}
-                        onChange={(e) =>
-                          field.handleChange(Number.parseInt(e.target.value, 10) || 2000)
-                        }
-                      />
-                    </div>
+                    <field.NumberField
+                      label="Time Limit (ms)"
+                      min={100}
+                      max={10_000}
+                      step={100}
+                      required
+                      fallback={2000}
+                      parseAs="int"
+                    />
                   )}
-                </form.Field>
+                </form.AppField>
 
-                <form.Field name="memoryLimitMb">
+                <form.AppField name="memoryLimitMb">
                   {(field) => (
-                    <div className={formStyles["form-field"]}>
-                      <label htmlFor="memoryLimitMb" className={formStyles.label}>
-                        Memory Limit (MB)
-                      </label>
-                      <Input
-                        id="memoryLimitMb"
-                        type="number"
-                        min={16}
-                        max={1024}
-                        step={16}
-                        required
-                        disabled={isPending}
-                        value={field.state.value}
-                        onChange={(e) =>
-                          field.handleChange(Number.parseInt(e.target.value, 10) || 256)
-                        }
-                      />
-                    </div>
+                    <field.NumberField
+                      label="Memory Limit (MB)"
+                      min={16}
+                      max={1024}
+                      step={16}
+                      required
+                      fallback={256}
+                      parseAs="int"
+                    />
                   )}
-                </form.Field>
+                </form.AppField>
               </div>
 
               <div
@@ -429,75 +324,23 @@ export function ExerciseForm({
                   width: "100%",
                 }}
               >
-                <form.Field name="starterCode">
+                <form.AppField name="starterCode">
                   {(field) => (
-                    <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                      <label style={{ fontSize: "0.875rem", fontWeight: 500 }}>
-                        Starter Code (Shown to students)
-                      </label>
-                      <div
-                        style={{
-                          height: "calc(100vh - 350px)",
-                          minHeight: 250,
-                          border: "1px solid var(--color-border, #444)",
-                          borderRadius: "0.25rem",
-                          overflow: "hidden",
-                        }}
-                      >
-                        <Editor
-                          height="100%"
-                          language={form.getFieldValue("language") === "c" ? "c" : "python"}
-                          theme="vs-dark"
-                          value={field.state.value}
-                          onChange={(val) => field.handleChange(val ?? "")}
-                          options={{
-                            minimap: { enabled: false },
-                            fontSize: 13,
-                            lineNumbers: "on",
-                            scrollBeyondLastLine: false,
-                            automaticLayout: true,
-                            readOnly: isPending,
-                          }}
-                        />
-                      </div>
-                    </div>
+                    <field.CodeField
+                      label="Starter Code (Shown to students)"
+                      language={form.getFieldValue("language") === "c" ? "c" : "python"}
+                    />
                   )}
-                </form.Field>
+                </form.AppField>
 
-                <form.Field name="testerCode">
+                <form.AppField name="testerCode">
                   {(field) => (
-                    <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                      <label style={{ fontSize: "0.875rem", fontWeight: 500 }}>
-                        Tester Code (Optional test wrapper / driver)
-                      </label>
-                      <div
-                        style={{
-                          height: "calc(100vh - 350px)",
-                          minHeight: 250,
-                          border: "1px solid var(--color-border, #444)",
-                          borderRadius: "0.25rem",
-                          overflow: "hidden",
-                        }}
-                      >
-                        <Editor
-                          height="100%"
-                          language={form.getFieldValue("language") === "c" ? "c" : "python"}
-                          theme="vs-dark"
-                          value={field.state.value}
-                          onChange={(val) => field.handleChange(val ?? "")}
-                          options={{
-                            minimap: { enabled: false },
-                            fontSize: 13,
-                            lineNumbers: "on",
-                            scrollBeyondLastLine: false,
-                            automaticLayout: true,
-                            readOnly: isPending,
-                          }}
-                        />
-                      </div>
-                    </div>
+                    <field.CodeField
+                      label="Tester Code (Optional test wrapper / driver)"
+                      language={form.getFieldValue("language") === "c" ? "c" : "python"}
+                    />
                   )}
-                </form.Field>
+                </form.AppField>
               </div>
             </div>
           )}
@@ -553,7 +396,7 @@ export function ExerciseForm({
                     language={form.getFieldValue("language") === "c" ? "c" : "python"}
                     theme="vs-dark"
                     value={solutionCode}
-                    onChange={(val) => setSolutionCode(val ?? "")}
+                    onChange={(value) => setSolutionCode(value ?? "")}
                     options={{
                       minimap: { enabled: false },
                       fontSize: 13,
@@ -573,12 +416,16 @@ export function ExerciseForm({
                     field.handleChange([...cases, { input: "", output: "", isPublic: false }]);
                   };
 
-                  const removeCase = (idx: number) => {
-                    field.handleChange(cases.filter((_, i) => i !== idx));
+                  const removeCase = (index: number) => {
+                    field.handleChange(cases.filter((_, i) => i !== index));
                   };
 
-                  const updateCase = (idx: number, patch: Partial<FormTestCase>) => {
-                    field.handleChange(cases.map((c, i) => (i === idx ? { ...c, ...patch } : c)));
+                  const updateCase = (index: number, patch: Partial<FormTestCase>) => {
+                    field.handleChange(
+                      cases.map((testCase, i) =>
+                        i === index ? { ...testCase, ...patch } : testCase,
+                      ),
+                    );
                   };
 
                   return (
@@ -600,7 +447,7 @@ export function ExerciseForm({
                             size="xs"
                             variant="secondary"
                             onClick={handleRunTestCases}
-                            disabled={isPending || judgeMutation.isPending || cases.length === 0}
+                            disabled={pending || cases.length === 0}
                           >
                             <Play size={14} />{" "}
                             {judgeMutation.isPending ? "Running..." : "Run Test Cases"}
@@ -610,7 +457,7 @@ export function ExerciseForm({
                             size="xs"
                             variant="secondary"
                             onClick={addCase}
-                            disabled={isPending}
+                            disabled={pending}
                           >
                             <Plus size={14} /> Add Case
                           </Button>
@@ -645,10 +492,12 @@ export function ExerciseForm({
                               </tr>
                             </thead>
                             <tbody>
-                              {judgeMutation.data.testResults.map((r) => (
-                                <tr key={`${r.input}-${r.expectedOutput}-${r.output}`}>
+                              {judgeMutation.data.testResults.map((result) => (
+                                <tr
+                                  key={`${result.input}-${result.expectedOutput}-${result.output}`}
+                                >
                                   <td>
-                                    {r.ok ? (
+                                    {result.ok ? (
                                       <span
                                         style={{
                                           color: "#4ade80",
@@ -672,9 +521,9 @@ export function ExerciseForm({
                                       </span>
                                     )}
                                   </td>
-                                  <td>{r.input || "<empty>"}</td>
-                                  <td>{r.expectedOutput || "<empty>"}</td>
-                                  <td>{r.output || "<empty>"}</td>
+                                  <td>{result.input || "<empty>"}</td>
+                                  <td>{result.expectedOutput || "<empty>"}</td>
+                                  <td>{result.output || "<empty>"}</td>
                                 </tr>
                               ))}
                             </tbody>
@@ -697,19 +546,19 @@ export function ExerciseForm({
                           expected output.
                         </div>
                       ) : (
-                        cases.map((tc, idx) => (
-                          <div key={tc.id ?? idx} className={styles["tc-card"]}>
+                        cases.map((testCase, index) => (
+                          <div key={testCase.id ?? index} className={styles["tc-card"]}>
                             <div className={styles["tc-card-header"]}>
-                              <span className={styles["tc-card-title"]}>Case #{idx + 1}</span>
+                              <span className={styles["tc-card-title"]}>Case #{index + 1}</span>
                               <div className={styles["tc-card-actions"]}>
                                 <label className={styles["tc-public-label"]}>
                                   <input
                                     type="checkbox"
-                                    checked={tc.isPublic}
+                                    checked={testCase.isPublic}
                                     onChange={(e) =>
-                                      updateCase(idx, { isPublic: e.target.checked })
+                                      updateCase(index, { isPublic: e.target.checked })
                                     }
-                                    disabled={isPending}
+                                    disabled={pending}
                                   />
                                   <span>Public</span>
                                 </label>
@@ -717,8 +566,8 @@ export function ExerciseForm({
                                   type="button"
                                   size="xs"
                                   variant="ghost"
-                                  onClick={() => removeCase(idx)}
-                                  disabled={isPending}
+                                  onClick={() => removeCase(index)}
+                                  disabled={pending}
                                   style={{
                                     color: "var(--color-danger, #ff5555)",
                                     padding: "0.2rem",
@@ -732,17 +581,17 @@ export function ExerciseForm({
                             <div className={styles["tc-io-grid"]}>
                               <textarea
                                 rows={2}
-                                value={tc.input}
-                                onChange={(e) => updateCase(idx, { input: e.target.value })}
-                                disabled={isPending}
+                                value={testCase.input}
+                                onChange={(e) => updateCase(index, { input: e.target.value })}
+                                disabled={pending}
                                 className={styles["tc-textarea"]}
                                 placeholder="stdin..."
                               />
                               <textarea
                                 rows={2}
-                                value={tc.output}
-                                onChange={(e) => updateCase(idx, { output: e.target.value })}
-                                disabled={isPending}
+                                value={testCase.output}
+                                onChange={(e) => updateCase(index, { output: e.target.value })}
+                                disabled={pending}
                                 className={styles["tc-textarea"]}
                                 placeholder="stdout..."
                               />
@@ -762,7 +611,7 @@ export function ExerciseForm({
         <div className={styles["bottom-bar"]}>
           <form.CancelButton fallbackUrl="/admin/exercise" />
 
-          <form.SubmitButton label={submitLabel} isPending={isPending} />
+          <form.SubmitButton label={submitLabel} />
         </div>
       </form.AppForm>
     </form>
