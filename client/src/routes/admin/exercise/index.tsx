@@ -8,6 +8,8 @@ import { useAdminLessonListQuery } from "#/data/admin/lesson.data";
 import { useAdminUnitListQuery } from "#/data/admin/unit.data";
 import { useAdminCourseListQuery } from "#/data/admin/course.data";
 import { basicPaginationSchema } from "#/lib/pagination.schema";
+import Input from "#/components/input";
+import Button from "#/components/button";
 import {
   SelectRoot,
   SelectTrigger,
@@ -23,6 +25,7 @@ const exercisePaginationSchema = basicPaginationSchema.extend({
   courseID: z.string().optional(),
   unitID: z.string().optional(),
   lessonID: z.string().optional(),
+  search: z.string().optional(),
 });
 
 export const Route = createFileRoute("/admin/exercise/")({
@@ -92,6 +95,14 @@ const buildColumns = (lessonMap: Map<string, string>) =>
 function RouteComponent() {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
+  const [nameSearch, setNameSearch] = React.useState(search.search ?? "");
+
+  const handleSearch = () => {
+    const next = nameSearch.trim() || undefined;
+    navigate({
+      search: (prev) => ({ ...prev, search: next, cursor: undefined, direction: "forward" }),
+    });
+  };
 
   const coursesQuery = useAdminCourseListQuery({
     perPage: 100,
@@ -208,6 +219,7 @@ function RouteComponent() {
     sortBy: (search.sortBy ?? "position") as any,
     sortOrder: search.sortOrder ?? "asc",
     lessonID: search.lessonID,
+    search: search.search,
   });
 
   const handleNextPage = () => {
@@ -256,6 +268,22 @@ function RouteComponent() {
           }}
         >
           <div style={{ display: "flex", alignItems: "flex-end", gap: "1rem", flexWrap: "wrap" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+              <span
+                style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--color-muted-text)" }}
+              >
+                Search
+              </span>
+              <Input
+                size="sm"
+                placeholder="Search exercises"
+                value={nameSearch}
+                onChange={(e) => setNameSearch(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleSearch();
+                }}
+              />
+            </div>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
               <span
                 style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--color-muted-text)" }}
@@ -333,6 +361,9 @@ function RouteComponent() {
                 </SelectContent>
               </SelectRoot>
             </div>
+            <Button size="sm" onClick={handleSearch}>
+              Search
+            </Button>
           </div>
 
           <ButtonLink

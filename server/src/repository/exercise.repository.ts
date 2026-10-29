@@ -32,7 +32,7 @@ export const exerciseRepository = {
     }),
 
   findPage: (args: {
-    where?: { lessonID: string };
+    where?: Prisma.ExerciseWhereInput;
     take: number;
     skip: number;
     cursor?: { id: string };

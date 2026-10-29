@@ -15,12 +15,15 @@ import {
 } from "#/components/select";
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
+import Input from "#/components/input";
+import Button from "#/components/button";
 
 const lessonPaginationSchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(20),
   courseId: z.string().optional(),
   unitId: z.string().optional(),
+  search: z.string().optional(),
 });
 
 export const Route = createFileRoute("/admin/lesson/")({
@@ -114,6 +117,14 @@ const buildColumns = (unitMap: Map<string, string>) =>
 function RouteComponent() {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
+  const [nameSearch, setNameSearch] = React.useState(search.search ?? "");
+
+  const handleSearch = () => {
+    const next = nameSearch.trim() || undefined;
+    navigate({
+      search: (prev) => ({ ...prev, search: next, page: 1 }),
+    });
+  };
 
   const coursesQuery = useAdminCourseListQuery({
     perPage: 100,
@@ -177,6 +188,7 @@ function RouteComponent() {
     page: search.page,
     limit: search.limit,
     unitId: search.unitId,
+    search: search.search,
     include: ["unit", "unit.course"],
   });
 
@@ -207,6 +219,18 @@ function RouteComponent() {
       toolbarActions={
         <div className={styles.toolbarContainer}>
           <div className={styles.filtersGroup}>
+            <div className={styles.filterField}>
+              <span className={styles.filterLabel}>Search</span>
+              <Input
+                size="sm"
+                placeholder="Search lessons"
+                value={nameSearch}
+                onChange={(e) => setNameSearch(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleSearch();
+                }}
+              />
+            </div>
             <div className={styles.filterField}>
               <span className={styles.filterLabel}>Course</span>
               <SelectRoot
@@ -250,6 +274,9 @@ function RouteComponent() {
                 </SelectContent>
               </SelectRoot>
             </div>
+            <Button size="sm" onClick={handleSearch}>
+              Search
+            </Button>
           </div>
 
           <ButtonLink

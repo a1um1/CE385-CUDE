@@ -55,6 +55,12 @@ export const LessonListQuerySchema = LessonIncludeQuerySchema.extend({
   unitId: z.uuid().optional().openapi({ example: "unit_id" }),
   page: z.coerce.number().int().min(1).default(1).openapi({ example: 1 }),
   limit: z.coerce.number().int().min(1).max(100).default(20).openapi({ example: 20 }),
+  search: z
+    .string()
+    .trim()
+    .max(100)
+    .optional()
+    .openapi({ example: "lesson", description: "Full-text search on name." }),
 });
 
 export type LessonListQuery = zod.infer<typeof LessonListQuerySchema>;

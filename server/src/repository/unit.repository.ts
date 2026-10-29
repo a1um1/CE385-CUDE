@@ -21,7 +21,7 @@ export const unitRepository = {
     })) as UnitData[],
 
   findPage: (args: {
-    where?: { courseID: string };
+    where?: Prisma.UnitWhereInput;
     take: number;
     skip: number;
     cursor?: { id: string };
