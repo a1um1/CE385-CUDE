@@ -11,7 +11,7 @@
   font-size: var(--autocomplete-font-size);
   font-family: var(--font-web);
   border-radius: var(--radius);
-  border: 2px solid var(--color-border);
+  border: 1px solid var(--color-border);
   width: 100%;
   outline: none;
   transition: outline-offset 0.2s ease-in-out;
