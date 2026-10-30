@@ -10,6 +10,7 @@ import styles from "./profile.module.css";
 import { PencilIcon } from "lucide-react";
 import Calendar from "#/components/calendar";
 import type { CSSProperties } from "react";
+import { courseIcons } from "#/components/courseCard/courseCard";
 
 const activityStatusColor = {
   PENDING: "#3B82F6",
@@ -39,24 +40,19 @@ function RouteComponent() {
           name={data?.name}
         />
         <div className={styles["fade"]} />
-        {isSelf && (
-          <div className={styles["edit-button-container"]}>
-            <ButtonLink
-              to="/account"
-              variant="secondary"
-              size="sm"
-              className={styles["edit-button"]}
-            >
-              <PencilIcon />
-              Edit profile
-            </ButtonLink>
-          </div>
-        )}
       </div>
       <div className={styles["profile-header"]}>
         <Avatar avatarUrl={data?.profileImage} name={data?.name} size="8rem" />
         <div className={styles["header-main"]}>
-          <span>@{data?.username}</span>
+          <div>
+            <span>@{data?.username}</span>{" "}
+            {isSelf && (
+              <ButtonLink to="/account" variant="secondary" size="sm">
+                <PencilIcon />
+                Edit profile
+              </ButtonLink>
+            )}
+          </div>
           <div className={styles["name-row"]}>
             <h1 className={styles["page-title"]}>
               {data?.name}{" "}
@@ -87,9 +83,7 @@ function RouteComponent() {
                 <li key={activity.id} className={styles["activity-item"]}>
                   <div className={styles["activity-info"]}>
                     <span className={styles["activity-lesson"]}>{activity.lessonName}</span>
-                    <span className={styles["activity-context"]}>
-                      {activity.courseName} · {activity.unitName}
-                    </span>
+                    <span className={styles["activity-context"]}>{activity.unitName}</span>
                   </div>
                   <div className={styles["activity-meta"]}>
                     <span

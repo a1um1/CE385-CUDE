@@ -8,7 +8,7 @@ import JavaScriptIcon from "#/components/codeEditor/icons/JavaScriptIcon";
 import PostgresIcon from "#/components/codeEditor/icons/PostgresIcon";
 import CSharpIcon from "#/components/codeEditor/icons/CSharpIcon";
 
-const courseIcons: Record<availableLanguageKey, ComponentType<SVGProps<SVGSVGElement>>> = {
+export const courseIcons: Record<availableLanguageKey, ComponentType<SVGProps<SVGSVGElement>>> = {
   python: PythonIcon,
   c: CIcon,
   csharp: CSharpIcon,
