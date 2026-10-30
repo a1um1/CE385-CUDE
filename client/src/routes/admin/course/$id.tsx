@@ -29,7 +29,6 @@ function RouteComponent() {
         icon: data.icon,
       }}
       submitLabel="Save Changes"
-      isPending={updateMutation.isPending}
       onSubmit={async (value) => {
         await updateMutation.mutateAsync({
           id,

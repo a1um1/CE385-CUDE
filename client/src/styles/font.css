@@ -14,3 +14,8 @@
   /* Style 3 */
   /* --font-web: "Google Sans", system-ui, sans-serif; */
 }
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

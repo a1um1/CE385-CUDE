@@ -1,8 +1,14 @@
 import Sidebar from "#/components/sidebar";
+import AdminBreadcrumbs from "#/components/breadcrumbs/adminBreadcrumbs";
+import {
+  CollapsibleSidebarProvider,
+  CollapsibleSidebarToggle,
+} from "#/components/collapsibleSidebar";
 import { resolveSession, useUser } from "#/data/user.data";
 import { createFileRoute, Navigate, Outlet, redirect, useMatches } from "@tanstack/react-router";
 import style from "./layout.module.css";
 import UserMenu from "#/components/userMenu";
+import clsx from "clsx";
 export const Route = createFileRoute("/admin")({
   ssr: false,
   beforeLoad: async ({ context }) => {
@@ -16,23 +22,31 @@ export const Route = createFileRoute("/admin")({
 
 function RouteComponent() {
   const matches = useMatches();
-  const pageTitle = matches[matches.length - 1]?.staticData?.pageTitle;
+  const currentMatch = matches[matches.length - 1];
+  const pageTitle = currentMatch?.staticData?.pageTitle;
+  const hideTitle = Boolean(currentMatch?.staticData?.hideTitle);
+  const fullWidth = Boolean(currentMatch?.staticData?.fullWidth);
   const user = useUser();
   if (!(user.data || user.isLoading)) return <Navigate to="/auth/signin" />;
 
   return (
-    <div className={style["admin-layout"]}>
-      <Sidebar />
-      <div className={style["admin-content"]}>
-        <div className={style["admin-navbar"]}>
-          <p>Hello world</p>
-          <UserMenu />
-        </div>
-        <div className={style["admin-container"]}>
-          <h1 className="text-3xl font-bold">{pageTitle || "Unknown Page"}</h1>
-          <Outlet />
+    <CollapsibleSidebarProvider>
+      <div className={style["admin-layout"]}>
+        <Sidebar />
+        <div className={style["admin-content"]}>
+          <div className={style["admin-navbar"]}>
+            <div className="flex items-center gap-2">
+              <CollapsibleSidebarToggle iconOnly label="Toggle sidebar" />
+              <AdminBreadcrumbs />
+            </div>
+            <UserMenu />
+          </div>
+          <div className={clsx(style["admin-container"], fullWidth && style["full-width"])}>
+            {!hideTitle && <h1 className="text-3xl font-bold">{pageTitle || "Unknown Page"}</h1>}
+            <Outlet />
+          </div>
         </div>
       </div>
-    </div>
+    </CollapsibleSidebarProvider>
   );
 }

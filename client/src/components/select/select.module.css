@@ -18,6 +18,7 @@
     box-shadow 150ms ease,
     background-color 150ms ease;
   min-width: 8rem;
+  padding: 0.5rem 0.75rem;
 }
 
 .trigger:hover:not(:disabled):not([data-disabled]) {
@@ -40,19 +41,19 @@
 .size-xs {
   padding: var(--size-xs-padding-y) var(--size-xs-padding-x);
   font-size: var(--size-xs-font-size);
-  min-height: 1.5rem;
+  min-height: var(--size-xs-height);
 }
 
 .size-sm {
   padding: var(--size-sm-padding-y) var(--size-sm-padding-x);
   font-size: var(--size-sm-font-size);
-  min-height: 2rem;
+  min-height: var(--size-sm-height);
 }
 
 .size-md {
   padding: var(--size-md-padding-y) var(--size-md-padding-x);
   font-size: var(--size-md-font-size);
-  min-height: 2.5rem;
+  min-height: var(--size-md-height);
 }
 
 /* Radius variants */

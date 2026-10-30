@@ -1,5 +1,5 @@
-import ExerciseController, { CodeExerciseController, ExerciseSchema } from "#/controller/exercise";
-import { codeGradingSummary } from "#/controller/grader/codeGrader.schema";
+import ExerciseService, { CodeExerciseService, ExerciseSchema } from "#/service/exercise";
+import { codeGradingSummary } from "#/service/grader/codeGrader.schema";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 import UserError from "#/lib/router/http/userError";
@@ -23,7 +23,7 @@ const exerciseRouter = new CustomRouter({
       response: ExerciseSchema,
     },
     async ({ params }) => {
-      const exercise = await ExerciseController.getById(params.exerciseId);
+      const exercise = await ExerciseService.getById(params.exerciseId);
       return exercise.JSON;
     },
   )
@@ -45,8 +45,8 @@ const exerciseRouter = new CustomRouter({
       response: codeGradingSummary,
     },
     async ({ params, body }) => {
-      const exercise = await ExerciseController.getById(params.exerciseId);
-      if (!(exercise instanceof CodeExerciseController)) {
+      const exercise = await ExerciseService.getById(params.exerciseId);
+      if (!(exercise instanceof CodeExerciseService)) {
         throw new UserError(400, "Exercise is not a code exercise");
       }
 

@@ -1,11 +1,11 @@
-import SessionController from "#/controller/learnSession";
-import SubmissionController from "#/controller/learnSession/submission";
+import SessionService from "#/service/learnSession";
+import SubmissionService from "#/service/learnSession/submission";
 import {
   SessionIncludeQuerySchema,
   SessionObjectSchema,
   SubmissionSchema,
   SubmitSessionResponseSchema,
-} from "#/controller/learnSession/session.schema";
+} from "#/service/learnSession/session.schema";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 
@@ -25,7 +25,7 @@ const learnSessionRouter = new CustomRouter({
       response: z.array(SessionObjectSchema),
     },
     async ({ user, query }) => {
-      const sessions = await SessionController.getByUserId(
+      const sessions = await SessionService.getByUserId(
         {
           UserID: user.JSON.id,
         },
@@ -45,7 +45,7 @@ const learnSessionRouter = new CustomRouter({
       response: SessionObjectSchema.nullable(),
     },
     async ({ user }) => {
-      const pendingSession = await SessionController.findUserPendingSession({
+      const pendingSession = await SessionService.findUserPendingSession({
         UserID: user.JSON.id,
       });
       return pendingSession ? pendingSession.JSON : null;
@@ -65,7 +65,7 @@ const learnSessionRouter = new CustomRouter({
       response: SessionObjectSchema,
     },
     async ({ body, user }) => {
-      const createdSession = await SessionController.createSession({
+      const createdSession = await SessionService.createSession({
         UserID: user.JSON.id,
         LessonID: body.LessonID,
       });
@@ -87,7 +87,7 @@ const learnSessionRouter = new CustomRouter({
       response: SessionObjectSchema,
     },
     async ({ params, user, query }) => {
-      const session = await SessionController.getById(
+      const session = await SessionService.getById(
         {
           SessionID: params.SessionID,
           userId: user.JSON.id,
@@ -111,7 +111,7 @@ const learnSessionRouter = new CustomRouter({
       }),
     },
     async ({ params, user }) => {
-      const session = await SessionController.getById({
+      const session = await SessionService.getById({
         SessionID: params.SessionID,
         userId: user.JSON.id,
       });
@@ -135,7 +135,7 @@ const learnSessionRouter = new CustomRouter({
       response: SubmissionSchema.nullable(),
     },
     async ({ params, user }) => {
-      const submission = await SubmissionController.getByExercise({
+      const submission = await SubmissionService.getByExercise({
         SessionID: params.SessionID,
         userID: user.JSON.id,
         exerciseID: params.exerciseId,
@@ -162,7 +162,7 @@ const learnSessionRouter = new CustomRouter({
       response: SubmissionSchema,
     },
     async ({ params, body, user }) => {
-      const submission = await SubmissionController.save({
+      const submission = await SubmissionService.save({
         SessionID: params.SessionID,
         userID: user.JSON.id,
         exerciseID: params.exerciseId,
@@ -180,6 +180,8 @@ const learnSessionRouter = new CustomRouter({
         "included** — and close the session as `SUBMITTED`.\n\n" +
         "Only counts come back per exercise (`total`, `passed`, `ok`); hidden test cases stay hidden. " +
         "An exercise passes when every test case passes.\n\n" +
+        "Passing the lesson as a whole (see the lesson's `passThreshold`) pays its XP and gems once " +
+        "per student and returns them as `reward`. Re-passing a lesson pays nothing.\n\n" +
         "Returns `400` when the session is not pending, `404` when it does not exist or belongs to " +
         "another user.",
       params: z.object({
@@ -188,7 +190,7 @@ const learnSessionRouter = new CustomRouter({
       response: SubmitSessionResponseSchema,
     },
     async ({ params, user }) =>
-      await SubmissionController.submitSession({
+      await SubmissionService.submitSession({
         SessionID: params.SessionID,
         userID: user.JSON.id,
       }),

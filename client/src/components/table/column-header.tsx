@@ -5,21 +5,32 @@ import clsx from "clsx";
 import styles from "./table.module.css";
 import type { DefaultTableFeatures } from "./features";
 
-export interface DataTableColumnHeaderProps<
-  TData extends RowData = RowData,
-  TValue = unknown,
-> extends React.HTMLAttributes<HTMLDivElement> {
+export interface DataTableColumnHeaderProps<TData extends RowData = RowData, TValue = unknown> {
   column: Column<DefaultTableFeatures, TData, TValue>;
   title: string;
+  align?: "left" | "center" | "right";
+  className?: string;
+  style?: React.CSSProperties;
 }
 
 export function DataTableColumnHeader<TData extends RowData = RowData, TValue = unknown>({
   column,
   title,
+  align = "left",
   className,
+  style,
 }: DataTableColumnHeaderProps<TData, TValue>) {
+  const justify = align === "center" ? "center" : align === "right" ? "flex-end" : "flex-start";
+
   if (!column.getCanSort?.()) {
-    return <div className={clsx(styles.headerSortContent, className)}>{title}</div>;
+    return (
+      <div
+        className={clsx(styles.headerSortContent, className)}
+        style={{ width: "100%", justifyContent: justify, ...style }}
+      >
+        {title}
+      </div>
+    );
   }
 
   const isSorted = column.getIsSorted?.();
@@ -36,7 +47,10 @@ export function DataTableColumnHeader<TData extends RowData = RowData, TValue = 
         font: "inherit",
         color: "inherit",
         padding: 0,
-        textAlign: "inherit",
+        textAlign: align,
+        width: "100%",
+        justifyContent: justify,
+        ...style,
       }}
     >
       <span>{title}</span>

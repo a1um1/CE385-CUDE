@@ -85,6 +85,27 @@ export function CollapsibleSidebarLabel({ children }: { children: ReactNode }) {
   return children;
 }
 
+/** Section header label inside sidebar. Hides text when collapsed, keeps divider line. */
+export function CollapsibleSidebarSection({
+  title,
+  className,
+}: {
+  title?: string;
+  className?: string;
+}) {
+  const { collapsed } = useCollapsibleSidebar();
+
+  if (collapsed) {
+    return <div role="separator" aria-hidden className={clsx(styles.sectionDivider, className)} />;
+  }
+
+  return (
+    <div className={clsx(styles.section, className)}>
+      {title && <span className={styles.sectionTitle}>{title}</span>}
+    </div>
+  );
+}
+
 /** Bottom-pinned region that pushes itself below the rest of the sidebar. */
 export function CollapsibleSidebarFooter({ children }: { children: ReactNode }) {
   return <div className={styles.footer}>{children}</div>;

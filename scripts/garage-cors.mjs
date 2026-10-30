@@ -1,6 +1,7 @@
-// Configure bucket CORS so the browser client (localhost:5173) can send
-// cross-origin PUT/GET directly to the Garage S3 API (localhost:3900).
-// Run from repo root after garage is up: node scripts/garage-cors.mjs
+// Configure bucket CORS so the browser client can send cross-origin PUT/GET
+// directly to the Garage S3 API. Defaults to localhost dev; override with
+// S3_ENDPOINT + PUBLIC_ORIGINS for a deployed instance.
+// Run from repo root: node scripts/garage-cors.mjs
 import { PutBucketCorsCommand, S3Client } from "@aws-sdk/client-s3";
 
 process.loadEnvFile("scripts/.env.local");
@@ -12,9 +13,14 @@ if (!accessKeyId || !secretAccessKey) {
   process.exit(1);
 }
 
+// Override for remote deployments: S3_ENDPOINT=https://s3-cude.m3ow.xyz PUBLIC_ORIGINS=https://app.example.com
+// shortcut: Garage joins multiple origins into one invalid header, so only a single
+// value (or "*") works — presigned uploads send no cookies, so "*" is safe here.
+const origins = (process.env.PUBLIC_ORIGINS ?? "*").split(",");
+
 const s3 = new S3Client({
   region: "garage",
-  endpoint: "http://localhost:3900",
+  endpoint: process.env.S3_ENDPOINT ?? "http://localhost:3900",
   forcePathStyle: true,
   credentials: { accessKeyId, secretAccessKey },
 });
@@ -25,7 +31,7 @@ await s3.send(
     CORSConfiguration: {
       CORSRules: [
         {
-          AllowedOrigins: ["http://localhost:5173", "http://localhost:3000"],
+          AllowedOrigins: origins,
           AllowedMethods: ["GET", "PUT", "HEAD", "OPTIONS"],
           AllowedHeaders: ["*"],
           ExposeHeaders: ["ETag"],

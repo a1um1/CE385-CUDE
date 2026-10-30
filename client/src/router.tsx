@@ -29,5 +29,7 @@ declare module "@tanstack/react-router" {
   interface StaticDataRouteOption {
     pageTitle?: string;
     pageKey?: string;
+    fullWidth?: boolean;
+    hideTitle?: boolean;
   }
 }

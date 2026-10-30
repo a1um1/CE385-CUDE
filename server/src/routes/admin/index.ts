@@ -1,7 +1,10 @@
 import CustomRouter from "#/lib/router/customRouter";
 import { adminCourseRoute } from "#/routes/admin/course.admin";
+import { adminLessonRoute } from "#/routes/admin/lesson.admin";
 import { adminUserRoute } from "#/routes/admin/user.admin";
 import { adminUnitRoute } from "#/routes/admin/unit.admin";
+import { adminExerciseRoute } from "./exercise.admin";
+import { adminTransactionRoute } from "./transaction.admin";
 import { adminStatsRoute } from "#/routes/admin/stats.admin";
 
 const adminRouter = new CustomRouter({
@@ -27,7 +30,10 @@ const adminRouter = new CustomRouter({
   )
   .use(adminUserRoute)
   .use(adminUnitRoute)
+  .use(adminExerciseRoute)
   .use(adminCourseRoute)
+  .use(adminLessonRoute)
+  .use(adminTransactionRoute)
   .use(adminStatsRoute);
 
 export const adminRoute = adminRouter.route;

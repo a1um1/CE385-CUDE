@@ -38,7 +38,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-left: auto;
+  width: 100%;
 }
 
 .tableContainer {
@@ -186,20 +186,36 @@
   gap: 0.5rem;
 }
 
+.selectContainer {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
 .pageSizeSelect {
+  appearance: none;
+  -webkit-appearance: none;
   background-color: var(--color-input);
   color: var(--color-input-text);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
-  padding: 0.25rem 0.5rem;
+  padding: 0.25rem 2rem 0.25rem 0.75rem;
   font-size: var(--size-sm-font-size);
   font-family: inherit;
   cursor: pointer;
   outline: none;
+  color-scheme: dark;
 
   &:focus {
     border-color: var(--color-primary);
   }
+}
+
+.selectChevron {
+  position: absolute;
+  right: 0.625rem;
+  pointer-events: none;
+  opacity: 0.7;
 }
 
 .skeletonBar {

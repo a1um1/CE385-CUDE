@@ -1,5 +1,5 @@
 import type { PaginationState, ReactTable, RowData } from "@tanstack/react-table";
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 import Button from "../button";
 import styles from "./table.module.css";
 import type { DefaultTableFeatures } from "./features";
@@ -50,18 +50,21 @@ function PageSizeSelect({ value, options, onChange }: PageSizeSelectProps) {
   return (
     <div className={styles.pageSizeSelectWrapper}>
       <span>Rows per page:</span>
-      <select
-        aria-label="Rows per page"
-        className={styles.pageSizeSelect}
-        value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
-      >
-        {options.map((size) => (
-          <option key={size} value={size}>
-            {size}
-          </option>
-        ))}
-      </select>
+      <div className={styles.selectContainer}>
+        <select
+          aria-label="Rows per page"
+          className={styles.pageSizeSelect}
+          value={value}
+          onChange={(e) => onChange(Number(e.target.value))}
+        >
+          {options.map((size) => (
+            <option key={size} value={size}>
+              {size}
+            </option>
+          ))}
+        </select>
+        <ChevronDown size={14} className={styles.selectChevron} />
+      </div>
     </div>
   );
 }

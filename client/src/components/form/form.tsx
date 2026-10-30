@@ -1,10 +1,28 @@
 import { createFormHookContexts, createFormHook } from "@tanstack/react-form";
+import { useIsMutating } from "@tanstack/react-query";
 import type { components } from "#/data/base/openapi";
 import { TextField } from "./input/textInput";
 import { ColorField } from "./input/colorInput";
 import { PasswordField } from "./input/passwordInput";
+import { NumberField } from "./input/numberInput";
+import { SelectField } from "./input/selectInput";
+import { MarkdownField } from "./input/markdownInput";
+import { CodeField } from "./input/codeInput";
 import { SubmitButton } from "./input/submitButton";
+import { CancelButton } from "./input/cancelButton";
 import { FormError } from "./input/formError";
+import { LeavePrompt } from "./input/leavePrompt";
+import { FormActions, FormRow } from "./formLayout";
+
+export { FormRoot } from "./formLayout";
+
+/**
+ * Any react-query mutation in flight is "the form is busy". Field components default their
+ * `disabled` to this, so a form never has to thread `isPending` through every field.
+ */
+export function useFormPending(): boolean {
+  return useIsMutating() > 0;
+}
 
 export const { fieldContext, formContext, useFieldContext, useFormContext } =
   createFormHookContexts();
@@ -16,21 +34,33 @@ const { useAppForm: useAppFormBase } = createFormHook({
     TextField,
     ColorField,
     PasswordField,
+    NumberField,
+    SelectField,
+    MarkdownField,
+    CodeField,
   },
   formComponents: {
     SubmitButton,
+    CancelButton,
     FormError,
+    LeavePrompt,
+    FormActions,
+    FormRow,
   },
 });
 
-export const useAppForm: typeof useAppFormBase = (options) =>
-  useAppFormBase({
+export const useAppForm: typeof useAppFormBase = (options) => {
+  const form = useAppFormBase({
     ...options,
     onSubmit: async (ctx) => {
       ctx.formApi.setErrorMap({ onSubmit: undefined });
       await options.onSubmit?.(ctx);
+      ctx.formApi.reset(ctx.formApi.state.values);
     },
   });
+
+  return form;
+};
 
 type ErrorResponse = components["schemas"]["ErrorResponse"];
 type ValidationIssue = NonNullable<ErrorResponse["details"]>[number];

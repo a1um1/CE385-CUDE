@@ -1,5 +1,6 @@
 import ButtonLink from "#/components/buttonLink";
 import ExerciseList from "#/components/exerciseList";
+import LessonReward from "#/components/lessonReward";
 import { Scoring } from "#/components/scoring";
 import type { components } from "#/data/base/openapi";
 import { useExerciseFromLessonQuery } from "#/data/exercise.data";
@@ -40,8 +41,8 @@ function RouteComponent() {
   const session = Route.useLoaderData();
   const lesson = session?.lesson;
   const exercises = useExerciseFromLessonQuery(lesson?.id);
-  // A given-up attempt is never graded, so it has no score.
-  const cancelled = session?.status === "CANCELLED";
+
+  const cancelled = session?.status === "PENDING" ? false : session?.status === "CANCELLED";
 
   const codeExercises = exercises.data?.filter((exercise) => exercise.type === "CODE") ?? [];
   const passed = codeExercises.filter((exercise) =>
@@ -62,7 +63,7 @@ function RouteComponent() {
           กลับไปหน้าบทเรียน
         </ButtonLink>
       </div>
-      <div className="flex gap-4">
+      <div className="flex gap-4 items-start">
         <Scoring
           status={
             cancelled
@@ -73,12 +74,15 @@ function RouteComponent() {
           }
           label={cancelled ? undefined : formatPercent(passed, codeExercises.length)}
         />
-        <div className="flex flex-col">
+        <div className="flex flex-col flex-1">
           <p>
             {lesson?.unit?.course?.name} / {lesson?.unit?.name}
           </p>
-          <h1 className="text-2xl mb-4">{lesson?.name}</h1>
+          <h1 className="text-2xl mb-2">{lesson?.name}</h1>
         </div>
+        {session?.rewarded && lesson && (
+          <LessonReward xp={lesson.XPgiven} gems={lesson.gemsGiven} />
+        )}
       </div>
 
       {session?.status === "PENDING" && (
@@ -94,7 +98,6 @@ function RouteComponent() {
           return {
             id: exercise.id,
             name: exercise.name,
-            // A given-up attempt was never graded, so no per-exercise result is shown.
             badge: cancelled ? undefined : (resultOf(exercise, submission) ?? undefined),
           };
         })}

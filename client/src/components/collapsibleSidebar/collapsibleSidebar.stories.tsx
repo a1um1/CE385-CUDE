@@ -88,7 +88,7 @@ export const HeaderToggle: Story = {
               display: "flex",
               alignItems: "center",
               gap: "0.5rem",
-              borderBottom: "2px solid var(--color-border)",
+              borderBottom: "1px solid var(--color-border)",
               padding: "0.5rem 1rem",
             }}
           >
