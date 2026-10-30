@@ -3263,6 +3263,205 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/submission": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List lesson sessions
+         * @description Cursor-paginated list of every lesson session, newest first. Requires an ADMIN token.
+         *
+         *     Filter by `result` (`PASSED`, `FAILED`, `GRADING`, `ONGOING`, `GIVEUP`) and by `userSearch`, which matches the owner's name or email (case-insensitive substring). Narrow to a lesson with `courseID`, `unitID` or `lessonID`.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    perPage?: number;
+                    cursor?: string;
+                    direction?: "forward" | "backward";
+                    userSearch?: string;
+                    courseID?: string;
+                    unitID?: string;
+                    lessonID?: string;
+                    result?: "PASSED" | "FAILED" | "GRADING" | "ONGOING" | "GIVEUP";
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminSessionListResponse"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/submission/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get lesson session by ID
+         * @description Return one lesson session with every submission of that session, including the exercise statement and the submitted code. Requires an ADMIN token.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminSessionDetail"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin": {
         parameters: {
             query?: never;
@@ -6258,12 +6457,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-29T14:05:24.530Z
+             * @example 2026-10-30T07:22:00.665Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-29T14:05:24.539Z
+             * @example 2026-10-30T07:22:00.666Z
              */
             updatedAt: string;
         };
@@ -6679,6 +6878,85 @@ export interface components {
                 name: string;
                 /** @example john@example.com */
                 email: string;
+                /** @example https://example.com/profile.jpg */
+                profileImage: string | null;
+            };
+        };
+        AdminSessionListResponse: {
+            /** @example [] */
+            data: components["schemas"]["AdminSessionObject"][];
+            /** @example next_cursor_id */
+            nextCursor?: string;
+            /** @example prev_cursor_id */
+            prevCursor?: string;
+        };
+        AdminSessionObject: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            userID: string;
+            /** Format: uuid */
+            LessonID: string;
+            /** @enum {string} */
+            status: "PENDING" | "SUBMITTED" | "GRADED" | "CANCELLED";
+            rewarded: boolean;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            user: {
+                name: string;
+                email: string;
+                profileImage: string | null;
+            };
+            lesson: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                unit: {
+                    /** Format: uuid */
+                    id: string;
+                    name: string;
+                    course: {
+                        /** Format: uuid */
+                        id: string;
+                        name: string;
+                        color: string;
+                        icon: string;
+                    };
+                };
+            };
+            submissions: {
+                isGraded: boolean;
+                ok: boolean;
+            }[];
+        };
+        AdminSessionDetail: components["schemas"]["AdminSessionObject"] & {
+            submissions?: components["schemas"]["AdminSessionSubmission"][];
+        };
+        AdminSessionSubmission: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            exerciseID: string;
+            content: {
+                /** @example print("hello") */
+                code: string;
+            };
+            isGraded: boolean;
+            ok: boolean;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            exercise: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                content: string;
+                codeExercise?: {
+                    language: string | null;
+                } | null;
             };
         };
         AuthenticationResponseData: {

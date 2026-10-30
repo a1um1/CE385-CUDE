@@ -31,6 +31,8 @@ import { Route as AdminExerciseCreateRouteImport } from './routes/admin/exercise
 import { Route as AdminLessonIndexRouteImport } from './routes/admin/lesson/index'
 import { Route as AdminLessonIdRouteImport } from './routes/admin/lesson/$id'
 import { Route as AdminLessonCreateRouteImport } from './routes/admin/lesson/create'
+import { Route as AdminSubmissionIndexRouteImport } from './routes/admin/submission/index'
+import { Route as AdminSubmissionIdRouteImport } from './routes/admin/submission/$id'
 import { Route as AdminTransactionIndexRouteImport } from './routes/admin/transaction/index'
 import { Route as AdminUnitIndexRouteImport } from './routes/admin/unit/index'
 import { Route as AdminUnitIdRouteImport } from './routes/admin/unit/$id'
@@ -156,6 +158,16 @@ const AdminLessonCreateRoute = AdminLessonCreateRouteImport.update({
   path: '/lesson/create',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminSubmissionIndexRoute = AdminSubmissionIndexRouteImport.update({
+  id: '/submission/',
+  path: '/submission/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminSubmissionIdRoute = AdminSubmissionIdRouteImport.update({
+  id: '/submission/$id',
+  path: '/submission/$id',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminTransactionIndexRoute = AdminTransactionIndexRouteImport.update({
   id: '/transaction/',
   path: '/transaction/',
@@ -261,6 +273,7 @@ export interface FileRoutesByFullPath {
   '/admin/exercise/create': typeof AdminExerciseCreateRoute
   '/admin/lesson/$id': typeof AdminLessonIdRoute
   '/admin/lesson/create': typeof AdminLessonCreateRoute
+  '/admin/submission/$id': typeof AdminSubmissionIdRoute
   '/admin/unit/$id': typeof AdminUnitIdRoute
   '/admin/unit/create': typeof AdminUnitCreateRoute
   '/admin/user/$id': typeof AdminUserIdRoute
@@ -268,6 +281,7 @@ export interface FileRoutesByFullPath {
   '/admin/course/': typeof AdminCourseIndexRoute
   '/admin/exercise/': typeof AdminExerciseIndexRoute
   '/admin/lesson/': typeof AdminLessonIndexRoute
+  '/admin/submission/': typeof AdminSubmissionIndexRoute
   '/admin/transaction/': typeof AdminTransactionIndexRoute
   '/admin/unit/': typeof AdminUnitIndexRoute
   '/admin/user/': typeof AdminUserIndexRoute
@@ -295,6 +309,7 @@ export interface FileRoutesByTo {
   '/admin/exercise/create': typeof AdminExerciseCreateRoute
   '/admin/lesson/$id': typeof AdminLessonIdRoute
   '/admin/lesson/create': typeof AdminLessonCreateRoute
+  '/admin/submission/$id': typeof AdminSubmissionIdRoute
   '/admin/unit/$id': typeof AdminUnitIdRoute
   '/admin/unit/create': typeof AdminUnitCreateRoute
   '/admin/user/$id': typeof AdminUserIdRoute
@@ -302,6 +317,7 @@ export interface FileRoutesByTo {
   '/admin/course': typeof AdminCourseIndexRoute
   '/admin/exercise': typeof AdminExerciseIndexRoute
   '/admin/lesson': typeof AdminLessonIndexRoute
+  '/admin/submission': typeof AdminSubmissionIndexRoute
   '/admin/transaction': typeof AdminTransactionIndexRoute
   '/admin/unit': typeof AdminUnitIndexRoute
   '/admin/user': typeof AdminUserIndexRoute
@@ -335,6 +351,7 @@ export interface FileRoutesById {
   '/admin/exercise/create': typeof AdminExerciseCreateRoute
   '/admin/lesson/$id': typeof AdminLessonIdRoute
   '/admin/lesson/create': typeof AdminLessonCreateRoute
+  '/admin/submission/$id': typeof AdminSubmissionIdRoute
   '/admin/unit/$id': typeof AdminUnitIdRoute
   '/admin/unit/create': typeof AdminUnitCreateRoute
   '/admin/user/$id': typeof AdminUserIdRoute
@@ -342,6 +359,7 @@ export interface FileRoutesById {
   '/admin/course/': typeof AdminCourseIndexRoute
   '/admin/exercise/': typeof AdminExerciseIndexRoute
   '/admin/lesson/': typeof AdminLessonIndexRoute
+  '/admin/submission/': typeof AdminSubmissionIndexRoute
   '/admin/transaction/': typeof AdminTransactionIndexRoute
   '/admin/unit/': typeof AdminUnitIndexRoute
   '/admin/user/': typeof AdminUserIndexRoute
@@ -375,6 +393,7 @@ export interface FileRouteTypes {
     | '/admin/exercise/create'
     | '/admin/lesson/$id'
     | '/admin/lesson/create'
+    | '/admin/submission/$id'
     | '/admin/unit/$id'
     | '/admin/unit/create'
     | '/admin/user/$id'
@@ -382,6 +401,7 @@ export interface FileRouteTypes {
     | '/admin/course/'
     | '/admin/exercise/'
     | '/admin/lesson/'
+    | '/admin/submission/'
     | '/admin/transaction/'
     | '/admin/unit/'
     | '/admin/user/'
@@ -409,6 +429,7 @@ export interface FileRouteTypes {
     | '/admin/exercise/create'
     | '/admin/lesson/$id'
     | '/admin/lesson/create'
+    | '/admin/submission/$id'
     | '/admin/unit/$id'
     | '/admin/unit/create'
     | '/admin/user/$id'
@@ -416,6 +437,7 @@ export interface FileRouteTypes {
     | '/admin/course'
     | '/admin/exercise'
     | '/admin/lesson'
+    | '/admin/submission'
     | '/admin/transaction'
     | '/admin/unit'
     | '/admin/user'
@@ -448,6 +470,7 @@ export interface FileRouteTypes {
     | '/admin/exercise/create'
     | '/admin/lesson/$id'
     | '/admin/lesson/create'
+    | '/admin/submission/$id'
     | '/admin/unit/$id'
     | '/admin/unit/create'
     | '/admin/user/$id'
@@ -455,6 +478,7 @@ export interface FileRouteTypes {
     | '/admin/course/'
     | '/admin/exercise/'
     | '/admin/lesson/'
+    | '/admin/submission/'
     | '/admin/transaction/'
     | '/admin/unit/'
     | '/admin/user/'
@@ -630,6 +654,20 @@ declare module '@tanstack/react-router' {
       path: '/lesson/create'
       fullPath: '/admin/lesson/create'
       preLoaderRoute: typeof AdminLessonCreateRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/submission/': {
+      id: '/admin/submission/'
+      path: '/submission'
+      fullPath: '/admin/submission/'
+      preLoaderRoute: typeof AdminSubmissionIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/submission/$id': {
+      id: '/admin/submission/$id'
+      path: '/submission/$id'
+      fullPath: '/admin/submission/$id'
+      preLoaderRoute: typeof AdminSubmissionIdRouteImport
       parentRoute: typeof AdminRouteRoute
     }
     '/admin/transaction/': {
@@ -842,12 +880,14 @@ interface AdminRouteRouteChildren {
   AdminExerciseCreateRoute: typeof AdminExerciseCreateRoute
   AdminLessonIdRoute: typeof AdminLessonIdRoute
   AdminLessonCreateRoute: typeof AdminLessonCreateRoute
+  AdminSubmissionIdRoute: typeof AdminSubmissionIdRoute
   AdminUnitIdRoute: typeof AdminUnitIdRoute
   AdminUnitCreateRoute: typeof AdminUnitCreateRoute
   AdminUserIdRoute: typeof AdminUserIdRoute
   AdminCourseIndexRoute: typeof AdminCourseIndexRoute
   AdminExerciseIndexRoute: typeof AdminExerciseIndexRoute
   AdminLessonIndexRoute: typeof AdminLessonIndexRoute
+  AdminSubmissionIndexRoute: typeof AdminSubmissionIndexRoute
   AdminTransactionIndexRoute: typeof AdminTransactionIndexRoute
   AdminUnitIndexRoute: typeof AdminUnitIndexRoute
   AdminUserIndexRoute: typeof AdminUserIndexRoute
@@ -861,12 +901,14 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminExerciseCreateRoute: AdminExerciseCreateRoute,
   AdminLessonIdRoute: AdminLessonIdRoute,
   AdminLessonCreateRoute: AdminLessonCreateRoute,
+  AdminSubmissionIdRoute: AdminSubmissionIdRoute,
   AdminUnitIdRoute: AdminUnitIdRoute,
   AdminUnitCreateRoute: AdminUnitCreateRoute,
   AdminUserIdRoute: AdminUserIdRoute,
   AdminCourseIndexRoute: AdminCourseIndexRoute,
   AdminExerciseIndexRoute: AdminExerciseIndexRoute,
   AdminLessonIndexRoute: AdminLessonIndexRoute,
+  AdminSubmissionIndexRoute: AdminSubmissionIndexRoute,
   AdminTransactionIndexRoute: AdminTransactionIndexRoute,
   AdminUnitIndexRoute: AdminUnitIndexRoute,
   AdminUserIndexRoute: AdminUserIndexRoute,

@@ -10,11 +10,9 @@ import {
   SelectValue,
 } from "#/components/select";
 import DataTable, { createTableColumnHelper } from "#/components/table";
-import { Autocomplete } from "#/components/autocomplete";
-import { useAdminUserListQuery } from "#/data/admin/user.data";
+import SearchField from "#/components/searchField/searchField";
 import { useAdminTransactionListQuery } from "#/data/admin/transaction.data";
 import { basicPaginationSchema } from "#/lib/pagination.schema";
-import { useDebouncedValue } from "#/lib/useDebouncedValue";
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 
@@ -52,19 +50,7 @@ const currencyIcons: Record<CurrencyType, React.FC> = {
 };
 
 const typedColumns = columnHelper.columns([
-  columnHelper.display({
-    id: "user",
-    header: "User",
-    cell: (info) => {
-      const { name, email } = info.row.original.user;
-      return (
-        <div>
-          <div style={{ fontWeight: 600 }}>{name}</div>
-          <div style={{ fontSize: "0.75rem", color: "var(--color-muted-text)" }}>{email}</div>
-        </div>
-      );
-    },
-  }),
+  columnHelper.user((row) => row.user, { header: "User" }),
   columnHelper.display({
     id: "type",
     header: "Type",
@@ -107,23 +93,6 @@ const typeFilterItems = [
 function RouteComponent() {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
-  const [userSearch, setUserSearch] = React.useState(search.userSearch ?? "");
-  const debouncedUserSearch = useDebouncedValue(userSearch);
-
-  // Keep the URL (and therefore cursor pagination) linkable without a request per keystroke.
-  React.useEffect(() => {
-    const next = debouncedUserSearch.trim() || undefined;
-    if (next === search.userSearch) return;
-    navigate({
-      search: (prev) => ({
-        ...prev,
-        userSearch: next,
-        cursor: undefined,
-        direction: "forward",
-      }),
-      replace: true,
-    });
-  }, [debouncedUserSearch, search.userSearch, navigate]);
 
   const query = useAdminTransactionListQuery({
     perPage: search.perPage,
@@ -133,10 +102,11 @@ function RouteComponent() {
     userSearch: search.userSearch,
   });
 
-  const suggestions = useAdminUserListQuery(
-    { perPage: 10, direction: "forward", search: search.userSearch },
-    { enabled: (search.userSearch?.length ?? 0) >= 2 },
-  );
+  const handleSearch = (value: string | undefined) => {
+    navigate({
+      search: (prev) => ({ ...prev, userSearch: value, cursor: undefined, direction: "forward" }),
+    });
+  };
 
   const handleTypeChange = (type: string | null) => {
     navigate({
@@ -198,25 +168,11 @@ function RouteComponent() {
             </SelectRoot>
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
-            <span
-              style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--color-muted-text)" }}
-            >
-              User
-            </span>
-            <Autocomplete
-              size="sm"
-              placeholder="Search name or email"
-              value={userSearch}
-              onValueChange={setUserSearch}
-              items={(suggestions.data?.data ?? []).map((user) => ({
-                value: user.email,
-                label: user.name,
-                description: user.email,
-              }))}
-              emptyText="No matching user"
-            />
-          </div>
+          <SearchField
+            placeholder="Name or email"
+            initialValue={search.userSearch}
+            onSearch={handleSearch}
+          />
         </div>
       }
       columns={typedColumns}

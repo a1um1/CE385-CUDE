@@ -16,7 +16,7 @@ export const AdminTransactionQueryPayload = {
   reason: true,
   createdAt: true,
   updatedAt: true,
-  user: { select: { name: true, email: true } },
+  user: { select: { name: true, email: true, profileImage: true } },
 } satisfies Prisma.TransactionsSelect;
 
 type AdminTransactionQueryPayload = Prisma.TransactionsGetPayload<{
@@ -27,6 +27,7 @@ export const AdminTransactionSchema = TransactionSchema.extend({
   user: z.object({
     name: z.string().openapi({ example: "John Doe" }),
     email: z.string().openapi({ example: "john@example.com" }),
+    profileImage: z.string().nullable().openapi({ example: "https://example.com/profile.jpg" }),
   }),
 }).openapi("AdminTransactionObject") satisfies zod.ZodType<AdminTransactionQueryPayload>;
 
