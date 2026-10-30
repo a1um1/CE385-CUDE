@@ -3967,11 +3967,7 @@ export interface paths {
             requestBody?: {
                 content: {
                     "application/json": {
-                        /**
-                         * @example python
-                         * @enum {string}
-                         */
-                        language: "python" | "c";
+                        language: components["schemas"]["GoJudgeLanguage"];
                         /** @example print("Hello world", input()) */
                         code: string;
                         /** @example Hello */
@@ -4078,11 +4074,7 @@ export interface paths {
                     "application/json": {
                         /** @example print("Hello World") */
                         code: string;
-                        /**
-                         * @example python
-                         * @enum {string}
-                         */
-                        language: "python" | "c";
+                        language: components["schemas"]["GoJudgeLanguage"];
                         testCases: components["schemas"]["graderRequestBody"];
                     };
                 };
@@ -6367,12 +6359,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-30T11:57:08.093Z
+             * @example 2026-10-30T14:46:02.308Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-30T11:57:08.095Z
+             * @example 2026-10-30T14:46:02.309Z
              */
             updatedAt: string;
         };
@@ -6440,7 +6432,7 @@ export interface components {
          * @example python
          * @enum {string}
          */
-        GoJudgeLanguage: "python" | "c";
+        GoJudgeLanguage: "python" | "c" | "javascript" | "csharp" | "sql";
         AdminCourseCreate: {
             /** @example Course Name */
             name: string;
@@ -6710,12 +6702,7 @@ export interface components {
             codeExercise?: components["schemas"]["AdminCodeExerciseConfig"];
         };
         AdminCodeExerciseConfig: {
-            /**
-             * @default python
-             * @example python
-             * @enum {string}
-             */
-            language: "python" | "c";
+            language?: components["schemas"]["GoJudgeLanguage"];
             /** @example print('hello') */
             starterCode?: string | null;
             testerCode?: string | null;
@@ -6900,6 +6887,24 @@ export interface components {
                     version: string;
                 };
                 c?: {
+                    /** @example Python */
+                    name: string;
+                    /** @example 3.11.4 */
+                    version: string;
+                };
+                javascript?: {
+                    /** @example Python */
+                    name: string;
+                    /** @example 3.11.4 */
+                    version: string;
+                };
+                csharp?: {
+                    /** @example Python */
+                    name: string;
+                    /** @example 3.11.4 */
+                    version: string;
+                };
+                sql?: {
                     /** @example Python */
                     name: string;
                     /** @example 3.11.4 */

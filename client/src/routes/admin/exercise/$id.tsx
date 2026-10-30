@@ -1,10 +1,11 @@
 import ExerciseForm from "./-form/exerciseForm";
 import { useAdminUpdateExercise, getAdminExerciseQueryOptions } from "#/data/admin/exercise.data";
 import { createFileRoute } from "@tanstack/react-router";
+import type { components } from "#/data/base/openapi";
 
 function toCodeExerciseConfig(value: {
   type: "NONE" | "CODE";
-  language: "python" | "c";
+  language: components["schemas"]["GoJudgeLanguage"];
   timeLimitMs: number;
   memoryLimitMb: number;
   starterCode: string;

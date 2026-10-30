@@ -12,7 +12,13 @@ export const useCodeAvailableLanguage = () =>
     },
   });
 
-export const availableLanguages = ["c", "python"] as components["schemas"]["GoJudgeLanguage"][];
+export const availableLanguages: components["schemas"]["GoJudgeLanguage"][] = [
+  "c",
+  "python",
+  "csharp",
+  "javascript",
+  "sql",
+];
 export type availableLanguageKey = (typeof availableLanguages)[number];
 export const languageIconOptions = [
   {
@@ -22,5 +28,17 @@ export const languageIconOptions = [
   {
     label: "Python",
     value: "python",
+  },
+  {
+    label: "C#",
+    value: "csharp",
+  },
+  {
+    label: "JavaScript",
+    value: "javascript",
+  },
+  {
+    label: "SQL",
+    value: "sql",
   },
 ] as const satisfies { label: string; value: availableLanguageKey }[];

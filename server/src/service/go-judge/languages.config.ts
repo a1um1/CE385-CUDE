@@ -1,4 +1,3 @@
-import { z } from "#/lib/extendZod";
 import { CompilerType } from "#/service/go-judge/go-judge.enum";
 import type { LanguageConfig } from "#/service/go-judge/go-judge.schema";
 
@@ -23,14 +22,33 @@ export const GoJudgeLanguagesConfig = {
     args: ["./$tempFile"],
     type: CompilerType.Compile,
   },
+  javascript: {
+    safeAttribute: {
+      name: "JavaScript",
+      version: "Node.js 20.0",
+    },
+    tempFile: "temp.js",
+    args: ["/usr/bin/node", "$tempFile"],
+    type: CompilerType.Interprete,
+  },
+  csharp: {
+    safeAttribute: {
+      name: "C#",
+      version: "11.0",
+    },
+    compileArgs: ["/usr/bin/mcs", "-out:$outputFile"],
+    outputFile: "temp",
+    tempFile: "temp.cs",
+    args: ["./$tempFile"],
+    type: CompilerType.Compile,
+  },
+  sql: {
+    safeAttribute: {
+      name: "SQL",
+      version: "SQLite 3.43",
+    },
+    tempFile: "temp.sql",
+    args: ["/usr/bin/sqlite3", "$tempFile"],
+    type: CompilerType.Interprete,
+  },
 } as const satisfies Record<string, LanguageConfig>;
-
-export const LANGUAGE_KEY = Object.keys(
-  GoJudgeLanguagesConfig,
-) as (keyof typeof GoJudgeLanguagesConfig)[];
-
-export type GoJudgeLanguageSupportKey = (typeof LANGUAGE_KEY)[number];
-
-export const ZOD_LANGUAGE_SUPPORT_KEY = z.enum(LANGUAGE_KEY).openapi("GoJudgeLanguage", {
-  example: "python",
-});
