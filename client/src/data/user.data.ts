@@ -28,9 +28,6 @@ export const userQueryOptions = queryOptions({
 
 export const useUser = () => useQuery(userQueryOptions);
 
-// Guards use queryClient.query() (ensureQueryData): a cached `null` is treated as valid
-// data and NEVER revalidated — one transient refresh failure poisons the whole SPA session
-// while a page reload (empty cache) recovers fine. Revalidate when null to match reload.
 export const resolveSession = async (queryClient: QueryClient) => {
   const cached = await queryClient.query(userQueryOptions);
   if (cached) return cached;
@@ -90,37 +87,35 @@ export const useSignOut = () => {
   });
 };
 
-export const useUpdateAvatar = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
+export const useUpdateAvatar = () =>
+  useMutation({
     mutationKey: ["updateAvatar"],
     mutationFn: async (body: ExtractRequestBody<"/user/avatar", "post">) => {
       const { data, error } = await APIclient.POST("/user/avatar", {
         body,
       });
       if (error) throw error;
-      await queryClient.invalidateQueries({ queryKey: ["session"] });
       return data;
     },
+    onSuccess: () => {
+      globalThis.location.reload();
+    },
   });
-};
 
-export const useUpdateBackground = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
+export const useUpdateBackground = () =>
+  useMutation({
     mutationKey: ["updateBackground"],
     mutationFn: async (body: ExtractRequestBody<"/user/background", "post">) => {
       const { data, error } = await APIclient.POST("/user/background", {
         body,
       });
       if (error) throw error;
-      await queryClient.invalidateQueries({ queryKey: ["session"] });
       return data;
     },
+    onSuccess: () => {
+      globalThis.location.reload();
+    },
   });
-};
 
 export const useUpdatePassword = () =>
   useMutation({

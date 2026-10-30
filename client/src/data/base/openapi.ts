@@ -416,7 +416,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["UserSafePublicData"];
+                        "application/json": components["schemas"]["UserPublicProfileData"];
                     };
                 };
                 /** @description Validation error */
@@ -6384,6 +6384,12 @@ export interface components {
         };
         /** @example Password123! */
         UserPasswordDefinition: string;
+        UserPublicProfileData: components["schemas"]["UserSafePublicData"] & {
+            level: number;
+            xpIntoLevel: number;
+            xpToNextLevel: number;
+            levelProgressPercent: number;
+        };
         UserSafePublicData: {
             /** @example 123456 */
             id: string;
@@ -6457,12 +6463,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-30T07:22:00.665Z
+             * @example 2026-10-30T09:54:38.268Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-30T07:22:00.666Z
+             * @example 2026-10-30T09:54:38.269Z
              */
             updatedAt: string;
         };

@@ -1,10 +1,14 @@
 import Avatar from "#/components/avatar";
 import ButtonLink from "#/components/buttonLink";
+import { ProgressBar } from "#/components/progress-bar";
+import { Ranked } from "#/components/ranked";
 import UserBackground from "#/components/userBackground";
 import { profileQueryOptions } from "#/data/profile.data";
 import { useUser } from "#/data/user.data";
 import { createFileRoute } from "@tanstack/react-router";
 import styles from "./profile.module.css";
+import { PencilIcon } from "lucide-react";
+
 export const Route = createFileRoute("/(authed)/(base)/profile/$username")({
   component: RouteComponent,
   loader: async ({ params, context }) => {
@@ -20,12 +24,25 @@ function RouteComponent() {
   return (
     <>
       <div className={styles["breakout"]}>
-        <div className={styles["fade"]} />
         <UserBackground
           className={styles["background-user-banner"]}
           backgroundUrl={data?.backgroundImage}
           name={data?.name}
         />
+        <div className={styles["fade"]} />
+        {isSelf && (
+          <div className={styles["edit-button-container"]}>
+            <ButtonLink
+              to="/account"
+              variant="secondary"
+              size="sm"
+              className={styles["edit-button"]}
+            >
+              <PencilIcon />
+              Edit profile
+            </ButtonLink>
+          </div>
+        )}
       </div>
       <div className={styles["profile-header"]}>
         <Avatar avatarUrl={data?.profileImage} name={data?.name} size="8rem" />
@@ -36,12 +53,17 @@ function RouteComponent() {
               {data?.name}{" "}
               {data?.epithet && <span className={styles["epihet"]}>{data?.epithet}</span>}
             </h1>
-            {isSelf && (
-              <ButtonLink to="/account" variant="secondary" className={styles["edit-button"]}>
-                Edit profile
-              </ButtonLink>
-            )}
           </div>
+        </div>
+        <div className={styles["level-row"]}>
+          <div className={styles["level-progress"]}>
+            <span className={styles["level-xp"]}>
+              {(data?.xpIntoLevel ?? 0).toLocaleString()} /{" "}
+              {((data?.xpIntoLevel ?? 0) + (data?.xpToNextLevel ?? 0)).toLocaleString()} XP
+            </span>
+            <ProgressBar progress={data?.levelProgressPercent ?? 0} height="0.75rem" />
+          </div>
+          <Ranked rank={data?.level ?? 0} size="7rem" />
         </div>
       </div>
     </>

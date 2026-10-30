@@ -4,11 +4,11 @@ import {
 } from "#/service/transactions/transactions.schema";
 import UserService from "#/service/user";
 import {
-  UserSafePublicSchema,
   UserSafeSchema,
   UserUpdateAvatarSchema,
   UserUpdateBackgroundSchema,
   UserUpdatePasswordSchema,
+  UserPublicProfileSchema,
 } from "#/service/user/user.schema";
 import { zodUserStatExtendedObject } from "#/service/userStat/userStat.schema";
 import { z } from "#/lib/extendZod";
@@ -99,11 +99,11 @@ const userRoute = new CustomRouter({
             username: "john_doe",
           },
         }),
-      response: UserSafePublicSchema,
+      response: UserPublicProfileSchema,
     },
     async ({ params }) => {
       const user = await UserService.getByUsername(params.username);
-      return user.publicJSON;
+      return user.publicProfileJSON();
     },
   )
   .get(

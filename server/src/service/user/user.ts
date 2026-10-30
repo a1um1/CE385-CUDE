@@ -8,12 +8,14 @@ import {
   type userValidationSchema,
   type userCreationSchema,
   type userSafePublicSchema,
+  type userPublicProfileSchema,
 } from "#/service/user/user.schema";
 import UserStatService from "#/service/userStat";
 import TransactionsService from "#/service/transactions";
 import type { TransactionQuerySchema } from "#/service/transactions/transactions.schema";
 import { Prisma } from "#/generated/prisma/client";
 import { userRepository } from "#/repository/user.repository";
+import { userStatRepository } from "#/repository/userStat.repository";
 
 export default class UserService {
   private user: userSafeSchema;
@@ -37,6 +39,11 @@ export default class UserService {
       ...publicData
     } = this.user;
     return publicData as userSafePublicSchema;
+  }
+
+  async publicProfileJSON(): Promise<userPublicProfileSchema> {
+    const stat = await userStatRepository.findByUserID(this.user.id);
+    return { ...this.publicJSON, ...UserStatService.progressByXp(stat?.totalXP ?? 0) };
   }
 
   async updateAvatar(data: userUpdateAvatarSchema) {

@@ -8,7 +8,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--color-primary);
+  /* background-color: var(--color-primary); */
   box-sizing: border-box;
   inline-size: var(--size);
   block-size: var(--size);
@@ -18,6 +18,14 @@
   overflow: hidden;
   flex-shrink: 0;
   border: none;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 1px;
+    border-radius: 50%;
+    background: var(--color-primary);
+  }
 }
 
 .fallback {
