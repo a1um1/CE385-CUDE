@@ -117,7 +117,7 @@ export function SelectContent({
         alignItemWithTrigger={false}
         sideOffset={sideOffset}
         alignOffset={alignOffset}
-        className={positionerClassName}
+        className={clsx(styles.positioner, positionerClassName)}
       >
         <SelectPrimitive.Popup className={clsx(styles.popup, className)} {...props}>
           {children}

@@ -1,5 +1,12 @@
 @reference "#/styles/main.css";
 
+/* Base UI sets will-change: transform on the positioner, making it a stacking
+   context; its z-index must be set here or page content (e.g. avatars) can cover
+   the popup even though .popup itself has a z-index. */
+.positioner {
+  z-index: 50;
+}
+
 .trigger {
   display: inline-flex;
   align-items: center;
