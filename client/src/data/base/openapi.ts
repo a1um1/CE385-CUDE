@@ -6359,12 +6359,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-30T14:46:02.308Z
+             * @example 2026-10-30T16:05:05.161Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-30T14:46:02.309Z
+             * @example 2026-10-30T16:05:05.164Z
              */
             updatedAt: string;
         };
@@ -6410,6 +6410,10 @@ export interface components {
             /** @example #FFFFFF */
             color: string;
             icon: components["schemas"]["GoJudgeLanguage"];
+            /** @example This is a short description of the course. */
+            shortDescription: string | null;
+            /** @example This is a badge for the course. */
+            badge: string | null;
             /** @example 0 */
             position: number;
             /**
@@ -6439,6 +6443,10 @@ export interface components {
             /** @example #FFFFFF */
             color: string;
             icon: components["schemas"]["GoJudgeLanguage"];
+            /** @example This is a short description of the course. */
+            shortDescription: string;
+            /** @example This is a badge for the course. */
+            badge: string;
         };
         AdminCourseUpdate: {
             /** @example Course Name */
@@ -6446,6 +6454,10 @@ export interface components {
             /** @example #FFFFFF */
             color: string;
             icon: components["schemas"]["GoJudgeLanguage"];
+            /** @example This is a short description of the course. */
+            shortDescription: string;
+            /** @example This is a badge for the course. */
+            badge: string;
         };
         PaginatedLesson: {
             items: components["schemas"]["Lesson"][];
@@ -6959,6 +6971,10 @@ export interface components {
             /** @example #FFFFF */
             color: string;
             icon: components["schemas"]["GoJudgeLanguage"];
+            /** @example Short description of the course */
+            shortDescription?: string;
+            /** @example Badge text for the course */
+            badge?: string;
             units?: {
                 /**
                  * Format: uuid

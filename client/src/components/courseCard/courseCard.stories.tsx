@@ -14,6 +14,12 @@ const meta = {
       control: "radio",
       options: ["python", "c"],
     },
+    badge: {
+      control: "text",
+    },
+    shortDescription: {
+      control: "text",
+    },
   },
 } satisfies Meta<typeof CourseCard>;
 
@@ -25,6 +31,8 @@ export const Python: Story = {
     name: "Python Programming",
     color: "#F7C948",
     icon: "python",
+    shortDescription: "Learn Python programming from scratch.",
+    badge: "Beginner Friendly",
   },
 };
 
@@ -33,5 +41,7 @@ export const C: Story = {
     name: "C Programming",
     color: "#00599C",
     icon: "c",
+    shortDescription: "Master the C programming language.",
+    badge: "Intermediate Level",
   },
 };

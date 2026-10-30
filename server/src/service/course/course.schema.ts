@@ -10,6 +10,8 @@ export const CourseSchema = z
     name: z.string().openapi({ example: "Course_Name" }),
     color: z.string().openapi({ example: "#FFFFF" }),
     icon: zGoJudgeLanguage,
+    shortDescription: z.string().optional().openapi({ example: "Short description of the course" }),
+    badge: z.string().optional().openapi({ example: "Badge text for the course" }),
     units: z
       .array(
         z.object({

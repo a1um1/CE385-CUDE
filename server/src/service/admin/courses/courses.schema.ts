@@ -13,6 +13,12 @@ export const adminCourseSchema = z
     name: z.string().openapi({ example: "Course Name" }),
     color: z.string().openapi({ example: "#FFFFFF" }),
     icon: zGoJudgeLanguage,
+    shortDescription: z
+      .string()
+      .max(255)
+      .nullable()
+      .openapi({ example: "This is a short description of the course." }),
+    badge: z.string().max(255).nullable().openapi({ example: "This is a badge for the course." }),
     position: z.number().int().openapi({ example: 0 }),
     createdByID: z.uuid().openapi({ example: "user_id" }),
     createdAt: z.date().openapi({ example: "2023-01-01T00:00:00Z" }),
@@ -26,6 +32,8 @@ export const courseQueryPayload = {
   id: true,
   name: true,
   color: true,
+  shortDescription: true,
+  badge: true,
   icon: true,
   position: true,
   createdByID: true,
@@ -66,6 +74,11 @@ export const AdminCourseCreateSchema = z
     name: z.string().openapi({ example: "Course Name" }),
     color: z.string().openapi({ example: "#FFFFFF" }),
     icon: zGoJudgeLanguage,
+    shortDescription: z
+      .string()
+      .max(255)
+      .openapi({ example: "This is a short description of the course." }),
+    badge: z.string().max(255).openapi({ example: "This is a badge for the course." }),
   })
   .openapi("AdminCourseCreate") satisfies zod.ZodType<adminCourseCreatePayload>;
 
@@ -78,6 +91,11 @@ export const AdminCourseUpdateSchema = z
     name: z.string().openapi({ example: "Course Name" }),
     color: z.string().openapi({ example: "#FFFFFF" }),
     icon: zGoJudgeLanguage,
+    shortDescription: z
+      .string()
+      .max(255)
+      .openapi({ example: "This is a short description of the course." }),
+    badge: z.string().max(255).openapi({ example: "This is a badge for the course." }),
   })
   .openapi("AdminCourseUpdate") satisfies zod.ZodType<adminCourseUpdatePayload>;
 
