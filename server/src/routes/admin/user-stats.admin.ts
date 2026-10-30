@@ -1,5 +1,5 @@
 import AdminUserStatsController from "#/service/admin/user-stats";
-import { userSubmissionCalendarListSchema } from "#/service/admin/user-stats/user-stats.schema";
+import { userSubmissionCalendarSchema } from "#/service/admin/user-stats/user-stats.schema";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 
@@ -19,14 +19,14 @@ const adminUserStatsRouter = new CustomRouter({
   {
     summary: "Get a user's submission calendar",
     description:
-      "Return daily activity normalized to 0–1 for one user. `months` selects a rolling period of " +
-      "1–3 months (defaults to 3); each returned date includes `active`, the day's submission count " +
-      "divided by the maximum daily count in that period. Requires an `ADMIN` token.",
+      "Return a map of dates with activity normalized to 0–1 for one user. Dates with no submissions " +
+      "are omitted. `months` selects a rolling period of 1–3 months (defaults to 3). Requires an " +
+      "`ADMIN` token.",
     params: z.object({
       userId: z.uuid().openapi({ example: "user_id" }),
     }),
     query: submissionCalendarQuerySchema,
-    response: userSubmissionCalendarListSchema,
+    response: userSubmissionCalendarSchema,
   },
   async ({ params, query }) =>
     AdminUserStatsController.getUserSubmissionCalendar(params.userId, query.months),

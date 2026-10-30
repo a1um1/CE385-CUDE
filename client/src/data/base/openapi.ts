@@ -3036,7 +3036,7 @@ export interface paths {
         };
         /**
          * Get a user's submission calendar
-         * @description Return daily activity normalized to 0–1 for one user. `months` selects a rolling period of 1–3 months (defaults to 3); each returned date includes `active`, the day's submission count divided by the maximum daily count in that period. Requires an `ADMIN` token.
+         * @description Return a map of dates with activity normalized to 0–1 for one user. Dates with no submissions are omitted. `months` selects a rolling period of 1–3 months (defaults to 3). Requires an `ADMIN` token.
          */
         get: {
             parameters: {
@@ -3059,17 +3059,8 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            /**
-                             * @description วันที่ส่งงาน
-                             * @example 2026-10-23
-                             */
-                            date: string;
-                            /**
-                             * @description จำนวน submission ของวันนี้หารด้วยจำนวนสูงสุดในช่วงวันที่เลือก ปัดเป็นทศนิยม 2 ตำแหน่ง
-                             * @example 0.5
-                             */
-                            active: number;
-                        }[];
+                            [key: string]: number;
+                        };
                     };
                 };
                 /** @description Validation error */

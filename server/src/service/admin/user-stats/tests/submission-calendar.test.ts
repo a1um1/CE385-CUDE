@@ -7,7 +7,7 @@ describe("AdminUserStatsController.getUserSubmissionCalendar", () => {
     vi.useRealTimers();
   });
 
-  it("returns daily activity for the selected rolling period normalized to the busiest day", async () => {
+  it("returns only active dates normalized to the busiest day", async () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-10-27T12:00:00.000Z"));
     mockDB.user.findUnique.mockResolvedValueOnce({ id: "user-a" } as never);
@@ -20,11 +20,10 @@ describe("AdminUserStatsController.getUserSubmissionCalendar", () => {
 
     const calendar = await AdminUserStatsController.getUserSubmissionCalendar("user-a", 1);
 
-    expect(calendar).toHaveLength(31);
-    expect(calendar[0]).toEqual({ date: "2026-09-27", active: 0 });
-    expect(calendar[4]).toEqual({ date: "2026-10-01", active: 1 });
-    expect(calendar[5]).toEqual({ date: "2026-10-02", active: 0.33 });
-    expect(calendar.at(-1)).toEqual({ date: "2026-10-27", active: 0 });
+    expect(calendar).toEqual({
+      "2026-10-01": 1,
+      "2026-10-02": 0.33,
+    });
     expect(mockDB.submission.findMany).toHaveBeenCalledWith({
       where: {
         userID: "user-a",
@@ -34,11 +33,10 @@ describe("AdminUserStatsController.getUserSubmissionCalendar", () => {
         },
       },
       select: { createdAt: true },
-      orderBy: { createdAt: "asc" },
     });
   });
 
-  it("returns zero activity when the user has no submissions", async () => {
+  it("returns an empty map when the user has no submissions", async () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-10-27T12:00:00.000Z"));
     mockDB.user.findUnique.mockResolvedValueOnce({ id: "user-a" } as never);
@@ -46,8 +44,7 @@ describe("AdminUserStatsController.getUserSubmissionCalendar", () => {
 
     const calendar = await AdminUserStatsController.getUserSubmissionCalendar("user-a", 1);
 
-    expect(calendar).toHaveLength(31);
-    expect(calendar.every(({ active }) => active === 0)).toBe(true);
+    expect(calendar).toEqual({});
   });
 
   it("returns 404 if the requested user does not exist", async () => {
