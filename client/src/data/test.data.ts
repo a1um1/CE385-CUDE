@@ -1,5 +1,5 @@
 import { APIclient } from "#/data/base/baseAPI";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 export const useTestData = () =>
   useQuery({
@@ -17,20 +17,3 @@ export const useTestData = () =>
       return data;
     },
   });
-
-export const useTestSpendEnergy = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationKey: ["spend-energy"],
-    mutationFn: async () => {
-      const { data, error } = await APIclient.POST("/test/spend-enegry", {
-        authentication: true,
-      });
-      if (error) throw error;
-      return data;
-    },
-    onSuccess() {
-      queryClient.invalidateQueries({ queryKey: ["userStats"] });
-    },
-  });
-};
