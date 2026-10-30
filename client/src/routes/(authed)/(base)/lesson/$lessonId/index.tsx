@@ -133,7 +133,7 @@ const useLessonResults = () => {
         session.LessonID === lesson.id &&
         (session.status === "SUBMITTED" || session.status === "CANCELLED"),
     )
-    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    .toSorted((a, b) => b.createdAt.localeCompare(a.createdAt))
     .map((session) => ({
       id: session.id,
       createdAt: session.createdAt,
