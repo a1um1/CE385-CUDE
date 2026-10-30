@@ -27,6 +27,7 @@
     "@prisma/client": "^7.9.1",
     "@scalar/express-api-reference": "^0.10.14",
     "@types/bcrypt": "^6.0.0",
+    "@vitest/ui": "^5.0.5",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
