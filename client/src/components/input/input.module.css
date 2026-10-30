@@ -3,6 +3,7 @@
 .input {
   --input-sizing: var(--size-md-padding-y) var(--size-md-padding-x);
   --input-font-size: var(--size-md-font-size);
+  --input-height: var(--size-md-height);
   --input-color: var(--color-input);
   --input-text-color: var(--color-input-text);
   --input-radius: var(--radius);
@@ -13,8 +14,9 @@
   color-scheme: dark;
   padding: var(--input-sizing);
   font-size: var(--input-font-size);
+  min-height: var(--input-height);
   border-radius: var(--input-radius);
-  border: 2px solid var(--input-border-color);
+  border: 1px solid var(--input-border-color);
   transition: outline-offset 0.2s ease-in-out;
   width: 100%;
 
@@ -27,7 +29,7 @@
     outline-offset: 0px;
   }
 
-  &input::placeholder {
+  &::placeholder {
     color: var(--color-placeholder);
   }
 
@@ -52,16 +54,19 @@
   &.size-xs {
     --input-sizing: var(--size-xs-padding-y) var(--size-xs-padding-x);
     --input-font-size: var(--size-xs-font-size);
+    --input-height: var(--size-xs-height);
   }
 
   &.size-sm {
     --input-sizing: var(--size-sm-padding-y) var(--size-sm-padding-x);
     --input-font-size: var(--size-sm-font-size);
+    --input-height: var(--size-sm-height);
   }
 
   &.size-md {
     --input-sizing: var(--size-md-padding-y) var(--size-md-padding-x);
     --input-font-size: var(--size-md-font-size);
+    --input-height: var(--size-md-height);
   }
 
   &.radius-none {

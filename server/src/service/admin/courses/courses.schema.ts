@@ -38,7 +38,14 @@ export type courseQueryPayload = Prisma.CourseGetPayload<{ select: typeof course
 export const AdminCourseQuerySchema = createCursorPaginationQuerySchema(
   ["position", "name", "createdAt", "updatedAt", "id"],
   "AdminCourseQuery",
-);
+).extend({
+  search: z
+    .string()
+    .trim()
+    .max(100)
+    .optional()
+    .openapi({ example: "course", description: "Full-text search on name." }),
+});
 
 export type AdminCourseQuery = zod.infer<typeof AdminCourseQuerySchema>;
 

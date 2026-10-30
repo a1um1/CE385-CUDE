@@ -5,7 +5,7 @@ import type {
   CreateAdminExercise,
   UpdateAdminExercise,
 } from "#/service/admin/exercise/exercise.schema";
-import type { CodeExercise, Exercise, TestCase } from "#/generated/prisma/client";
+import type { CodeExercise, Exercise, Prisma, TestCase } from "#/generated/prisma/client";
 import { buildCursorOrderBy } from "#/lib/pagination.schema";
 import { cursorArgs, isBackward, paginate } from "#/lib/pagination";
 import UserError from "#/lib/router/http/userError";
@@ -66,8 +66,13 @@ export default class AdminExercisesService {
     query: AdminExerciseQuery,
   ): Promise<AdminExerciseListResponseSchema> {
     const orderBy = buildCursorOrderBy(query.sortBy, query.sortOrder, isBackward(query));
+    const search = query.search?.trim();
+    const where: Prisma.ExerciseWhereInput = {
+      ...(query.lessonID ? { lessonID: query.lessonID } : {}),
+      ...(search ? { name: { contains: search, mode: "insensitive" as const } } : {}),
+    };
     const data = await exerciseRepository.findPage({
-      where: query.lessonID ? { lessonID: query.lessonID } : undefined,
+      where: Object.keys(where).length ? where : undefined,
       ...cursorArgs(query),
       orderBy,
     });

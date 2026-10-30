@@ -1383,6 +1383,8 @@ export interface paths {
                     direction?: "forward" | "backward";
                     sortBy?: "position" | "name" | "createdAt" | "updatedAt" | "id";
                     sortOrder?: "asc" | "desc";
+                    /** @description Full-text search on name. */
+                    search?: string;
                 };
                 header?: never;
                 path?: never;
@@ -1746,6 +1748,8 @@ export interface paths {
                     unitId?: string;
                     page?: number;
                     limit?: number;
+                    /** @description Full-text search on name. */
+                    search?: string;
                 };
                 header?: never;
                 path?: never;
@@ -2682,6 +2686,8 @@ export interface paths {
                     sortBy?: "name" | "position" | "createdAt" | "updatedAt" | "id";
                     sortOrder?: "asc" | "desc";
                     courseID?: string;
+                    /** @description Full-text search on name. */
+                    search?: string;
                 };
                 header?: never;
                 path?: never;
@@ -3148,6 +3154,8 @@ export interface paths {
                     sortOrder?: "asc" | "desc";
                     /** @description Filter by Lesson ID */
                     lessonID?: string;
+                    /** @description Full-text search on name. */
+                    search?: string;
                 };
                 header?: never;
                 path?: never;
@@ -6574,12 +6582,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-29T08:09:12.044Z
+             * @example 2026-10-30T06:15:28.668Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-29T08:09:12.046Z
+             * @example 2026-10-30T06:15:28.676Z
              */
             updatedAt: string;
         };

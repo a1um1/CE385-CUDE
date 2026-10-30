@@ -33,6 +33,12 @@ export const AdminUnitQuerySchema = createCursorPaginationQuerySchema(
   "AdminUnitQuery",
 ).extend({
   courseID: z.uuid().optional().openapi({ example: "course_id" }),
+  search: z
+    .string()
+    .trim()
+    .max(100)
+    .optional()
+    .openapi({ example: "unit", description: "Full-text search on name." }),
 });
 
 export type AdminUnitQuery = zod.infer<typeof AdminUnitQuerySchema>;

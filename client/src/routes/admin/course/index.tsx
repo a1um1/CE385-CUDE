@@ -4,11 +4,17 @@ import DataTable from "#/components/table";
 import { createTableColumnHelper } from "#/components/table/features";
 import { useAdminCourseListQuery } from "#/data/admin/course.data";
 import { basicPaginationSchema } from "#/lib/pagination.schema";
+import SearchField from "#/components/searchField/searchField";
 import { createFileRoute } from "@tanstack/react-router";
+import { z } from "zod";
 import type { OnChangeFn, SortingState } from "@tanstack/react-table";
 
+const coursePaginationSchema = basicPaginationSchema.extend({
+  search: z.string().optional(),
+});
+
 export const Route = createFileRoute("/admin/course/")({
-  validateSearch: (search) => basicPaginationSchema.parse(search),
+  validateSearch: (search) => coursePaginationSchema.parse(search),
   component: RouteComponent,
   staticData: {
     pageTitle: "All Courses",
@@ -135,11 +141,26 @@ function RouteComponent() {
     direction: search.direction,
     sortBy: (search.sortBy ?? "position") as any,
     sortOrder: search.sortOrder ?? "asc",
+    search: search.search,
   });
 
   return (
     <>
-      <div className="flex justify-end">
+      <div className="flex justify-between items-center">
+        <SearchField
+          placeholder="Search courses"
+          initialValue={search.search}
+          onSearch={(next) =>
+            navigate({
+              search: (prev) => ({
+                ...prev,
+                search: next,
+                cursor: undefined,
+                direction: "forward",
+              }),
+            })
+          }
+        />
         <ButtonLink to="/admin/course/create" variant="primary">
           Create New Course
         </ButtonLink>
@@ -151,6 +172,7 @@ function RouteComponent() {
         sorting={sorting}
         onSortingChange={handleSortingChange}
         manualSorting
+        toolbarActions={null}
         cursorPagination={{
           hasNextPage: Boolean(data?.nextCursor),
           hasPreviousPage: Boolean(data?.prevCursor),

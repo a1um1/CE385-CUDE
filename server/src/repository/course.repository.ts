@@ -24,6 +24,7 @@ export const courseRepository = {
     skip: number;
     cursor?: { id: string };
     orderBy: Prisma.CourseOrderByWithRelationInput | Prisma.CourseOrderByWithRelationInput[];
+    where?: Prisma.CourseWhereInput;
   }): Promise<AdminCourseSchema[]> =>
     (await client().course.findMany({
       take: args.take,
@@ -31,6 +32,7 @@ export const courseRepository = {
       cursor: args.cursor,
       orderBy: args.orderBy,
       select: courseQueryPayload,
+      where: args.where,
     })) as AdminCourseSchema[],
 
   maxPosition: () => client().course.aggregate({ _max: { position: true } }),
