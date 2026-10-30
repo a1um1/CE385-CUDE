@@ -11,7 +11,7 @@ export default function LevelCard() {
   const xpToNextLevel = stats?.xpToNextLevel ?? 0;
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col mb-1">
       <div className="relative">
         <UserBackground backgroundUrl={user?.backgroundImage} name={user?.name} />
         <div className="bg-linear-to-t from-background/80 to-background/50 absolute inset-0" />
