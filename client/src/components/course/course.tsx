@@ -43,8 +43,6 @@ export const Course: React.FC<CourseProps> = ({ status = "available", label = "S
     <div className={clsx(styles.container, className)}>
       <div className={styles.iconWrapper}>
         <svg className={styles.hexagonSvg} viewBox="0 0 100 100" preserveAspectRatio="none">
-          {/* Regular pointy-top hexagon, circumradius 44. Same 6-unit rounding at all 6 corners: a
-              quadratic stops short of its control, so the tip stays as soft as the side corners. */}
           <path d="M55.196,9 L82.909,25 Q88.105,28 88.105,34 L88.105,66 Q88.105,72 82.909,75 L55.196,91 Q50,94 44.804,91 L17.091,75 Q11.895,72 11.895,66 L11.895,34 Q11.895,28 17.091,25 L44.804,9 Q50,6 55.196,9 Z" />
         </svg>
         <div className={styles.innerIcon}>{icon}</div>

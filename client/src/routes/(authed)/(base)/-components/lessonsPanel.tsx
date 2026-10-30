@@ -1,4 +1,3 @@
-import Button from "#/components/button";
 import { Course, type CourseStatus } from "#/components/course";
 import Select from "#/components/select";
 import Skeleton from "#/components/skeleton";

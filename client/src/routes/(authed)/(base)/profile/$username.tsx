@@ -10,7 +10,6 @@ import styles from "./profile.module.css";
 import { PencilIcon } from "lucide-react";
 import Calendar from "#/components/calendar";
 import type { CSSProperties } from "react";
-import { courseIcons } from "#/components/courseCard/courseCard";
 
 const activityStatusColor = {
   PENDING: "#3B82F6",
