@@ -6359,12 +6359,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-30T16:05:05.161Z
+             * @example 2026-10-30T16:42:48.873Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-30T16:05:05.164Z
+             * @example 2026-10-30T16:42:48.873Z
              */
             updatedAt: string;
         };
@@ -6972,9 +6972,9 @@ export interface components {
             color: string;
             icon: components["schemas"]["GoJudgeLanguage"];
             /** @example Short description of the course */
-            shortDescription?: string;
+            shortDescription: string | null;
             /** @example Badge text for the course */
-            badge?: string;
+            badge: string | null;
             units?: {
                 /**
                  * Format: uuid
