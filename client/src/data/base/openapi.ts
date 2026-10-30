@@ -397,7 +397,9 @@ export interface paths {
         };
         /**
          * Get user profile by username
-         * @description Return the **public** profile of any user by username. No authentication is required. Private fields (email, role, password hash, …) are withheld. Returns `404` when no user has that username.
+         * @description Return the **public** profile of any user by username. No authentication is required. Private fields (email, role, password hash, …) are withheld.
+         *
+         *     The response also lists the user's five most recent lesson sessions in `recentActivity`, newest first. Returns `404` when no user has that username.
          */
         get: {
             parameters: {
@@ -6285,6 +6287,29 @@ export interface components {
             xpIntoLevel: number;
             xpToNextLevel: number;
             levelProgressPercent: number;
+            recentActivity: components["schemas"]["ProfileActivity"][];
+        };
+        ProfileActivity: {
+            /** @example session_id */
+            id: string;
+            /** @example lesson_id */
+            lessonID: string;
+            /** @example lesson_name */
+            lessonName: string;
+            /** @example unit_name */
+            unitName: string;
+            /** @example Course_Name */
+            courseName: string;
+            /**
+             * @example PENDING
+             * @enum {string}
+             */
+            status: "PENDING" | "SUBMITTED" | "GRADED" | "CANCELLED";
+            /**
+             * Format: date-time
+             * @example 2023-01-01T00:00:00.000Z
+             */
+            createdAt: string;
         };
         UserSafePublicData: {
             /** @example 123456 */
