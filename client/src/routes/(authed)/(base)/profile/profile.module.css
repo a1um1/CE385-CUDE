@@ -26,11 +26,11 @@
 .profile-header {
   display: flex;
   flex-direction: row;
-  align-items: end;
+  align-items: center;
   position: relative;
   gap: 1rem;
   z-index: 1;
-  margin-top: -5rem;
+  margin-top: -3.5rem;
   padding: 0 1rem;
   @media (max-width: 768px) {
     flex-direction: column;
@@ -54,6 +54,7 @@
 
 .header-main {
   flex: 1;
+  margin-top: 2rem;
 }
 
 .name-row {
@@ -68,11 +69,52 @@
 }
 
 .edit-button {
-  margin-left: auto;
+  position: absolute;
+  right: max(1rem, calc((100vw - var(--container-size)) / 2 + 1rem));
+  bottom: 1rem;
+  z-index: 2;
+}
+
+.level-row {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex: 0 1 28rem;
+  max-width: 28rem;
+  width: 100%;
+  margin-top: 0rem;
+}
+
+.level-progress {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.level-xp {
+  font-size: 1.15rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  text-align: end;
 }
 
 @media (max-width: 768px) {
-  .edit-button {
-    margin-left: 0;
+  .level-xp {
+    font-size: 1.125rem;
   }
+
+  .level-row {
+    gap: 0.75rem;
+    flex-basis: auto;
+    margin-right: 0;
+  }
+}
+
+.edit-button-container {
+  position: absolute;
+  right: 1rem;
+  bottom: 2rem;
+  z-index: 2;
 }

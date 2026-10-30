@@ -34,7 +34,6 @@ export function LessonsPanel({ courseId }: LessonsPanelProps) {
 
   const course = courses.data?.data.find((item) => item.id === courseId);
 
-  // Default to first unit or drop invalid unit id
   useEffect(() => {
     if (!units.data?.length) return;
     if (!unitId || !units.data.some((u) => u.id === unitId)) {
@@ -48,8 +47,8 @@ export function LessonsPanel({ courseId }: LessonsPanelProps) {
 
   return (
     <>
-      <div>
-        <Button variant="secondary" onClick={() => setCourse(undefined)}>
+      <div className="-mb-4">
+        <Button variant="ghost" size="sm" onClick={() => setCourse(undefined)}>
           <ChevronLeft />
           เนื้อหาทั้งหมด
         </Button>

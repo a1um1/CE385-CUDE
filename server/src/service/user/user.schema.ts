@@ -114,6 +114,13 @@ export const UserSafePublicSchema = UserSchema.omit({
   isActive: true,
 }).openapi("UserSafePublicData");
 
+export const UserPublicProfileSchema = UserSafePublicSchema.extend({
+  level: z.number(),
+  xpIntoLevel: z.number(),
+  xpToNextLevel: z.number(),
+  levelProgressPercent: z.number(),
+}).openapi("UserPublicProfileData");
+
 export const UserCreationSchema = UserSchema.pick({
   name: true,
   username: true,
@@ -152,3 +159,4 @@ export type userUpdateAvatarSchema = Zod.infer<typeof UserUpdateAvatarSchema>;
 export type userUpdateBackgroundSchema = Zod.infer<typeof UserUpdateBackgroundSchema>;
 export type userUpdatePasswordSchema = Zod.infer<typeof UserUpdatePasswordSchema>;
 export type userSafePublicSchema = Zod.infer<typeof UserSafePublicSchema>;
+export type userPublicProfileSchema = Zod.infer<typeof UserPublicProfileSchema>;
