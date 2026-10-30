@@ -1,0 +1,31 @@
+.toolbarActions {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.toolbarColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.filterLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-muted-text);
+}
+
+.userName {
+  font-weight: 600;
+}
+
+.userEmail {
+  font-size: 0.75rem;
+  color: var(--color-muted-text);
+}
+
+.resultSpan {
+  font-weight: 600;
+}

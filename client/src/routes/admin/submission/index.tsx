@@ -18,6 +18,7 @@ import {
 import { basicPaginationSchema } from "#/lib/pagination.schema";
 import { sessionResult, submissionResultColor } from "#/lib/submissionResult";
 import { z } from "zod";
+import styles from "./submissionList.module.css";
 
 const sessionSearchSchema = basicPaginationSchema.extend({
   userSearch: z.string().optional(),
@@ -61,26 +62,20 @@ const typedColumns = columnHelper.columns([
       const { name, email } = info.row.original.user;
       return (
         <div>
-          <div style={{ fontWeight: 600 }}>{name}</div>
-          <div style={{ fontSize: "0.75rem", color: "var(--color-muted-text)" }}>{email}</div>
+          <div className={styles.userName}>{name}</div>
+          <div className={styles.userEmail}>{email}</div>
         </div>
       );
     },
   }),
-  columnHelper.display({
-    id: "course",
+  columnHelper.text("lesson.unit.course.name", {
     header: "Course",
-    cell: (info) => info.row.original.lesson.unit.course.name,
   }),
-  columnHelper.display({
-    id: "unit",
+  columnHelper.text("lesson.unit.name", {
     header: "Unit",
-    cell: (info) => info.row.original.lesson.unit.name,
   }),
-  columnHelper.display({
-    id: "lesson",
+  columnHelper.text("lesson.name", {
     header: "Lesson",
-    cell: (info) => info.row.original.lesson.name,
   }),
   columnHelper.display({
     id: "result",
@@ -88,7 +83,9 @@ const typedColumns = columnHelper.columns([
     cell: (info) => {
       const result = sessionResult(info.row.original);
       return (
-        <span style={{ color: submissionResultColor[result], fontWeight: 600 }}>{result}</span>
+        <span className={styles.resultSpan} style={{ color: submissionResultColor[result] }}>
+          {result}
+        </span>
       );
     },
   }),
@@ -110,11 +107,7 @@ const typedColumns = columnHelper.columns([
 ]);
 
 function FilterLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <span style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--color-muted-text)" }}>
-      {children}
-    </span>
-  );
+  return <span className={styles.filterLabel}>{children}</span>;
 }
 
 function RouteComponent() {
@@ -223,8 +216,8 @@ function RouteComponent() {
   return (
     <DataTable
       toolbarActions={
-        <div style={{ display: "flex", alignItems: "flex-end", gap: "1rem", flexWrap: "wrap" }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+        <div className={styles.toolbarActions}>
+          <div className={styles.toolbarColumn}>
             <FilterLabel>Course</FilterLabel>
             <SelectRoot
               value={search.courseID ?? "ALL"}
@@ -249,7 +242,7 @@ function RouteComponent() {
             </SelectRoot>
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+          <div className={styles.toolbarColumn}>
             <FilterLabel>Unit</FilterLabel>
             <SelectRoot
               value={search.unitID ?? "ALL"}
@@ -274,7 +267,7 @@ function RouteComponent() {
             </SelectRoot>
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+          <div className={styles.toolbarColumn}>
             <FilterLabel>Lesson</FilterLabel>
             <SelectRoot
               value={search.lessonID ?? "ALL"}
@@ -299,7 +292,7 @@ function RouteComponent() {
             </SelectRoot>
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+          <div className={styles.toolbarColumn}>
             <FilterLabel>Result</FilterLabel>
             <SelectRoot
               value={search.result ?? "ALL"}
@@ -320,7 +313,7 @@ function RouteComponent() {
             </SelectRoot>
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+          <div className={styles.toolbarColumn}>
             <FilterLabel>User</FilterLabel>
             <Input
               size="sm"

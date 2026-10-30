@@ -2,8 +2,9 @@ import * as React from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { getAdminSessionQueryOptions, useGetAdminSession } from "#/data/admin/session.data";
 import Button from "#/components/button";
-import Markdown from "#/components/markdown";
+import Markdown, { CodeBlock } from "#/components/markdown";
 import { sessionResult, submissionResult, submissionResultColor } from "#/lib/submissionResult";
+import styles from "./submissionDetail.module.css";
 
 export const Route = createFileRoute("/admin/submission/$id")({
   component: RouteComponent,
@@ -16,8 +17,8 @@ export const Route = createFileRoute("/admin/submission/$id")({
 
 function Field({ label, value }: { label: string; value: React.ReactNode }) {
   return (
-    <div style={{ display: "flex", gap: "0.5rem" }}>
-      <span style={{ fontWeight: 600, minWidth: "7rem" }}>{label}</span>
+    <div className={styles.field}>
+      <span className={styles.fieldLabel}>{label}</span>
       <span>{value}</span>
     </div>
   );
@@ -45,15 +46,15 @@ function RouteComponent() {
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-      <section style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-        <h2 style={{ fontWeight: 700 }}>Lesson Session</h2>
+    <div className={styles.page}>
+      <section className={styles.meta}>
+        <h2 className={styles.title}>Lesson Session</h2>
         <Field label="ID" value={session.id} />
         <Field label="User" value={`${session.user.name} (${session.user.email})`} />
         <Field
           label="Status"
           value={
-            <span style={{ color: submissionResultColor[result], fontWeight: 600 }}>
+            <span className={styles.result} style={{ color: submissionResultColor[result] }}>
               {session.status} ({result})
             </span>
           }
@@ -68,18 +69,9 @@ function RouteComponent() {
         <Field label="Updated" value={new Date(session.updatedAt).toLocaleString()} />
       </section>
 
-      <div style={{ display: "flex", gap: "1.5rem", alignItems: "flex-start" }}>
-        <aside
-          style={{
-            width: "20rem",
-            flexShrink: 0,
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <h2 style={{ fontWeight: 700, marginBottom: "1rem" }}>
-            Submissions ({submissions.length})
-          </h2>
+      <div className={styles.layout}>
+        <aside className={styles.submissions}>
+          <h2 className={styles.submissionsTitle}>Submissions ({submissions.length})</h2>
           {submissions.length === 0 ? (
             <p>No submissions in this session.</p>
           ) : (
@@ -95,41 +87,16 @@ function RouteComponent() {
                   key={submission.id}
                   type="button"
                   onClick={() => selectSubmission(submission.id)}
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "baseline",
-                    gap: "1rem",
-                    width: "100%",
-                    textAlign: "left",
-                    padding: "0.75rem",
-                    cursor: "pointer",
-                    borderBottom: "1px solid var(--color-border)",
-                    borderLeft: isSelected
-                      ? "4px solid var(--color-primary)"
-                      : "0px solid var(--color-border)",
-                    background: isSelected ? "var(--color-surface)" : "transparent",
-                    color: "inherit",
-                    font: "inherit",
-                  }}
+                  className={
+                    isSelected
+                      ? `${styles.submission} ${styles.submissionSelected}`
+                      : styles.submission
+                  }
                 >
+                  <span className={styles.submissionName}>{submission.exercise.name}</span>
                   <span
-                    style={{
-                      fontWeight: 600,
-                      textOverflow: "ellipsis",
-                      overflow: "hidden",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {submission.exercise.name}
-                  </span>
-                  <span
-                    style={{
-                      color: submissionResultColor[submissionResultValue],
-                      fontWeight: 600,
-                      fontSize: "0.75rem",
-                      whiteSpace: "nowrap",
-                    }}
+                    className={styles.submissionResult}
+                    style={{ color: submissionResultColor[submissionResultValue] }}
                   >
                     {submissionResultValue}
                   </span>
@@ -139,54 +106,24 @@ function RouteComponent() {
           )}
         </aside>
 
-        <section
-          style={{
-            flex: 1,
-            minWidth: 0,
-            display: "flex",
-            flexDirection: "column",
-            gap: "1rem",
-          }}
-        >
+        <section className={styles.detail}>
           {selected ? (
             <>
-              <header
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "baseline",
-                  gap: "1rem",
-                }}
-              >
-                <h2 style={{ fontWeight: 700 }}>{selected.exercise.name}</h2>
+              <header className={styles.detailHeader}>
+                <h2 className={styles.title}>{selected.exercise.name}</h2>
                 {selectedResult && (
                   <span
-                    style={{
-                      color: submissionResultColor[selectedResult],
-                      fontWeight: 600,
-                    }}
+                    className={styles.result}
+                    style={{ color: submissionResultColor[selectedResult] }}
                   >
                     {selectedResult}
                   </span>
                 )}
               </header>
 
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "0.5rem",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    gap: "1rem",
-                  }}
-                >
-                  <h3 style={{ fontWeight: 600 }}>Exercise Content</h3>
+              <div className={styles.subsection}>
+                <div className={styles.subsectionHeader}>
+                  <h3 className={styles.subsectionTitle}>Exercise Content</h3>
                   <Button
                     size="xs"
                     variant="secondary"
@@ -198,23 +135,18 @@ function RouteComponent() {
                 {contentExpanded && <Markdown content={selected.exercise.content} />}
               </div>
 
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "0.5rem",
-                }}
-              >
-                <h3 style={{ fontWeight: 600 }}>
-                  Submitted Code ({selected.exercise.codeExercise?.language ?? "text"})
-                </h3>
+              {selected.exercise.codeExercise && (
+                <div className={styles.subsection}>
+                  <h3 className={styles.subsectionTitle}>
+                    Submitted Code ({selected.exercise.codeExercise.language ?? "text"})
+                  </h3>
 
-                <Markdown
-                  content={`
-\`\`\`${selected.exercise.codeExercise?.language}
-${selected.content.code}\`\`\``}
-                />
-              </div>
+                  <CodeBlock
+                    code={selected.content.code}
+                    language={selected.exercise.codeExercise.language}
+                  />
+                </div>
+              )}
             </>
           ) : (
             <p>Select a submission to see its content.</p>
