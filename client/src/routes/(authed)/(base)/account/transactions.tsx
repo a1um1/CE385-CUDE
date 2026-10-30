@@ -1,8 +1,6 @@
-import Button from "#/components/button";
 import Energy from "#/components/icon/energy";
 import Gem from "#/components/icon/gem";
 import DataTable, { createTableColumnHelper } from "#/components/table";
-import { useTestSpendEnergy } from "#/data/test.data";
 import { useUserTransactions } from "#/data/user.data";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
@@ -67,11 +65,6 @@ function RouteComponent() {
     direction,
     cursor,
   });
-  const testSpend = useTestSpendEnergy();
-
-  const handleSpendEnergy = () => {
-    testSpend.mutate();
-  };
 
   const handleNextPage = () => {
     if (!data?.nextCursor) return;
@@ -93,9 +86,6 @@ function RouteComponent() {
 
   return (
     <>
-      <Button onClick={handleSpendEnergy} disabled={testSpend.isPending}>
-        Spend Energy
-      </Button>
       <DataTable
         columns={typedColumns}
         data={data?.data ?? []}
