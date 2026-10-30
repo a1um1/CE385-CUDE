@@ -3289,7 +3289,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["AdminCourseStates"][];
+                        "application/json": components["schemas"]["AdminCourseStats"][];
                     };
                 };
                 /** @description Validation error */
@@ -3384,7 +3384,387 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["AdminCourseStates"];
+                        "application/json": components["schemas"]["AdminCourseStats"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/stats/{courseId}/units": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get stats for each unit in a course
+         * @description Return attempt and score-distribution stats for each unit in the course. Requires an `ADMIN` token. Returns `404` when the course does not exist.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    courseId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminUnitStats"][];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/stats/units/{unitId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get stats for one unit
+         * @description Return attempt and score-distribution stats for one unit. Requires an `ADMIN` token. Returns `404` when the unit does not exist.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    unitId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminUnitStats"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/stats/units/{unitId}/lessons": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get stats for each lesson in a unit
+         * @description Return attempt and score-distribution stats for each lesson in the unit. Requires an `ADMIN` token. Returns `404` when the unit does not exist.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    unitId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminLessonStats"][];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/stats/lessons/{lessonId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get stats for one lesson
+         * @description Return attempt and score-distribution stats for one lesson. Requires an `ADMIN` token. Returns `404` when the lesson does not exist.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    lessonId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminLessonStats"];
                     };
                 };
                 /** @description Validation error */
@@ -6446,12 +6826,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-30T05:57:06.434Z
+             * @example 2026-10-30T09:33:09.871Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-30T05:57:06.435Z
+             * @example 2026-10-30T09:33:09.879Z
              */
             updatedAt: string;
         };
@@ -6869,11 +7249,125 @@ export interface components {
                 email: string;
             };
         };
-        AdminCourseStates: {
+        AdminCourseStats: {
             /** @example course_id */
             courseID: string;
             /** @example Course Name */
             courseName: string;
+            /**
+             * @description จำนวนครั้งที่เรียน
+             * @example 30
+             */
+            totalAttempts: number;
+            passed: {
+                /** @example 12 */
+                count: number;
+                /**
+                 * @description 0-100 ปัดทศนิยม 1 ตำแหน่ง
+                 * @example 40
+                 */
+                percent: number;
+            };
+            failed: {
+                /** @example 12 */
+                count: number;
+                /**
+                 * @description 0-100 ปัดทศนิยม 1 ตำแหน่ง
+                 * @example 40
+                 */
+                percent: number;
+            };
+            inProgress: {
+                /** @example 12 */
+                count: number;
+                /**
+                 * @description 0-100 ปัดทศนิยม 1 ตำแหน่ง
+                 * @example 40
+                 */
+                percent: number;
+            };
+            gaveUp: {
+                /** @example 12 */
+                count: number;
+                /**
+                 * @description 0-100 ปัดทศนิยม 1 ตำแหน่ง
+                 * @example 40
+                 */
+                percent: number;
+            };
+            scoreDistribution: {
+                /** @example 0 */
+                min: number;
+                /** @example 10 */
+                max: number;
+                /** @example 3 */
+                count: number;
+            }[];
+        };
+        AdminUnitStats: {
+            /** @example unit_id */
+            unitID: string;
+            /** @example Unit Name */
+            unitName: string;
+            /** @example course_id */
+            courseID: string;
+            /**
+             * @description จำนวนครั้งที่เรียน
+             * @example 30
+             */
+            totalAttempts: number;
+            passed: {
+                /** @example 12 */
+                count: number;
+                /**
+                 * @description 0-100 ปัดทศนิยม 1 ตำแหน่ง
+                 * @example 40
+                 */
+                percent: number;
+            };
+            failed: {
+                /** @example 12 */
+                count: number;
+                /**
+                 * @description 0-100 ปัดทศนิยม 1 ตำแหน่ง
+                 * @example 40
+                 */
+                percent: number;
+            };
+            inProgress: {
+                /** @example 12 */
+                count: number;
+                /**
+                 * @description 0-100 ปัดทศนิยม 1 ตำแหน่ง
+                 * @example 40
+                 */
+                percent: number;
+            };
+            gaveUp: {
+                /** @example 12 */
+                count: number;
+                /**
+                 * @description 0-100 ปัดทศนิยม 1 ตำแหน่ง
+                 * @example 40
+                 */
+                percent: number;
+            };
+            scoreDistribution: {
+                /** @example 0 */
+                min: number;
+                /** @example 10 */
+                max: number;
+                /** @example 3 */
+                count: number;
+            }[];
+        };
+        AdminLessonStats: {
+            /** @example lesson_id */
+            lessonID: string;
+            /** @example Lesson Name */
+            lessonName: string;
+            /** @example unit_id */
+            unitID: string;
             /**
              * @description จำนวนครั้งที่เรียน
              * @example 30
