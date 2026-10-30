@@ -31,6 +31,8 @@ import type {
   BadgeFormatOptions,
   BooleanFormatOptions,
   ColorFormatOptions,
+  UserFormatOptions,
+  UserInfo,
 } from "#/components/table/cell";
 import {
   renderTextCell,
@@ -40,6 +42,7 @@ import {
   renderBadgeCell,
   renderBooleanCell,
   renderColorCell,
+  renderUserCell,
 } from "#/components/table/cell";
 
 export const defaultTableFeatures = tableFeatures({
@@ -87,6 +90,11 @@ export type BooleanFieldOptions<TData extends RowData, TValue> = BaseFieldOption
 
 export type ColorFieldOptions<TData extends RowData, TValue> = BaseFieldOptions<TData, TValue> &
   ColorFormatOptions;
+
+export type UserFieldOptions = {
+  id?: string;
+  header?: string;
+} & UserFormatOptions;
 
 export type GenericFieldType =
   | "text"
@@ -297,6 +305,22 @@ export function createTableColumnHelper<TData extends RowData = RowData>() {
         (info) => renderColorCell(info.getValue(), { fallback, showHex, shape, size }),
         rest,
       );
+    },
+
+    /**
+     * Define a user column showing avatar, name and email.
+     * `getUser` returns the user object for each row, so nested and root-level users both work.
+     */
+    user: (
+      getUser: (row: TData) => UserInfo | null | undefined,
+      options: UserFieldOptions = {},
+    ) => {
+      const { id = "user", header = "User", ...rest } = options;
+      return helper.display({
+        id,
+        header: resolveHeader(header, false),
+        cell: (info) => renderUserCell(getUser(info.row.original), rest),
+      });
     },
   };
 

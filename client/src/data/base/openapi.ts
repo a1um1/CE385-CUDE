@@ -6457,12 +6457,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-29T16:04:22.950Z
+             * @example 2026-10-30T07:22:00.665Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-29T16:04:22.951Z
+             * @example 2026-10-30T07:22:00.666Z
              */
             updatedAt: string;
         };
@@ -6878,6 +6878,8 @@ export interface components {
                 name: string;
                 /** @example john@example.com */
                 email: string;
+                /** @example https://example.com/profile.jpg */
+                profileImage: string | null;
             };
         };
         AdminSessionListResponse: {
@@ -6905,6 +6907,7 @@ export interface components {
             user: {
                 name: string;
                 email: string;
+                profileImage: string | null;
             };
             lesson: {
                 /** Format: uuid */

@@ -26,6 +26,7 @@ export type {
   CurrencyFieldOptions,
   DateFieldOptions,
   BadgeFieldOptions,
+  UserFieldOptions,
   BooleanFieldOptions,
   GenericFieldOptions,
   GenericFieldType,
@@ -38,6 +39,7 @@ export {
   renderDateCell,
   renderBadgeCell,
   renderBooleanCell,
+  renderUserCell,
 } from "./cell";
 
 export { Badge } from "../badge";

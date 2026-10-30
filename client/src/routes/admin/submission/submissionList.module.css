@@ -17,15 +17,6 @@
   color: var(--color-muted-text);
 }
 
-.userName {
-  font-weight: 600;
-}
-
-.userEmail {
-  font-size: 0.75rem;
-  color: var(--color-muted-text);
-}
-
 .resultSpan {
   font-weight: 600;
 }

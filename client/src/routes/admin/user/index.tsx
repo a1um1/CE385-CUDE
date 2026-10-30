@@ -26,13 +26,7 @@ type AdminUser = NonNullable<ReturnType<typeof useAdminUserListQuery>["data"]>["
 const columnHelper = createTableColumnHelper<AdminUser>();
 
 const typedColumns = columnHelper.columns([
-  columnHelper.text("name", {
-    header: "Name",
-    strong: true,
-  }),
-  columnHelper.text("email", {
-    header: "Email",
-  }),
+  columnHelper.user((row) => row, { header: "User" }),
   columnHelper.text("epithet", {
     header: "Epithet",
     sortable: false,

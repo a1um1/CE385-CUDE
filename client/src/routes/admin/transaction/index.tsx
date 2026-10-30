@@ -50,19 +50,7 @@ const currencyIcons: Record<CurrencyType, React.FC> = {
 };
 
 const typedColumns = columnHelper.columns([
-  columnHelper.display({
-    id: "user",
-    header: "User",
-    cell: (info) => {
-      const { name, email } = info.row.original.user;
-      return (
-        <div>
-          <div style={{ fontWeight: 600 }}>{name}</div>
-          <div style={{ fontSize: "0.75rem", color: "var(--color-muted-text)" }}>{email}</div>
-        </div>
-      );
-    },
-  }),
+  columnHelper.user((row) => row.user, { header: "User" }),
   columnHelper.display({
     id: "type",
     header: "Type",

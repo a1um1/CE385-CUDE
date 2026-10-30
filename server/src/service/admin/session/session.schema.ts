@@ -17,7 +17,7 @@ export const AdminSessionListPayload = {
   rewarded: true,
   createdAt: true,
   updatedAt: true,
-  user: { select: { name: true, email: true } },
+  user: { select: { name: true, email: true, profileImage: true } },
   lesson: {
     select: {
       id: true,
@@ -90,6 +90,7 @@ export const AdminSessionListItemSchema = z
     user: z.object({
       name: z.string(),
       email: z.string(),
+      profileImage: z.string().nullable(),
     }),
     lesson: z.object({
       id: z.uuidv7(),

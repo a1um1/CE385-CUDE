@@ -55,19 +55,7 @@ const resultOptions = [
 ];
 
 const typedColumns = columnHelper.columns([
-  columnHelper.display({
-    id: "user",
-    header: "User",
-    cell: (info) => {
-      const { name, email } = info.row.original.user;
-      return (
-        <div>
-          <div className={styles.userName}>{name}</div>
-          <div className={styles.userEmail}>{email}</div>
-        </div>
-      );
-    },
-  }),
+  columnHelper.user((row) => row.user, { header: "User" }),
   columnHelper.text("lesson.unit.course.name", {
     header: "Course",
   }),
