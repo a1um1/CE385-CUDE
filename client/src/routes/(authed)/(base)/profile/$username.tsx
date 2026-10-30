@@ -8,6 +8,7 @@ import { useUser } from "#/data/user.data";
 import { createFileRoute } from "@tanstack/react-router";
 import styles from "./profile.module.css";
 import { PencilIcon } from "lucide-react";
+import Calendar from "#/components/calendar";
 
 export const Route = createFileRoute("/(authed)/(base)/profile/$username")({
   component: RouteComponent,
@@ -65,6 +66,13 @@ function RouteComponent() {
           </div>
           <Ranked rank={data?.level ?? 0} size="7rem" />
         </div>
+      </div>
+      <div>
+        <Calendar
+          month={new Date().getMonth() + 1}
+          year={new Date().getFullYear()}
+          containerClassName="max-w-xs"
+        />
       </div>
     </>
   );
