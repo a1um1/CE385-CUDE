@@ -1,40 +1,34 @@
 import { cursorArgs, isBackward, paginate } from "#/lib/pagination";
 import { sessionRepository } from "#/repository/session.repository";
 import UserError from "#/lib/router/http/userError";
-import type { Prisma } from "#/generated/prisma/client";
+import { SubmissionStatus, type Prisma } from "#/generated/prisma/client";
 import { SubmissionContentSchema } from "#/service/learnSession/session.schema";
 import type { AdminSessionDetail, AdminSessionQuery } from "./session.schema";
 
 export const querySession = async (query: AdminSessionQuery) => {
   const userSearch = query.userSearch?.trim();
 
-  const resultFilter: Prisma.SessionsWhereInput =
-    query.result === "ONGOING"
-      ? { status: "PENDING" }
-      : query.result === "GIVEUP"
-        ? { status: "CANCELLED" }
-        : query.result === "PASSED"
-          ? {
-              status: { in: ["SUBMITTED", "GRADED"] },
-              submissions: { some: {}, every: { isGraded: true, ok: true } },
-            }
-          : query.result === "FAILED"
-            ? {
-                status: { in: ["SUBMITTED", "GRADED"] },
-                AND: [
-                  { submissions: { some: {}, every: { isGraded: true } } },
-                  { submissions: { some: { ok: false } } },
-                ],
-              }
-            : query.result === "GRADING"
-              ? {
-                  status: { in: ["SUBMITTED", "GRADED"] },
-                  OR: [
-                    { submissions: { none: {} } },
-                    { submissions: { some: { isGraded: false } } },
-                  ],
-                }
-              : {};
+  const resultFilter: Prisma.SessionsWhereInput = query.result
+    ? {
+        ONGOING: { status: SubmissionStatus.PENDING },
+        GIVEUP: { status: SubmissionStatus.CANCELLED },
+        PASSED: {
+          status: { in: [SubmissionStatus.SUBMITTED, SubmissionStatus.GRADED] },
+          submissions: { some: {}, every: { isGraded: true, ok: true } },
+        },
+        FAILED: {
+          status: { in: [SubmissionStatus.SUBMITTED, SubmissionStatus.GRADED] },
+          AND: [
+            { submissions: { some: {}, every: { isGraded: true } } },
+            { submissions: { some: { ok: false } } },
+          ],
+        },
+        GRADING: {
+          status: { in: [SubmissionStatus.SUBMITTED, SubmissionStatus.GRADED] },
+          OR: [{ submissions: { none: {} } }, { submissions: { some: { isGraded: false } } }],
+        },
+      }[query.result]
+    : {};
 
   const where: Prisma.SessionsWhereInput = {
     ...resultFilter,

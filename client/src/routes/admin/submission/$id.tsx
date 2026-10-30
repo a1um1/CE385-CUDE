@@ -1,24 +1,15 @@
 import * as React from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  getAdminSessionQueryOptions,
-  useGetAdminSession,
-} from "#/data/admin/session.data";
+import { getAdminSessionQueryOptions, useGetAdminSession } from "#/data/admin/session.data";
 import Button from "#/components/button";
 import Markdown from "#/components/markdown";
-import {
-  sessionResult,
-  submissionResult,
-  submissionResultColor,
-} from "#/lib/submissionResult";
+import { sessionResult, submissionResult, submissionResultColor } from "#/lib/submissionResult";
 
 export const Route = createFileRoute("/admin/submission/$id")({
   component: RouteComponent,
   staticData: { pageTitle: "Session Detail", pageKey: "submissions-list" },
   loader: async ({ params, context }) => {
-    const session = await context.queryClient.query(
-      getAdminSessionQueryOptions(params.id),
-    );
+    const session = await context.queryClient.query(getAdminSessionQueryOptions(params.id));
     return session;
   },
 });
@@ -43,9 +34,7 @@ function RouteComponent() {
   const [selectedID, setSelectedID] = React.useState<string>();
   const [contentExpanded, setContentExpanded] = React.useState(false);
 
-  const selected =
-    submissions.find((submission) => submission.id === selectedID) ??
-    submissions[0];
+  const selected = submissions.find((submission) => submission.id === selectedID) ?? submissions[0];
   const selectedResult = selected
     ? submissionResult({ ...selected, session: { status: session.status } })
     : undefined;
@@ -57,21 +46,14 @@ function RouteComponent() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-      <section
-        style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}
-      >
+      <section style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
         <h2 style={{ fontWeight: 700 }}>Lesson Session</h2>
         <Field label="ID" value={session.id} />
-        <Field
-          label="User"
-          value={`${session.user.name} (${session.user.email})`}
-        />
+        <Field label="User" value={`${session.user.name} (${session.user.email})`} />
         <Field
           label="Status"
           value={
-            <span
-              style={{ color: submissionResultColor[result], fontWeight: 600 }}
-            >
+            <span style={{ color: submissionResultColor[result], fontWeight: 600 }}>
               {session.status} ({result})
             </span>
           }
@@ -82,14 +64,8 @@ function RouteComponent() {
           label="Curriculum"
           value={`${session.lesson.unit.course.name} / ${session.lesson.unit.name}`}
         />
-        <Field
-          label="Started"
-          value={new Date(session.createdAt).toLocaleString()}
-        />
-        <Field
-          label="Updated"
-          value={new Date(session.updatedAt).toLocaleString()}
-        />
+        <Field label="Started" value={new Date(session.createdAt).toLocaleString()} />
+        <Field label="Updated" value={new Date(session.updatedAt).toLocaleString()} />
       </section>
 
       <div style={{ display: "flex", gap: "1.5rem", alignItems: "flex-start" }}>
@@ -99,10 +75,9 @@ function RouteComponent() {
             flexShrink: 0,
             display: "flex",
             flexDirection: "column",
-            gap: "0.5rem",
           }}
         >
-          <h2 style={{ fontWeight: 700 }}>
+          <h2 style={{ fontWeight: 700, marginBottom: "1rem" }}>
             Submissions ({submissions.length})
           </h2>
           {submissions.length === 0 ? (
@@ -129,19 +104,23 @@ function RouteComponent() {
                     textAlign: "left",
                     padding: "0.75rem",
                     cursor: "pointer",
-                    borderRadius: "0.5rem",
-                    border: "1px solid var(--color-border)",
+                    borderBottom: "1px solid var(--color-border)",
                     borderLeft: isSelected
                       ? "4px solid var(--color-primary)"
-                      : "1px solid var(--color-border)",
-                    background: isSelected
-                      ? "var(--color-surface)"
-                      : "transparent",
+                      : "0px solid var(--color-border)",
+                    background: isSelected ? "var(--color-surface)" : "transparent",
                     color: "inherit",
                     font: "inherit",
                   }}
                 >
-                  <span style={{ fontWeight: 600 }}>
+                  <span
+                    style={{
+                      fontWeight: 600,
+                      textOverflow: "ellipsis",
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
                     {submission.exercise.name}
                   </span>
                   <span
@@ -216,9 +195,7 @@ function RouteComponent() {
                     {contentExpanded ? "Hide content" : "Show content"}
                   </Button>
                 </div>
-                {contentExpanded && (
-                  <Markdown content={selected.exercise.content} />
-                )}
+                {contentExpanded && <Markdown content={selected.exercise.content} />}
               </div>
 
               <div
@@ -229,8 +206,7 @@ function RouteComponent() {
                 }}
               >
                 <h3 style={{ fontWeight: 600 }}>
-                  Submitted Code (
-                  {selected.exercise.codeExercise?.language ?? "text"})
+                  Submitted Code ({selected.exercise.codeExercise?.language ?? "text"})
                 </h3>
 
                 <Markdown
