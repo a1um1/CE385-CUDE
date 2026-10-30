@@ -27,6 +27,8 @@ function RouteComponent() {
         name: data.name,
         color: data.color,
         icon: data.icon,
+        shortDescription: data.shortDescription || "",
+        badge: data.badge || "",
       }}
       submitLabel="Save Changes"
       onSubmit={async (value) => {

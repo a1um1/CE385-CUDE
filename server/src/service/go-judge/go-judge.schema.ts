@@ -77,4 +77,4 @@ export interface RunConfig {
 
 export const zGoJudgeLanguage = z
   .enum(Object.keys(GoJudgeLanguagesConfig) as GoJudegeLangauge[])
-  .openapi({ example: "python" });
+  .openapi("GoJudgeLanguage", { example: "python" });

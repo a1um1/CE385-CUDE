@@ -15,7 +15,11 @@ import TransactionsService from "#/service/transactions";
 import type { TransactionQuerySchema } from "#/service/transactions/transactions.schema";
 import { Prisma } from "#/generated/prisma/client";
 import { userRepository } from "#/repository/user.repository";
+import { sessionRepository } from "#/repository/session.repository";
 import { userStatRepository } from "#/repository/userStat.repository";
+
+/** How many lesson sessions a public profile lists as recent activity. */
+const RECENT_ACTIVITY_LIMIT = 5;
 
 export default class UserService {
   private user: userSafeSchema;
@@ -42,8 +46,23 @@ export default class UserService {
   }
 
   async publicProfileJSON(): Promise<userPublicProfileSchema> {
-    const stat = await userStatRepository.findByUserID(this.user.id);
-    return { ...this.publicJSON, ...UserStatService.progressByXp(stat?.totalXP ?? 0) };
+    const [stat, recentSessions] = await Promise.all([
+      userStatRepository.findByUserID(this.user.id),
+      sessionRepository.findRecentByUserID(this.user.id, RECENT_ACTIVITY_LIMIT),
+    ]);
+    return {
+      ...this.publicJSON,
+      ...UserStatService.progressByXp(stat?.totalXP ?? 0),
+      recentActivity: recentSessions.map((session) => ({
+        id: session.id,
+        lessonID: session.LessonID,
+        lessonName: session.lesson.name,
+        unitName: session.lesson.unit.name,
+        courseName: session.lesson.unit.course.name,
+        status: session.status,
+        createdAt: session.createdAt,
+      })),
+    };
   }
 
   async updateAvatar(data: userUpdateAvatarSchema) {

@@ -20,6 +20,7 @@ import { APIclient } from "#/data/base/baseAPI";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import formatNstoMs from "#/lib/formatNs";
+import type { components } from "#/data/base/openapi";
 
 export interface FormTestCase {
   id?: string;
@@ -33,7 +34,7 @@ export interface ExerciseFormValues {
   lessonID: string;
   type: "NONE" | "CODE";
   content: string;
-  language: "python" | "c";
+  language: components["schemas"]["GoJudgeLanguage"];
   timeLimitMs: number;
   memoryLimitMb: number;
   starterCode: string;
@@ -66,9 +67,21 @@ const typeItems = [
   { value: "CODE", label: "Code Exercise (Programming)" },
 ];
 
-const languageItems = [
+const languageItems: { value: components["schemas"]["GoJudgeLanguage"]; label: string }[] = [
   { value: "python", label: "Python (3.11)" },
   { value: "c", label: "C (C11)" },
+  {
+    value: "csharp",
+    label: "C# (C# 11)",
+  },
+  {
+    value: "javascript",
+    label: "JavaScript (Node.js 20.0)",
+  },
+  {
+    value: "sql",
+    label: "SQL (SQLite 3.43)",
+  },
 ];
 
 type TabKey = "metadata" | "content" | "code" | "testcases";
@@ -111,7 +124,7 @@ export function ExerciseForm({
     mutationKey: ["admin-judge-testcases"],
     mutationFn: async (payload: {
       code: string;
-      language: "python" | "c";
+      language: components["schemas"]["GoJudgeLanguage"];
       testCases: { input: string; output: string }[];
     }) => {
       const { data, error } = await APIclient.POST("/coding/judge", {

@@ -199,10 +199,10 @@ function RouteComponent() {
   return (
     <>
       <div>
-        <ButtonLink variant="ghost" to="/" size="sm">
+        <Link to="/" className="flex items-center gap-2">
           <ChevronLeft />
           เนื้อหาทั้งหมด
-        </ButtonLink>
+        </Link>
       </div>
       <div className="flex gap-4 items-start">
         <LessonScore />

@@ -397,7 +397,9 @@ export interface paths {
         };
         /**
          * Get user profile by username
-         * @description Return the **public** profile of any user by username. No authentication is required. Private fields (email, role, password hash, …) are withheld. Returns `404` when no user has that username.
+         * @description Return the **public** profile of any user by username. No authentication is required. Private fields (email, role, password hash, …) are withheld.
+         *
+         *     The response also lists the user's five most recent lesson sessions in `recentActivity`, newest first. Returns `404` when no user has that username.
          */
         get: {
             parameters: {
@@ -3967,11 +3969,7 @@ export interface paths {
             requestBody?: {
                 content: {
                     "application/json": {
-                        /**
-                         * @example python
-                         * @enum {string}
-                         */
-                        language: "python" | "c";
+                        language: components["schemas"]["GoJudgeLanguage"];
                         /** @example print("Hello world", input()) */
                         code: string;
                         /** @example Hello */
@@ -4078,11 +4076,7 @@ export interface paths {
                     "application/json": {
                         /** @example print("Hello World") */
                         code: string;
-                        /**
-                         * @example python
-                         * @enum {string}
-                         */
-                        language: "python" | "c";
+                        language: components["schemas"]["GoJudgeLanguage"];
                         testCases: components["schemas"]["graderRequestBody"];
                     };
                 };
@@ -6293,6 +6287,29 @@ export interface components {
             xpIntoLevel: number;
             xpToNextLevel: number;
             levelProgressPercent: number;
+            recentActivity: components["schemas"]["ProfileActivity"][];
+        };
+        ProfileActivity: {
+            /** @example session_id */
+            id: string;
+            /** @example lesson_id */
+            lessonID: string;
+            /** @example lesson_name */
+            lessonName: string;
+            /** @example unit_name */
+            unitName: string;
+            /** @example Course_Name */
+            courseName: string;
+            /**
+             * @example PENDING
+             * @enum {string}
+             */
+            status: "PENDING" | "SUBMITTED" | "GRADED" | "CANCELLED";
+            /**
+             * Format: date-time
+             * @example 2023-01-01T00:00:00.000Z
+             */
+            createdAt: string;
         };
         UserSafePublicData: {
             /** @example 123456 */
@@ -6367,12 +6384,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-30T11:57:08.093Z
+             * @example 2026-10-30T16:42:48.873Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-30T11:57:08.095Z
+             * @example 2026-10-30T16:42:48.873Z
              */
             updatedAt: string;
         };
@@ -6418,6 +6435,10 @@ export interface components {
             /** @example #FFFFFF */
             color: string;
             icon: components["schemas"]["GoJudgeLanguage"];
+            /** @example This is a short description of the course. */
+            shortDescription: string | null;
+            /** @example This is a badge for the course. */
+            badge: string | null;
             /** @example 0 */
             position: number;
             /**
@@ -6440,13 +6461,17 @@ export interface components {
          * @example python
          * @enum {string}
          */
-        GoJudgeLanguage: "python" | "c";
+        GoJudgeLanguage: "python" | "c" | "javascript" | "csharp" | "sql";
         AdminCourseCreate: {
             /** @example Course Name */
             name: string;
             /** @example #FFFFFF */
             color: string;
             icon: components["schemas"]["GoJudgeLanguage"];
+            /** @example This is a short description of the course. */
+            shortDescription: string;
+            /** @example This is a badge for the course. */
+            badge: string;
         };
         AdminCourseUpdate: {
             /** @example Course Name */
@@ -6454,6 +6479,10 @@ export interface components {
             /** @example #FFFFFF */
             color: string;
             icon: components["schemas"]["GoJudgeLanguage"];
+            /** @example This is a short description of the course. */
+            shortDescription: string;
+            /** @example This is a badge for the course. */
+            badge: string;
         };
         PaginatedLesson: {
             items: components["schemas"]["Lesson"][];
@@ -6710,12 +6739,7 @@ export interface components {
             codeExercise?: components["schemas"]["AdminCodeExerciseConfig"];
         };
         AdminCodeExerciseConfig: {
-            /**
-             * @default python
-             * @example python
-             * @enum {string}
-             */
-            language: "python" | "c";
+            language?: components["schemas"]["GoJudgeLanguage"];
             /** @example print('hello') */
             starterCode?: string | null;
             testerCode?: string | null;
@@ -6905,6 +6929,24 @@ export interface components {
                     /** @example 3.11.4 */
                     version: string;
                 };
+                javascript?: {
+                    /** @example Python */
+                    name: string;
+                    /** @example 3.11.4 */
+                    version: string;
+                };
+                csharp?: {
+                    /** @example Python */
+                    name: string;
+                    /** @example 3.11.4 */
+                    version: string;
+                };
+                sql?: {
+                    /** @example Python */
+                    name: string;
+                    /** @example 3.11.4 */
+                    version: string;
+                };
             };
         };
         JudgeCleanRunResult: {
@@ -6954,6 +6996,10 @@ export interface components {
             /** @example #FFFFF */
             color: string;
             icon: components["schemas"]["GoJudgeLanguage"];
+            /** @example Short description of the course */
+            shortDescription: string | null;
+            /** @example Badge text for the course */
+            badge: string | null;
             units?: {
                 /**
                  * Format: uuid

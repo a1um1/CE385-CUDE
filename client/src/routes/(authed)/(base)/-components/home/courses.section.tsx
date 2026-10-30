@@ -25,6 +25,8 @@ export function CoursesSection() {
               name={item.name}
               color={item.color}
               icon={item.icon}
+              shortDescription={item.shortDescription ?? ""}
+              badge={item.badge ?? ""}
               onClick={() => setCourse(item.id)}
             />
           ))}

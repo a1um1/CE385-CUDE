@@ -2,8 +2,8 @@ import type { Prisma } from "#/generated/prisma/client";
 import type { SubmissionStatus } from "#/generated/prisma/enums";
 import { client, type Db } from "#/repository/client";
 import { resolveInclude } from "#/lib/include";
-import type { SessionData } from "#/service/learnSession/session.schema";
-import { sessionIncludes } from "#/service/learnSession/session.schema";
+import type { RecentSessionData, SessionData } from "#/service/learnSession/session.schema";
+import { RecentSessionPayload, sessionIncludes } from "#/service/learnSession/session.schema";
 import {
   AdminSessionDetailPayload,
   AdminSessionListPayload,
@@ -26,6 +26,14 @@ export const sessionRepository = {
       orderBy: { createdAt: "desc" },
       include: resolveInclude<Prisma.SessionsInclude>(include, sessionIncludes),
     })) as SessionData[],
+
+  findRecentByUserID: (userID: string, take: number): Promise<RecentSessionData[]> =>
+    client().sessions.findMany({
+      where: { userID },
+      orderBy: { createdAt: "desc" },
+      take,
+      select: RecentSessionPayload,
+    }),
 
   /** The lesson of the user's open session, if any. */
   findPending: (userID: string, tx?: Db) =>
