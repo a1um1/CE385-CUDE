@@ -578,6 +578,119 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/user/ranking": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get the XP ranking
+         * @description Return the top users ranked by XP earned from successful lesson submissions during the current server-time week (Monday start) or calendar month. The response includes XP earned in the period separately from each user's all-time total XP and public profile images.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    period?: "weekly" | "monthly";
+                    limit?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @example 1 */
+                            rank: number;
+                            user: {
+                                /** @example user_id */
+                                id: string;
+                                /** @example john */
+                                username: string;
+                                /** @example https://example.com/profile.jpg */
+                                profileImage: string | null;
+                                /** @example https://example.com/background.jpg */
+                                backgroundImage: string | null;
+                            };
+                            /** @example 250 */
+                            xpEarned: number;
+                            /** @example 1200 */
+                            totalXP: number;
+                        }[];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/user/transactions": {
         parameters: {
             query?: never;
@@ -2711,6 +2824,106 @@ export interface paths {
                 };
             };
         };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/user/{userId}/submission-calendar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get a user's submission calendar
+         * @description Return a map of dates with activity normalized to 0–1 for one user. Dates with no submissions are omitted. `months` selects a rolling period of 1–3 months (defaults to 3). Requires an `ADMIN` token.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description จำนวนเดือนย้อนหลังที่ต้องการ (1–3 เดือน) */
+                    months?: number;
+                };
+                header?: never;
+                path: {
+                    userId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            [key: string]: number;
+                        };
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
         post?: never;
         delete?: never;
         options?: never;
@@ -6384,12 +6597,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-30T16:42:48.873Z
+             * @example 2026-10-31T07:23:34.985Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-30T16:42:48.873Z
+             * @example 2026-10-31T07:23:34.986Z
              */
             updatedAt: string;
         };
