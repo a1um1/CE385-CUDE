@@ -1,4 +1,4 @@
-import type { Course, Lesson, Sessions, Unit } from "#/generated/prisma/client";
+import type { Course, Lesson, Prisma, Sessions, Unit } from "#/generated/prisma/client";
 import { createIncludeQuerySchema } from "#/lib/include";
 import { z } from "#/lib/extendZod";
 import type { z as zod } from "zod";
@@ -127,3 +127,24 @@ export const SessionIncludeQuerySchema = createIncludeQuerySchema(
   sessionIncludes,
   "SessionIncludeQuery",
 );
+
+/** Latest sessions shown on a public profile; only fields a public profile may reveal. */
+export const RecentSessionPayload = {
+  id: true,
+  LessonID: true,
+  status: true,
+  createdAt: true,
+  lesson: {
+    select: {
+      name: true,
+      unit: {
+        select: {
+          name: true,
+          course: { select: { name: true } },
+        },
+      },
+    },
+  },
+} satisfies Prisma.SessionsSelect;
+
+export type RecentSessionData = Prisma.SessionsGetPayload<{ select: typeof RecentSessionPayload }>;

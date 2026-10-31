@@ -1,6 +1,6 @@
 import type { Prisma } from "#/generated/prisma/client";
 import { z } from "#/lib/extendZod";
-import { ZOD_LANGUAGE_SUPPORT_KEY } from "#/service/go-judge/languages.config";
+import { zGoJudgeLanguage } from "#/service/go-judge/go-judge.schema";
 
 export const ExerciseSchema = z
   .object({
@@ -12,7 +12,7 @@ export const ExerciseSchema = z
     content: z.string().openapi({ example: "exercise content" }),
     codeExercise: z
       .object({
-        language: ZOD_LANGUAGE_SUPPORT_KEY,
+        language: zGoJudgeLanguage,
         starterCode: z.string().nullable().openapi({ example: "print('hello')" }),
         timeLimitMs: z.number().int().openapi({ example: 2000 }),
         memoryLimitMb: z.number().int().openapi({ example: 256 }),

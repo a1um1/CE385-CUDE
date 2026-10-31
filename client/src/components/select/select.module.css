@@ -1,5 +1,12 @@
 @reference "#/styles/main.css";
 
+/* Base UI sets will-change: transform on the positioner, making it a stacking
+   context; its z-index must be set here or page content (e.g. avatars) can cover
+   the popup even though .popup itself has a z-index. */
+.positioner {
+  z-index: 50;
+}
+
 .trigger {
   display: inline-flex;
   align-items: center;
@@ -104,8 +111,10 @@
     0 8px 10px -6px rgba(0, 0, 0, 0.4),
     inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
   outline: none;
-  z-index: 50;
+  z-index: 100;
   transform-origin: var(--transform-origin, center top);
+  /* Ensure dropdown appears above sticky headers */
+  will-change: transform;
   transition:
     opacity 150ms cubic-bezier(0.16, 1, 0.3, 1),
     transform 150ms cubic-bezier(0.16, 1, 0.3, 1);

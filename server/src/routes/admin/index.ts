@@ -5,8 +5,12 @@ import { adminUserRoute } from "#/routes/admin/user.admin";
 import { adminUnitRoute } from "#/routes/admin/unit.admin";
 import { adminExerciseRoute } from "./exercise.admin";
 import { adminTransactionRoute } from "./transaction.admin";
+<<<<<<< HEAD
 import { adminStatsRoute } from "#/routes/admin/stats.admin";
 
+=======
+import { adminSessionRoute } from "./session.admin";
+>>>>>>> origin/develop
 const adminRouter = new CustomRouter({
   prefix: "/admin",
   tags: ["Admin"],
@@ -34,6 +38,10 @@ const adminRouter = new CustomRouter({
   .use(adminCourseRoute)
   .use(adminLessonRoute)
   .use(adminTransactionRoute)
+<<<<<<< HEAD
   .use(adminStatsRoute);
+=======
+  .use(adminSessionRoute);
+>>>>>>> origin/develop
 
 export const adminRoute = adminRouter.route;

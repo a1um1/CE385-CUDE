@@ -1,4 +1,5 @@
 import ReactMarkdown from "react-markdown";
+import hljs from "highlight.js";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
@@ -64,6 +65,20 @@ function MarkdownKbd({ children, ...props }: ComponentProps<"kbd">) {
     <kbd className={styles.kbd} {...props}>
       {children}
     </kbd>
+  );
+}
+
+export function CodeBlock({ code, language }: { code: string; language?: string | null }) {
+  const lang = language && hljs.getLanguage(language) ? language : "plaintext";
+  const html = hljs.highlight(code, { language: lang, ignoreIllegals: true }).value;
+
+  return (
+    <div className={styles["code-block"]}>
+      {language && <div className={styles["code-lang"]}>{language}</div>}
+      <pre>
+        <code className={`hljs language-${lang}`} dangerouslySetInnerHTML={{ __html: html }} />
+      </pre>
+    </div>
   );
 }
 

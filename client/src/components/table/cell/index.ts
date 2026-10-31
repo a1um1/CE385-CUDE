@@ -5,3 +5,4 @@ export * from "./number";
 export * from "./currency";
 export * from "./date";
 export * from "./color";
+export * from "./user";

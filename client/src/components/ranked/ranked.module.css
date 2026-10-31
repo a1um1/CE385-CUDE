@@ -6,11 +6,11 @@
 
   position: relative;
   width: var(--hex-size); /*เลขตรงนี้คือ เพิ่มตัวคูณให้กว้างขึ้น */
-  height: calc(var(--hex-size)*1.12); /*เลขตรงนี้คือ เพิ่มตัวคูณขึ้น */
+  height: calc(var(--hex-size) * 1.12); /*เลขตรงนี้คือ เพิ่มตัวคูณขึ้น */
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin: calc(var(--hex-size)*0.1) 0;
+  /* margin: calc(var(--hex-size)*0.1) 0; */
 }
 
 .hexagonSvg {

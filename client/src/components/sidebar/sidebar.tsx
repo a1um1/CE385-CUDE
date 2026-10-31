@@ -11,6 +11,7 @@ import {
   BookOpenCheckIcon,
   BookOpenIcon,
   BookTextIcon,
+  ChevronLeftIcon,
   Code2Icon,
   GraduationCapIcon,
   LayoutDashboardIcon,
@@ -33,6 +34,17 @@ interface NavSection {
 }
 
 const navSections: NavSection[] = [
+  {
+    title: "",
+    items: [
+      {
+        key: "Back",
+        label: "กลับไปยังหน้าแรก",
+        link: { to: "/" },
+        icon: ChevronLeftIcon,
+      },
+    ],
+  },
   {
     title: "General",
     items: [
@@ -78,8 +90,8 @@ const navSections: NavSection[] = [
     items: [
       {
         key: "submissions-list",
-        label: "Submissions",
-        link: { to: "/admin/user" },
+        label: "Lesson Sessions",
+        link: { to: "/admin/submission" },
         icon: BookOpenCheckIcon,
       },
       {
@@ -111,7 +123,7 @@ export default function Sidebar() {
   return (
     <CollapsibleSidebar className={styles.sidebar}>
       <div className={styles.header}>
-        <Link to="/" className={styles.logoLink} title="CUDE Admin">
+        <Link to="/admin" className={styles.logoLink} title="CUDE Admin">
           {collapsed ? <span className={styles.collapsedLogo}>C</span> : <Logo type="admin" />}
         </Link>
       </div>
