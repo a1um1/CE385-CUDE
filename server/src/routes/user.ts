@@ -4,11 +4,7 @@ import {
 } from "#/service/transactions/transactions.schema";
 import UserService from "#/service/user";
 import RankingService from "#/service/ranking";
-import {
-  rankingQuerySchema,
-  weeklyRankingListSchema,
-  xpRankingListSchema,
-} from "#/service/ranking/ranking.schema";
+import { rankingQuerySchema, xpRankingListSchema } from "#/service/ranking/ranking.schema";
 import {
   UserSafeSchema,
   UserUpdateAvatarSchema,
@@ -134,23 +130,13 @@ const userRoute = new CustomRouter({
     {
       summary: "Get the XP ranking",
       description:
-        "Return the top users ranked by XP earned from successful lesson submissions during the " +
+        "Return the top users ranked by positive XP transactions during the " +
         "current server-time week (Monday start) or calendar month. The response includes XP earned " +
         "in the period separately from each user's all-time total XP and public profile images.",
       query: rankingQuerySchema,
       response: xpRankingListSchema,
     },
     async ({ query }) => RankingService.getXpRanking(query),
-  )
-  .get(
-    "/weekly-ranking",
-    {
-      summary: "Get the weekly exercise ranking",
-      description:
-        "Return the top weekly users by distinct exercises completed, including the current user if they are outside the top ten.",
-      response: weeklyRankingListSchema,
-    },
-    async ({ user }) => RankingService.getWeeklyRanking(user.JSON.id),
   )
   .get(
     "/transactions",
