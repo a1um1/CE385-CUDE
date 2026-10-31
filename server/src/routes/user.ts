@@ -5,6 +5,7 @@ import {
 import UserService from "#/service/user";
 import {
   UserSafeSchema,
+  UserLessonStatsSchema,
   UserUpdateAvatarSchema,
   UserUpdateBackgroundSchema,
   UserUpdatePasswordSchema,
@@ -122,6 +123,17 @@ const userRoute = new CustomRouter({
       const userStat = await user.getUserStat();
       return userStat.JSON;
     },
+  )
+  .get(
+    "/lesson-stats",
+    {
+      summary: "Get the authenticated user's lesson statistics",
+      description:
+        "Return the total lesson count, the number passed by this user, and the number not yet passed. " +
+        "Lessons not yet passed include lessons that have not been attempted.",
+      response: UserLessonStatsSchema,
+    },
+    async ({ user }) => user.getLessonStats(),
   )
   .get(
     "/transactions",
