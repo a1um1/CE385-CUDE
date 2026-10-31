@@ -2,8 +2,12 @@ import type { Prisma } from "#/generated/prisma/client";
 import type { SubmissionStatus } from "#/generated/prisma/enums";
 import { client, type Db } from "#/repository/client";
 import { resolveInclude } from "#/lib/include";
-import type { SessionData } from "#/service/learnSession/session.schema";
-import { sessionIncludes } from "#/service/learnSession/session.schema";
+import type { RecentSessionData, SessionData } from "#/service/learnSession/session.schema";
+import { RecentSessionPayload, sessionIncludes } from "#/service/learnSession/session.schema";
+import {
+  AdminSessionDetailPayload,
+  AdminSessionListPayload,
+} from "#/service/admin/session/session.schema";
 
 export const sessionRepository = {
   findById: async (
@@ -22,6 +26,14 @@ export const sessionRepository = {
       orderBy: { createdAt: "desc" },
       include: resolveInclude<Prisma.SessionsInclude>(include, sessionIncludes),
     })) as SessionData[],
+
+  findRecentByUserID: (userID: string, take: number): Promise<RecentSessionData[]> =>
+    client().sessions.findMany({
+      where: { userID },
+      orderBy: { createdAt: "desc" },
+      take,
+      select: RecentSessionPayload,
+    }),
 
   /** The lesson of the user's open session, if any. */
   findPending: (userID: string, tx?: Db) =>
@@ -67,6 +79,28 @@ export const sessionRepository = {
         status: { in: ["SUBMITTED", "CANCELLED"] },
       },
       select: { LessonID: true, status: true, submissions: { select: { ok: true } } },
+    }),
+
+  findAdminPage: (args: {
+    take: number;
+    skip: number;
+    cursor?: { id: string };
+    where: Prisma.SessionsWhereInput;
+    orderBy: Prisma.SessionsOrderByWithRelationInput;
+  }) =>
+    client().sessions.findMany({
+      where: args.where,
+      take: args.take,
+      skip: args.skip,
+      cursor: args.cursor,
+      orderBy: args.orderBy,
+      select: AdminSessionListPayload,
+    }),
+
+  findAdminById: (id: string) =>
+    client().sessions.findUnique({
+      where: { id },
+      select: AdminSessionDetailPayload,
     }),
 
   getCurrentAttempt: async (userID: string, lessonID: string, tx?: Db): Promise<number> => {

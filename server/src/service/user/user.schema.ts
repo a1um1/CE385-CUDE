@@ -1,4 +1,5 @@
 import type { Prisma, User } from "#/generated/prisma/client";
+import { SessionStatusEnum } from "#/service/learnSession/session.schema";
 import { z } from "#/lib/extendZod";
 import type Zod from "zod";
 
@@ -114,6 +115,28 @@ export const UserSafePublicSchema = UserSchema.omit({
   isActive: true,
 }).openapi("UserSafePublicData");
 
+/** One lesson session as shown in a public profile's recent activity list. */
+export const ProfileActivitySchema = z
+  .object({
+    id: z.string().openapi({ example: "session_id" }),
+    lessonID: z.string().openapi({ example: "lesson_id" }),
+    lessonName: z.string().openapi({ example: "lesson_name" }),
+    unitName: z.string().openapi({ example: "unit_name" }),
+    courseName: z.string().openapi({ example: "Course_Name" }),
+    status: SessionStatusEnum,
+    createdAt: z.date().openapi({ example: "2023-01-01T00:00:00.000Z" }),
+  })
+  .openapi("ProfileActivity");
+
+export const UserPublicProfileSchema = UserSafePublicSchema.extend({
+  level: z.number(),
+  xpIntoLevel: z.number(),
+  xpToNextLevel: z.number(),
+  levelProgressPercent: z.number(),
+  /** The user's five most recent lesson sessions, newest first. */
+  recentActivity: z.array(ProfileActivitySchema),
+}).openapi("UserPublicProfileData");
+
 export const UserCreationSchema = UserSchema.pick({
   name: true,
   username: true,
@@ -152,3 +175,4 @@ export type userUpdateAvatarSchema = Zod.infer<typeof UserUpdateAvatarSchema>;
 export type userUpdateBackgroundSchema = Zod.infer<typeof UserUpdateBackgroundSchema>;
 export type userUpdatePasswordSchema = Zod.infer<typeof UserUpdatePasswordSchema>;
 export type userSafePublicSchema = Zod.infer<typeof UserSafePublicSchema>;
+export type userPublicProfileSchema = Zod.infer<typeof UserPublicProfileSchema>;

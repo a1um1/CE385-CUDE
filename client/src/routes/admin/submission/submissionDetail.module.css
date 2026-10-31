@@ -1,0 +1,113 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.field {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.fieldLabel {
+  font-weight: 600;
+  min-width: 7rem;
+}
+
+.title {
+  font-weight: 700;
+}
+
+.result {
+  font-weight: 600;
+}
+
+.layout {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.submissions {
+  width: 20rem;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.submissionsTitle {
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.submission {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  width: 100%;
+  text-align: left;
+  padding: 0.75rem;
+  cursor: pointer;
+  border-bottom: 1px solid var(--color-border);
+  border-left: 4px solid transparent;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+
+.submissionSelected {
+  border-left: 4px solid var(--color-primary);
+  background: var(--color-surface);
+}
+
+.submissionName {
+  font-weight: 600;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.submissionResult {
+  font-weight: 600;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.detail {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.detailHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.subsection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.subsectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.subsectionTitle {
+  font-weight: 600;
+}

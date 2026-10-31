@@ -1,4 +1,3 @@
-import Button from "#/components/button";
 import { Course, type CourseStatus } from "#/components/course";
 import Select from "#/components/select";
 import Skeleton from "#/components/skeleton";
@@ -34,7 +33,6 @@ export function LessonsPanel({ courseId }: LessonsPanelProps) {
 
   const course = courses.data?.data.find((item) => item.id === courseId);
 
-  // Default to first unit or drop invalid unit id
   useEffect(() => {
     if (!units.data?.length) return;
     if (!unitId || !units.data.some((u) => u.id === unitId)) {
@@ -48,11 +46,10 @@ export function LessonsPanel({ courseId }: LessonsPanelProps) {
 
   return (
     <>
-      <div>
-        <Button variant="secondary" onClick={() => setCourse(undefined)}>
-          <ChevronLeft />
-          เนื้อหาทั้งหมด
-        </Button>
+      <div className="-mb-4">
+        <button onClick={() => setCourse(undefined)} className="flex items-center gap-2">
+          <ChevronLeft /> เนื้อหาทั้งหมด
+        </button>
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-4">

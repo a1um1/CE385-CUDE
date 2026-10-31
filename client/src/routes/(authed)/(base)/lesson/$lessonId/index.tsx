@@ -120,22 +120,20 @@ const LessonStart = () => {
   );
 };
 
-/** Every attempt of this lesson, newest first, each with its score and the lesson's total. */
 const useLessonResults = () => {
   const lesson = useLoaderData({ from: lessonRouteId });
   const sessions = useLearnSessionsQuery(["submissions"]);
   const exercises = useExerciseFromLessonQuery(lesson.id);
 
   const total = exercises.data?.filter((exercise) => exercise.type === "CODE").length ?? 0;
-  // ISO timestamps, so a plain string compare sorts newest first.
+
   const attempts = (sessions.data ?? [])
     .filter(
       (session) =>
         session.LessonID === lesson.id &&
         (session.status === "SUBMITTED" || session.status === "CANCELLED"),
     )
-    // oxlint-disable-next-line unicorn/no-array-sort -- filter() already returned a new array
-    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    .toSorted((a, b) => b.createdAt.localeCompare(a.createdAt))
     .map((session) => ({
       id: session.id,
       createdAt: session.createdAt,
@@ -147,10 +145,8 @@ const useLessonResults = () => {
   return { total, attempts };
 };
 
-/** The student's score of their latest submitted attempt, or the availability while they have none. */
 const LessonScore = () => {
   const { total, attempts } = useLessonResults();
-  // A given-up attempt was never graded, so it does not count as a score.
   const latest = attempts.find((attempt) => !attempt.cancelled);
 
   if (!latest) return <LessonAvailability />;
@@ -163,7 +159,6 @@ const LessonScore = () => {
   );
 };
 
-/** Every attempt of this lesson, newest first, next to the lesson statistics. */
 const LessonHistory = () => {
   const lesson = useLoaderData({ from: lessonRouteId });
   const { total, attempts } = useLessonResults();
@@ -204,10 +199,10 @@ function RouteComponent() {
   return (
     <>
       <div>
-        <ButtonLink variant="secondary" to="/">
+        <Link to="/" className="flex items-center gap-2">
           <ChevronLeft />
           เนื้อหาทั้งหมด
-        </ButtonLink>
+        </Link>
       </div>
       <div className="flex gap-4 items-start">
         <LessonScore />

@@ -50,8 +50,9 @@ export default function UpdatePasswordForm() {
               />
             )}
           </form.AppField>
-
-          <form.SubmitButton label="Update Password" />
+          <div className="flex justify-end">
+            <form.SubmitButton label="Update Password" />
+          </div>
         </form.AppForm>
       </form>
     </>

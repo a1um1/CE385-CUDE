@@ -7,6 +7,8 @@ Table Course {
   name String [not null]
   color String [not null]
   icon String [not null]
+  shortDescription String [default: '']
+  badge String [default: '']
   position Int [not null]
   createdByID String [not null]
   createdBy User [not null]

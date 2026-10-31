@@ -10,11 +10,11 @@ import {
   xpRankingListSchema,
 } from "#/service/ranking/ranking.schema";
 import {
-  UserSafePublicSchema,
   UserSafeSchema,
   UserUpdateAvatarSchema,
   UserUpdateBackgroundSchema,
   UserUpdatePasswordSchema,
+  UserPublicProfileSchema,
 } from "#/service/user/user.schema";
 import { zodUserStatExtendedObject } from "#/service/userStat/userStat.schema";
 import { z } from "#/lib/extendZod";
@@ -94,8 +94,9 @@ const userRoute = new CustomRouter({
       summary: "Get user profile by username",
       description:
         "Return the **public** profile of any user by username. No authentication is required. " +
-        "Private fields (email, role, password hash, …) are withheld. Returns `404` when no user has " +
-        "that username.",
+        "Private fields (email, role, password hash, …) are withheld.\n\n" +
+        "The response also lists the user's five most recent lesson sessions in `recentActivity`, " +
+        "newest first. Returns `404` when no user has that username.",
       params: z
         .object({
           username: z.string(),
@@ -105,11 +106,11 @@ const userRoute = new CustomRouter({
             username: "john_doe",
           },
         }),
-      response: UserSafePublicSchema,
+      response: UserPublicProfileSchema,
     },
     async ({ params }) => {
       const user = await UserService.getByUsername(params.username);
-      return user.publicJSON;
+      return user.publicProfileJSON();
     },
   )
   .get(

@@ -397,7 +397,9 @@ export interface paths {
         };
         /**
          * Get user profile by username
-         * @description Return the **public** profile of any user by username. No authentication is required. Private fields (email, role, password hash, …) are withheld. Returns `404` when no user has that username.
+         * @description Return the **public** profile of any user by username. No authentication is required. Private fields (email, role, password hash, …) are withheld.
+         *
+         *     The response also lists the user's five most recent lesson sessions in `recentActivity`, newest first. Returns `404` when no user has that username.
          */
         get: {
             parameters: {
@@ -416,7 +418,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["UserSafePublicData"];
+                        "application/json": components["schemas"]["UserPublicProfileData"];
                     };
                 };
                 /** @description Validation error */
@@ -1262,102 +1264,6 @@ export interface paths {
         };
         put?: never;
         post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/test/spend-enegry": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Spend Energy
-         * @description Debug endpoint that spends energy from the authenticated user's stat once, exercising the currency / energy path. Requires an authenticated user.
-         */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @example Energy spent successfully */
-                            message: string;
-                        };
-                    };
-                };
-                /** @description Validation error */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Forbidden */
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Conflict */
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-                /** @description Internal server error */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ErrorResponse"];
-                    };
-                };
-            };
-        };
         delete?: never;
         options?: never;
         head?: never;
@@ -3578,6 +3484,205 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/submission": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List lesson sessions
+         * @description Cursor-paginated list of every lesson session, newest first. Requires an ADMIN token.
+         *
+         *     Filter by `result` (`PASSED`, `FAILED`, `GRADING`, `ONGOING`, `GIVEUP`) and by `userSearch`, which matches the owner's name or email (case-insensitive substring). Narrow to a lesson with `courseID`, `unitID` or `lessonID`.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    perPage?: number;
+                    cursor?: string;
+                    direction?: "forward" | "backward";
+                    userSearch?: string;
+                    courseID?: string;
+                    unitID?: string;
+                    lessonID?: string;
+                    result?: "PASSED" | "FAILED" | "GRADING" | "ONGOING" | "GIVEUP";
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminSessionListResponse"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/submission/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get lesson session by ID
+         * @description Return one lesson session with every submission of that session, including the exercise statement and the submitted code. Requires an ADMIN token.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminSessionDetail"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin": {
         parameters: {
             query?: never;
@@ -4179,11 +4284,7 @@ export interface paths {
             requestBody?: {
                 content: {
                     "application/json": {
-                        /**
-                         * @example python
-                         * @enum {string}
-                         */
-                        language: "python" | "c";
+                        language: components["schemas"]["GoJudgeLanguage"];
                         /** @example print("Hello world", input()) */
                         code: string;
                         /** @example Hello */
@@ -4290,11 +4391,7 @@ export interface paths {
                     "application/json": {
                         /** @example print("Hello World") */
                         code: string;
-                        /**
-                         * @example python
-                         * @enum {string}
-                         */
-                        language: "python" | "c";
+                        language: components["schemas"]["GoJudgeLanguage"];
                         testCases: components["schemas"]["graderRequestBody"];
                     };
                 };
@@ -6500,6 +6597,35 @@ export interface components {
         };
         /** @example Password123! */
         UserPasswordDefinition: string;
+        UserPublicProfileData: components["schemas"]["UserSafePublicData"] & {
+            level: number;
+            xpIntoLevel: number;
+            xpToNextLevel: number;
+            levelProgressPercent: number;
+            recentActivity: components["schemas"]["ProfileActivity"][];
+        };
+        ProfileActivity: {
+            /** @example session_id */
+            id: string;
+            /** @example lesson_id */
+            lessonID: string;
+            /** @example lesson_name */
+            lessonName: string;
+            /** @example unit_name */
+            unitName: string;
+            /** @example Course_Name */
+            courseName: string;
+            /**
+             * @example PENDING
+             * @enum {string}
+             */
+            status: "PENDING" | "SUBMITTED" | "GRADED" | "CANCELLED";
+            /**
+             * Format: date-time
+             * @example 2023-01-01T00:00:00.000Z
+             */
+            createdAt: string;
+        };
         UserSafePublicData: {
             /** @example 123456 */
             id: string;
@@ -6573,12 +6699,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-30T06:15:28.668Z
+             * @example 2026-10-31T07:23:34.985Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-30T06:15:28.676Z
+             * @example 2026-10-31T07:23:34.986Z
              */
             updatedAt: string;
         };
@@ -6624,6 +6750,10 @@ export interface components {
             /** @example #FFFFFF */
             color: string;
             icon: components["schemas"]["GoJudgeLanguage"];
+            /** @example This is a short description of the course. */
+            shortDescription: string | null;
+            /** @example This is a badge for the course. */
+            badge: string | null;
             /** @example 0 */
             position: number;
             /**
@@ -6646,13 +6776,17 @@ export interface components {
          * @example python
          * @enum {string}
          */
-        GoJudgeLanguage: "python" | "c";
+        GoJudgeLanguage: "python" | "c" | "javascript" | "csharp" | "sql";
         AdminCourseCreate: {
             /** @example Course Name */
             name: string;
             /** @example #FFFFFF */
             color: string;
             icon: components["schemas"]["GoJudgeLanguage"];
+            /** @example This is a short description of the course. */
+            shortDescription: string;
+            /** @example This is a badge for the course. */
+            badge: string;
         };
         AdminCourseUpdate: {
             /** @example Course Name */
@@ -6660,6 +6794,10 @@ export interface components {
             /** @example #FFFFFF */
             color: string;
             icon: components["schemas"]["GoJudgeLanguage"];
+            /** @example This is a short description of the course. */
+            shortDescription: string;
+            /** @example This is a badge for the course. */
+            badge: string;
         };
         PaginatedLesson: {
             items: components["schemas"]["Lesson"][];
@@ -6916,12 +7054,7 @@ export interface components {
             codeExercise?: components["schemas"]["AdminCodeExerciseConfig"];
         };
         AdminCodeExerciseConfig: {
-            /**
-             * @default python
-             * @example python
-             * @enum {string}
-             */
-            language: "python" | "c";
+            language?: components["schemas"]["GoJudgeLanguage"];
             /** @example print('hello') */
             starterCode?: string | null;
             testerCode?: string | null;
@@ -6994,6 +7127,85 @@ export interface components {
                 name: string;
                 /** @example john@example.com */
                 email: string;
+                /** @example https://example.com/profile.jpg */
+                profileImage: string | null;
+            };
+        };
+        AdminSessionListResponse: {
+            /** @example [] */
+            data: components["schemas"]["AdminSessionObject"][];
+            /** @example next_cursor_id */
+            nextCursor?: string;
+            /** @example prev_cursor_id */
+            prevCursor?: string;
+        };
+        AdminSessionObject: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            userID: string;
+            /** Format: uuid */
+            LessonID: string;
+            /** @enum {string} */
+            status: "PENDING" | "SUBMITTED" | "GRADED" | "CANCELLED";
+            rewarded: boolean;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            user: {
+                name: string;
+                email: string;
+                profileImage: string | null;
+            };
+            lesson: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                unit: {
+                    /** Format: uuid */
+                    id: string;
+                    name: string;
+                    course: {
+                        /** Format: uuid */
+                        id: string;
+                        name: string;
+                        color: string;
+                        icon: string;
+                    };
+                };
+            };
+            submissions: {
+                isGraded: boolean;
+                ok: boolean;
+            }[];
+        };
+        AdminSessionDetail: components["schemas"]["AdminSessionObject"] & {
+            submissions?: components["schemas"]["AdminSessionSubmission"][];
+        };
+        AdminSessionSubmission: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            exerciseID: string;
+            content: {
+                /** @example print("hello") */
+                code: string;
+            };
+            isGraded: boolean;
+            ok: boolean;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            exercise: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                content: string;
+                codeExercise?: {
+                    language: string | null;
+                } | null;
             };
         };
         AuthenticationResponseData: {
@@ -7027,6 +7239,24 @@ export interface components {
                     version: string;
                 };
                 c?: {
+                    /** @example Python */
+                    name: string;
+                    /** @example 3.11.4 */
+                    version: string;
+                };
+                javascript?: {
+                    /** @example Python */
+                    name: string;
+                    /** @example 3.11.4 */
+                    version: string;
+                };
+                csharp?: {
+                    /** @example Python */
+                    name: string;
+                    /** @example 3.11.4 */
+                    version: string;
+                };
+                sql?: {
                     /** @example Python */
                     name: string;
                     /** @example 3.11.4 */
@@ -7081,6 +7311,10 @@ export interface components {
             /** @example #FFFFF */
             color: string;
             icon: components["schemas"]["GoJudgeLanguage"];
+            /** @example Short description of the course */
+            shortDescription: string | null;
+            /** @example Badge text for the course */
+            badge: string | null;
             units?: {
                 /**
                  * Format: uuid
