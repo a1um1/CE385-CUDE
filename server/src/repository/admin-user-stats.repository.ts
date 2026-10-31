@@ -20,9 +20,7 @@ export const adminUserStatsRepository = {
     const submissions = await client().$queryRaw<{ date: string; count: number }[]>`
 		SELECT DATE("createdAt")::text AS date, COUNT(*)::int AS count
 		FROM "Sessions"
-		WHERE "userID" = ${userID}
-			AND "createdAt" >= ${startDate}
-			AND "createdAt" <= ${endDate}
+		WHERE "userID" = ${userID} AND "createdAt" >= ${startDate} AND "createdAt" <= ${endDate}
 		GROUP BY date
 		ORDER BY date ASC
 	`;
