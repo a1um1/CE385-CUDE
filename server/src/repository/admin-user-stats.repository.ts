@@ -17,23 +17,28 @@ export const adminUserStatsRepository = {
     startDate: Date,
     endDate: Date,
   ): Promise<UserSubmissionCalendarData> {
-    const submissions = await client().submission.findMany({
-      where: { userID, createdAt: { gte: startDate, lte: endDate } },
-      select: { createdAt: true },
-    });
+    const submissions = await client().$queryRaw<{ date: string; count: number }[]>`
+		SELECT DATE("createdAt")::text AS date, COUNT(*)::int AS count
+		FROM "Sessions"
+		WHERE "userID" = ${userID}
+			AND "createdAt" >= ${startDate}
+			AND "createdAt" <= ${endDate}
+		GROUP BY date
+		ORDER BY date ASC
+	`;
 
-    const dailyCounts: Record<string, number> = {};
-    for (const { createdAt } of submissions) {
-      const date = [
-        createdAt.getFullYear(),
-        String(createdAt.getMonth() + 1).padStart(2, "0"),
-        String(createdAt.getDate()).padStart(2, "0"),
-      ].join("-");
-      dailyCounts[date] = (dailyCounts[date] ?? 0) + 1;
-    }
+    let maxCount = 0;
+    const dailyCounts = submissions.reduce(
+      (acc, submission) => {
+        acc[submission.date] = submission.count;
+        if (submission.count > maxCount) maxCount = submission.count;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
 
     return {
-      maxCount: Math.max(0, ...Object.values(dailyCounts)),
+      maxCount,
       dailyCounts,
     };
   },
