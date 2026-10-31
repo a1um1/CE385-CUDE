@@ -1,6 +1,7 @@
 import type { Prisma } from "#/generated/prisma/client";
 import { client, type Db } from "#/repository/client";
 import { userQueryPayload } from "#/service/user/user.schema";
+import type { userLessonStats } from "#/service/user/user.schema";
 
 export const userRepository = {
   /** Public lookup: inactive accounts are treated as missing. */
@@ -30,6 +31,25 @@ export const userRepository = {
     }),
 
   findByEmail: (email: string, tx?: Db) => client(tx).user.findUnique({ where: { email } }),
+
+  findLessonStats: async (userID: string): Promise<userLessonStats> => {
+    const [stats] = await client().$queryRaw<userLessonStats[]>`
+      WITH passed_lessons AS (
+        SELECT DISTINCT s."LessonID"
+        FROM "Sessions" s
+        WHERE s."userID" = ${userID}
+          AND s.rewarded = true
+      )
+      SELECT
+        COUNT(l.id)::int AS "totalLessons",
+        COUNT(p."LessonID")::int AS "passedLessons",
+        (COUNT(l.id) - COUNT(p."LessonID"))::int AS "notPassedLessons"
+      FROM "Lesson" l
+      LEFT JOIN passed_lessons p ON p."LessonID" = l.id
+    `;
+    if (!stats) throw new Error("Lesson statistics query returned no result");
+    return stats;
+  },
 
   findPage: (args: {
     take: number;

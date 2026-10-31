@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import UserError from "#/lib/router/http/userError";
 import {
+  type userLessonStats,
   type userSafeSchema,
   type userUpdateAvatarSchema,
   type userUpdateBackgroundSchema,
@@ -63,6 +64,10 @@ export default class UserService {
         createdAt: session.createdAt,
       })),
     };
+  }
+
+  getLessonStats(): Promise<userLessonStats> {
+    return userRepository.findLessonStats(this.user.id);
   }
 
   async updateAvatar(data: userUpdateAvatarSchema) {

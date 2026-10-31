@@ -137,6 +137,16 @@ export const UserPublicProfileSchema = UserSafePublicSchema.extend({
   recentActivity: z.array(ProfileActivitySchema),
 }).openapi("UserPublicProfileData");
 
+export const UserLessonStatsSchema = z
+  .object({
+    totalLessons: z.number().int().openapi({ example: 30 }),
+    passedLessons: z.number().int().openapi({ example: 12 }),
+    notPassedLessons: z.number().int().openapi({ example: 18 }),
+  })
+  .openapi("UserLessonStats");
+
+export type userLessonStats = Zod.infer<typeof UserLessonStatsSchema>;
+
 export const UserCreationSchema = UserSchema.pick({
   name: true,
   username: true,
