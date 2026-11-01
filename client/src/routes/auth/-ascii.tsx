@@ -26,6 +26,8 @@ function sampleImage(
   height: number,
   cw: number,
   ch: number,
+  ox: number,
+  oy: number,
 ): Uint8ClampedArray | null {
   const offscreen = document.createElement("canvas");
   offscreen.width = cols;
@@ -33,13 +35,12 @@ function sampleImage(
   const sx = offscreen.getContext("2d", { willReadFrequently: true });
   if (!sx) return null;
 
-  // cover fit in real pixels, so the aspect ratio is preserved
   const scale = Math.max(width / img.width, height / img.height);
   const dw = img.width * scale;
   const dh = img.height * scale;
 
-  // convert to grid units: one grid pixel = one cw x ch character cell
-  sx.drawImage(img, (width - dw) / 2 / cw, (height - dh) / 2 / ch, dw / cw, dh / ch);
+  // image is centered on the panel; subtract the grid offset, then convert to grid units
+  sx.drawImage(img, ((width - dw) / 2 - ox) / cw, ((height - dh) / 2 - oy) / ch, dw / cw, dh / ch);
   return sx.getImageData(0, 0, cols, rows).data;
 }
 
@@ -147,7 +148,11 @@ export default function AsciiPanel({ src, name, author }: AsciiPanelProps) {
       const cols = Math.ceil(width / cw);
       const rows = Math.ceil(height / ch);
 
-      const data = sampleImage(img, cols, rows, width, height, cw, ch);
+      // center the grid so overshoot is split evenly on all sides
+      const ox = (width - cols * cw) / 2;
+      const oy = (height - rows * ch) / 2;
+
+      const data = sampleImage(img, cols, rows, width, height, cw, ch, ox, oy);
       if (!data) return;
 
       context.clearRect(0, 0, width, height);
@@ -156,7 +161,7 @@ export default function AsciiPanel({ src, name, author }: AsciiPanelProps) {
 
       for (let y = 0; y < rows; y++) {
         for (let x = 0; x < cols; x++) {
-          drawCell(context, data, (y * cols + x) * 4, x * cw, y * ch);
+          drawCell(context, data, (y * cols + x) * 4, ox + x * cw, oy + y * ch);
         }
       }
     }
