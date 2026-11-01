@@ -92,7 +92,7 @@ export const userStatRepository = {
     const percentages = Object.fromEntries(
       Object.entries(dailyCounts).map(([date, count]) => [
         date,
-        Math.floor((maxCount > 0 ? count / maxCount : 0) * 100) / 100,
+        Number((count / maxCount).toFixed(2)),
       ]),
     );
 
