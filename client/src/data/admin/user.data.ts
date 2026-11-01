@@ -85,3 +85,18 @@ export const useAdminUpdateUser = () =>
       return data;
     },
   });
+
+export const useAdminViewUserActivity = (userId: string, monthWindow = 3) =>
+  useQuery({
+    queryKey: ["admin", "user", "activity", userId],
+    queryFn: async () => {
+      const { data, error } = await APIclient.GET("/admin/user/{userId}/submission-calendar", {
+        params: {
+          path: { userId },
+          query: { months: monthWindow },
+        },
+      });
+      if (error) throw error;
+      return data;
+    },
+  });
