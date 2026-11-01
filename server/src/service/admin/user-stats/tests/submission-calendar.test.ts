@@ -11,12 +11,13 @@ describe("AdminUserStatsController.getUserSubmissionCalendar", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-10-27T12:00:00.000Z"));
     mockDB.user.findUnique.mockResolvedValueOnce({ id: "user-a" } as never);
-    mockDB.submission.findMany.mockResolvedValueOnce([
-      { createdAt: new Date("2026-10-01T09:00:00.000Z") },
-      { createdAt: new Date("2026-10-01T10:00:00.000Z") },
-      { createdAt: new Date("2026-10-01T11:00:00.000Z") },
-      { createdAt: new Date("2026-10-02T09:00:00.000Z") },
-    ] as never);
+    mockDB.$queryRaw.mockResolvedValueOnce([
+      { date: "2026-10-01", count: 3 } as never,
+      { date: "2026-10-02", count: 1 } as never,
+    ] as {
+      date: string;
+      count: number;
+    }[]);
 
     const calendar = await AdminUserStatsController.getUserSubmissionCalendar("user-a", 1);
 
@@ -24,23 +25,13 @@ describe("AdminUserStatsController.getUserSubmissionCalendar", () => {
       "2026-10-01": 1,
       "2026-10-02": 0.33,
     });
-    expect(mockDB.submission.findMany).toHaveBeenCalledWith({
-      where: {
-        userID: "user-a",
-        createdAt: {
-          gte: new Date(2026, 8, 27),
-          lte: new Date("2026-10-27T12:00:00.000Z"),
-        },
-      },
-      select: { createdAt: true },
-    });
   });
 
   it("returns an empty map when the user has no submissions", async () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-10-27T12:00:00.000Z"));
     mockDB.user.findUnique.mockResolvedValueOnce({ id: "user-a" } as never);
-    mockDB.submission.findMany.mockResolvedValueOnce([]);
+    mockDB.$queryRaw.mockResolvedValueOnce([] as { date: string; count: number }[]);
 
     const calendar = await AdminUserStatsController.getUserSubmissionCalendar("user-a", 1);
 

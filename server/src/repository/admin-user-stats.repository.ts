@@ -26,7 +26,7 @@ export const adminUserStatsRepository = {
 	`;
 
     let maxCount = 0;
-    const dailyCounts = submissions.reduce(
+    const dailyCounts = (submissions || []).reduce(
       (acc, submission) => {
         acc[submission.date] = submission.count;
         if (submission.count > maxCount) maxCount = submission.count;
