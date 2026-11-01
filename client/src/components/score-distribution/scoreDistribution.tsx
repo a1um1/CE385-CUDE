@@ -23,7 +23,7 @@ export const ScoreDistribution = ({ data, height = 300 }: ScoreDistributionProps
         tick={axisTick}
         axisLine={false}
         tickLine={false}
-        domain={[0, "dataMax "]}
+        domain={[0, "dataMax"]}
       />
       <Tooltip
         cursor={{ fill: "var(--color-secondary)", opacity: 0.4 }}
@@ -35,7 +35,7 @@ export const ScoreDistribution = ({ data, height = 300 }: ScoreDistributionProps
           color: "var(--color-secondary-text)",
         }}
       />
-      <Bar dataKey="count" name="จำนวน" fill="var(--color-primary)" radius={[2, 2, 0, 0]} />
+      <Bar dataKey="count" name="จำนวน" fill="var(--color-primary)" radius={[4, 4, 0, 0]} />
     </BarChart>
   </ResponsiveContainer>
 );
