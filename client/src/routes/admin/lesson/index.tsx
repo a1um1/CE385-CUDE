@@ -116,6 +116,18 @@ const buildColumns = (unitMap: Map<string, string>) =>
           <ButtonLink
             size="xs"
             variant="secondary"
+            to="/admin/statistic"
+            search={{
+              courseId: info.row.original.unit?.course?.id,
+              unitId: info.row.original.unitID,
+              lessonId: info.row.original.id,
+            }}
+          >
+            Stats
+          </ButtonLink>
+          <ButtonLink
+            size="xs"
+            variant="secondary"
             to="/admin/lesson/$id"
             params={{ id: info.row.original.id }}
           >

@@ -31,6 +31,7 @@ import { Route as AdminExerciseCreateRouteImport } from './routes/admin/exercise
 import { Route as AdminLessonIndexRouteImport } from './routes/admin/lesson/index'
 import { Route as AdminLessonIdRouteImport } from './routes/admin/lesson/$id'
 import { Route as AdminLessonCreateRouteImport } from './routes/admin/lesson/create'
+import { Route as AdminStatisticIndexRouteImport } from './routes/admin/statistic/index'
 import { Route as AdminSubmissionIndexRouteImport } from './routes/admin/submission/index'
 import { Route as AdminSubmissionIdRouteImport } from './routes/admin/submission/$id'
 import { Route as AdminTransactionIndexRouteImport } from './routes/admin/transaction/index'
@@ -158,6 +159,11 @@ const AdminLessonCreateRoute = AdminLessonCreateRouteImport.update({
   path: '/lesson/create',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminStatisticIndexRoute = AdminStatisticIndexRouteImport.update({
+  id: '/statistic/',
+  path: '/statistic/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminSubmissionIndexRoute = AdminSubmissionIndexRouteImport.update({
   id: '/submission/',
   path: '/submission/',
@@ -281,6 +287,7 @@ export interface FileRoutesByFullPath {
   '/admin/course/': typeof AdminCourseIndexRoute
   '/admin/exercise/': typeof AdminExerciseIndexRoute
   '/admin/lesson/': typeof AdminLessonIndexRoute
+  '/admin/statistic/': typeof AdminStatisticIndexRoute
   '/admin/submission/': typeof AdminSubmissionIndexRoute
   '/admin/transaction/': typeof AdminTransactionIndexRoute
   '/admin/unit/': typeof AdminUnitIndexRoute
@@ -317,6 +324,7 @@ export interface FileRoutesByTo {
   '/admin/course': typeof AdminCourseIndexRoute
   '/admin/exercise': typeof AdminExerciseIndexRoute
   '/admin/lesson': typeof AdminLessonIndexRoute
+  '/admin/statistic': typeof AdminStatisticIndexRoute
   '/admin/submission': typeof AdminSubmissionIndexRoute
   '/admin/transaction': typeof AdminTransactionIndexRoute
   '/admin/unit': typeof AdminUnitIndexRoute
@@ -359,6 +367,7 @@ export interface FileRoutesById {
   '/admin/course/': typeof AdminCourseIndexRoute
   '/admin/exercise/': typeof AdminExerciseIndexRoute
   '/admin/lesson/': typeof AdminLessonIndexRoute
+  '/admin/statistic/': typeof AdminStatisticIndexRoute
   '/admin/submission/': typeof AdminSubmissionIndexRoute
   '/admin/transaction/': typeof AdminTransactionIndexRoute
   '/admin/unit/': typeof AdminUnitIndexRoute
@@ -401,6 +410,7 @@ export interface FileRouteTypes {
     | '/admin/course/'
     | '/admin/exercise/'
     | '/admin/lesson/'
+    | '/admin/statistic/'
     | '/admin/submission/'
     | '/admin/transaction/'
     | '/admin/unit/'
@@ -437,6 +447,7 @@ export interface FileRouteTypes {
     | '/admin/course'
     | '/admin/exercise'
     | '/admin/lesson'
+    | '/admin/statistic'
     | '/admin/submission'
     | '/admin/transaction'
     | '/admin/unit'
@@ -478,6 +489,7 @@ export interface FileRouteTypes {
     | '/admin/course/'
     | '/admin/exercise/'
     | '/admin/lesson/'
+    | '/admin/statistic/'
     | '/admin/submission/'
     | '/admin/transaction/'
     | '/admin/unit/'
@@ -654,6 +666,13 @@ declare module '@tanstack/react-router' {
       path: '/lesson/create'
       fullPath: '/admin/lesson/create'
       preLoaderRoute: typeof AdminLessonCreateRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/statistic/': {
+      id: '/admin/statistic/'
+      path: '/statistic'
+      fullPath: '/admin/statistic/'
+      preLoaderRoute: typeof AdminStatisticIndexRouteImport
       parentRoute: typeof AdminRouteRoute
     }
     '/admin/submission/': {
@@ -887,6 +906,7 @@ interface AdminRouteRouteChildren {
   AdminCourseIndexRoute: typeof AdminCourseIndexRoute
   AdminExerciseIndexRoute: typeof AdminExerciseIndexRoute
   AdminLessonIndexRoute: typeof AdminLessonIndexRoute
+  AdminStatisticIndexRoute: typeof AdminStatisticIndexRoute
   AdminSubmissionIndexRoute: typeof AdminSubmissionIndexRoute
   AdminTransactionIndexRoute: typeof AdminTransactionIndexRoute
   AdminUnitIndexRoute: typeof AdminUnitIndexRoute
@@ -908,6 +928,7 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminCourseIndexRoute: AdminCourseIndexRoute,
   AdminExerciseIndexRoute: AdminExerciseIndexRoute,
   AdminLessonIndexRoute: AdminLessonIndexRoute,
+  AdminStatisticIndexRoute: AdminStatisticIndexRoute,
   AdminSubmissionIndexRoute: AdminSubmissionIndexRoute,
   AdminTransactionIndexRoute: AdminTransactionIndexRoute,
   AdminUnitIndexRoute: AdminUnitIndexRoute,
