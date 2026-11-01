@@ -88,9 +88,7 @@ export default function DailyQuest() {
           className={styles.statusButton}
         >
           <StatusIcon className={styles.statusIcon} />
-          <span className={styles.statusLabel}>
-            {statusInfo.label}
-          </span>
+          <span className={styles.statusLabel}>{statusInfo.label}</span>
         </button>
 
         <div className={styles.content}>

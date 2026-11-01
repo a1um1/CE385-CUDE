@@ -47,9 +47,7 @@ function SessionSidebarBody({ sessionId, lessonId, onAbort, isAborting }: Sessio
       <Divider />
       <div>
         {exercises.isLoading && <Skeleton className={styles.skeletonLoader} />}
-        {exercises.isError && (
-          <div className={styles.errorMessage}>Failed to load exercises.</div>
-        )}
+        {exercises.isError && <div className={styles.errorMessage}>Failed to load exercises.</div>}
         {!exercises.isLoading && !exercises.isError && exercises.data?.length === 0 && (
           <div className={styles.emptyMessage}>No exercises found.</div>
         )}
@@ -98,7 +96,9 @@ function SessionSidebarBody({ sessionId, lessonId, onAbort, isAborting }: Sessio
           }}
           isPending={isAborting}
         />
-        <div className={`${styles.userTriggerContainer} ${!collapsed ? styles.userTriggerContainerExpanded : ""}`}>
+        <div
+          className={`${styles.userTriggerContainer} ${!collapsed ? styles.userTriggerContainerExpanded : ""}`}
+        >
           <UserTrigger showFullInfo={!collapsed} />
         </div>
       </CollapsibleSidebarFooter>

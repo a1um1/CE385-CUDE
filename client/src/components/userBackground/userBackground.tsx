@@ -11,11 +11,7 @@ export default function UserBackground({ name, backgroundUrl, className }: UserB
   return (
     <div className={clsx(styles.userBackground, className)}>
       {backgroundUrl && (
-        <img
-          src={backgroundUrl}
-          alt={`${name}'s Background`}
-          className={styles.backgroundImage}
-        />
+        <img src={backgroundUrl} alt={`${name}'s Background`} className={styles.backgroundImage} />
       )}
     </div>
   );

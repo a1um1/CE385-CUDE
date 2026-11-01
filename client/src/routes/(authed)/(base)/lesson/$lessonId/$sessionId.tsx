@@ -87,9 +87,7 @@ function RouteComponent() {
       </div>
 
       {session?.status === "PENDING" && (
-        <p className={styles.warningMessage}>
-          ยังไม่ได้ส่งงาน หน้านี้จะแสดงคะแนนหลังกดส่งงานที่หน้าสรุปบทเรียน
-        </p>
+        <p className={styles.warningMessage}>ยังไม่ได้ส่งงาน หน้านี้จะแสดงคะแนนหลังกดส่งงานที่หน้าสรุปบทเรียน</p>
       )}
       <ExerciseList
         isLoading={exercises.isLoading}

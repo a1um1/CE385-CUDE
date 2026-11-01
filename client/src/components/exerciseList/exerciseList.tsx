@@ -31,11 +31,7 @@ export default function ExerciseList({
 }: ExerciseListProps & ExerciseListErrorProps) {
   if (isLoading) return <Skeleton className={styles.skeletonLoader} />;
   if (isError) {
-    return (
-      <div className={styles.errorMessage}>
-        {errorMessage ?? "Failed to load exercises."}
-      </div>
-    );
+    return <div className={styles.errorMessage}>{errorMessage ?? "Failed to load exercises."}</div>;
   }
   if (!items || items.length === 0) {
     return <div className={styles.emptyMessage}>No exercises found.</div>;

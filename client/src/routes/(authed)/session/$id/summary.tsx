@@ -76,12 +76,16 @@ function RouteComponent() {
 
             {submitted ? (
               <div className={`${styles.messageBox} ${styles.messageBoxSuccess}`}>
-                <p className={`${styles.messageTitle} ${styles.messageTitleSuccess}`}>ส่งงานเรียบร้อยแล้ว</p>
+                <p className={`${styles.messageTitle} ${styles.messageTitleSuccess}`}>
+                  ส่งงานเรียบร้อยแล้ว
+                </p>
                 <p>ระบบได้ตรวจคำตอบของทุกข้อที่บันทึกไว้แล้ว</p>
               </div>
             ) : (
               <div className={`${styles.messageBox} ${styles.messageBoxWarning}`}>
-                <p className={`${styles.messageTitle} ${styles.messageTitleWarning}`}>ตรวจสอบให้แน่ใจก่อนส่งงาน</p>
+                <p className={`${styles.messageTitle} ${styles.messageTitleWarning}`}>
+                  ตรวจสอบให้แน่ใจก่อนส่งงาน
+                </p>
                 <p>เมื่อส่งงานแล้วจะไม่สามารถกลับมาแก้ไขได้ ทำทุกข้อให้เรียบร้อยแล้วค่อยกดส่งงาน</p>
               </div>
             )}

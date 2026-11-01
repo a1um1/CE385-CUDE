@@ -163,11 +163,7 @@ function RouteComponent() {
           <div>
             <h2 className={styles.usernameTitle}>
               {user.name}
-              {user.epithet && (
-                <span className={styles.epithetBadge}>
-                  {user.epithet}
-                </span>
-              )}
+              {user.epithet && <span className={styles.epithetBadge}>{user.epithet}</span>}
             </h2>
             <p className={styles.usernameSubtitle}>@{user.username}</p>
           </div>

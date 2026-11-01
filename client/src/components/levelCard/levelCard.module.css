@@ -13,7 +13,11 @@
 .backgroundOverlay {
   position: absolute;
   inset: 0;
-  background-image: linear-gradient(to top, color-mix(in oklch, var(--color-background) 80%, transparent), color-mix(in oklch, var(--color-background) 50%, transparent));
+  background-image: linear-gradient(
+    to top,
+    color-mix(in oklch, var(--color-background) 80%, transparent),
+    color-mix(in oklch, var(--color-background) 50%, transparent)
+  );
 }
 
 .contentRow {

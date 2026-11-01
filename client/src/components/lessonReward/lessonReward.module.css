@@ -8,7 +8,11 @@
 
 .xpReward {
   color: var(--color-success);
-  background-image: linear-gradient(to top, color-mix(in oklch, var(--color-success) 40%, transparent), transparent);
+  background-image: linear-gradient(
+    to top,
+    color-mix(in oklch, var(--color-success) 40%, transparent),
+    transparent
+  );
   border-radius: 9999px;
   border: 2px solid var(--color-border);
   padding-left: 1rem;
@@ -21,7 +25,11 @@
 
 .gemReward {
   color: var(--color-gem);
-  background-image: linear-gradient(to top, color-mix(in oklch, var(--color-gem) 40%, transparent), transparent);
+  background-image: linear-gradient(
+    to top,
+    color-mix(in oklch, var(--color-gem) 40%, transparent),
+    transparent
+  );
   border-radius: 9999px;
   border: 2px solid var(--color-border);
   padding-left: 1rem;

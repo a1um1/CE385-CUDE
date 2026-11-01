@@ -60,9 +60,7 @@ export function VideoSections() {
                 alt={video.title}
                 className={styles.image}
               />
-              <div className={styles.runtimeBadge}>
-                {video.runTime}
-              </div>
+              <div className={styles.runtimeBadge}>{video.runTime}</div>
             </div>
             <h2 className={styles.title}>{video.title}</h2>
             <p className={styles.author}>{video.author}</p>
