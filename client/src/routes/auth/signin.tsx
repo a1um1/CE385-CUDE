@@ -1,6 +1,6 @@
 import { useAppForm, handleFormMutationError } from "#/components/form";
 import { useSignIn } from "#/data/user.data";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import styles from "./auth.module.css";
 
 export const Route = createFileRoute("/auth/signin")({
@@ -27,8 +27,8 @@ function RouteComponent() {
   });
 
   return (
-    <div className={styles.container}>
-      <h1 className={styles.heading}>Sign In</h1>
+    <>
+      <h1 className={styles.heading}>Sign In into platform</h1>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -45,6 +45,7 @@ function RouteComponent() {
                 label="Email"
                 required
                 type="email"
+                size="lg"
                 disabled={signInMutation.isPending}
               />
             )}
@@ -56,14 +57,15 @@ function RouteComponent() {
                 label="Password"
                 required
                 type="password"
+                size="lg"
                 disabled={signInMutation.isPending}
               />
             )}
           </form.AppField>
-
-          <form.SubmitButton label="Sign In" block className={styles.submitButton} />
+          <form.SubmitButton label="Sign In" size="lg" className={styles.submitButton} />
         </form.AppForm>
+        <Link to="/auth/signup">Don't have an account? Sign Up</Link>
       </form>
-    </div>
+    </>
   );
 }
