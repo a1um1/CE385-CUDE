@@ -46,10 +46,15 @@ export default class UserService {
   }
 
   async publicProfileJSON(): Promise<userPublicProfileSchema> {
-    const [stat, recentSessions] = await Promise.all([
+    const [stat, recentSessions, activity] = await Promise.all([
       userStatRepository.findByUserID(this.user.id),
       sessionRepository.findRecentByUserID(this.user.id, RECENT_ACTIVITY_LIMIT),
+      userStatRepository.findSubmissionCalendarData(
+        this.user.id,
+        new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+      ),
     ]);
+
     return {
       ...this.publicJSON,
       ...UserStatService.progressByXp(stat?.totalXP ?? 0),
@@ -62,6 +67,7 @@ export default class UserService {
         status: session.status,
         createdAt: session.createdAt,
       })),
+      activityCalendar: activity.percentages,
     };
   }
 
