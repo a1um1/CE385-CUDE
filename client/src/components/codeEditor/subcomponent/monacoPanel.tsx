@@ -5,6 +5,7 @@ import Spinner from "#/components/spinner";
 import { useEditorContext } from "./editorContext";
 import styles from "../styles/monacoPanel.module.css";
 import { useCodeAvailableLanguage } from "#/data/code.data";
+import theme from "./dracula.json";
 
 const CodeEditorPanelLayout = ({ children }: { children: ReactNode }) => (
   <Panel id="editor" defaultSize="65%" minSize="25%" className={styles.editorPanel}>
@@ -40,7 +41,10 @@ export default function MonacoPanel() {
         <Editor
           language={language}
           value={value}
-          theme="vs-dark"
+          theme="dracula"
+          beforeMount={(monaco) => {
+            monaco.editor.defineTheme("dracula", theme);
+          }}
           height="100%"
           onChange={handleEditorChange}
           onMount={handleEditorMount}

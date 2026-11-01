@@ -77,7 +77,7 @@ function RouteComponent() {
   const randomImage = useMemo(() => images[Math.floor(Math.random() * images.length)], []);
   return (
     <div className={styles["hex-bg"]}>
-      <AsciiPanel src={randomImage?.src} />
+      <AsciiPanel src={randomImage?.src} name={randomImage?.name} author={randomImage?.author} />
       <div className={styles.container}>
         <div className={styles.subContainer}>
           <div className={styles.logo}>

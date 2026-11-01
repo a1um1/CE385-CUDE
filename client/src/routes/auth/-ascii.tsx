@@ -12,6 +12,8 @@ const DURATION = 1400; // ms
 
 interface AsciiPanelProps {
   src: string;
+  name?: string;
+  author?: string;
 }
 
 const clamp255 = (v: number): number => Math.min(255, Math.max(0, v));
@@ -108,7 +110,7 @@ function cubicBezier(x1: number, y1: number, x2: number, y2: number) {
 
 const ease = cubicBezier(0, 0.7, 0.22, 1); // easeOutExpo-like
 
-export default function AsciiPanel({ src }: AsciiPanelProps) {
+export default function AsciiPanel({ src, name, author }: AsciiPanelProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [readySrc, setReadySrc] = useState<string | null>(null);
   const ready = readySrc === src;
@@ -203,6 +205,14 @@ export default function AsciiPanel({ src }: AsciiPanelProps) {
         ref={canvasRef}
         className={`${styles["ascii-canvas"]} ${ready ? styles.visible : ""}`}
       />
+      <div className={styles["image-attribution"]}>
+        {readySrc && (
+          <>
+            <span className={styles["image-name"]}>{name}</span>
+            <span className={styles["image-author"]}>{`${author}`}</span>
+          </>
+        )}
+      </div>
     </div>
   );
 }
