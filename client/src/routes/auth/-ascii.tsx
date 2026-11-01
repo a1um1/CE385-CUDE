@@ -108,7 +108,7 @@ function cubicBezier(x1: number, y1: number, x2: number, y2: number) {
   };
 }
 
-const ease = cubicBezier(0, 0.7, 0.22, 1); // easeOutExpo-like
+const ease = cubicBezier(0.99, 0, 0.01, 1.01);
 
 export default function AsciiPanel({ src, name, author }: AsciiPanelProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
