@@ -31,7 +31,10 @@ export default function Navbar() {
             <ButtonLink to="/" variant={location.pathname === "/" ? "primary" : "ghost"}>
               Learn
             </ButtonLink>
-            <ButtonLink to="/" variant={location.pathname === "/ranking" ? "primary" : "ghost"}>
+            <ButtonLink
+              to="/ranking"
+              variant={location.pathname === "/ranking" ? "primary" : "ghost"}
+            >
               Ranking
             </ButtonLink>
           </div>

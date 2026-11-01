@@ -21,6 +21,7 @@ import { Route as authedbaseIndexRouteImport } from './routes/(authed)/(base)/in
 import { Route as authedbaseAccountRouteRouteImport } from './routes/(authed)/(base)/account/route'
 import { Route as authedbasePlayRouteImport } from './routes/(authed)/(base)/play'
 import { Route as authedbasePlayGraderRouteImport } from './routes/(authed)/(base)/play-grader'
+import { Route as authedbaseRankingRouteImport } from './routes/(authed)/(base)/ranking'
 import { Route as authedSessionIdRouteRouteImport } from './routes/(authed)/session/$id/route'
 import { Route as AdminCourseIndexRouteImport } from './routes/admin/course/index'
 import { Route as AdminCourseIdRouteImport } from './routes/admin/course/$id'
@@ -107,6 +108,11 @@ const authedbasePlayRoute = authedbasePlayRouteImport.update({
 const authedbasePlayGraderRoute = authedbasePlayGraderRouteImport.update({
   id: '/play-grader',
   path: '/play-grader',
+  getParentRoute: () => authedbaseRouteRoute,
+} as any)
+const authedbaseRankingRoute = authedbaseRankingRouteImport.update({
+  id: '/ranking',
+  path: '/ranking',
   getParentRoute: () => authedbaseRouteRoute,
 } as any)
 const authedSessionIdRouteRoute = authedSessionIdRouteRouteImport.update({
@@ -273,6 +279,7 @@ export interface FileRoutesByFullPath {
   '/session/$id': typeof authedSessionIdRouteRouteWithChildren
   '/play': typeof authedbasePlayRoute
   '/play-grader': typeof authedbasePlayGraderRoute
+  '/ranking': typeof authedbaseRankingRoute
   '/admin/course/$id': typeof AdminCourseIdRoute
   '/admin/course/create': typeof AdminCourseCreateRoute
   '/admin/exercise/$id': typeof AdminExerciseIdRoute
@@ -310,6 +317,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthIndexRoute
   '/play': typeof authedbasePlayRoute
   '/play-grader': typeof authedbasePlayGraderRoute
+  '/ranking': typeof authedbaseRankingRoute
   '/admin/course/$id': typeof AdminCourseIdRoute
   '/admin/course/create': typeof AdminCourseCreateRoute
   '/admin/exercise/$id': typeof AdminExerciseIdRoute
@@ -353,6 +361,7 @@ export interface FileRoutesById {
   '/(authed)/session/$id': typeof authedSessionIdRouteRouteWithChildren
   '/(authed)/(base)/play': typeof authedbasePlayRoute
   '/(authed)/(base)/play-grader': typeof authedbasePlayGraderRoute
+  '/(authed)/(base)/ranking': typeof authedbaseRankingRoute
   '/admin/course/$id': typeof AdminCourseIdRoute
   '/admin/course/create': typeof AdminCourseCreateRoute
   '/admin/exercise/$id': typeof AdminExerciseIdRoute
@@ -396,6 +405,7 @@ export interface FileRouteTypes {
     | '/session/$id'
     | '/play'
     | '/play-grader'
+    | '/ranking'
     | '/admin/course/$id'
     | '/admin/course/create'
     | '/admin/exercise/$id'
@@ -433,6 +443,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/play'
     | '/play-grader'
+    | '/ranking'
     | '/admin/course/$id'
     | '/admin/course/create'
     | '/admin/exercise/$id'
@@ -475,6 +486,7 @@ export interface FileRouteTypes {
     | '/(authed)/session/$id'
     | '/(authed)/(base)/play'
     | '/(authed)/(base)/play-grader'
+    | '/(authed)/(base)/ranking'
     | '/admin/course/$id'
     | '/admin/course/create'
     | '/admin/exercise/$id'
@@ -596,6 +608,13 @@ declare module '@tanstack/react-router' {
       path: '/play-grader'
       fullPath: '/play-grader'
       preLoaderRoute: typeof authedbasePlayGraderRouteImport
+      parentRoute: typeof authedbaseRouteRoute
+    }
+    '/(authed)/(base)/ranking': {
+      id: '/(authed)/(base)/ranking'
+      path: '/ranking'
+      fullPath: '/ranking'
+      preLoaderRoute: typeof authedbaseRankingRouteImport
       parentRoute: typeof authedbaseRouteRoute
     }
     '/(authed)/session/$id': {
@@ -843,6 +862,7 @@ interface authedbaseRouteRouteChildren {
   authedbaseAccountRouteRoute: typeof authedbaseAccountRouteRouteWithChildren
   authedbasePlayRoute: typeof authedbasePlayRoute
   authedbasePlayGraderRoute: typeof authedbasePlayGraderRoute
+  authedbaseRankingRoute: typeof authedbaseRankingRoute
   authedbaseIndexRoute: typeof authedbaseIndexRoute
   authedbaseLessonLessonIdRouteRoute: typeof authedbaseLessonLessonIdRouteRouteWithChildren
   authedbaseProfileUsernameRoute: typeof authedbaseProfileUsernameRoute
@@ -852,6 +872,7 @@ const authedbaseRouteRouteChildren: authedbaseRouteRouteChildren = {
   authedbaseAccountRouteRoute: authedbaseAccountRouteRouteWithChildren,
   authedbasePlayRoute: authedbasePlayRoute,
   authedbasePlayGraderRoute: authedbasePlayGraderRoute,
+  authedbaseRankingRoute: authedbaseRankingRoute,
   authedbaseIndexRoute: authedbaseIndexRoute,
   authedbaseLessonLessonIdRouteRoute:
     authedbaseLessonLessonIdRouteRouteWithChildren,

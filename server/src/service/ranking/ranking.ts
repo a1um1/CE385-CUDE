@@ -14,11 +14,13 @@ export default class RankingService {
     }
 
     const rows = await rankingRepository.findXpRanking(periodStart, now, limit);
-    return rows.map(({ rank, id, username, profileImage, backgroundImage, xpEarned, totalXP }) => ({
-      rank,
-      user: { id, username, profileImage, backgroundImage },
-      xpEarned,
-      totalXP,
-    }));
+    return rows.map(
+      ({ rank, id, username, name, profileImage, backgroundImage, xpEarned, totalXP }) => ({
+        rank,
+        user: { id, username, profileImage, backgroundImage, name },
+        xpEarned,
+        totalXP,
+      }),
+    );
   }
 }

@@ -619,6 +619,8 @@ export interface paths {
                                 profileImage: string | null;
                                 /** @example https://example.com/background.jpg */
                                 backgroundImage: string | null;
+                                /** @example John Doe */
+                                name: string;
                             };
                             /** @example 250 */
                             xpEarned: number;
@@ -7264,12 +7266,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-11-01T08:24:48.997Z
+             * @example 2026-11-01T10:40:28.850Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-11-01T08:24:48.998Z
+             * @example 2026-11-01T10:40:28.850Z
              */
             updatedAt: string;
         };

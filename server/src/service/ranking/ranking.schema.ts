@@ -20,6 +20,7 @@ export const xpRankingSchema = z.object({
       .string()
       .nullable()
       .openapi({ example: "https://example.com/background.jpg" }),
+    name: z.string().openapi({ example: "John Doe" }),
   }),
   xpEarned: z.number().int().openapi({ example: 250 }),
   totalXP: z.number().int().openapi({ example: 1200 }),

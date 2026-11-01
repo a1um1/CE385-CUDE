@@ -8,6 +8,7 @@ export interface XpRankingRow {
   backgroundImage: string | null;
   xpEarned: number;
   totalXP: number;
+  name: string;
 }
 
 export const rankingRepository = {
@@ -29,6 +30,7 @@ export const rankingRepository = {
           ROW_NUMBER() OVER (ORDER BY xp."xpEarned" DESC, u.username ASC)::int AS rank,
           u.id,
           u.username,
+					u.name,
           u."profileImage",
           u."backgroundImage",
           xp."xpEarned",
@@ -37,7 +39,7 @@ export const rankingRepository = {
         JOIN "User" u ON u.id = xp."userID"
         LEFT JOIN "UserStat" us ON us."userID" = u.id
       )
-      SELECT rank, id, username, "profileImage", "backgroundImage", "xpEarned", "totalXP"
+      SELECT rank, id, username, name, "profileImage", "backgroundImage", "xpEarned", "totalXP"
       FROM ranked_users
       ORDER BY rank
       LIMIT ${limit}
