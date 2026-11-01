@@ -90,7 +90,6 @@ function RouteComponent() {
           ยังไม่ได้ส่งงาน หน้านี้จะแสดงคะแนนหลังกดส่งงานที่หน้าสรุปบทเรียน
         </p>
       )}
-
       <ExerciseList
         isLoading={exercises.isLoading}
         items={exercises.data?.map((exercise) => {

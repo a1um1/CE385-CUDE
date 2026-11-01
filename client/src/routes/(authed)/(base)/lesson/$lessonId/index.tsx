@@ -1,5 +1,4 @@
 import LessonReward from "#/components/lessonReward";
-import { PieChart } from "#/components/pie-chart";
 import { LessonHistory } from "#/routes/(authed)/(base)/lesson/$lessonId/-compo/lessonHistory";
 import { LessonScore } from "#/routes/(authed)/(base)/lesson/$lessonId/-compo/lessonScore";
 import { LessonStart } from "#/routes/(authed)/(base)/lesson/$lessonId/-compo/lessonStart";
