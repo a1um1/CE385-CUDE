@@ -1,6 +1,8 @@
 import SessionService from "#/service/learnSession";
 import { enrollmentAvailabilitySchema } from "#/service/learnSession/session";
 import { ExerciseSchema } from "#/service/exercise";
+import AdminStatsController from "#/controller/admin/stats";
+import { adminLessonStatsSchema } from "#/controller/admin/stats/stats.schema";
 import LessonService from "#/service/lesson";
 import { LessonIncludeQuerySchema, LessonSchema } from "#/service/lesson/lesson.schema";
 import { z } from "#/lib/extendZod";
@@ -34,6 +36,20 @@ const lessonRouterInstance = new CustomRouter({
       const result = await LessonService.getById(params.lessonId, query.include);
       return result.JSON;
     },
+  )
+  .get(
+    "/:lessonId/stats",
+    {
+      summary: "Get stats for one lesson",
+      description:
+        "Return attempt and score-distribution stats for the specified lesson. Requires an authenticated user. " +
+        "Returns `404` when the lesson does not exist.",
+      params: z.object({
+        lessonId: z.uuid().openapi({ example: "lesson_id" }),
+      }),
+      response: adminLessonStatsSchema,
+    },
+    ({ params }) => AdminStatsController.getLessonStats(params.lessonId),
   )
   .get(
     "/:lessonId/enrollment-availability",
