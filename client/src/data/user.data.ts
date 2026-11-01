@@ -156,3 +156,17 @@ export const useUserTransactions = (query: ExtractRequestQuery<"/user/transactio
       return data;
     },
   });
+
+export const useRankings = (query: ExtractRequestQuery<"/user/ranking", "get">) =>
+  useQuery({
+    queryKey: ["rankings", query],
+    queryFn: async () => {
+      const { data, error } = await APIclient.GET("/user/ranking", {
+        params: {
+          query,
+        },
+      });
+      if (error) throw error;
+      return data;
+    },
+  });

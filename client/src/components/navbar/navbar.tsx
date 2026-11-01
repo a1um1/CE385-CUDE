@@ -6,7 +6,7 @@ import navbarStyles from "./navbar.module.css";
 import Gem from "#/components/icon/gem";
 import { clsx } from "clsx";
 import ButtonLink from "#/components/buttonLink";
-import { Link } from "@tanstack/react-router";
+import { Link, useLocation } from "@tanstack/react-router";
 import UserMenu from "#/components/userMenu";
 import Skeleton from "#/components/skeleton";
 import CountdownTimer from "#/components/countdown";
@@ -18,6 +18,8 @@ export default function Navbar() {
   const { data: userStats, isLoading: isUserStatsLoading } = useUserStats();
 
   const isLoading = isUserLoading || (!user && isUserFetching) || isUserStatsLoading;
+
+  const location = useLocation();
   return (
     <nav className={navbarStyles.navbar}>
       <div className={navbarStyles.container}>
@@ -26,8 +28,10 @@ export default function Navbar() {
             <Logo />
           </Link>
           <div className={navbarStyles["navigation-items"]}>
-            <ButtonLink to="/">Learn</ButtonLink>
-            <ButtonLink to="/" variant="ghost">
+            <ButtonLink to="/" variant={location.pathname === "/" ? "primary" : "ghost"}>
+              Learn
+            </ButtonLink>
+            <ButtonLink to="/" variant={location.pathname === "/ranking" ? "primary" : "ghost"}>
               Ranking
             </ButtonLink>
           </div>
