@@ -2,6 +2,7 @@ import ButtonLink from "#/components/buttonLink";
 import ExerciseList from "#/components/exerciseList";
 import LessonReward from "#/components/lessonReward";
 import { Scoring } from "#/components/scoring";
+import styles from "./sessionScore.module.css";
 import type { components } from "#/data/base/openapi";
 import { useExerciseFromLessonQuery } from "#/data/exercise.data";
 import { sessionByIdQuery } from "#/data/learnSession.data";
@@ -63,7 +64,7 @@ function RouteComponent() {
           กลับไปหน้าบทเรียน
         </ButtonLink>
       </div>
-      <div className="flex gap-4 items-start">
+      <div className={styles.scoreContainer}>
         <Scoring
           status={
             cancelled
@@ -74,11 +75,11 @@ function RouteComponent() {
           }
           label={cancelled ? undefined : formatPercent(passed, codeExercises.length)}
         />
-        <div className="flex flex-col flex-1">
+        <div className={styles.scoreContent}>
           <p>
             {lesson?.unit?.course?.name} / {lesson?.unit?.name}
           </p>
-          <h1 className="text-2xl mb-2">{lesson?.name}</h1>
+          <h1 className={styles.lessonTitle}>{lesson?.name}</h1>
         </div>
         {session?.rewarded && lesson && (
           <LessonReward xp={lesson.XPgiven} gems={lesson.gemsGiven} />
@@ -86,9 +87,7 @@ function RouteComponent() {
       </div>
 
       {session?.status === "PENDING" && (
-        <p className="border-l-2 border-l-warning bg-white/5 px-4 py-3">
-          ยังไม่ได้ส่งงาน หน้านี้จะแสดงคะแนนหลังกดส่งงานที่หน้าสรุปบทเรียน
-        </p>
+        <p className={styles.warningMessage}>ยังไม่ได้ส่งงาน หน้านี้จะแสดงคะแนนหลังกดส่งงานที่หน้าสรุปบทเรียน</p>
       )}
       <ExerciseList
         isLoading={exercises.isLoading}

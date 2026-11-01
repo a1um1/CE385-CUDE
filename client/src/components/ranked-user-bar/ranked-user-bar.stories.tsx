@@ -28,7 +28,9 @@ export const Playground: Story = {
     rank: 9999,
     avatarUrl: "https://picsum.photos/200/300",
     username: "Guest",
-    streakDay: 0,
+    name: "Guest",
+    epithet: "The Brave",
+    level: 3,
     xp: 10_000,
   },
   argTypes: {
@@ -44,9 +46,9 @@ export const Playground: Story = {
       control: "text",
       description: "ชื่อของผู้ใช้",
     },
-    streakDay: {
+    level: {
       control: "number",
-      description: "จำนวนวัน streak ต่อเนื่อง",
+      description: "ระดับของผู้ใช้",
     },
     xp: {
       control: "number",
@@ -60,7 +62,9 @@ export const RankOne: Story = {
     rank: 1,
     avatarUrl: "https://picsum.photos/200/300",
     username: "Bas",
-    streakDay: 400,
+    name: "Bas",
+    epithet: null,
+    level: 10,
     xp: 35_000,
   },
 };

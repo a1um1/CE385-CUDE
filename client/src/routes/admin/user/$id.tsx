@@ -105,7 +105,7 @@ function RouteComponent() {
         <UserBackground
           backgroundUrl={user.backgroundImage}
           name={user.name}
-          className="w-full h-48 rounded-lg object-cover"
+          className={styles.bannerImage}
         />
         <ImageUploadField
           purpose="background"
@@ -161,15 +161,11 @@ function RouteComponent() {
             />
           </div>
           <div>
-            <h2 className="text-2xl font-bold flex items-center gap-2">
+            <h2 className={styles.usernameTitle}>
               {user.name}
-              {user.epithet && (
-                <span className="text-xs px-2 py-0.5 rounded bg-muted text-muted-foreground font-normal">
-                  {user.epithet}
-                </span>
-              )}
+              {user.epithet && <span className={styles.epithetBadge}>{user.epithet}</span>}
             </h2>
-            <p className="text-sm text-muted-foreground">@{user.username}</p>
+            <p className={styles.usernameSubtitle}>@{user.username}</p>
           </div>
         </div>
 
@@ -201,7 +197,7 @@ function RouteComponent() {
       </div>
 
       {/* Editable form fields */}
-      <form onSubmit={handleSaveProfile} className="flex flex-col gap-4">
+      <form onSubmit={handleSaveProfile} className={styles.formContainer}>
         <div className={styles.formGrid}>
           <div className={styles.field}>
             <label htmlFor="user-name" className={styles.label}>
@@ -239,9 +235,9 @@ function RouteComponent() {
         <UserField label="Created At" value={new Date(user.createdAt).toLocaleString()} />
         <UserField label="Updated At" value={new Date(user.updatedAt).toLocaleString()} />
         {user.deactivateReason && (
-          <div className="col-span-full flex flex-col gap-1">
-            <span className={styles.label}>Deactivation Reason</span>
-            <span className="text-red-500 font-medium">{user.deactivateReason}</span>
+          <div className={styles.colSpanFull}>
+            <span className={styles.deactivationLabel}>Deactivation Reason</span>
+            <span className={styles.deactivationReason}>{user.deactivateReason}</span>
           </div>
         )}
       </div>

@@ -7,28 +7,29 @@ import {
   useLessonResults,
 } from "#/routes/(authed)/(base)/lesson/$lessonId/-compo/lessonResults";
 import { Link, useLoaderData } from "@tanstack/react-router";
+import styles from "#/routes/(authed)/(base)/lesson/$lessonId/lessonHistory.module.css";
 
 export const LessonHistory = () => {
   const lesson = useLoaderData({ from: lessonRouteId });
   const { total, attempts } = useLessonResults();
 
   return (
-    <div className="flex flex-col gap-2 min-w-sm">
-      <h3 className="text-lg font-bold">ประวัติการเรียน</h3>
+    <div className={styles.container}>
+      <h3 className={styles.heading}>ประวัติการเรียน</h3>
       {attempts.length === 0 ? (
-        <p className="opacity-70">ยังไม่มีการส่งงาน</p>
+        <p className={styles.noAttemptsMessage}>ยังไม่มีการส่งงาน</p>
       ) : (
-        <ul className="flex flex-col">
+        <ul className={styles.list}>
           {attempts.map((attempt, index) => (
-            <li key={attempt.id} className="border-b border-border">
+            <li key={attempt.id} className={styles.item}>
               <Link
-                className="flex items-center gap-4 p-4 hover:bg-gray-500/10"
+                className={styles.link}
                 to="/lesson/$lessonId/$sessionId"
                 params={{ lessonId: lesson.id, sessionId: attempt.id }}
               >
-                <span className="flex flex-1 flex-col">
+                <span className={styles.content}>
                   <span>ครั้งที่ {attempts.length - index}</span>
-                  <span className="text-sm opacity-70">
+                  <span className={styles.timestamp}>
                     {`${formatRelativeTime(attempt.createdAt)} · ใช้เวลา ${formatElapsedTime(attempt.createdAt, attempt.updatedAt)}`}
                   </span>
                 </span>

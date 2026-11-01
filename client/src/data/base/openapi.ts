@@ -587,7 +587,7 @@ export interface paths {
         };
         /**
          * Get the XP ranking
-         * @description Return the top users ranked by positive XP transactions during the current server-time week (Monday start) or calendar month. The response includes XP earned in the period separately from each user's all-time total XP and public profile images.
+         * @description Return the top users ranked by positive XP transactions during the current server-time week (Monday start) or calendar month. The response includes XP earned in the period separately from each user's all-time total XP, level and public profile images. Users with no XP in the period are included at the bottom with 0 XP earned.
          */
         get: {
             parameters: {
@@ -619,6 +619,11 @@ export interface paths {
                                 profileImage: string | null;
                                 /** @example https://example.com/background.jpg */
                                 backgroundImage: string | null;
+                                /** @example John Doe */
+                                name: string;
+                                epithet: components["schemas"]["EpithetDefinition"];
+                                /** @example 5 */
+                                level: number;
                             };
                             /** @example 250 */
                             xpEarned: number;
@@ -7264,12 +7269,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-11-01T08:24:48.997Z
+             * @example 2026-11-01T12:45:50.426Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-11-01T08:24:48.998Z
+             * @example 2026-11-01T12:45:50.427Z
              */
             updatedAt: string;
         };

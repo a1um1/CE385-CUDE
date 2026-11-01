@@ -44,3 +44,15 @@
   background-color: var(--color-background);
   border-bottom: 1px solid var(--color-border);
 }
+
+.breadcrumbContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pageTitle {
+  font-size: 1.875rem;
+  font-weight: 700;
+  line-height: 2.25rem;
+}

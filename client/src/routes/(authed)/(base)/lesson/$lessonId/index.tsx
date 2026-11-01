@@ -5,6 +5,7 @@ import { LessonStart } from "#/routes/(authed)/(base)/lesson/$lessonId/-compo/le
 import { LessonStatistic } from "#/routes/(authed)/(base)/lesson/$lessonId/-compo/lessonStats";
 import { createFileRoute, Link, useLoaderData } from "@tanstack/react-router";
 import { ChevronLeft } from "lucide-react";
+import styles from "./lesson.module.css";
 
 const lessonRouteId = "/(authed)/(base)/lesson/$lessonId";
 
@@ -18,26 +19,26 @@ function RouteComponent() {
   return (
     <>
       <div>
-        <Link to="/" className="flex items-center gap-2">
+        <Link to="/" className={styles.backLink}>
           <ChevronLeft />
           เนื้อหาทั้งหมด
         </Link>
       </div>
-      <div className="flex gap-4 items-start">
+      <div className={styles.contentContainer}>
         <LessonScore />
-        <div className="flex flex-col flex-1">
+        <div className={styles.middleColumn}>
           <p>
             {lesson?.unit?.course?.name} / {lesson?.unit?.name}
           </p>
-          <h1 className="text-2xl">{lesson?.name}</h1>
+          <h1 className={styles.lessonTitle}>{lesson?.name}</h1>
 
-          <div className="flex items-center gap-2 mt-4">
+          <div className={styles.startButtonContainer}>
             <LessonStart />
           </div>
         </div>
         <LessonReward xp={lesson.XPgiven} gems={lesson.gemsGiven} />
       </div>
-      <div className="flex gap-4">
+      <div className={styles.bottomSection}>
         <LessonHistory />
         <LessonStatistic />
       </div>

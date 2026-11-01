@@ -19,12 +19,12 @@ export function renderBooleanCell(
 
   return {
     icon: bool ? (
-      <Check style={{ color: "#10B981" }} aria-label="Yes" />
+      <Check style={{ color: "var(--color-success)" }} aria-label="Yes" />
     ) : (
-      <X style={{ color: "#EF4444" }} aria-label="No" />
+      <X style={{ color: "var(--color-danger)" }} aria-label="No" />
     ),
     badge: (
-      <Badge color={bool ? "#10B981" : "#EF4444"}>
+      <Badge color={bool ? "var(--color-success)" : "var(--color-danger)"}>
         {bool ? (options.trueLabel ?? "Yes") : (options.falseLabel ?? "No")}
       </Badge>
     ),

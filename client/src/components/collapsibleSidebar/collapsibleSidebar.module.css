@@ -39,7 +39,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--color-foreground-muted, #888);
+  color: var(--color-muted-text);
 }
 
 .sectionDivider {

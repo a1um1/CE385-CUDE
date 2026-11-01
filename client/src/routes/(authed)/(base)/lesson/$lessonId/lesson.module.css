@@ -1,0 +1,36 @@
+@reference "#/styles/main.css";
+
+.backLink {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.contentContainer {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.middleColumn {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.lessonTitle {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+.startButtonContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.bottomSection {
+  display: flex;
+  gap: 1rem;
+}

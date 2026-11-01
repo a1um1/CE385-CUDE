@@ -9,13 +9,9 @@ export interface UserBackgroundProps {
 
 export default function UserBackground({ name, backgroundUrl, className }: UserBackgroundProps) {
   return (
-    <div className={clsx(styles["user-background"], className)}>
+    <div className={clsx(styles.userBackground, className)}>
       {backgroundUrl && (
-        <img
-          src={backgroundUrl}
-          alt={`${name}'s Background`}
-          className={styles["background-image"]}
-        />
+        <img src={backgroundUrl} alt={`${name}'s Background`} className={styles.backgroundImage} />
       )}
     </div>
   );

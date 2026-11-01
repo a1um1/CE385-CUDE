@@ -1,5 +1,6 @@
 import type { SVGProps } from "react";
 
+/* brand: keep */
 /** C language logo (Devicon shield with high-contrast C). */
 export default function CIcon({
   className,

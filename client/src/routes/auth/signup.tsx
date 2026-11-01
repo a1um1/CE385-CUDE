@@ -2,6 +2,7 @@ import { useAppForm, handleFormMutationError } from "#/components/form";
 import { useSignUp } from "#/data/user.data";
 import { getPasswordError } from "#/lib/passwordRules";
 import { createFileRoute } from "@tanstack/react-router";
+import styles from "./auth.module.css";
 
 export const Route = createFileRoute("/auth/signup")({
   component: RouteComponent,
@@ -29,15 +30,15 @@ function RouteComponent() {
   });
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <h1 className="text-3xl font-semibold mb-6">Sign Up</h1>
+    <div className={styles.container}>
+      <h1 className={styles.heading}>Sign Up</h1>
       <form
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
           form.handleSubmit();
         }}
-        className="flex flex-col gap-4 w-full max-w-sm px-4"
+        className={styles.form}
       >
         <form.AppForm>
           <form.FormError />
@@ -100,7 +101,7 @@ function RouteComponent() {
             )}
           </form.AppField>
 
-          <form.SubmitButton label="Sign Up" block className="mt-2" />
+          <form.SubmitButton label="Sign Up" block className={styles.submitButton} />
         </form.AppForm>
       </form>
     </div>

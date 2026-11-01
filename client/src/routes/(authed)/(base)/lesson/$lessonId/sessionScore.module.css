@@ -1,0 +1,27 @@
+@reference "#/styles/main.css";
+
+.scoreContainer {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.scoreContent {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.lessonTitle {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.warningMessage {
+  border-left: 2px solid var(--color-warning);
+  background-color: color-mix(in oklch, var(--color-panel) 5%, transparent);
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}

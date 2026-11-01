@@ -1,6 +1,7 @@
 import Button from "#/components/button";
 import ButtonLink from "#/components/buttonLink";
 import Skeleton from "#/components/skeleton";
+import styles from "./lessonStart.module.css";
 import {
   useStartLearnSessionMutation,
   usePendingLearnSessionQuery,
@@ -24,7 +25,7 @@ export const LessonStart = () => {
     }
   };
 
-  if (enrollmentAvailability.isLoading) return <Skeleton className="h-6 w-32" />;
+  if (enrollmentAvailability.isLoading) return <Skeleton className={styles.skeletonLoader} />;
   if (enrollmentAvailability.isError) {
     return (
       <Button variant="secondary" disabled>

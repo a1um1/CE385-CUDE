@@ -17,6 +17,7 @@ import {
   useAdminLessonStats,
   useAdminUnitStats,
 } from "#/data/admin/statistic.data";
+import styles from "./statistic.module.css";
 
 const statisticSearchSchema = z.object({
   courseId: z.string().optional(),
@@ -34,8 +35,8 @@ export const Route = createFileRoute("/admin/statistic/")({
 });
 
 const Field = ({ label, children }: { label: string; children: React.ReactNode }) => (
-  <div className="flex flex-col gap-1">
-    <span className="text-xs font-semibold text-secondary-text">{label}</span>
+  <div className={styles.field}>
+    <span className={styles.fieldLabel}>{label}</span>
     {children}
   </div>
 );
@@ -91,8 +92,8 @@ function RouteComponent() {
       : courseStats.data?.courseName;
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-end gap-4">
+    <div className={styles.mainContainer}>
+      <div className={styles.filterControls}>
         <Field label="Course">
           <SelectRoot
             value={search.courseId ?? null}
@@ -163,12 +164,12 @@ function RouteComponent() {
       </div>
 
       {!search.courseId && !search.unitId && !search.lessonId ? (
-        <p className="text-secondary-text">เลือกหลักสูตรเพื่อดูสถิติ</p>
+        <p className={styles.infoMessage}>เลือกหลักสูตรเพื่อดูสถิติ</p>
       ) : isLoading ? (
-        <p className="text-secondary-text">กำลังโหลด...</p>
+        <p className={styles.infoMessage}>กำลังโหลด...</p>
       ) : (
-        <div className="flex flex-col gap-2">
-          <h3 className="text-lg font-bold">
+        <div className={styles.statisticsContainer}>
+          <h3 className={styles.statisticsTitle}>
             {title} · {statistic?.totalAttempts ?? 0} ครั้ง
           </h3>
           <StatisticCharts statistic={statistic} />

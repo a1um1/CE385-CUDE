@@ -1,0 +1,15 @@
+@reference "#/styles/main.css";
+
+.mainContainer {
+  display: flex;
+  gap: 1rem;
+}
+
+.previewColumn {
+  max-width: 20rem;
+  flex-shrink: 0;
+}
+
+.formColumn {
+  flex: 1;
+}

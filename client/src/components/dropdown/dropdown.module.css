@@ -23,9 +23,9 @@
   padding: 6px;
   min-width: 280px;
   box-shadow:
-    0 10px 25px -5px rgba(0, 0, 0, 0.4),
-    0 8px 10px -6px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.05); /* subtle inner border shine */
+    0 10px 25px -5px color-mix(in oklch, var(--color-shadow) 40%, transparent),
+    0 8px 10px -6px color-mix(in oklch, var(--color-shadow) 40%, transparent),
+    inset 0 1px 0 0 color-mix(in oklch, var(--color-background-text) 5%, transparent); /* subtle inner border shine */
   outline: none;
   z-index: 50;
   transform-origin: var(--transform-origin);

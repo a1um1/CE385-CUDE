@@ -1,4 +1,5 @@
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import styles from "./scoreDistribution.module.css";
 
 export interface ScoreBin {
   min: number;
@@ -16,7 +17,7 @@ const axisTick = { fill: "var(--color-secondary-text)", fontSize: 12 };
 export const ScoreDistribution = ({ data, height = 300 }: ScoreDistributionProps) => {
   if (data.length === 0) {
     return (
-      <div style={{ height }} className="flex items-center justify-center text-secondary-text">
+      <div style={{ height } as React.CSSProperties} className={styles.emptyState}>
         ไม่มีข้อมูล
       </div>
     );

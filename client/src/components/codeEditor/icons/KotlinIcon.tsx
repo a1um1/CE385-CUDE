@@ -1,5 +1,6 @@
 import type { SVGProps } from "react";
 
+/* brand: keep */
 /** Source: https://svgl.app/library/kotlin.svg */
 export default function KotlinIcon({
   className,

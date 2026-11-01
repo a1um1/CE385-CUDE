@@ -44,7 +44,7 @@
 
 .error {
   font-size: 0.75rem;
-  color: oklch(63.7% 0.237 25.33);
+  color: var(--color-danger);
   margin-top: 0.125rem;
   text-align: left;
 }

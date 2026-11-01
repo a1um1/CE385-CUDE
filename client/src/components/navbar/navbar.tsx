@@ -4,9 +4,8 @@ import { useUser, useUserStats } from "#/data/user.data";
 import navbarStyles from "./navbar.module.css";
 // import Streak from "#/components/icon/streak";
 import Gem from "#/components/icon/gem";
-import { clsx } from "clsx";
 import ButtonLink from "#/components/buttonLink";
-import { Link } from "@tanstack/react-router";
+import { Link, useLocation } from "@tanstack/react-router";
 import UserMenu from "#/components/userMenu";
 import Skeleton from "#/components/skeleton";
 import CountdownTimer from "#/components/countdown";
@@ -18,6 +17,8 @@ export default function Navbar() {
   const { data: userStats, isLoading: isUserStatsLoading } = useUserStats();
 
   const isLoading = isUserLoading || (!user && isUserFetching) || isUserStatsLoading;
+
+  const location = useLocation();
   return (
     <nav className={navbarStyles.navbar}>
       <div className={navbarStyles.container}>
@@ -26,8 +27,13 @@ export default function Navbar() {
             <Logo />
           </Link>
           <div className={navbarStyles["navigation-items"]}>
-            <ButtonLink to="/">Learn</ButtonLink>
-            <ButtonLink to="/" variant="ghost">
+            <ButtonLink to="/" variant={location.pathname === "/" ? "primary" : "ghost"}>
+              Learn
+            </ButtonLink>
+            <ButtonLink
+              to="/ranking"
+              variant={location.pathname === "/ranking" ? "primary" : "ghost"}
+            >
               Ranking
             </ButtonLink>
           </div>
@@ -35,16 +41,16 @@ export default function Navbar() {
         <PendingSessionBanner />
         <div className={navbarStyles["user-profile"]}>
           {isLoading || !user ? (
-            <Skeleton className="h-20 min-w-64" />
+            <Skeleton className={navbarStyles.skeletonLoading} />
           ) : (
             <>
-              <span className={clsx(navbarStyles["badge"], "text-gem")}>
+              <span className={navbarStyles["badge"]} data-type="gem">
                 <Gem /> {userStats?.currentGems || 0}
               </span>
-              {/* <span className={clsx(navbarStyles["badge"], "text-streak")}>
+              {/* <span className={navbarStyles["badge"]} data-type="streak">
                 <Streak /> 0
               </span> */}
-              <span className={clsx(navbarStyles["badge"], "text-energy")}>
+              <span className={navbarStyles["badge"]} data-type="energy">
                 <Enegry />
                 {userStats?.energy || 0}x
                 <div className={navbarStyles["countdown-container"]}>

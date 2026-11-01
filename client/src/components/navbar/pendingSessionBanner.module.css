@@ -1,0 +1,19 @@
+@reference "#/styles/main.css";
+
+.banner {
+  background-color: color-mix(in oklch, var(--color-info) 10%, transparent);
+  border-radius: 9999px;
+  border: 1px solid var(--color-info);
+  color: var(--color-info);
+  padding: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.message {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
