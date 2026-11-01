@@ -6501,6 +6501,10 @@ export interface components {
             xpToNextLevel: number;
             levelProgressPercent: number;
             recentActivity: components["schemas"]["ProfileActivity"][];
+            /** @description A map of dates to the percentage of the user's busiest day in the last 30 days. Only days with activity are included. The key is the date in YYYY-MM-DD format, and the value is a number between 0 and 1. */
+            activityCalendar: {
+                [key: string]: number;
+            };
         };
         ProfileActivity: {
             /** @example session_id */
@@ -6597,12 +6601,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-11-01T04:45:18.699Z
+             * @example 2026-11-01T06:44:19.435Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-11-01T04:45:18.700Z
+             * @example 2026-11-01T06:44:19.436Z
              */
             updatedAt: string;
         };

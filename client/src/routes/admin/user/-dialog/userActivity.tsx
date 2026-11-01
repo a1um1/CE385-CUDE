@@ -4,18 +4,14 @@ import { useAdminViewUserActivity } from "#/data/admin/user.data";
 export default function UserActivity(props: { userId: string }) {
   const { data: calendarData, isLoading } = useAdminViewUserActivity(props.userId);
 
-  const currentMonth = new Date().getMonth() + 1;
+  const now = new Date();
 
-  // last 3 month list should handle year wrap
-  const monthLists: {
-    month: number;
-    year: number;
-  }[] = Array.from({ length: 3 }, (_, i) => {
-    const month = currentMonth - i;
-    const year = new Date().getFullYear() - (month <= 0 ? 1 : 0);
+  // Generate the last 3 months with correct year/month boundaries
+  const monthLists = Array.from({ length: 3 }, (_, i) => {
+    const d = new Date(now.getFullYear(), now.getMonth() - (2 - i), 1);
     return {
-      month: month <= 0 ? month + 12 : month,
-      year,
+      month: d.getMonth() + 1,
+      year: d.getFullYear(),
     };
   });
 
