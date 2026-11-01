@@ -691,7 +691,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/user/lesson-stats": {
+    "/user/stats/{courseId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -699,14 +699,16 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get the authenticated user's lesson statistics
-         * @description Return the total lesson count, the number passed by this user, and the number not yet passed. Lessons not yet passed include lessons that have not been attempted.
+         * Get stats for one course
+         * @description Return attempt and score-distribution stats for the specified course, matching the admin course stats response. Only the requested course is returned. Requires authentication.
          */
         get: {
             parameters: {
                 query?: never;
                 header?: never;
-                path?: never;
+                path: {
+                    courseId: string;
+                };
                 cookie?: never;
             };
             requestBody?: never;
@@ -717,7 +719,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["UserLessonStats"];
+                        "application/json": components["schemas"]["AdminCourseStats"];
                     };
                 };
                 /** @description Validation error */
@@ -7226,13 +7228,60 @@ export interface components {
             /** Format: date-time */
             updatedAt: string;
         };
-        UserLessonStats: {
-            /** @example 30 */
-            totalLessons: number;
-            /** @example 12 */
-            passedLessons: number;
-            /** @example 18 */
-            notPassedLessons: number;
+        AdminCourseStats: {
+            /** @example course_id */
+            courseID: string;
+            /** @example Course Name */
+            courseName: string;
+            /**
+             * @description จำนวนครั้งที่เรียน
+             * @example 30
+             */
+            totalAttempts: number;
+            passed: {
+                /** @example 12 */
+                count: number;
+                /**
+                 * @description 0-100 ปัดทศนิยม 1 ตำแหน่ง
+                 * @example 40
+                 */
+                percent: number;
+            };
+            failed: {
+                /** @example 12 */
+                count: number;
+                /**
+                 * @description 0-100 ปัดทศนิยม 1 ตำแหน่ง
+                 * @example 40
+                 */
+                percent: number;
+            };
+            inProgress: {
+                /** @example 12 */
+                count: number;
+                /**
+                 * @description 0-100 ปัดทศนิยม 1 ตำแหน่ง
+                 * @example 40
+                 */
+                percent: number;
+            };
+            gaveUp: {
+                /** @example 12 */
+                count: number;
+                /**
+                 * @description 0-100 ปัดทศนิยม 1 ตำแหน่ง
+                 * @example 40
+                 */
+                percent: number;
+            };
+            scoreDistribution: {
+                /** @example 0 */
+                min: number;
+                /** @example 10 */
+                max: number;
+                /** @example 3 */
+                count: number;
+            }[];
         };
         TransactionListResponse: {
             /** @example [] */
@@ -7266,12 +7315,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-11-01T04:59:16.577Z
+             * @example 2026-11-01T06:23:48.314Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-11-01T04:59:16.578Z
+             * @example 2026-11-01T06:23:48.315Z
              */
             updatedAt: string;
         };
@@ -7774,61 +7823,6 @@ export interface components {
                     language: string | null;
                 } | null;
             };
-        };
-        AdminCourseStats: {
-            /** @example course_id */
-            courseID: string;
-            /** @example Course Name */
-            courseName: string;
-            /**
-             * @description จำนวนครั้งที่เรียน
-             * @example 30
-             */
-            totalAttempts: number;
-            passed: {
-                /** @example 12 */
-                count: number;
-                /**
-                 * @description 0-100 ปัดทศนิยม 1 ตำแหน่ง
-                 * @example 40
-                 */
-                percent: number;
-            };
-            failed: {
-                /** @example 12 */
-                count: number;
-                /**
-                 * @description 0-100 ปัดทศนิยม 1 ตำแหน่ง
-                 * @example 40
-                 */
-                percent: number;
-            };
-            inProgress: {
-                /** @example 12 */
-                count: number;
-                /**
-                 * @description 0-100 ปัดทศนิยม 1 ตำแหน่ง
-                 * @example 40
-                 */
-                percent: number;
-            };
-            gaveUp: {
-                /** @example 12 */
-                count: number;
-                /**
-                 * @description 0-100 ปัดทศนิยม 1 ตำแหน่ง
-                 * @example 40
-                 */
-                percent: number;
-            };
-            scoreDistribution: {
-                /** @example 0 */
-                min: number;
-                /** @example 10 */
-                max: number;
-                /** @example 3 */
-                count: number;
-            }[];
         };
         AdminUnitStats: {
             /** @example unit_id */

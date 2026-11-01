@@ -3,16 +3,17 @@ import {
   TransactionQuerySchema,
 } from "#/service/transactions/transactions.schema";
 import UserService from "#/service/user";
+import AdminStatsController from "#/controller/admin/stats";
 import RankingService from "#/service/ranking";
 import { rankingQuerySchema, xpRankingListSchema } from "#/service/ranking/ranking.schema";
 import {
   UserSafeSchema,
-  UserLessonStatsSchema,
   UserUpdateAvatarSchema,
   UserUpdateBackgroundSchema,
   UserUpdatePasswordSchema,
   UserPublicProfileSchema,
 } from "#/service/user/user.schema";
+import { adminCourseStatsSchema } from "#/controller/admin/stats/stats.schema";
 import { zodUserStatExtendedObject } from "#/service/userStat/userStat.schema";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
@@ -140,15 +141,18 @@ const userRoute = new CustomRouter({
     async ({ query }) => RankingService.getXpRanking(query),
   )
   .get(
-    "/lesson-stats",
+    "/stats/:courseId",
     {
-      summary: "Get the authenticated user's lesson statistics",
+      summary: "Get stats for one course",
       description:
-        "Return the total lesson count, the number passed by this user, and the number not yet passed. " +
-        "Lessons not yet passed include lessons that have not been attempted.",
-      response: UserLessonStatsSchema,
+        "Return attempt and score-distribution stats for the specified course, matching the admin " +
+        "course stats response. Only the requested course is returned. Requires authentication.",
+      params: z.object({
+        courseId: z.uuid().openapi({ example: "course_id" }),
+      }),
+      response: adminCourseStatsSchema,
     },
-    async ({ user }) => user.getLessonStats(),
+    ({ params }) => AdminStatsController.getCourseStats(params.courseId),
   )
   .get(
     "/transactions",
