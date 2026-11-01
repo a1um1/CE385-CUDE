@@ -1,8 +1,8 @@
 .hexagonWrapper {
   --hex-size: 120px;
-  --bg-color: #99ffff;
-  --border-color: #3b9ab8;
-  --text-color: #3b9ab8;
+  --bg-color: var(--color-secondary);
+  --border-color: var(--color-border);
+  --text-color: var(--color-background-text);
 
   position: relative;
   width: var(--hex-size); /*เลขตรงนี้คือ เพิ่มตัวคูณให้กว้างขึ้น */

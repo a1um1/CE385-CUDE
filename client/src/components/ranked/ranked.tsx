@@ -18,26 +18,19 @@ interface LevelTheme {
 }
 
 const DEFAULT_THEME: LevelTheme = {
-  from: "#99ffff",
-  to: "#99ffff",
-  border: "#3b9ab8",
-  text: "#3b9ab8",
+  from: "var(--color-secondary)",
+  to: "var(--color-secondary)",
+  border: "var(--color-border)",
+  text: "var(--color-background-text)",
 };
 
 /** Gradient colors per level, 0-10. Levels past 10 reuse the level-10 theme. */
-export const LEVEL_THEMES: LevelTheme[] = [
-  { from: "#e5e7eb", to: "#9ca3af", border: "#374151", text: "#374151" },
-  { from: "#fecdd3", to: "#fb7185", border: "#881337", text: "#881337" },
-  { from: "#fed7aa", to: "#fb923c", border: "#7c2d12", text: "#7c2d12" },
-  { from: "#fde68a", to: "#fbbf24", border: "#78350f", text: "#78350f" },
-  { from: "#d9f99d", to: "#84cc16", border: "#365314", text: "#365314" },
-  { from: "#a7f3d0", to: "#34d399", border: "#064e3b", text: "#064e3b" },
-  { from: "#a5f3fc", to: "#22d3ee", border: "#164e63", text: "#164e63" },
-  { from: "#bfdbfe", to: "#3b82f6", border: "#1e3a8a", text: "#1e3a8a" },
-  { from: "#ddd6fe", to: "#8b5cf6", border: "#3b0764", text: "#3b0764" },
-  { from: "#fbcfe8", to: "#ec4899", border: "#500724", text: "#500724" },
-  { from: "#fde047", to: "#f59e0b", border: "#78350f", text: "#78350f" },
-];
+export const LEVEL_THEMES: LevelTheme[] = Array.from({ length: 11 }, (_, level) => ({
+  from: `var(--color-rank-${level}-from)`,
+  to: `var(--color-rank-${level}-to)`,
+  border: `var(--color-rank-${level}-border)`,
+  text: `var(--color-rank-${level}-text)`,
+}));
 
 const themeForLevel = (level: number) =>
   LEVEL_THEMES[Math.min(Math.max(level, 0), LEVEL_THEMES.length - 1)] ?? DEFAULT_THEME;

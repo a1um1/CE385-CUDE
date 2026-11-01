@@ -2,24 +2,39 @@
 
 @theme {
   --color-primary: oklch(68.383% 0.21402 7.99);
-  --color-primary-text: oklch(100% 0.00011 271.152);
+  --color-primary-text: oklch(100% 0 0);
+
+  --color-primary-outline: oklch(from var(--color-primary) 50% c h);
 
   --color-energy: oklch(88.596% 0.12292 84.746);
   --color-energy-outline: oklch(from var(--color-energy) 50% c h);
 
-  --color-streak: oklch(68.383% 0.21402 7.99);
-  --color-streak-outline: oklch(from var(--color-streak) 50% c h);
-
   --color-gem: lch(64.99% 74.64 313.81);
   --color-gem-outline: oklch(from var(--color-gem) 50% c h);
 
-  --color-background: oklch(22.383% 0.03083 267.192);
+  --color-background: oklch(17.631% 0.02874 283.056);
   --color-background-text: oklch(100% 0 0);
 
-  --color-user-background: oklch(75% 0.13908 181.642);
+  --color-user-background: oklch(70.61% 0.18582 344.673);
 
-  --color-secondary: oklch(33.047% 0.03374 296.56);
-  --color-secondary-text: oklch(100% 0 0);
+  --color-secondary: oklch(27% 0.045 290);
+  --color-secondary-text: oklch(100% 0 0 / 0.7);
+
+  /* Raised surfaces: editor chrome and standalone panels. */
+  --color-panel: oklch(18% 0.025 267);
+  --color-editor: oklch(20% 0 0);
+
+  --color-info: oklch(62.3% 0.214 259.815);
+  --color-neutral: oklch(55.1% 0.027 264.364);
+  --color-muted-text: oklch(70% 0.02 275);
+
+  /* Effects: shadows and modal scrims. */
+  --color-shadow: oklch(0% 0 0);
+  --color-scrim: oklch(0% 0 0 / 0.6);
+
+  /* Leaderboard rows. */
+  --color-row: oklch(30% 0.05 290);
+  --color-row-highlight: oklch(38% 0.08 290);
 
   --color-danger: oklch(57.793% 0.20906 26.801);
   --color-danger-text: oklch(100% 0 0);
@@ -30,13 +45,59 @@
   --color-warning: oklch(82% 0.15 85);
   --color-warning-text: oklch(22.383% 0.03083 267.192);
 
-  --color-input: oklch(22.383% 0.03083 267.192);
+  --color-input: oklch(20% 0.035 285);
   --color-input-text: oklch(100% 0.00011 271.152);
   --color-placeholder: oklch(100% 0.00011 271.152 / 0.5);
 
-  --color-border: oklch(38.187% 0.05028 267.532);
+  --color-border: oklch(36.455% 0.06662 293.419);
 
   --color-selector-active: oklch(33.197% 0.05031 266.74);
   --color-selector-text: oklch(97.015% 0 89.88);
   --color-selector-background: oklch(33.699% 0.02228 267.385);
+
+  /* Rank badge themes, levels 0-10. Values are the pre-token palette, kept verbatim. */
+  --color-rank-0-from: #e5e7eb;
+  --color-rank-0-to: #9ca3af;
+  --color-rank-0-border: #374151;
+  --color-rank-0-text: #374151;
+  --color-rank-1-from: #fecdd3;
+  --color-rank-1-to: #fb7185;
+  --color-rank-1-border: #881337;
+  --color-rank-1-text: #881337;
+  --color-rank-2-from: #fed7aa;
+  --color-rank-2-to: #fb923c;
+  --color-rank-2-border: #7c2d12;
+  --color-rank-2-text: #7c2d12;
+  --color-rank-3-from: #fde68a;
+  --color-rank-3-to: #fbbf24;
+  --color-rank-3-border: #78350f;
+  --color-rank-3-text: #78350f;
+  --color-rank-4-from: #d9f99d;
+  --color-rank-4-to: #84cc16;
+  --color-rank-4-border: #365314;
+  --color-rank-4-text: #365314;
+  --color-rank-5-from: #a7f3d0;
+  --color-rank-5-to: #34d399;
+  --color-rank-5-border: #064e3b;
+  --color-rank-5-text: #064e3b;
+  --color-rank-6-from: #a5f3fc;
+  --color-rank-6-to: #22d3ee;
+  --color-rank-6-border: #164e63;
+  --color-rank-6-text: #164e63;
+  --color-rank-7-from: #bfdbfe;
+  --color-rank-7-to: #3b82f6;
+  --color-rank-7-border: #1e3a8a;
+  --color-rank-7-text: #1e3a8a;
+  --color-rank-8-from: #ddd6fe;
+  --color-rank-8-to: #8b5cf6;
+  --color-rank-8-border: #3b0764;
+  --color-rank-8-text: #3b0764;
+  --color-rank-9-from: #fbcfe8;
+  --color-rank-9-to: #ec4899;
+  --color-rank-9-border: #500724;
+  --color-rank-9-text: #500724;
+  --color-rank-10-from: #fde047;
+  --color-rank-10-to: #f59e0b;
+  --color-rank-10-border: #78350f;
+  --color-rank-10-text: #78350f;
 }
