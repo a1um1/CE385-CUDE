@@ -7,7 +7,7 @@
   justify-content: center;
   gap: 4px;
   border-radius: 12px;
-  color: #fff;
+  color: var(--color-primary-text);
 }
 
 .success {

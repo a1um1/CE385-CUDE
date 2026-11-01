@@ -1,5 +1,6 @@
 import { useId, type SVGProps } from "react";
 
+/* brand: keep */
 /** Python logo with official brand colors. */
 export default function PythonIcon({
   className,

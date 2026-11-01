@@ -22,7 +22,7 @@ export const LessonHistory = () => {
           {attempts.map((attempt, index) => (
             <li key={attempt.id} className="border-b border-border">
               <Link
-                className="flex items-center gap-4 p-4 hover:bg-gray-500/10"
+                className="flex items-center gap-4 p-4 hover:bg-secondary"
                 to="/lesson/$lessonId/$sessionId"
                 params={{ lessonId: lesson.id, sessionId: attempt.id }}
               >

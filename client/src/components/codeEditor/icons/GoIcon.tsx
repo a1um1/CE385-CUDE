@@ -1,5 +1,6 @@
 import type { SVGProps } from "react";
 
+/* brand: keep */
 /** Source: https://svgl.app/library/golang.svg */
 export default function GoIcon({
   className,

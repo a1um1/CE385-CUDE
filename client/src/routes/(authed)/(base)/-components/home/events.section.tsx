@@ -7,7 +7,7 @@ const campusMocksEvents: CampusEvent[] = [
     month: "OCT",
     title: "Midterm Exam",
     location: "At DPU",
-    dateColor: "#ffaeae",
+    dateColor: "var(--color-danger)",
   },
 ];
 

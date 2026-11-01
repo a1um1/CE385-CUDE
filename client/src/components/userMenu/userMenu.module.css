@@ -40,9 +40,9 @@
 }
 
 .signout-item {
-  color: #ef4444;
+  color: var(--color-danger);
 
   &:hover {
-    color: white;
+    color: var(--color-background-text);
   }
 }

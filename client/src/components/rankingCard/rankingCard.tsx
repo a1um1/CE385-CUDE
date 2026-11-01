@@ -20,7 +20,7 @@ export default function RankingCard() {
             key={`ranking-${entry.user.id}`}
             className="flex items-center gap-3 px-4 py-2 transition-colors"
             style={{
-              backgroundImage: `linear-gradient(90deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.65)), url(${entry.user.backgroundImage}), linear-gradient(to right, var(--color-user-background))`,
+              backgroundImage: `linear-gradient(90deg, color-mix(in oklch, var(--color-scrim) 70%, transparent), color-mix(in oklch, var(--color-scrim) 65%, transparent)), url(${entry.user.backgroundImage}), linear-gradient(to right, var(--color-user-background))`,
               backgroundSize: "cover",
               backgroundPosition: "center",
             }}

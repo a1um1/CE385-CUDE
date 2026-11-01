@@ -241,7 +241,7 @@ function RouteComponent() {
         {user.deactivateReason && (
           <div className="col-span-full flex flex-col gap-1">
             <span className={styles.label}>Deactivation Reason</span>
-            <span className="text-red-500 font-medium">{user.deactivateReason}</span>
+            <span className="text-danger font-medium">{user.deactivateReason}</span>
           </div>
         )}
       </div>

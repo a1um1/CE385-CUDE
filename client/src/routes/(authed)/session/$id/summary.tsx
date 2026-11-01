@@ -74,12 +74,12 @@ function RouteComponent() {
             />
 
             {submitted ? (
-              <div className="border-l-2 border-l-success bg-white/5 px-4 py-3">
+              <div className="border-l-2 border-l-success bg-panel/5 px-4 py-3">
                 <p className="font-semibold text-success">ส่งงานเรียบร้อยแล้ว</p>
                 <p>ระบบได้ตรวจคำตอบของทุกข้อที่บันทึกไว้แล้ว</p>
               </div>
             ) : (
-              <div className="border-l-2 border-l-warning bg-white/5 px-4 py-3">
+              <div className="border-l-2 border-l-warning bg-panel/5 px-4 py-3">
                 <p className="font-semibold text-warning">ตรวจสอบให้แน่ใจก่อนส่งงาน</p>
                 <p>เมื่อส่งงานแล้วจะไม่สามารถกลับมาแก้ไขได้ ทำทุกข้อให้เรียบร้อยแล้วค่อยกดส่งงาน</p>
               </div>

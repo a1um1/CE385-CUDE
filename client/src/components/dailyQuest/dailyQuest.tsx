@@ -31,25 +31,25 @@ const STATUS_CONFIG: Record<
   started: {
     label: "STARTED",
     bg: "var(--color-warning)",
-    textColor: "#000000",
+    textColor: "var(--color-warning-text)",
     icon: Clock,
   },
   passed: {
     label: "PASSED",
     bg: "var(--color-success)",
-    textColor: "#000000",
+    textColor: "var(--color-success-text)",
     icon: CheckCircle2,
   },
   failed: {
     label: "FAILED",
     bg: "var(--color-danger)",
-    textColor: "#ffffff",
+    textColor: "var(--color-danger-text)",
     icon: XCircle,
   },
   give_up: {
     label: "GIVE UP",
-    bg: "oklch(45% 0.03 267)",
-    textColor: "#ffffff",
+    bg: "var(--color-panel)",
+    textColor: "var(--color-background-text)",
     icon: Flag,
   },
 };
@@ -94,7 +94,7 @@ export default function DailyQuest() {
 
         <div className="flex min-w-0 flex-1 flex-col justify-center px-4 py-2 gap-2">
           <div className="flex items-center justify-between gap-2">
-            <span className="truncate font-mono text-base font-bold text-white">
+            <span className="truncate font-mono text-base font-bold text-background-text">
               #{problem.number} {problem.title}
             </span>
             <span
@@ -109,9 +109,9 @@ export default function DailyQuest() {
           </div>
 
           <div className="flex items-center justify-between text-xs">
-            <span className="text-zinc-400">Reward</span>
+            <span className="text-secondary-text">Reward</span>
             <div className="flex items-center gap-3 font-semibold font-mono">
-              <span className="text-amber-400">+{problem.xpReward} XP</span>
+              <span className="text-energy">+{problem.xpReward} XP</span>
               <span className="flex items-center gap-1 text-gem">
                 <Gem size={13} />+{problem.gemReward}
               </span>

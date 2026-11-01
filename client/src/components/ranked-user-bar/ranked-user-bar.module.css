@@ -3,8 +3,8 @@
   align-items: center;
   justify-content: space-between;
   background-image:
-    linear-gradient(0deg, rgb(0, 0, 0, 0.74)), var(--bg-image),
-    linear-gradient(0deg, var(--color-user-background));
+    linear-gradient(0deg, color-mix(in oklch, var(--color-scrim) 74%, transparent)),
+    var(--bg-image), linear-gradient(0deg, var(--color-user-background));
   background-size: cover;
   background-position: center;
   color: var(--color-input-text);
@@ -48,7 +48,7 @@
 }
 
 .epithet {
-  --badge-color: oklch(52.86% 0.22851 282.074);
+  --badge-color: var(--color-badge);
   --badge-color-outline: color-mix(in oklch, var(--badge-color), black 20%);
   font-size: 0.875rem;
   font-weight: 500;

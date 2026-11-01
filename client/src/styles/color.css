@@ -55,6 +55,9 @@
   --color-selector-text: oklch(97.015% 0 89.88);
   --color-selector-background: oklch(33.699% 0.02228 267.385);
 
+  /* Badge/epithet color for ranked user cards */
+  --color-badge: oklch(52.86% 0.22851 282.074);
+
   /* Rank badge themes, levels 0-10. Values are the pre-token palette, kept verbatim. */
   --color-rank-0-from: #e5e7eb;
   --color-rank-0-to: #9ca3af;

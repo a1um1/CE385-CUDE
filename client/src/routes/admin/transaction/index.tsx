@@ -39,8 +39,8 @@ const columnHelper = createTableColumnHelper<AdminTransaction>();
 
 const typeColors: Record<CurrencyType, string> = {
   ENERGY: "var(--color-primary)",
-  GEM: "#8B5CF6",
-  XP: "#F59E0B",
+  GEM: "var(--color-gem)",
+  XP: "var(--color-energy)",
 };
 
 const currencyIcons: Record<CurrencyType, React.FC> = {

@@ -51,7 +51,7 @@ export function VideoSections() {
             target="_blank"
             rel="noopener noreferrer"
             key={video.id}
-            className="flex flex-col gap-2 hover:bg-gray-900 rounded-md border-6 border-transparent hover:border-gray-900 transition-all duration-200"
+            className="flex flex-col gap-2 hover:bg-panel rounded-md border-6 border-transparent hover:border-panel transition-all duration-200"
           >
             <div className="relative">
               <img
@@ -59,12 +59,12 @@ export function VideoSections() {
                 alt={video.title}
                 className="w-full h-auto rounded shadow-md aspect-video object-cover"
               />
-              <div className="absolute bottom-2 right-2 bg-black/50 text-white text-xs px-1 py-0.5 rounded-xs font-bold">
+              <div className="absolute bottom-2 right-2 bg-scrim text-background-text text-xs px-1 py-0.5 rounded-xs font-bold">
                 {video.runTime}
               </div>
             </div>
             <h2 className="font-semibold line-clamp-2 min-h-[3em]">{video.title}</h2>
-            <p className="text-sm text-gray-400">{video.author}</p>
+            <p className="text-sm text-secondary-text">{video.author}</p>
           </a>
         ))}
       </div>

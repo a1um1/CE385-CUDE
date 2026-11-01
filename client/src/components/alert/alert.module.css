@@ -1,6 +1,6 @@
 .alert {
-  --background-color: rgb(29, 77, 199);
-  --text-color: white;
+  --background-color: var(--color-primary);
+  --text-color: var(--color-primary-text);
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -12,11 +12,11 @@
 }
 
 .success {
-  --background-color: #4ae45b;
-  --text-color: white;
+  --background-color: var(--color-success);
+  --text-color: var(--color-success-text);
 }
 
 .error {
-  --background-color: #e4494c;
-  --text-color: white;
+  --background-color: var(--color-danger);
+  --text-color: var(--color-danger-text);
 }

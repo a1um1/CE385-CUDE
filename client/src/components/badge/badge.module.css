@@ -13,5 +13,5 @@
   white-space: nowrap;
   width: fit-content;
   color: var(--badge-color);
-  background-color: color-mix(in oklch, var(--badge-color) 10%, rgba(30, 30, 30, 0.1));
+  background-color: color-mix(in oklch, var(--badge-color) 10%, var(--color-background));
 }

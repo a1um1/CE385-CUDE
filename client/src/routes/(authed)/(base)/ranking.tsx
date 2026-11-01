@@ -33,7 +33,7 @@ function RouteComponent() {
           ))}
         </>
       ) : (
-        <div className="text-gray-500">No data available.</div>
+        <div className="text-muted-text">No data available.</div>
       )}
     </>
   );

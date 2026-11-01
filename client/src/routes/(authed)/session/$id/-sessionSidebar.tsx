@@ -47,7 +47,7 @@ function SessionSidebarBody({ sessionId, lessonId, onAbort, isAborting }: Sessio
       <div>
         {exercises.isLoading && <Skeleton className="h-10 m-1" />}
         {exercises.isError && (
-          <div className="p-3 text-sm text-red-500">Failed to load exercises.</div>
+          <div className="p-3 text-sm text-danger">Failed to load exercises.</div>
         )}
         {!exercises.isLoading && !exercises.isError && exercises.data?.length === 0 && (
           <div className="p-3 text-sm text-muted-foreground">No exercises found.</div>

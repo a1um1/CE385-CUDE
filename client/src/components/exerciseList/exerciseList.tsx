@@ -31,7 +31,7 @@ export default function ExerciseList({
   if (isLoading) return <Skeleton className="h-14" />;
   if (isError) {
     return (
-      <div className="flex items-center gap-2 p-4 text-sm text-red-500">
+      <div className="flex items-center gap-2 p-4 text-sm text-danger">
         {errorMessage ?? "Failed to load exercises."}
       </div>
     );
@@ -55,7 +55,7 @@ export default function ExerciseList({
           <li key={item.id} className="border-b border-border">
             {sessionId ? (
               <Link
-                className="flex items-center gap-4 p-4 hover:bg-gray-500/10"
+                className="flex items-center gap-4 p-4 hover:bg-secondary"
                 to="/session/$id/$exerciseId"
                 params={{ id: sessionId, exerciseId: item.id }}
               >

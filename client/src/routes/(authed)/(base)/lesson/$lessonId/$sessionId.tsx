@@ -86,7 +86,7 @@ function RouteComponent() {
       </div>
 
       {session?.status === "PENDING" && (
-        <p className="border-l-2 border-l-warning bg-white/5 px-4 py-3">
+        <p className="border-l-2 border-l-warning bg-panel/5 px-4 py-3">
           ยังไม่ได้ส่งงาน หน้านี้จะแสดงคะแนนหลังกดส่งงานที่หน้าสรุปบทเรียน
         </p>
       )}

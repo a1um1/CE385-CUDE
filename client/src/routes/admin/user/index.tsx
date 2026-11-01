@@ -34,8 +34,8 @@ const typedColumns = columnHelper.columns([
   columnHelper.badge("role", {
     header: "Role",
     map: {
-      ADMIN: { color: "#10B981", label: "ADMIN" },
-      USER: { color: "#F59E0B", label: "USER" },
+      ADMIN: { color: "var(--color-success)", label: "ADMIN" },
+      USER: { color: "var(--color-warning)", label: "USER" },
     },
   }),
   columnHelper.datetime("createdAt", {

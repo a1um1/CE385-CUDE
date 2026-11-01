@@ -18,7 +18,7 @@ export const StatisticCharts = ({ statistic }: StatisticChartsProps) => (
         { name: "ผ่าน", value: statistic?.passed.count ?? 0, fill: "var(--color-success)" },
         { name: "ไม่ผ่าน", value: statistic?.failed.count ?? 0, fill: "var(--color-danger)" },
         { name: "ยอมแพ้", value: statistic?.gaveUp.count ?? 0, fill: "var(--color-warning)" },
-        { name: "กำลังเรียน", value: statistic?.inProgress.count ?? 0, fill: "#34abeb" },
+        { name: "กำลังเรียน", value: statistic?.inProgress.count ?? 0, fill: "var(--color-info)" },
       ]}
     />
 
