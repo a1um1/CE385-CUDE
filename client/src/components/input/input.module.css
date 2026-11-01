@@ -69,6 +69,12 @@
     --input-height: var(--size-md-height);
   }
 
+  &.size-lg {
+    --input-sizing: var(--size-lg-padding-y) var(--size-lg-padding-x);
+    --input-font-size: var(--size-lg-font-size);
+    --input-height: var(--size-lg-height);
+  }
+
   &.radius-none {
     --input-radius: 0;
   }
