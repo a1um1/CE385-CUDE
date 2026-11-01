@@ -1,7 +1,7 @@
 import { handleFormMutationError, useAppForm } from "#/components/form";
 import { useUpdatePassword } from "#/data/user.data";
 import { getPasswordError } from "#/lib/passwordRules";
-import styles from "./passwordForm.module.css";
+import styles from "../passwordForm.module.css";
 
 export default function UpdatePasswordForm() {
   const updateMutation = useUpdatePassword();

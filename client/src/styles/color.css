@@ -30,7 +30,7 @@
 
   /* Effects: shadows and modal scrims. */
   --color-shadow: oklch(0% 0 0);
-  --color-scrim: oklch(0% 0 0 / 0.6);
+  --color-scrim: oklch(0% 0 0 / 1);
 
   /* Leaderboard rows. */
   --color-row: oklch(30% 0.05 290);
