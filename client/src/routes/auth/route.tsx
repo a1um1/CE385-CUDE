@@ -77,7 +77,11 @@ export const Route = createFileRoute("/auth")({
 function RouteComponent() {
   return (
     <div className={styles["hex-bg"]}>
-      <AsciiPanel src={randomImage?.src ?? ""} name={randomImage?.name} author={randomImage?.author} />
+      <AsciiPanel
+        src={randomImage?.src ?? ""}
+        name={randomImage?.name}
+        author={randomImage?.author}
+      />
       <div className={styles.container}>
         <div className={styles.subContainer}>
           <div className={styles.logo}>
