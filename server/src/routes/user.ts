@@ -132,7 +132,8 @@ const userRoute = new CustomRouter({
       description:
         "Return the top users ranked by positive XP transactions during the " +
         "current server-time week (Monday start) or calendar month. The response includes XP earned " +
-        "in the period separately from each user's all-time total XP and public profile images.",
+        "in the period separately from each user's all-time total XP, level and public profile images. " +
+        "Users with no XP in the period are included at the bottom with 0 XP earned.",
       query: rankingQuerySchema,
       response: xpRankingListSchema,
     },

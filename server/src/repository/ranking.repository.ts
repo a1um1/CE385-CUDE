@@ -9,6 +9,7 @@ export interface XpRankingRow {
   xpEarned: number;
   totalXP: number;
   name: string;
+  epithet: string | null;
 }
 
 export const rankingRepository = {
@@ -17,29 +18,29 @@ export const rankingRepository = {
       WITH xp_totals AS (
         SELECT t."userID", SUM(t.amount)::int AS "xpEarned"
         FROM "Transactions" t
-        JOIN "User" u ON u.id = t."userID"
         WHERE t.type = 'XP'
           AND t.amount > 0
           AND t."createdAt" >= ${periodStart}
           AND t."createdAt" <= ${now}
-          AND u."isActive" = true
         GROUP BY t."userID"
       ),
       ranked_users AS (
         SELECT
-          ROW_NUMBER() OVER (ORDER BY xp."xpEarned" DESC, u.username ASC)::int AS rank,
+          ROW_NUMBER() OVER (ORDER BY COALESCE(xp."xpEarned", 0) DESC, u.username ASC)::int AS rank,
           u.id,
           u.username,
-					u.name,
+          u.name,
+					u.epithet,
           u."profileImage",
           u."backgroundImage",
-          xp."xpEarned",
+          COALESCE(xp."xpEarned", 0)::int AS "xpEarned",
           COALESCE(us."totalXP", 0)::int AS "totalXP"
-        FROM xp_totals xp
-        JOIN "User" u ON u.id = xp."userID"
+        FROM "User" u
+        LEFT JOIN xp_totals xp ON xp."userID" = u.id
         LEFT JOIN "UserStat" us ON us."userID" = u.id
+        WHERE u."isActive" = true
       )
-      SELECT rank, id, username, name, "profileImage", "backgroundImage", "xpEarned", "totalXP"
+      SELECT rank, id, username, name, epithet, "profileImage", "backgroundImage", "xpEarned", "totalXP"
       FROM ranked_users
       ORDER BY rank
       LIMIT ${limit}

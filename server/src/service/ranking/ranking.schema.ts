@@ -1,5 +1,6 @@
 import { z } from "#/lib/extendZod";
 import type zod from "zod";
+import { epithetDefinition } from "#/service/user/user.schema";
 
 export const rankingQuerySchema = z.object({
   period: z.enum(["weekly", "monthly"]).default("weekly").openapi({
@@ -21,6 +22,8 @@ export const xpRankingSchema = z.object({
       .nullable()
       .openapi({ example: "https://example.com/background.jpg" }),
     name: z.string().openapi({ example: "John Doe" }),
+    epithet: epithetDefinition.nullable(),
+    level: z.number().int().openapi({ example: 5 }),
   }),
   xpEarned: z.number().int().openapi({ example: 250 }),
   totalXP: z.number().int().openapi({ example: 1200 }),

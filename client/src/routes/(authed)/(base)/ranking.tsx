@@ -1,9 +1,40 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { RankedUserBar } from "#/components/ranked-user-bar";
+import { useRankings } from "#/data/user.data";
+import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute('/(authed)/(base)/ranking')({
+export const Route = createFileRoute("/(authed)/(base)/ranking")({
   component: RouteComponent,
-})
+});
 
 function RouteComponent() {
-  return <div>Hello "/(authed)/(base)/ranking"!</div>
+  const { data: rankingData, isLoading } = useRankings({ period: "weekly", limit: 20 });
+  if (isLoading) return <div>Loading...</div>;
+
+  return (
+    <>
+      <h1 className="text-2xl font-bold mb-4">Weekly Ranking</h1>
+
+      {rankingData && rankingData.length > 0 ? (
+        <>
+          {rankingData.map((entry) => (
+            <RankedUserBar
+              key={`ranking-${entry.user.id}`}
+              {...{
+                avatarUrl: entry.user.profileImage,
+                rank: entry.rank,
+                name: entry.user.name,
+                epithet: entry.user.epithet,
+                username: entry.user.username,
+                backgroundUrl: entry.user.backgroundImage,
+                xp: entry.xpEarned,
+                level: entry.user.level,
+              }}
+            />
+          ))}
+        </>
+      ) : (
+        <div className="text-gray-500">No data available.</div>
+      )}
+    </>
+  );
 }
