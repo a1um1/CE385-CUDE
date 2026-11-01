@@ -72,7 +72,11 @@ function RouteComponent() {
       </div>
       <div className={styles["profile-content"]}>
         <section className={styles["profile-calendar"]}>
-          <Calendar month={new Date().getMonth() + 1} year={new Date().getFullYear()} />
+          <Calendar
+            month={new Date().getMonth() + 1}
+            year={new Date().getFullYear()}
+            activityData={data.activityCalendar}
+          />
         </section>
         <section className={styles["activity"]}>
           <h2 className={styles["activity-title"]}>Recent activity</h2>

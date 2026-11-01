@@ -40,7 +40,9 @@ export default function Calendar({
           <div
             key={i}
             className={styles.dayCell}
-            data-activity={(activityData?.[`${year}-${month}-${i + 1}`] ?? 0) * 100}
+            data-activity={
+              (activityData?.[`${year}-${month}-${(i + 1).toString().padStart(2, "0")}`] ?? 0) * 100
+            }
           >
             {i + 1}
           </div>

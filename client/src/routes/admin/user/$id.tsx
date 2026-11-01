@@ -18,6 +18,7 @@ import ConfirmDialog from "#/components/dialog/confirmDialog";
 import ChangePasswordDialog from "#/routes/admin/user/-dialog/changePasswordDialog";
 import { CameraIcon, ExternalLinkIcon } from "lucide-react";
 import styles from "./userEdit.module.css";
+import UserActivity from "#/routes/admin/user/-dialog/userActivity";
 
 export const Route = createFileRoute("/admin/user/$id")({
   component: RouteComponent,
@@ -244,6 +245,7 @@ function RouteComponent() {
           </div>
         )}
       </div>
+      <UserActivity userId={id} />
 
       {/* Dialogs */}
       <ConfirmDialog

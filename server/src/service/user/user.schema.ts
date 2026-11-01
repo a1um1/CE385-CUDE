@@ -133,8 +133,12 @@ export const UserPublicProfileSchema = UserSafePublicSchema.extend({
   xpIntoLevel: z.number(),
   xpToNextLevel: z.number(),
   levelProgressPercent: z.number(),
-  /** The user's five most recent lesson sessions, newest first. */
   recentActivity: z.array(ProfileActivitySchema),
+  activityCalendar: z.record(z.string(), z.number()).openapi({
+    description:
+      "A map of dates to the percentage of the user's busiest day in the last 30 days. " +
+      "Only days with activity are included. The key is the date in YYYY-MM-DD format, and the value is a number between 0 and 1.",
+  }),
 }).openapi("UserPublicProfileData");
 
 export const UserCreationSchema = UserSchema.pick({
