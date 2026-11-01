@@ -1,6 +1,7 @@
 import Avatar from "#/components/avatar";
 import { useSignOut, useUser } from "#/data/user.data";
 import style from "./userMenu.module.css";
+import userBackgroundStyles from "#/components/userBackground/userBackground.module.css";
 import Dropdown from "#/components/dropdown";
 import { LogOut, Settings, User } from "lucide-react";
 import { Link } from "@tanstack/react-router";
@@ -24,7 +25,7 @@ export default function UserMenu() {
           <UserBackground
             backgroundUrl={user?.backgroundImage || null}
             name={user?.name || ""}
-            className="max-w-xs"
+            className={userBackgroundStyles.maxWidthXs}
           />
           <div className={style["header-info"]}>
             <Avatar name={user?.name || ""} avatarUrl={user?.profileImage} size="4rem" />

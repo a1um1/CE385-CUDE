@@ -1,0 +1,48 @@
+@reference "#/styles/main.css";
+
+.skeletonLoader {
+  height: 3.5rem;
+}
+
+.errorMessage {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  font-size: 0.875rem;
+  color: var(--color-danger);
+}
+
+.emptyMessage {
+  padding: 1rem;
+  font-size: 0.875rem;
+  color: var(--color-muted-text);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.item {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.row:hover {
+  background-color: var(--color-secondary);
+}
+
+.indexNumber {
+  opacity: 0.5;
+}
+
+.itemName {
+  flex: 1;
+}

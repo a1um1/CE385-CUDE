@@ -1,6 +1,7 @@
 import { CollapsibleSidebarProvider } from "#/components/collapsibleSidebar";
 import { sessionByIdQuery, useAbortLearnSessionMutation } from "#/data/learnSession.data";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import styles from "./route.module.css";
 import SessionSidebar from "./-sessionSidebar";
 
 const sessionInclude = ["lesson", "lesson.unit", "lesson.unit.course"] as const;
@@ -41,7 +42,7 @@ function RouteComponent() {
 
   return (
     <CollapsibleSidebarProvider>
-      <div className="flex h-dvh">
+      <div className={styles.sessionLayout}>
         <SessionSidebar
           sessionId={data.id}
           lessonId={lessonId}

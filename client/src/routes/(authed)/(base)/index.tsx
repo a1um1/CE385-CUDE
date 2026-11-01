@@ -7,6 +7,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
 import HomePanel from "./-components/home";
 import LessonsPanel from "./-components/lessonsPanel";
+import styles from "./index.module.css";
 
 export const Route = createFileRoute("/(authed)/(base)/")({
   component: Home,
@@ -24,12 +25,12 @@ function Home() {
   }, [courseId, courses.data, setCourse]);
 
   return (
-    <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
-      <div className="flex min-w-0 flex-[2] flex-col gap-6">
+    <div className={styles.mainContainer}>
+      <div className={styles.mainContent}>
         {!courseId ? <HomePanel /> : <LessonsPanel courseId={courseId} />}
       </div>
 
-      <aside className="min-w-0 flex-1 flex flex-col bg-panel shadow-xl rounded-xl overflow-hidden lg:sticky lg:top-6 lg:h-fit">
+      <aside className={styles.sidebar}>
         <LevelCard />
         <RankingCard />
         <DailyQuest />

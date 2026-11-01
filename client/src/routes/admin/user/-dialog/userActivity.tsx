@@ -1,4 +1,5 @@
 import Calendar from "#/components/calendar";
+import styles from "./userActivity.module.css";
 import { useAdminViewUserActivity } from "#/data/admin/user.data";
 
 export default function UserActivity(props: { userId: string }) {
@@ -18,14 +19,14 @@ export default function UserActivity(props: { userId: string }) {
   if (isLoading) return <div>Loading...</div>;
 
   return (
-    <div className="flex flex-wrap gap-4">
+    <div className={styles.calendarGrid}>
       {monthLists.map(({ month, year }) => (
         <Calendar
           key={`${year}-${month}`}
           month={month}
           year={year}
           activityData={calendarData || {}}
-          containerClassName="w-[300px] flex-shrink-0"
+          containerClassName={styles.calendarContainer}
         />
       ))}
     </div>

@@ -21,7 +21,7 @@
   --color-secondary-text: oklch(100% 0 0 / 0.7);
 
   /* Raised surfaces: editor chrome and standalone panels. */
-  --color-panel: oklch(18% 0.025 267);
+  --color-panel: oklch(19.487% 0.03005 283.258);
   --color-editor: oklch(20% 0 0);
 
   --color-info: oklch(62.3% 0.214 259.815);
@@ -57,50 +57,5 @@
 
   /* Badge/epithet color for ranked user cards */
   --color-badge: oklch(52.86% 0.22851 282.074);
-
-  /* Rank badge themes, levels 0-10. Values are the pre-token palette, kept verbatim. */
-  --color-rank-0-from: #e5e7eb;
-  --color-rank-0-to: #9ca3af;
-  --color-rank-0-border: #374151;
-  --color-rank-0-text: #374151;
-  --color-rank-1-from: #fecdd3;
-  --color-rank-1-to: #fb7185;
-  --color-rank-1-border: #881337;
-  --color-rank-1-text: #881337;
-  --color-rank-2-from: #fed7aa;
-  --color-rank-2-to: #fb923c;
-  --color-rank-2-border: #7c2d12;
-  --color-rank-2-text: #7c2d12;
-  --color-rank-3-from: #fde68a;
-  --color-rank-3-to: #fbbf24;
-  --color-rank-3-border: #78350f;
-  --color-rank-3-text: #78350f;
-  --color-rank-4-from: #d9f99d;
-  --color-rank-4-to: #84cc16;
-  --color-rank-4-border: #365314;
-  --color-rank-4-text: #365314;
-  --color-rank-5-from: #a7f3d0;
-  --color-rank-5-to: #34d399;
-  --color-rank-5-border: #064e3b;
-  --color-rank-5-text: #064e3b;
-  --color-rank-6-from: #a5f3fc;
-  --color-rank-6-to: #22d3ee;
-  --color-rank-6-border: #164e63;
-  --color-rank-6-text: #164e63;
-  --color-rank-7-from: #bfdbfe;
-  --color-rank-7-to: #3b82f6;
-  --color-rank-7-border: #1e3a8a;
-  --color-rank-7-text: #1e3a8a;
-  --color-rank-8-from: #ddd6fe;
-  --color-rank-8-to: #8b5cf6;
-  --color-rank-8-border: #3b0764;
-  --color-rank-8-text: #3b0764;
-  --color-rank-9-from: #fbcfe8;
-  --color-rank-9-to: #ec4899;
-  --color-rank-9-border: #500724;
-  --color-rank-9-text: #500724;
-  --color-rank-10-from: #fde047;
-  --color-rank-10-to: #f59e0b;
-  --color-rank-10-border: #78350f;
-  --color-rank-10-text: #78350f;
+  --color-streak: var(--color-primary);
 }

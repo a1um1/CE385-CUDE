@@ -1,0 +1,23 @@
+@reference "#/styles/main.css";
+
+.container {
+  max-width: var(--container-size);
+  margin: 0 auto;
+  width: 100%;
+}
+
+.mainContainer {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-height: 100dvh;
+}
+
+.skeletonHeader {
+  min-height: 5rem;
+}
+
+.skeletonContent {
+  flex: 1;
+}

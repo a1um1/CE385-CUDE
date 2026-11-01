@@ -1,0 +1,5 @@
+@reference "#/styles/main.css";
+
+.editorContainer {
+  height: calc(100vh - 10rem);
+}

@@ -1,4 +1,5 @@
 import Button from "#/components/button";
+import styles from "./videos.module.css";
 
 const videoMocks: {
   id: string;
@@ -39,32 +40,32 @@ const videoMocks: {
 
 export function VideoSections() {
   return (
-    <section className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">เนื้อหา</h1>
+    <section className={styles.section}>
+      <div className={styles.header}>
+        <h1 className={styles.heading}>เนื้อหา</h1>
         <Button variant="secondary">ดูทั้งหมด</Button>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+      <div className={styles.grid}>
         {videoMocks.map((video) => (
           <a
             href={video.videoURL}
             target="_blank"
             rel="noopener noreferrer"
             key={video.id}
-            className="flex flex-col gap-2 hover:bg-panel rounded-md border-6 border-transparent hover:border-panel transition-all duration-200"
+            className={styles.card}
           >
-            <div className="relative">
+            <div className={styles.imageContainer}>
               <img
                 src={`https://img.youtube.com/vi/${video.videoURL.split("v=")[1]}/hqdefault.jpg`}
                 alt={video.title}
-                className="w-full h-auto rounded shadow-md aspect-video object-cover"
+                className={styles.image}
               />
-              <div className="absolute bottom-2 right-2 bg-scrim text-background-text text-xs px-1 py-0.5 rounded-xs font-bold">
+              <div className={styles.runtimeBadge}>
                 {video.runTime}
               </div>
             </div>
-            <h2 className="font-semibold line-clamp-2 min-h-[3em]">{video.title}</h2>
-            <p className="text-sm text-secondary-text">{video.author}</p>
+            <h2 className={styles.title}>{video.title}</h2>
+            <p className={styles.author}>{video.author}</p>
           </a>
         ))}
       </div>

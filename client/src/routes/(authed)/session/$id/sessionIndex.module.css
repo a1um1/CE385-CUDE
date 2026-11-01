@@ -1,0 +1,5 @@
+@reference "#/styles/main.css";
+
+.emptyMessage {
+  padding: 1rem;
+}

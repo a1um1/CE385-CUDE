@@ -1,4 +1,5 @@
 import EventCard, { type CampusEvent } from "#/components/eventCard";
+import styles from "#/routes/(authed)/(base)/index.module.css";
 
 const campusMocksEvents: CampusEvent[] = [
   {
@@ -17,9 +18,9 @@ function handleEventClick() {
 
 export function EventsSections() {
   return (
-    <section className="flex flex-col gap-4">
-      <h1 className="text-3xl font-bold">กิจกรรม</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <section className={styles.section}>
+      <h1 className={styles.heading}>กิจกรรม</h1>
+      <div className={styles.eventsGrid}>
         {campusMocksEvents.map((event) => (
           <EventCard key={event.id} event={event} onClick={handleEventClick} />
         ))}

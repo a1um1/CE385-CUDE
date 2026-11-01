@@ -1,6 +1,7 @@
 import Gem from "#/components/icon/gem";
 import { CheckCircle2, Clock, Flag, ScrollText, XCircle } from "lucide-react";
 import { useState } from "react";
+import styles from "./dailyQuest.module.css";
 
 export type QuestStatus = "started" | "passed" | "failed" | "give_up";
 
@@ -72,33 +73,33 @@ export default function DailyQuest() {
   };
 
   return (
-    <section className="flex flex-col gap-3 pt-2">
-      <header className="flex items-center gap-2 font-semibold px-4">
-        <ScrollText className="size-5 text-gem" />
+    <section className={styles.section}>
+      <header className={styles.header}>
+        <ScrollText className={styles.icon} />
         Daily Quest
       </header>
 
-      <div className="flex h-[88px] w-full items-stretch overflow-hidden text-left">
+      <div className={styles.mainContainer}>
         <button
           type="button"
           onClick={cycleStatus}
           title="Click to toggle status (mock)"
           style={{ backgroundColor: statusInfo.bg, color: statusInfo.textColor }}
-          className="flex aspect-square h-full shrink-0 flex-col items-center justify-center gap-1 select-none p-2 text-center cursor-pointer border-none outline-none"
+          className={styles.statusButton}
         >
-          <StatusIcon className="size-6 shrink-0" />
-          <span className="font-mono text-[10px] font-bold tracking-wider leading-none">
+          <StatusIcon className={styles.statusIcon} />
+          <span className={styles.statusLabel}>
             {statusInfo.label}
           </span>
         </button>
 
-        <div className="flex min-w-0 flex-1 flex-col justify-center px-4 py-2 gap-2">
-          <div className="flex items-center justify-between gap-2">
-            <span className="truncate font-mono text-base font-bold text-background-text">
+        <div className={styles.content}>
+          <div className={styles.titleRow}>
+            <span className={styles.title}>
               #{problem.number} {problem.title}
             </span>
             <span
-              className="text-[11px] font-semibold px-1.5 py-0.5 shrink-0"
+              className={styles.difficultyBadge}
               style={{
                 color: DIFFICULTY_COLOR[problem.difficulty],
                 backgroundColor: `color-mix(in srgb, ${DIFFICULTY_COLOR[problem.difficulty]} 15%, transparent)`,
@@ -108,11 +109,11 @@ export default function DailyQuest() {
             </span>
           </div>
 
-          <div className="flex items-center justify-between text-xs">
-            <span className="text-secondary-text">Reward</span>
-            <div className="flex items-center gap-3 font-semibold font-mono">
-              <span className="text-energy">+{problem.xpReward} XP</span>
-              <span className="flex items-center gap-1 text-gem">
+          <div className={styles.rewardRow}>
+            <span className={styles.rewardLabel}>Reward</span>
+            <div className={styles.rewardValues}>
+              <span className={styles.xpReward}>+{problem.xpReward} XP</span>
+              <span className={styles.gemReward}>
                 <Gem size={13} />+{problem.gemReward}
               </span>
             </div>

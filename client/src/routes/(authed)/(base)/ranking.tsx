@@ -1,6 +1,7 @@
 import { RankedUserBar } from "#/components/ranked-user-bar";
 import { useRankings } from "#/data/user.data";
 import { createFileRoute } from "@tanstack/react-router";
+import styles from "./ranking.module.css";
 
 export const Route = createFileRoute("/(authed)/(base)/ranking")({
   component: RouteComponent,
@@ -12,7 +13,7 @@ function RouteComponent() {
 
   return (
     <>
-      <h1 className="text-2xl font-bold mb-4">Weekly Ranking</h1>
+      <h1 className={styles.heading}>Weekly Ranking</h1>
 
       {rankingData && rankingData.length > 0 ? (
         <>
@@ -33,7 +34,7 @@ function RouteComponent() {
           ))}
         </>
       ) : (
-        <div className="text-muted-text">No data available.</div>
+        <div className={styles.noDataMessage}>No data available.</div>
       )}
     </>
   );

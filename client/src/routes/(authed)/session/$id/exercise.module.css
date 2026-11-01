@@ -1,0 +1,73 @@
+@reference "#/styles/main.css";
+
+.exerciseLayout {
+  flex: 1;
+  min-width: 0;
+}
+
+.exerciseContainer {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.exerciseInner {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.exerciseContentColumn {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  flex-shrink: 0;
+  border-bottom: 2px solid var(--color-border);
+  background-color: var(--color-background);
+}
+
+.headerInner {
+  width: 100%;
+  max-width: var(--container-size);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.skeletonLoader {
+  width: 12rem;
+  height: 1.5rem;
+}
+
+.contentScroll {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.contentContainer {
+  width: 100%;
+  max-width: var(--container-size);
+  margin: 0 auto;
+}
+
+.contentPadding {
+  padding: 1rem;
+}
+
+.footer {
+  border-top: 2px solid var(--color-border);
+  padding: 1rem;
+  display: flex;
+  justify-content: flex-end;
+  background-color: var(--color-background);
+}

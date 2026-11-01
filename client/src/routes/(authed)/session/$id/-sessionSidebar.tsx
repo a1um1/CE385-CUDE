@@ -14,6 +14,7 @@ import { useExerciseFromLessonQuery } from "#/data/exercise.data";
 import { useParams } from "@tanstack/react-router";
 import { BookIcon, DoorOpenIcon, FrownIcon, XIcon } from "lucide-react";
 import { useState } from "react";
+import styles from "./sessionSidebar.module.css";
 
 interface SessionSidebarProps {
   sessionId: string;
@@ -45,12 +46,12 @@ function SessionSidebarBody({ sessionId, lessonId, onAbort, isAborting }: Sessio
       </ButtonLink>
       <Divider />
       <div>
-        {exercises.isLoading && <Skeleton className="h-10 m-1" />}
+        {exercises.isLoading && <Skeleton className={styles.skeletonLoader} />}
         {exercises.isError && (
-          <div className="p-3 text-sm text-danger">Failed to load exercises.</div>
+          <div className={styles.errorMessage}>Failed to load exercises.</div>
         )}
         {!exercises.isLoading && !exercises.isError && exercises.data?.length === 0 && (
-          <div className="p-3 text-sm text-muted-foreground">No exercises found.</div>
+          <div className={styles.emptyMessage}>No exercises found.</div>
         )}
         {exercises.data?.map((exercise) => (
           <ButtonLink
@@ -97,7 +98,7 @@ function SessionSidebarBody({ sessionId, lessonId, onAbort, isAborting }: Sessio
           }}
           isPending={isAborting}
         />
-        <div className={collapsed ? "p-2" : "p-4"}>
+        <div className={`${styles.userTriggerContainer} ${!collapsed ? styles.userTriggerContainerExpanded : ""}`}>
           <UserTrigger showFullInfo={!collapsed} />
         </div>
       </CollapsibleSidebarFooter>

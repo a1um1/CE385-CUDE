@@ -11,6 +11,7 @@ import {
 } from "#/components/select";
 import DataTable, { createTableColumnHelper } from "#/components/table";
 import SearchField from "#/components/searchField/searchField";
+import styles from "./transaction.module.css";
 import { useAdminTransactionListQuery } from "#/data/admin/transaction.data";
 import { basicPaginationSchema } from "#/lib/pagination.schema";
 import { createFileRoute } from "@tanstack/react-router";
@@ -69,7 +70,7 @@ const typedColumns = columnHelper.columns([
       const { type, amount } = info.row.original;
       const CurrencyIcon = currencyIcons[type];
       return (
-        <span className="flex gap-0.5">
+        <span className={styles.amountCell}>
           {amount > 0 ? "+" : "-"}
           {Math.abs(amount).toLocaleString()}
           <CurrencyIcon />

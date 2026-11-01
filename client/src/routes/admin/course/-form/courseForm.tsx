@@ -2,6 +2,7 @@ import CourseCard from "#/components/courseCard";
 import { FormRoot, useAppForm } from "#/components/form";
 import { languageIconOptions } from "#/data/code.data";
 import type { availableLanguageKey } from "#/data/code.data";
+import styles from "./courseForm.module.css";
 
 export interface CourseFormValues {
   name: string;
@@ -38,8 +39,8 @@ export function CourseForm({
   });
 
   return (
-    <div className="flex gap-4">
-      <div className="max-w-xs shrink-0 *:w-full w-full">
+    <div className={styles.mainContainer}>
+      <div className={styles.previewColumn}>
         <form.Subscribe
           selector={(state) => ({
             name: state.values.name,
@@ -62,7 +63,7 @@ export function CourseForm({
           )}
         </form.Subscribe>
       </div>
-      <div className="flex-1">
+      <div className={styles.formColumn}>
         <FormRoot form={form}>
           <form.AppForm>
             <form.FormError />

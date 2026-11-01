@@ -6,9 +6,9 @@ import formatNstoMs from "#/lib/formatNs";
 import formatFileSize from "#/lib/formatSize";
 import { useMutation } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import clsx from "clsx";
 import { CheckIcon, XIcon } from "lucide-react";
 import { useState } from "react";
+import styles from "./play-grader.module.css";
 
 export const Route = createFileRoute("/(authed)/(base)/play-grader")({
   component: RouteComponent,
@@ -96,8 +96,8 @@ function RouteComponent() {
   return (
     <>
       <h1>Grader</h1>
-      <div className="grid grid-cols-2 gap-4">
-        <div className="h-[calc(100vh-10rem)]">
+      <div className={styles.mainGrid}>
+        <div className={styles.leftColumn}>
           <CodeEditor
             value={code}
             onChange={setCode}
@@ -111,8 +111,8 @@ function RouteComponent() {
           <Button onClick={addTestCase}>Add Test case</Button>
           {testCases.map((data, index) => (
             // oxlint-disable-next-line react/no-array-index-key
-            <div key={`test-case-${index}`} className="grid grid-cols-3 gap-3 items-end">
-              <div>
+            <div key={`test-case-${index}`} className={styles.testCaseRow}>
+              <div className={styles.testCaseField}>
                 <label>Input</label>
                 <textarea
                   value={data.input}
@@ -121,7 +121,7 @@ function RouteComponent() {
                   onChange={handleInputChange}
                 />
               </div>
-              <div>
+              <div className={styles.testCaseField}>
                 <label>Output</label>
                 <textarea
                   value={data.output}
@@ -137,7 +137,7 @@ function RouteComponent() {
           ))}
           <br />
 
-          <div className="grid grid-cols-4">
+          <div className={styles.resultsHeader}>
             <div>OK?</div>
             <div>Input</div>
             <div>Expected Output</div>
@@ -146,7 +146,7 @@ function RouteComponent() {
           {(runMuation?.data?.testResults || [])?.map((v) => (
             <div
               key={`test-${v.input}-${v.expectedOutput}`}
-              className={clsx("grid grid-cols-4", v.ok ? "bg-green-500/20" : "bg-red-500/20")}
+              className={`${styles.resultRow} ${v.ok ? styles.resultRowSuccess : styles.resultRowFailure}`}
             >
               <div>{v.ok ? <CheckIcon /> : <XIcon />}</div>
               <div>{v.input}</div>
@@ -155,14 +155,14 @@ function RouteComponent() {
             </div>
           ))}
 
-          <div className="flex gap-4 items-start">
-            <div className="aspect-squre bg-teal-500 w-48 h-48 flex items-center justify-center p-5 text-5xl">
+          <div className={styles.statisticsContainer}>
+            <div className={styles.percentageCircle}>
               {typeof runMuation.data?.percentage === "number"
                 ? runMuation.data.percentage.toFixed(0)
                 : "?"}
-              <small className="text-lg">%</small>
+              <small className={styles.percentageSign}>%</small>
             </div>
-            <div>
+            <div className={styles.statisticsDetails}>
               <p>Total Cases: {runMuation?.data?.total}</p>
               <p>Passed: {runMuation?.data?.passed}</p>
               <p>Failed: {runMuation?.data?.failed}</p>

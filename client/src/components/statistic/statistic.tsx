@@ -1,5 +1,6 @@
 import { PieChart } from "#/components/pie-chart";
 import { ScoreDistribution } from "#/components/score-distribution";
+import styles from "./statistic.module.css";
 import type { components } from "#/data/base/openapi";
 
 export type StatisticData = Pick<
@@ -22,7 +23,7 @@ export const StatisticCharts = ({ statistic }: StatisticChartsProps) => (
       ]}
     />
 
-    <h4 className="text-lg font-bold">การกระจายคะแนน</h4>
+    <h4 className={styles.scoreDistributionTitle}>การกระจายคะแนน</h4>
 
     <ScoreDistribution data={statistic?.scoreDistribution ?? []} height={250} />
   </>

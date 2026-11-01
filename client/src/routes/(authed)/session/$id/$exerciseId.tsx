@@ -3,6 +3,7 @@ import CodeEditor from "#/components/codeEditor";
 import { CollapsibleSidebarToggle } from "#/components/collapsibleSidebar";
 import Markdown from "#/components/markdown";
 import Skeleton from "#/components/skeleton";
+import styles from "./exercise.module.css";
 import type { components } from "#/data/base/openapi";
 import {
   exerciseQueryOptions,
@@ -72,7 +73,7 @@ function CodeEditorPane({
   );
 
   return (
-    <div className="flex-1 min-w-0">
+    <div className={styles.exerciseLayout}>
       <CodeEditor
         value={code}
         onChange={handleChange}
@@ -130,24 +131,24 @@ function RouteComponent() {
   };
 
   return (
-    <div className="flex flex-col flex-1 min-w-0">
-      <div className="flex flex-1 min-h-0">
-        <div className="flex-1 min-w-0 flex flex-col">
-          <header className="shrink-0 border-b-2 border-border bg-background">
-            <div className="container flex items-center gap-2 px-4 py-2">
+    <div className={styles.exerciseContainer}>
+      <div className={styles.exerciseInner}>
+        <div className={styles.exerciseContentColumn}>
+          <header className={styles.header}>
+            <div className={styles.headerInner}>
               <CollapsibleSidebarToggle iconOnly label="ย่อแถบ" />
               {lesson?.id ? (
                 <Link to="/lesson/$lessonId" params={{ lessonId: lesson.id }}>
                   {lesson.unit?.course?.name} | {lesson.unit?.name} | {lesson.name}
                 </Link>
               ) : (
-                <Skeleton className="w-48 h-6" />
+                <Skeleton className={styles.skeletonLoader} />
               )}
             </div>
           </header>
-          <div ref={scrollRef} className="flex-1 overflow-y-auto">
-            <div className="container">
-              <div className="p-4">
+          <div ref={scrollRef} className={styles.contentScroll}>
+            <div className={styles.contentContainer}>
+              <div className={styles.contentPadding}>
                 <Markdown content={withHeading(exercise)} />
               </div>
             </div>
@@ -157,7 +158,7 @@ function RouteComponent() {
           <CodeEditorPane key={exercise.id} sessionId={id} exercise={exercise} canSave />
         )}
       </div>
-      <div className="border-t-2 border-border p-4 flex justify-end bg-background">
+      <div className={styles.footer}>
         <Button variant="primary" onClick={handleContinue} disabled={mustRead && !atEnd}>
           {next ? "ดำเนินการต่อ" : "สรุปบทเรียน"}
         </Button>

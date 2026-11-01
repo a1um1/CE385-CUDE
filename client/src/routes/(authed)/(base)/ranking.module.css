@@ -1,0 +1,12 @@
+@reference "#/styles/main.css";
+
+.heading {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 2rem;
+  margin-bottom: 1rem;
+}
+
+.noDataMessage {
+  color: var(--color-muted-text);
+}

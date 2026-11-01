@@ -1,0 +1,12 @@
+@reference "#/styles/main.css";
+
+.calendarGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.calendarContainer {
+  width: 300px;
+  flex-shrink: 0;
+}

@@ -1,6 +1,7 @@
 import Energy from "#/components/icon/energy";
 import Gem from "#/components/icon/gem";
 import DataTable, { createTableColumnHelper } from "#/components/table";
+import styles from "./transactions.module.css";
 import { useUserTransactions } from "#/data/user.data";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
@@ -42,7 +43,7 @@ const typedColumns = columnHelper.columns([
         maximumFractionDigits: 2,
       });
       return (
-        <span className="flex gap-0.5">
+        <span className={styles.amountCell}>
           {isPositive ? "+" : "-"}
           {formattedAmount}
           <CurrencyIcon />
