@@ -587,7 +587,7 @@ export interface paths {
         };
         /**
          * Get the XP ranking
-         * @description Return the top users ranked by XP earned from successful lesson submissions during the current server-time week (Monday start) or calendar month. The response includes XP earned in the period separately from each user's all-time total XP and public profile images.
+         * @description Return the top users ranked by positive XP transactions during the current server-time week (Monday start) or calendar month. The response includes XP earned in the period separately from each user's all-time total XP and public profile images.
          */
         get: {
             parameters: {
@@ -6597,12 +6597,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-10-31T07:23:34.985Z
+             * @example 2026-11-01T04:45:18.699Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-10-31T07:23:34.986Z
+             * @example 2026-11-01T04:45:18.700Z
              */
             updatedAt: string;
         };
