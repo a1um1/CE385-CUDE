@@ -10,6 +10,7 @@ export interface PieSlice {
 export interface PieChartProps {
   data: PieSlice[];
   height?: number;
+  emptyMessage?: string;
 }
 
 const PieLegend = ({ data }: { data: PieSlice[] }) => {
@@ -31,20 +32,32 @@ const PieLegend = ({ data }: { data: PieSlice[] }) => {
   );
 };
 
-export const PieChart = ({ data, height = 300 }: PieChartProps) => (
-  <ResponsiveContainer width="100%" height={height}>
-    <RechartsPieChart>
-      <Pie
-        data={data}
-        dataKey="value"
-        nameKey="name"
-        cx="50%"
-        cy="50%"
-        outerRadius={100}
-        strokeWidth={2}
-        stroke="var(--color-background)"
-      />
-      <Legend content={<PieLegend data={data} />} />
-    </RechartsPieChart>
-  </ResponsiveContainer>
-);
+export const PieChart = ({ data, height = 300, emptyMessage = "ไม่มีข้อมูล" }: PieChartProps) => {
+  const total = data.reduce((sum, slice) => sum + slice.value, 0);
+
+  if (total === 0) {
+    return (
+      <div className={styles.empty} style={{ height }}>
+        {emptyMessage}
+      </div>
+    );
+  }
+
+  return (
+    <ResponsiveContainer width="100%" height={height}>
+      <RechartsPieChart>
+        <Pie
+          data={data}
+          dataKey="value"
+          nameKey="name"
+          cx="50%"
+          cy="50%"
+          outerRadius={100}
+          strokeWidth={2}
+          stroke="var(--color-background)"
+        />
+        <Legend content={<PieLegend data={data} />} />
+      </RechartsPieChart>
+    </ResponsiveContainer>
+  );
+};
