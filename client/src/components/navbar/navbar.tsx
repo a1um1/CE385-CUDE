@@ -2,7 +2,7 @@ import Enegry from "#/components/icon/energy";
 import Logo from "#/components/logo";
 import { useUser, useUserStats } from "#/data/user.data";
 import navbarStyles from "./navbar.module.css";
-import Streak from "#/components/icon/streak";
+// import Streak from "#/components/icon/streak";
 import Gem from "#/components/icon/gem";
 import { clsx } from "clsx";
 import ButtonLink from "#/components/buttonLink";
@@ -41,9 +41,9 @@ export default function Navbar() {
               <span className={clsx(navbarStyles["badge"], "text-gem")}>
                 <Gem /> {userStats?.currentGems || 0}
               </span>
-              <span className={clsx(navbarStyles["badge"], "text-streak")}>
+              {/* <span className={clsx(navbarStyles["badge"], "text-streak")}>
                 <Streak /> 0
-              </span>
+              </span> */}
               <span className={clsx(navbarStyles["badge"], "text-energy")}>
                 <Enegry />
                 {userStats?.energy || 0}x
