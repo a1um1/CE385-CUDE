@@ -2,7 +2,6 @@ import { useAppForm, handleFormMutationError } from "#/components/form";
 import { useSignIn } from "#/data/user.data";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import styles from "./auth.module.css";
-import Logo from "#/components/logo";
 
 export const Route = createFileRoute("/auth/signin")({
   component: RouteComponent,

@@ -3,7 +3,6 @@ import { useSignUp } from "#/data/user.data";
 import { getPasswordError } from "#/lib/passwordRules";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import styles from "./auth.module.css";
-import Logo from "#/components/logo";
 
 export const Route = createFileRoute("/auth/signup")({
   component: RouteComponent,

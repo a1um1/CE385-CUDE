@@ -124,7 +124,7 @@ export default function AsciiPanel({ src, name, author }: AsciiPanelProps) {
     const canvas: HTMLCanvasElement = el;
     const context: CanvasRenderingContext2D = ctx;
 
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduceMotion = globalThis.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const img = new Image();
     let loaded = false;
@@ -137,7 +137,7 @@ export default function AsciiPanel({ src, name, author }: AsciiPanelProps) {
       if (!loaded) return;
 
       const { width, height } = canvas.getBoundingClientRect();
-      const dpr = window.devicePixelRatio || 1;
+      const dpr = globalThis.devicePixelRatio || 1;
       canvas.width = width * dpr;
       canvas.height = height * dpr;
       context.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -188,11 +188,11 @@ export default function AsciiPanel({ src, name, author }: AsciiPanelProps) {
 
     img.addEventListener("load", onLoad);
     img.src = src;
-    window.addEventListener("resize", onResize);
+    globalThis.addEventListener("resize", onResize);
 
     return () => {
       img.removeEventListener("load", onLoad);
-      window.removeEventListener("resize", onResize);
+      globalThis.removeEventListener("resize", onResize);
       cancelAnimationFrame(resizeFrame);
       cancelAnimationFrame(animFrame);
       cancelAnimationFrame(readyFrame);
