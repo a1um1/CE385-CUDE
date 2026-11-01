@@ -13,7 +13,7 @@ export const LessonHistory = () => {
   const { total, attempts } = useLessonResults();
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 min-w-sm">
       <h3 className="text-lg">ประวัติการเรียน</h3>
       {attempts.length === 0 ? (
         <p className="opacity-70">ยังไม่มีการส่งงาน</p>

@@ -3,6 +3,7 @@ import { PieChart } from "#/components/pie-chart";
 import { LessonHistory } from "#/routes/(authed)/(base)/lesson/$lessonId/-compo/lessonHistory";
 import { LessonScore } from "#/routes/(authed)/(base)/lesson/$lessonId/-compo/lessonScore";
 import { LessonStart } from "#/routes/(authed)/(base)/lesson/$lessonId/-compo/lessonStart";
+import { LessonStatistic } from "#/routes/(authed)/(base)/lesson/$lessonId/-compo/lessonStats";
 import { createFileRoute, Link, useLoaderData } from "@tanstack/react-router";
 import { ChevronLeft } from "lucide-react";
 
@@ -39,28 +40,7 @@ function RouteComponent() {
       </div>
       <div className="flex gap-4">
         <LessonHistory />
-        <div className="flex-1">
-          <h3 className="text-lg text-center">สถิติการเรียน (DEMO)</h3>
-          <PieChart
-            data={[
-              {
-                name: "Completed",
-                value: 30,
-                fill: "var(--color-success)",
-              },
-              {
-                name: "In Progress",
-                value: 50,
-                fill: "#8884d8",
-              },
-              {
-                name: "Failed",
-                value: 20,
-                fill: "var(--color-danger)",
-              },
-            ]}
-          />
-        </div>
+        <LessonStatistic />
       </div>
     </>
   );
