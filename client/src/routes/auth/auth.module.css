@@ -1,17 +1,16 @@
 @reference "#/styles/main.css";
 
 .hex-bg {
-  min-height: 100vh;
   display: flex;
-  justify-content: end;
 }
 
 .container {
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  min-height: 100vh;
+  height: 100vh;
+  overflow-y: auto;
   max-width: max(50%, 40rem);
   width: 100%;
   padding: 3rem;
@@ -25,6 +24,7 @@
   justify-content: center;
   width: 100%;
   max-width: 40rem;
+  margin-block: auto;
 }
 
 .heading {
