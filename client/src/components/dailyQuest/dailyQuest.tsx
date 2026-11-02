@@ -31,8 +31,8 @@ const STATUS_CONFIG: Record<
 > = {
   started: {
     label: "STARTED",
-    bg: "var(--color-warning)",
-    textColor: "var(--color-warning-text)",
+    bg: "var(--color-info)",
+    textColor: "var(--color-success-text)",
     icon: Clock,
   },
   passed: {
@@ -49,7 +49,7 @@ const STATUS_CONFIG: Record<
   },
   give_up: {
     label: "GIVE UP",
-    bg: "var(--color-panel)",
+    bg: "var(--color-warning)",
     textColor: "var(--color-background-text)",
     icon: Flag,
   },
