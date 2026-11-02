@@ -1,4 +1,4 @@
-import { useAppForm, handleFormMutationError } from "#/components/form";
+import { useAppForm } from "#/components/form";
 import { useAdminChangeUserPassword } from "#/data/admin/user.data";
 import { getPasswordError } from "#/lib/passwordRules";
 import Button from "#/components/button";
@@ -31,13 +31,9 @@ function ChangePasswordDialog({ open, onOpenChange, userId }: ChangePasswordDial
       },
     },
     onSubmit: async ({ value, formApi }) => {
-      try {
-        await mutateAsync({ id: userId, newPassword: value.newPassword });
-        formApi.reset();
-        onOpenChange(false);
-      } catch (error) {
-        handleFormMutationError(formApi, error);
-      }
+      await mutateAsync({ id: userId, newPassword: value.newPassword });
+      formApi.reset();
+      onOpenChange(false);
     },
   });
 

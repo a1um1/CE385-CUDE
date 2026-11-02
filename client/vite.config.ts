@@ -30,5 +30,8 @@ const config = defineConfig({
     devSourcemap: process.env.NODE_ENV === "development",
   },
   publicDir: "src/public",
+  optimizeDeps: {
+    include: ["decimal.js", "recharts"],
+  },
 });
 export default config;

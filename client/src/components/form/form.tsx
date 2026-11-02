@@ -1,6 +1,6 @@
 import { createFormHookContexts, createFormHook } from "@tanstack/react-form";
 import { useIsMutating } from "@tanstack/react-query";
-import type { components } from "#/data/base/openapi";
+import { applyApiErrorsToForm } from "./apiErrors";
 import { TextField } from "./input/textInput";
 import { ColorField } from "./input/colorInput";
 import { PasswordField } from "./input/passwordInput";
@@ -52,74 +52,32 @@ const { useAppForm: useAppFormBase } = createFormHook({
 export const useAppForm: typeof useAppFormBase = (options) => {
   const form = useAppFormBase({
     ...options,
+    listeners: {
+      ...options.listeners,
+      onChange: (props) => {
+        // Server errors belong to the values that were submitted; any edit invalidates them.
+        if (props.fieldApi.state.meta.errorMap.onServer) {
+          props.fieldApi.setMeta((prev) => ({
+            ...prev,
+            errorMap: { ...prev.errorMap, onServer: undefined },
+          }));
+        }
+        if (props.formApi.state.errorMap.onServer) {
+          props.formApi.setErrorMap({ onServer: undefined });
+        }
+        options.listeners?.onChange?.(props);
+      },
+    },
     onSubmit: async (ctx) => {
       ctx.formApi.setErrorMap({ onSubmit: undefined });
-      await options.onSubmit?.(ctx);
-      ctx.formApi.reset(ctx.formApi.state.values);
+      try {
+        await options.onSubmit?.(ctx);
+      } catch (error) {
+        // Non-validation errors are already surfaced by the global MutationCache toast.
+        applyApiErrorsToForm(ctx.formApi, error);
+      }
     },
   });
 
   return form;
 };
-
-type ErrorResponse = components["schemas"]["ErrorResponse"];
-type ValidationIssue = NonNullable<ErrorResponse["details"]>[number];
-
-export function isApiValidationError(error: unknown): error is ErrorResponse {
-  if (typeof error !== "object" || error === null) return false;
-
-  const candidate = error as Partial<ErrorResponse>;
-  return (
-    typeof candidate.message === "string" &&
-    Array.isArray(candidate.details) &&
-    candidate.details.length > 0
-  );
-}
-
-export function setFormErrorsFromIssues(form: any, issues: ValidationIssue[]) {
-  const rootIssues: string[] = [];
-  const fieldIssues = new Map<string, string[]>();
-
-  for (const issue of issues) {
-    if (issue.path === "") {
-      rootIssues.push(issue.message);
-    } else {
-      const existing = fieldIssues.get(issue.path);
-      if (existing) existing.push(issue.message);
-      else fieldIssues.set(issue.path, [issue.message]);
-    }
-  }
-
-  for (const [path, messages] of fieldIssues) {
-    form.setFieldMeta(path, (prev: any) => ({
-      ...prev,
-      isTouched: true,
-      errorMap: {
-        ...prev?.errorMap,
-        onSubmit: messages,
-      },
-    }));
-  }
-
-  if (rootIssues.length > 0) {
-    form.setErrorMap({
-      onSubmit: rootIssues,
-    });
-  }
-}
-
-export function handleFormMutationError(form: any, error: unknown) {
-  if (isApiValidationError(error)) {
-    setFormErrorsFromIssues(form, error.details!);
-  } else {
-    const message =
-      typeof error === "object" && error !== null && "message" in error && error.message
-        ? String(error.message)
-        : typeof error === "string"
-          ? error
-          : "An unexpected error occurred. Please try again.";
-    form.setErrorMap({
-      onSubmit: message,
-    });
-  }
-}

@@ -1,7 +1,10 @@
-import { useAppForm, handleFormMutationError } from "#/components/form";
+import { useAppForm } from "#/components/form";
 import { useSignIn } from "#/data/user.data";
+import type { ExtractRequestBody } from "#/data/base/apiUtils.type";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import styles from "./auth.module.css";
+
+type SignInValues = ExtractRequestBody<"/auth/signin", "post">;
 
 export const Route = createFileRoute("/auth/signin")({
   component: RouteComponent,
@@ -15,14 +18,11 @@ function RouteComponent() {
     defaultValues: {
       email: "",
       password: "",
-    } as Parameters<typeof signInMutation.mutateAsync>[0],
+    } satisfies SignInValues,
     onSubmit: async ({ value }) => {
-      try {
-        await signInMutation.mutateAsync(value);
-        await navigate({ to: "/" });
-      } catch (error) {
-        handleFormMutationError(form, error);
-      }
+      // Validation errors are mapped by useAppForm; other errors are toasted by the global MutationCache.
+      await signInMutation.mutateAsync(value);
+      await navigate({ to: "/" });
     },
   });
 

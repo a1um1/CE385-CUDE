@@ -5,7 +5,7 @@ export function FormError() {
   const form = useFormContext();
 
   return (
-    <form.Subscribe selector={(state) => state.errorMap.onSubmit}>
+    <form.Subscribe selector={(state) => state.errorMap.onServer ?? state.errorMap.onSubmit}>
       {(globalError) => {
         if (!globalError) return null;
         return (
