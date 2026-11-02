@@ -65,17 +65,15 @@ const typedColumns = columnHelper.columns([
   columnHelper.text("lesson.name", {
     header: "Lesson",
   }),
-  columnHelper.display({
-    id: "result",
-    header: "Result",
-    cell: (info) => {
-      const result = info.row.original.gradeStatus;
-      return (
-        <span className={styles.resultSpan} style={{ color: gradeStatusColor[result] }}>
-          {result}
-        </span>
-      );
+  columnHelper.badge("gradeStatus", {
+    map: {
+      INPROGRESS: { color: gradeStatusColor.INPROGRESS, label: "In progress" },
+      GRADING: { color: gradeStatusColor.GRADING, label: "Grading" },
+      PASS: { color: gradeStatusColor.PASS, label: "Passed" },
+      FAILED: { color: gradeStatusColor.FAILED, label: "Failed" },
+      CANCELLED: { color: gradeStatusColor.CANCELLED, label: "Give up" },
     },
+    header: "Result",
   }),
   columnHelper.datetime("createdAt", { header: "Started At", sortable: false }),
   columnHelper.display({
