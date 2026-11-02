@@ -1,30 +1,37 @@
-import { useAppForm, handleFormMutationError } from "#/components/form";
+import { useEffect, useRef } from "react";
+import { useAppForm, useFormMutationErrors } from "#/components/form";
 import { useSignIn } from "#/data/user.data";
+import type { ExtractRequestBody } from "#/data/base/apiUtils.type";
+import type { AnyFormApi } from "@tanstack/react-form";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import styles from "./auth.module.css";
+
+type SignInValues = ExtractRequestBody<"/auth/signin", "post">;
 
 export const Route = createFileRoute("/auth/signin")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const signInMutation = useSignIn();
+  const formRef = useRef<AnyFormApi | null>(null);
+  const { onError } = useFormMutationErrors(() => formRef.current);
+  const signInMutation = useSignIn({ onError });
   const navigate = Route.useNavigate();
 
   const form = useAppForm({
     defaultValues: {
       email: "",
       password: "",
-    } as Parameters<typeof signInMutation.mutateAsync>[0],
+    } satisfies SignInValues,
     onSubmit: async ({ value }) => {
-      try {
-        await signInMutation.mutateAsync(value);
-        await navigate({ to: "/" });
-      } catch (error) {
-        handleFormMutationError(form, error);
-      }
+      const user = await signInMutation.mutateAsync(value).catch(() => null);
+      if (user) await navigate({ to: "/" });
     },
   });
+
+  useEffect(() => {
+    formRef.current = form;
+  }, [form]);
 
   return (
     <>

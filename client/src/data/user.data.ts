@@ -1,12 +1,16 @@
 import type { ExtractRequestBody, ExtractRequestQuery } from "#/data/base/apiUtils.type";
 import { APIclient } from "#/data/base/baseAPI";
+import type { components } from "#/data/base/openapi";
 import {
   queryOptions,
   useMutation,
   useQuery,
   useQueryClient,
   type QueryClient,
+  type UseMutationOptions,
 } from "@tanstack/react-query";
+
+type SignInBody = ExtractRequestBody<"/auth/signin", "post">;
 
 const UNAUTHENTICATED_STATUSES = new Set([401, 403]);
 
@@ -51,12 +55,17 @@ export const useSignUp = () => {
   });
 };
 
-export const useSignIn = () => {
+export const useSignIn = (
+  options?: Pick<
+    UseMutationOptions<components["schemas"]["AuthenticationResponseData"], unknown, SignInBody>,
+    "onError"
+  >,
+) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationKey: ["signin"],
-    mutationFn: async (body: ExtractRequestBody<"/auth/signin", "post">) => {
+    mutationFn: async (body: SignInBody) => {
       const { data, error } = await APIclient.POST("/auth/signin", {
         body,
       });
@@ -66,6 +75,7 @@ export const useSignIn = () => {
     onSuccess: () => {
       queryClient.removeQueries({ queryKey: ["session"] });
     },
+    ...options,
   });
 };
 
