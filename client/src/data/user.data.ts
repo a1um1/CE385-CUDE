@@ -70,8 +70,8 @@ export const useSignIn = () => {
   });
 };
 
-export const useSignOut = () => {
-  return useMutation({
+export const useSignOut = () =>
+  useMutation({
     mutationKey: ["signout"],
     mutationFn: async () => {
       const { error } = await APIclient.POST("/auth/logout");
@@ -82,7 +82,6 @@ export const useSignOut = () => {
       globalThis.location.href = "/auth/signin";
     },
   });
-};
 
 export const useUpdateAvatar = () =>
   useMutation({
