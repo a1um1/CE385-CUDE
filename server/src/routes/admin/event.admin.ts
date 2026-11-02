@@ -1,5 +1,11 @@
 import EventService from "#/service/event";
-import { EventCreateSchema, EventSchema, EventUpdateSchema } from "#/service/event/event.schema";
+import {
+  AdminEventListResponseSchema,
+  AdminEventQuerySchema,
+  EventCreateSchema,
+  EventSchema,
+  EventUpdateSchema,
+} from "#/service/event/event.schema";
 import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 import { GenericResponseSchema } from "#/lib/router/http/genericResponse";
@@ -9,6 +15,16 @@ const adminEventRouter = new CustomRouter({
   tags: ["Admin Event Management"],
   authentication: ["ADMIN"],
 })
+  .get(
+    "/",
+    {
+      summary: "Get a paginated list of scheduled events",
+      description: "Get a paginated list of scheduled events. Requires an ADMIN token.",
+      query: AdminEventQuerySchema,
+      response: AdminEventListResponseSchema,
+    },
+    ({ query }) => EventService.getPaginateLists(query),
+  )
   .post(
     "/",
     {

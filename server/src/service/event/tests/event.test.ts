@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import EventService from "#/service/event";
 import { EventCreateSchema } from "#/service/event/event.schema";
 import { mockDB } from "#/test/setup";
@@ -17,12 +17,27 @@ const eventInput = {
 };
 
 describe("EventService", () => {
-  it("lists events ordered by start time", async () => {
+  it("lists only upcoming events, compared by day, one page at a time", async () => {
     mockDB.event.findMany.mockResolvedValueOnce([]);
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 10, 15, 15, 0, 0));
 
-    await expect(EventService.getAll()).resolves.toEqual([]);
+    try {
+      await EventService.getPaginateLists({
+        perPage: 20,
+        direction: "forward",
+        sortOrder: "asc",
+      });
+    } finally {
+      vi.useRealTimers();
+    }
+
     expect(mockDB.event.findMany).toHaveBeenCalledWith({
+      take: 21,
+      skip: 0,
+      cursor: undefined,
       orderBy: [{ startAt: "asc" }, { id: "asc" }],
+      where: { startAt: { gte: new Date(2026, 10, 15) } },
     });
   });
 

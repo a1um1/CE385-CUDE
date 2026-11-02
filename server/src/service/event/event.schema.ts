@@ -1,5 +1,9 @@
 import type { Event } from "#/generated/prisma/client";
 import { z } from "#/lib/extendZod";
+import {
+  createCursorPaginationQuerySchema,
+  createCursorPaginationResponseSchema,
+} from "#/lib/pagination.schema";
 import type zod from "zod";
 
 export const EventTypeSchema = z.enum(["EXAM", "TALK", "OTHER"]).openapi({
@@ -57,3 +61,17 @@ export const EventUpdateSchema = EventInputSchema.openapi("EventUpdate");
 
 export type EventCreate = zod.infer<typeof EventCreateSchema>;
 export type EventUpdate = EventCreate;
+
+export const AdminEventQuerySchema = createCursorPaginationQuerySchema(
+  ["name", "startAt", "createdAt", "updatedAt", "id"],
+  "AdminEventQuery",
+).extend({ sortOrder: z.enum(["asc", "desc"]).default("asc") });
+
+export type AdminEventQuery = zod.infer<typeof AdminEventQuerySchema>;
+
+export const AdminEventListResponseSchema = createCursorPaginationResponseSchema(
+  EventSchema,
+  "AdminEventListResponse",
+);
+
+export type AdminEventListResponse = zod.infer<typeof AdminEventListResponseSchema>;

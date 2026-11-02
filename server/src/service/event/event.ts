@@ -1,10 +1,37 @@
+import { cursorArgs, isBackward, paginate } from "#/lib/pagination";
+import { buildCursorOrderBy } from "#/lib/pagination.schema";
 import UserError from "#/lib/router/http/userError";
 import { eventRepository } from "#/repository/event.repository";
-import type { EventCreate, EventData, EventUpdate } from "#/service/event/event.schema";
+import type {
+  AdminEventListResponse,
+  AdminEventQuery,
+  EventCreate,
+  EventData,
+  EventUpdate,
+} from "#/service/event/event.schema";
 
 const EventService = {
-  getAll(): Promise<EventData[]> {
-    return eventRepository.findAll();
+  async getPaginateLists(query: AdminEventQuery): Promise<AdminEventListResponse> {
+    const orderBy = buildCursorOrderBy(
+      query.sortBy ?? "startAt",
+      query.sortOrder,
+      isBackward(query),
+    );
+    const data = await eventRepository.findPage({
+      ...cursorArgs(query),
+      orderBy,
+    });
+
+    return paginate(data, query);
+  },
+
+  async getUpcomingEvents(): Promise<EventData[]> {
+    return eventRepository.findPage({
+      where: eventRepository.upcomingWhere(),
+      take: 100,
+      skip: 0,
+      orderBy: [{ startAt: "asc" }, { id: "asc" }],
+    });
   },
 
   async getById(id: string): Promise<EventData> {

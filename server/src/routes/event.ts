@@ -11,12 +11,12 @@ const eventRouter = new CustomRouter({
   .get(
     "/",
     {
-      summary: "List scheduled events",
+      summary: "List upcoming events",
       description:
-        "Return all scheduled events ordered by start time. Requires an authenticated user.",
-      response: z.array(EventSchema),
+        "List all upcoming events, sorted by start time. Requires an authenticated user.",
+      response: EventSchema.array(),
     },
-    () => EventService.getAll(),
+    () => EventService.getUpcomingEvents(),
   )
   .get(
     "/:eventId",
