@@ -4,7 +4,8 @@
   display: grid;
   place-items: center;
   background: var(--color-panel-background);
-  width: 100%;
+  flex: 1;
+  min-width: 0;
   height: 100vh;
 }
 
