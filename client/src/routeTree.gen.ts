@@ -47,6 +47,7 @@ import { Route as AdminUserIdRouteImport } from './routes/admin/user/$id'
 import { Route as authedbaseAccountIndexRouteImport } from './routes/(authed)/(base)/account/index'
 import { Route as authedbaseAccountSecurityRouteImport } from './routes/(authed)/(base)/account/security'
 import { Route as authedbaseAccountTransactionsRouteImport } from './routes/(authed)/(base)/account/transactions'
+import { Route as authedbaseEventEventIdRouteImport } from './routes/(authed)/(base)/event/$eventId'
 import { Route as authedbaseLessonLessonIdRouteRouteImport } from './routes/(authed)/(base)/lesson/$lessonId/route'
 import { Route as authedbaseProfileUsernameRouteImport } from './routes/(authed)/(base)/profile/$username'
 import { Route as authedSessionIdIndexRouteImport } from './routes/(authed)/session/$id/index'
@@ -245,6 +246,11 @@ const authedbaseAccountTransactionsRoute =
     path: '/transactions',
     getParentRoute: () => authedbaseAccountRouteRoute,
   } as any)
+const authedbaseEventEventIdRoute = authedbaseEventEventIdRouteImport.update({
+  id: '/event/$eventId',
+  path: '/event/$eventId',
+  getParentRoute: () => authedbaseRouteRoute,
+} as any)
 const authedbaseLessonLessonIdRouteRoute =
   authedbaseLessonLessonIdRouteRouteImport.update({
     id: '/lesson/$lessonId',
@@ -323,6 +329,7 @@ export interface FileRoutesByFullPath {
   '/lesson/$lessonId': typeof authedbaseLessonLessonIdRouteRouteWithChildren
   '/account/security': typeof authedbaseAccountSecurityRoute
   '/account/transactions': typeof authedbaseAccountTransactionsRoute
+  '/event/$eventId': typeof authedbaseEventEventIdRoute
   '/profile/$username': typeof authedbaseProfileUsernameRoute
   '/session/$id/$exerciseId': typeof authedSessionIdExerciseIdRoute
   '/session/$id/summary': typeof authedSessionIdSummaryRoute
@@ -363,6 +370,7 @@ export interface FileRoutesByTo {
   '/admin/user': typeof AdminUserIndexRoute
   '/account/security': typeof authedbaseAccountSecurityRoute
   '/account/transactions': typeof authedbaseAccountTransactionsRoute
+  '/event/$eventId': typeof authedbaseEventEventIdRoute
   '/profile/$username': typeof authedbaseProfileUsernameRoute
   '/session/$id/$exerciseId': typeof authedSessionIdExerciseIdRoute
   '/session/$id/summary': typeof authedSessionIdSummaryRoute
@@ -411,6 +419,7 @@ export interface FileRoutesById {
   '/(authed)/(base)/lesson/$lessonId': typeof authedbaseLessonLessonIdRouteRouteWithChildren
   '/(authed)/(base)/account/security': typeof authedbaseAccountSecurityRoute
   '/(authed)/(base)/account/transactions': typeof authedbaseAccountTransactionsRoute
+  '/(authed)/(base)/event/$eventId': typeof authedbaseEventEventIdRoute
   '/(authed)/(base)/profile/$username': typeof authedbaseProfileUsernameRoute
   '/(authed)/session/$id/$exerciseId': typeof authedSessionIdExerciseIdRoute
   '/(authed)/session/$id/summary': typeof authedSessionIdSummaryRoute
@@ -458,6 +467,7 @@ export interface FileRouteTypes {
     | '/lesson/$lessonId'
     | '/account/security'
     | '/account/transactions'
+    | '/event/$eventId'
     | '/profile/$username'
     | '/session/$id/$exerciseId'
     | '/session/$id/summary'
@@ -498,6 +508,7 @@ export interface FileRouteTypes {
     | '/admin/user'
     | '/account/security'
     | '/account/transactions'
+    | '/event/$eventId'
     | '/profile/$username'
     | '/session/$id/$exerciseId'
     | '/session/$id/summary'
@@ -545,6 +556,7 @@ export interface FileRouteTypes {
     | '/(authed)/(base)/lesson/$lessonId'
     | '/(authed)/(base)/account/security'
     | '/(authed)/(base)/account/transactions'
+    | '/(authed)/(base)/event/$eventId'
     | '/(authed)/(base)/profile/$username'
     | '/(authed)/session/$id/$exerciseId'
     | '/(authed)/session/$id/summary'
@@ -828,6 +840,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authedbaseAccountTransactionsRouteImport
       parentRoute: typeof authedbaseAccountRouteRoute
     }
+    '/(authed)/(base)/event/$eventId': {
+      id: '/(authed)/(base)/event/$eventId'
+      path: '/event/$eventId'
+      fullPath: '/event/$eventId'
+      preLoaderRoute: typeof authedbaseEventEventIdRouteImport
+      parentRoute: typeof authedbaseRouteRoute
+    }
     '/(authed)/(base)/lesson/$lessonId': {
       id: '/(authed)/(base)/lesson/$lessonId'
       path: '/lesson/$lessonId'
@@ -922,6 +941,7 @@ interface authedbaseRouteRouteChildren {
   authedbaseRankingRoute: typeof authedbaseRankingRoute
   authedbaseIndexRoute: typeof authedbaseIndexRoute
   authedbaseLessonLessonIdRouteRoute: typeof authedbaseLessonLessonIdRouteRouteWithChildren
+  authedbaseEventEventIdRoute: typeof authedbaseEventEventIdRoute
   authedbaseProfileUsernameRoute: typeof authedbaseProfileUsernameRoute
 }
 
@@ -933,6 +953,7 @@ const authedbaseRouteRouteChildren: authedbaseRouteRouteChildren = {
   authedbaseIndexRoute: authedbaseIndexRoute,
   authedbaseLessonLessonIdRouteRoute:
     authedbaseLessonLessonIdRouteRouteWithChildren,
+  authedbaseEventEventIdRoute: authedbaseEventEventIdRoute,
   authedbaseProfileUsernameRoute: authedbaseProfileUsernameRoute,
 }
 

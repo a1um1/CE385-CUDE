@@ -10,7 +10,7 @@ export interface EventCardProps extends Omit<HTMLAttributes<HTMLButtonElement>, 
   onClick?: () => void;
 }
 
-const dateColorMap: Record<CampusEvent["type"], string> = {
+export const eventDateColorMap: Record<CampusEvent["type"], string> = {
   EXAM: "#ed5176",
   TALK: "#8855ed",
   OTHER: "var(--color-secondary)",
@@ -28,7 +28,7 @@ export function EventCard({ event, onClick, className, style, ...props }: EventC
       className={clsx(styles.card, className)}
       style={
         {
-          ...(event.type ? { "--date-color": dateColorMap[event.type] } : {}),
+          ...(event.type ? { "--date-color": eventDateColorMap[event.type] } : {}),
           ...style,
         } as CSSProperties
       }

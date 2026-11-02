@@ -17,25 +17,38 @@ const eventInput = {
 };
 
 describe("EventService", () => {
-  it("lists only upcoming events, compared by day, one page at a time", async () => {
+  it("pages through all events for admins", async () => {
     mockDB.event.findMany.mockResolvedValueOnce([]);
-    vi.useFakeTimers();
-    vi.setSystemTime(new Date(2026, 10, 15, 15, 0, 0));
 
-    try {
-      await EventService.getPaginateLists({
-        perPage: 20,
-        direction: "forward",
-        sortOrder: "asc",
-      });
-    } finally {
-      vi.useRealTimers();
-    }
+    await EventService.getPaginateLists({
+      perPage: 20,
+      direction: "forward",
+      sortOrder: "asc",
+    });
 
     expect(mockDB.event.findMany).toHaveBeenCalledWith({
       take: 21,
       skip: 0,
       cursor: undefined,
+      orderBy: [{ startAt: "asc" }, { id: "asc" }],
+      where: undefined,
+    });
+  });
+
+  it("lists upcoming events, compared by day", async () => {
+    mockDB.event.findMany.mockResolvedValueOnce([]);
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 10, 15, 15, 0, 0));
+
+    try {
+      await EventService.getUpcomingEvents();
+    } finally {
+      vi.useRealTimers();
+    }
+
+    expect(mockDB.event.findMany).toHaveBeenCalledWith({
+      take: 100,
+      skip: 0,
       orderBy: [{ startAt: "asc" }, { id: "asc" }],
       where: { startAt: { gte: new Date(2026, 10, 15) } },
     });

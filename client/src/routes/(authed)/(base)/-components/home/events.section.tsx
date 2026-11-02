@@ -1,11 +1,8 @@
 import EventCard from "#/components/eventCard";
 import { Skeleton } from "#/components/skeleton/skeleton";
 import { useEventsQuery } from "#/data/event.data";
+import { useNavigate } from "@tanstack/react-router";
 import styles from "#/routes/(authed)/(base)/index.module.css";
-
-function handleEventClick() {
-  alert("This feature is not available yet");
-}
 
 const Layout = ({ children }: { children: React.ReactNode }) => (
   <section className={styles.section}>
@@ -15,6 +12,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => (
 );
 
 export function EventsSections() {
+  const navigate = useNavigate();
   const { data, isLoading } = useEventsQuery();
 
   if (isLoading) {
@@ -42,7 +40,11 @@ export function EventsSections() {
     <Layout>
       <div className={styles.eventsGrid}>
         {data.map((event) => (
-          <EventCard key={event.id} event={event} onClick={handleEventClick} />
+          <EventCard
+            key={event.id}
+            event={event}
+            onClick={() => navigate({ to: "/event/$eventId", params: { eventId: event.id } })}
+          />
         ))}
       </div>
     </Layout>
