@@ -80,7 +80,6 @@ export const useSignOut = () => {
       return { message: "Signed out successfully" };
     },
     onSuccess: () => {
-      queryClient.setQueryData(["session"], null);
       globalThis.location.href = "/auth/signin";
     },
   });
