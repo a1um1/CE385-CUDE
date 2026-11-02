@@ -78,11 +78,18 @@ export function CollapsibleSidebar({ children, className }: CollapsibleSidebarPr
   );
 }
 
-/** Renders its children only while the sidebar is expanded. */
+/** Fades and squeezes its children to zero width while collapsed, so the row's icon keeps its position. */
 export function CollapsibleSidebarLabel({ children }: { children: ReactNode }) {
   const { collapsed } = useCollapsibleSidebar();
-  if (collapsed) return null;
-  return children;
+  return (
+    <span
+      className={clsx(styles.label, collapsed && styles.labelCollapsed)}
+      data-sidebar-label
+      aria-hidden={collapsed}
+    >
+      {children}
+    </span>
+  );
 }
 
 /** Section header label inside sidebar. Hides text when collapsed, keeps divider line. */

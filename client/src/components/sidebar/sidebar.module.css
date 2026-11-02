@@ -25,12 +25,14 @@
 .collapsedLogo {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  font-size: 1.5rem;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius);
+  background-color: var(--color-primary);
+  color: var(--color-primary-text);
+  font-size: 1.25rem;
   font-weight: 700;
-  color: var(--color-primary);
-  letter-spacing: 0;
-  padding-left: 0.5rem;
 }
 
 .navContent {
