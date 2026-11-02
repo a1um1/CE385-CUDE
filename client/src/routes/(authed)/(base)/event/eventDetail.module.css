@@ -3,10 +3,12 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  max-width: 48rem;
+  max-width: 40rem;
   width: 100%;
   margin: 0 auto;
+  background-color: var(--color-panel);
+  border-radius: calc(var(--radius) * 4);
+  overflow: hidden;
 }
 
 .backLink {
@@ -19,25 +21,20 @@
 
 .header {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 1rem;
+  flex-direction: column;
 }
 
 .title {
   font-size: 1.875rem;
   font-weight: 700;
-  line-height: 2.25rem;
 }
 
 .card {
   display: flex;
   flex-direction: column;
+  align-items: start;
   gap: 0.75rem;
-  /* padding: 1.5rem; */
-  /* border: 1px solid var(--color-border); */
-  /* border-radius: var(--radius); */
-  /* background-color: var(--color-panel); */
+  padding: 1.5rem;
 }
 
 .description {
@@ -46,7 +43,8 @@
 
 .field {
   display: flex;
-  gap: 0.5rem;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .label {
@@ -55,20 +53,27 @@
 }
 
 .dateBlock {
+  --bg-color: var(--date-color, var(--color-primary));
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 6rem;
-  aspect-ratio: 1 / 1;
+  flex-direction: row;
+  align-items: end;
+  justify-content: start;
+  gap: 1rem;
+  width: 100%;
+  height: 10rem;
+  padding: 1.5rem;
   border-radius: var(--radius);
-  background-color: var(--date-color, var(--color-primary));
+  background-image: linear-gradient(
+    135deg,
+    var(--bg-color) 0%,
+    color-mix(in srgb, var(--bg-color), var(--color-panel) 30%) 100%
+  );
   color: var(--color-primary-text);
 }
 
 .day {
   font-family: var(--font-mono);
-  font-size: 2rem;
+  font-size: 3rem;
   font-weight: 700;
   line-height: 1;
   letter-spacing: -0.05em;
@@ -76,7 +81,7 @@
 
 .month {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 1.4rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;

@@ -150,8 +150,11 @@ export const UserCreationSchema = UserSchema.pick({
 
 export const UserValidationSchema = UserSchema.pick({
   email: true,
-  password: true,
-}).openapi("UserValidationData");
+})
+  .extend({
+    password: z.string().min(1, { message: "Password cannot be empty." }),
+  })
+  .openapi("UserValidationData");
 
 export const userQueryPayload = {
   id: true,
