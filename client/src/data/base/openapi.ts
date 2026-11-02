@@ -3593,7 +3593,90 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /**
+         * Get a paginated list of scheduled events
+         * @description Get a paginated list of scheduled events. Requires an ADMIN token.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    perPage?: number;
+                    cursor?: string;
+                    direction?: "forward" | "backward";
+                    sortBy?: "name" | "startAt" | "createdAt" | "updatedAt" | "id";
+                    sortOrder?: "asc" | "desc";
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminEventListResponse"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
         put?: never;
         /**
          * Create a scheduled event
@@ -7359,8 +7442,8 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * List scheduled events
-         * @description Return all scheduled events ordered by start time. Requires an authenticated user.
+         * List upcoming events
+         * @description List all upcoming events, sorted by start time. Requires an authenticated user.
          */
         get: {
             parameters: {
@@ -7732,12 +7815,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-11-02T04:15:53.971Z
+             * @example 2026-11-02T04:34:14.494Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-11-02T04:15:53.971Z
+             * @example 2026-11-02T04:34:14.495Z
              */
             updatedAt: string;
         };
@@ -8240,6 +8323,14 @@ export interface components {
                     language: string | null;
                 } | null;
             };
+        };
+        AdminEventListResponse: {
+            /** @example [] */
+            data: components["schemas"]["Event"][];
+            /** @example next_cursor_id */
+            nextCursor?: string;
+            /** @example prev_cursor_id */
+            prevCursor?: string;
         };
         Event: {
             /**

@@ -26,6 +26,9 @@ import { Route as authedSessionIdRouteRouteImport } from './routes/(authed)/sess
 import { Route as AdminCourseIndexRouteImport } from './routes/admin/course/index'
 import { Route as AdminCourseIdRouteImport } from './routes/admin/course/$id'
 import { Route as AdminCourseCreateRouteImport } from './routes/admin/course/create'
+import { Route as AdminEventIndexRouteImport } from './routes/admin/event/index'
+import { Route as AdminEventIdRouteImport } from './routes/admin/event/$id'
+import { Route as AdminEventCreateRouteImport } from './routes/admin/event/create'
 import { Route as AdminExerciseIndexRouteImport } from './routes/admin/exercise/index'
 import { Route as AdminExerciseIdRouteImport } from './routes/admin/exercise/$id'
 import { Route as AdminExerciseCreateRouteImport } from './routes/admin/exercise/create'
@@ -133,6 +136,21 @@ const AdminCourseIdRoute = AdminCourseIdRouteImport.update({
 const AdminCourseCreateRoute = AdminCourseCreateRouteImport.update({
   id: '/course/create',
   path: '/course/create',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminEventIndexRoute = AdminEventIndexRouteImport.update({
+  id: '/event/',
+  path: '/event/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminEventIdRoute = AdminEventIdRouteImport.update({
+  id: '/event/$id',
+  path: '/event/$id',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminEventCreateRoute = AdminEventCreateRouteImport.update({
+  id: '/event/create',
+  path: '/event/create',
   getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminExerciseIndexRoute = AdminExerciseIndexRouteImport.update({
@@ -282,6 +300,8 @@ export interface FileRoutesByFullPath {
   '/ranking': typeof authedbaseRankingRoute
   '/admin/course/$id': typeof AdminCourseIdRoute
   '/admin/course/create': typeof AdminCourseCreateRoute
+  '/admin/event/$id': typeof AdminEventIdRoute
+  '/admin/event/create': typeof AdminEventCreateRoute
   '/admin/exercise/$id': typeof AdminExerciseIdRoute
   '/admin/exercise/create': typeof AdminExerciseCreateRoute
   '/admin/lesson/$id': typeof AdminLessonIdRoute
@@ -292,6 +312,7 @@ export interface FileRoutesByFullPath {
   '/admin/user/$id': typeof AdminUserIdRoute
   '/': typeof authedbaseIndexRoute
   '/admin/course/': typeof AdminCourseIndexRoute
+  '/admin/event/': typeof AdminEventIndexRoute
   '/admin/exercise/': typeof AdminExerciseIndexRoute
   '/admin/lesson/': typeof AdminLessonIndexRoute
   '/admin/statistic/': typeof AdminStatisticIndexRoute
@@ -320,6 +341,8 @@ export interface FileRoutesByTo {
   '/ranking': typeof authedbaseRankingRoute
   '/admin/course/$id': typeof AdminCourseIdRoute
   '/admin/course/create': typeof AdminCourseCreateRoute
+  '/admin/event/$id': typeof AdminEventIdRoute
+  '/admin/event/create': typeof AdminEventCreateRoute
   '/admin/exercise/$id': typeof AdminExerciseIdRoute
   '/admin/exercise/create': typeof AdminExerciseCreateRoute
   '/admin/lesson/$id': typeof AdminLessonIdRoute
@@ -330,6 +353,7 @@ export interface FileRoutesByTo {
   '/admin/user/$id': typeof AdminUserIdRoute
   '/': typeof authedbaseIndexRoute
   '/admin/course': typeof AdminCourseIndexRoute
+  '/admin/event': typeof AdminEventIndexRoute
   '/admin/exercise': typeof AdminExerciseIndexRoute
   '/admin/lesson': typeof AdminLessonIndexRoute
   '/admin/statistic': typeof AdminStatisticIndexRoute
@@ -364,6 +388,8 @@ export interface FileRoutesById {
   '/(authed)/(base)/ranking': typeof authedbaseRankingRoute
   '/admin/course/$id': typeof AdminCourseIdRoute
   '/admin/course/create': typeof AdminCourseCreateRoute
+  '/admin/event/$id': typeof AdminEventIdRoute
+  '/admin/event/create': typeof AdminEventCreateRoute
   '/admin/exercise/$id': typeof AdminExerciseIdRoute
   '/admin/exercise/create': typeof AdminExerciseCreateRoute
   '/admin/lesson/$id': typeof AdminLessonIdRoute
@@ -374,6 +400,7 @@ export interface FileRoutesById {
   '/admin/user/$id': typeof AdminUserIdRoute
   '/(authed)/(base)/': typeof authedbaseIndexRoute
   '/admin/course/': typeof AdminCourseIndexRoute
+  '/admin/event/': typeof AdminEventIndexRoute
   '/admin/exercise/': typeof AdminExerciseIndexRoute
   '/admin/lesson/': typeof AdminLessonIndexRoute
   '/admin/statistic/': typeof AdminStatisticIndexRoute
@@ -408,6 +435,8 @@ export interface FileRouteTypes {
     | '/ranking'
     | '/admin/course/$id'
     | '/admin/course/create'
+    | '/admin/event/$id'
+    | '/admin/event/create'
     | '/admin/exercise/$id'
     | '/admin/exercise/create'
     | '/admin/lesson/$id'
@@ -418,6 +447,7 @@ export interface FileRouteTypes {
     | '/admin/user/$id'
     | '/'
     | '/admin/course/'
+    | '/admin/event/'
     | '/admin/exercise/'
     | '/admin/lesson/'
     | '/admin/statistic/'
@@ -446,6 +476,8 @@ export interface FileRouteTypes {
     | '/ranking'
     | '/admin/course/$id'
     | '/admin/course/create'
+    | '/admin/event/$id'
+    | '/admin/event/create'
     | '/admin/exercise/$id'
     | '/admin/exercise/create'
     | '/admin/lesson/$id'
@@ -456,6 +488,7 @@ export interface FileRouteTypes {
     | '/admin/user/$id'
     | '/'
     | '/admin/course'
+    | '/admin/event'
     | '/admin/exercise'
     | '/admin/lesson'
     | '/admin/statistic'
@@ -489,6 +522,8 @@ export interface FileRouteTypes {
     | '/(authed)/(base)/ranking'
     | '/admin/course/$id'
     | '/admin/course/create'
+    | '/admin/event/$id'
+    | '/admin/event/create'
     | '/admin/exercise/$id'
     | '/admin/exercise/create'
     | '/admin/lesson/$id'
@@ -499,6 +534,7 @@ export interface FileRouteTypes {
     | '/admin/user/$id'
     | '/(authed)/(base)/'
     | '/admin/course/'
+    | '/admin/event/'
     | '/admin/exercise/'
     | '/admin/lesson/'
     | '/admin/statistic/'
@@ -643,6 +679,27 @@ declare module '@tanstack/react-router' {
       path: '/course/create'
       fullPath: '/admin/course/create'
       preLoaderRoute: typeof AdminCourseCreateRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/event/': {
+      id: '/admin/event/'
+      path: '/event'
+      fullPath: '/admin/event/'
+      preLoaderRoute: typeof AdminEventIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/event/$id': {
+      id: '/admin/event/$id'
+      path: '/event/$id'
+      fullPath: '/admin/event/$id'
+      preLoaderRoute: typeof AdminEventIdRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/event/create': {
+      id: '/admin/event/create'
+      path: '/event/create'
+      fullPath: '/admin/event/create'
+      preLoaderRoute: typeof AdminEventCreateRouteImport
       parentRoute: typeof AdminRouteRoute
     }
     '/admin/exercise/': {
@@ -916,6 +973,8 @@ interface AdminRouteRouteChildren {
   AdminIndexRoute: typeof AdminIndexRoute
   AdminCourseIdRoute: typeof AdminCourseIdRoute
   AdminCourseCreateRoute: typeof AdminCourseCreateRoute
+  AdminEventIdRoute: typeof AdminEventIdRoute
+  AdminEventCreateRoute: typeof AdminEventCreateRoute
   AdminExerciseIdRoute: typeof AdminExerciseIdRoute
   AdminExerciseCreateRoute: typeof AdminExerciseCreateRoute
   AdminLessonIdRoute: typeof AdminLessonIdRoute
@@ -925,6 +984,7 @@ interface AdminRouteRouteChildren {
   AdminUnitCreateRoute: typeof AdminUnitCreateRoute
   AdminUserIdRoute: typeof AdminUserIdRoute
   AdminCourseIndexRoute: typeof AdminCourseIndexRoute
+  AdminEventIndexRoute: typeof AdminEventIndexRoute
   AdminExerciseIndexRoute: typeof AdminExerciseIndexRoute
   AdminLessonIndexRoute: typeof AdminLessonIndexRoute
   AdminStatisticIndexRoute: typeof AdminStatisticIndexRoute
@@ -938,6 +998,8 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminIndexRoute: AdminIndexRoute,
   AdminCourseIdRoute: AdminCourseIdRoute,
   AdminCourseCreateRoute: AdminCourseCreateRoute,
+  AdminEventIdRoute: AdminEventIdRoute,
+  AdminEventCreateRoute: AdminEventCreateRoute,
   AdminExerciseIdRoute: AdminExerciseIdRoute,
   AdminExerciseCreateRoute: AdminExerciseCreateRoute,
   AdminLessonIdRoute: AdminLessonIdRoute,
@@ -947,6 +1009,7 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminUnitCreateRoute: AdminUnitCreateRoute,
   AdminUserIdRoute: AdminUserIdRoute,
   AdminCourseIndexRoute: AdminCourseIndexRoute,
+  AdminEventIndexRoute: AdminEventIndexRoute,
   AdminExerciseIndexRoute: AdminExerciseIndexRoute,
   AdminLessonIndexRoute: AdminLessonIndexRoute,
   AdminStatisticIndexRoute: AdminStatisticIndexRoute,

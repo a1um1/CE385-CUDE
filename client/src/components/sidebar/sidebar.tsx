@@ -11,6 +11,7 @@ import {
   BookOpenCheckIcon,
   BookOpenIcon,
   BookTextIcon,
+  CalendarDaysIcon,
   ChartBar,
   ChevronLeftIcon,
   Code2Icon,
@@ -112,6 +113,12 @@ const navSections: NavSection[] = [
   {
     title: "Management",
     items: [
+      {
+        key: "admin-event-list",
+        label: "Events",
+        link: { to: "/admin/event" },
+        icon: CalendarDaysIcon,
+      },
       {
         key: "admin-user-list",
         label: "Users",
