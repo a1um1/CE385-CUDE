@@ -13,7 +13,7 @@ export const LessonScore = () => {
   return (
     <Scoring
       status={gradeScoringStatus[latest.gradeStatus]}
-      label={`${formatNumber(latest.score, 0)}%`}
+      label={latest.gradeStatus !== "CANCELLED" ? `${formatNumber(latest.score, 0)}%` : undefined}
     />
   );
 };
