@@ -1,0 +1,7 @@
+@reference "#/styles/main.css";
+
+.amountCell {
+  display: flex;
+  gap: calc(var(--spacing) * 0.5);
+  align-items: center;
+}

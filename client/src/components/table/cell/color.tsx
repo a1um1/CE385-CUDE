@@ -39,7 +39,7 @@ export function renderColorCell(value: unknown, options: ColorFormatOptions = {}
           borderRadius,
           backgroundColor: colorStr,
           border: "1px solid color-mix(in oklch, currentColor 20%, transparent)",
-          boxShadow: "0 1px 2px rgba(0, 0, 0, 0.08)",
+          boxShadow: "0 1px 2px color-mix(in oklch, var(--color-shadow) 8%, transparent)",
           flexShrink: 0,
         }}
       />

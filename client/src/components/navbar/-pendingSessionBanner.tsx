@@ -1,6 +1,7 @@
 import ButtonLink from "#/components/buttonLink";
 import { usePendingLearnSessionQuery } from "#/data/learnSession.data";
 import { Clock } from "lucide-react";
+import styles from "./pendingSessionBanner.module.css";
 
 export const PendingSessionBanner = () => {
   const pendingSessionQuery = usePendingLearnSessionQuery();
@@ -8,11 +9,8 @@ export const PendingSessionBanner = () => {
   if (!pendingSessionQuery.data) return null;
 
   return (
-    <div
-      className="bg-indigo-500/10 rounded-full border border-indigo-500 text-indigo-500 p-3 flex items-center justify-between gap-4"
-      role="alert"
-    >
-      <p className="flex gap-2 items-center">
+    <div className={styles.banner} role="alert">
+      <p className={styles.message}>
         <Clock />
         คุณกำลังมีเนื้อหาที่รอดำเนินการ
       </p>

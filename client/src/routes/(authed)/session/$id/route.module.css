@@ -1,0 +1,6 @@
+@reference "#/styles/main.css";
+
+.sessionLayout {
+  display: flex;
+  height: 100dvh;
+}

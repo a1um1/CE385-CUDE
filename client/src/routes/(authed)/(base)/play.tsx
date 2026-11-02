@@ -1,6 +1,7 @@
 import CodeEditor, { type CodeLanguage } from "#/components/codeEditor";
 import type { ExtractRequestBody } from "#/data/base/apiUtils.type";
 import { APIclient } from "#/data/base/baseAPI";
+import styles from "./play.module.css";
 import { useMutation } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
@@ -36,7 +37,7 @@ function RouteComponent() {
   return (
     <>
       <h1>Playground</h1>
-      <div className="h-[calc(100vh-10rem)]">
+      <div className={styles.editorContainer}>
         <CodeEditor
           value={code}
           onChange={setCode}

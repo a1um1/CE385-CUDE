@@ -9,6 +9,7 @@ import { useHomeSelection } from "#/store/homeSelection";
 import { Link } from "@tanstack/react-router";
 import { ChevronLeft, FaceSlightlyFrowning } from "lucide-react";
 import { useEffect } from "react";
+import styles from "./lessonsPanel.module.css";
 
 const pathOffsets = [0, 48, 0, -48];
 
@@ -46,16 +47,16 @@ export function LessonsPanel({ courseId }: LessonsPanelProps) {
 
   return (
     <>
-      <div className="-mb-4">
-        <button onClick={() => setCourse(undefined)} className="flex items-center gap-2">
+      <div className={styles.backButtonContainer}>
+        <button onClick={() => setCourse(undefined)} className={styles.backButton}>
           <ChevronLeft /> เนื้อหาทั้งหมด
         </button>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <span className="text-2xl font-bold">{course?.name}</span>
+      <div className={styles.header}>
+        <span className={styles.courseName}>{course?.name}</span>
         {units.isLoading ? (
-          <Skeleton className="h-6 w-32" />
+          <Skeleton className={styles.skeletonLoader} />
         ) : (
           <Select.Root
             value={unitId}
@@ -76,13 +77,13 @@ export function LessonsPanel({ courseId }: LessonsPanelProps) {
         )}
       </div>
       {!lessons.isLoading && (lessons.data || []).length === 0 && (
-        <div className="flex flex-col items-center justify-center gap-2">
-          <FaceSlightlyFrowning className="size-24" />
+        <div className={styles.emptyState}>
+          <FaceSlightlyFrowning className={styles.frowningFace} />
           <p>No lessons found for the selected unit.</p>
         </div>
       )}
       {lessons.data && lessons.data.length > 0 && (
-        <div className="flex flex-col items-center gap-4 py-6">
+        <div className={styles.lessonsContainer}>
           {lessons.data.map((lesson, index) => (
             <Link
               key={lesson.id}

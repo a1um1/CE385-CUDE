@@ -53,6 +53,18 @@
   }
 }
 
+.badge[data-type="gem"] {
+  color: var(--color-gem);
+}
+
+.badge[data-type="energy"] {
+  color: var(--color-energy);
+}
+
+.badge[data-type="streak"] {
+  color: var(--color-streak);
+}
+
 .countdown-container {
   flex-direction: column;
   align-items: start;
@@ -70,4 +82,9 @@
   > span {
     font-size: 0.75rem;
   }
+}
+
+.skeletonLoading {
+  height: 5rem;
+  min-width: 16rem;
 }

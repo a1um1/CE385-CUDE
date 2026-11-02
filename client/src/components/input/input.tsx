@@ -8,6 +8,7 @@ export const InputSizes = {
   xs: inputStyles["size-xs"],
   sm: inputStyles["size-sm"],
   md: inputStyles["size-md"],
+  lg: inputStyles["size-lg"],
 } as const;
 
 export const InputRadius = {

@@ -2,24 +2,39 @@
 
 @theme {
   --color-primary: oklch(68.383% 0.21402 7.99);
-  --color-primary-text: oklch(100% 0.00011 271.152);
+  --color-primary-text: oklch(100% 0 0);
+
+  --color-primary-outline: oklch(from var(--color-primary) 50% c h);
 
   --color-energy: oklch(88.596% 0.12292 84.746);
   --color-energy-outline: oklch(from var(--color-energy) 50% c h);
 
-  --color-streak: oklch(68.383% 0.21402 7.99);
-  --color-streak-outline: oklch(from var(--color-streak) 50% c h);
-
   --color-gem: lch(64.99% 74.64 313.81);
   --color-gem-outline: oklch(from var(--color-gem) 50% c h);
 
-  --color-background: oklch(22.383% 0.03083 267.192);
+  --color-background: oklch(17.631% 0.02874 283.056);
   --color-background-text: oklch(100% 0 0);
 
-  --color-user-background: oklch(75% 0.13908 181.642);
+  --color-user-background: oklch(70.61% 0.18582 344.673);
 
-  --color-secondary: oklch(33.047% 0.03374 296.56);
-  --color-secondary-text: oklch(100% 0 0);
+  --color-secondary: oklch(27% 0.045 290);
+  --color-secondary-text: oklch(100% 0 0 / 0.7);
+
+  /* Raised surfaces: editor chrome and standalone panels. */
+  --color-panel: oklch(19.487% 0.03005 283.258);
+  --color-editor: oklch(20% 0 0);
+
+  --color-info: oklch(62.3% 0.214 259.815);
+  --color-neutral: oklch(55.1% 0.027 264.364);
+  --color-muted-text: oklch(70% 0.02 275);
+
+  /* Effects: shadows and modal scrims. */
+  --color-shadow: oklch(0% 0 0);
+  --color-scrim: oklch(0% 0 0 / 1);
+
+  /* Leaderboard rows. */
+  --color-row: oklch(30% 0.05 290);
+  --color-row-highlight: oklch(38% 0.08 290);
 
   --color-danger: oklch(57.793% 0.20906 26.801);
   --color-danger-text: oklch(100% 0 0);
@@ -30,13 +45,17 @@
   --color-warning: oklch(82% 0.15 85);
   --color-warning-text: oklch(22.383% 0.03083 267.192);
 
-  --color-input: oklch(22.383% 0.03083 267.192);
+  --color-input: oklch(20% 0.035 285);
   --color-input-text: oklch(100% 0.00011 271.152);
   --color-placeholder: oklch(100% 0.00011 271.152 / 0.5);
 
-  --color-border: oklch(38.187% 0.05028 267.532);
+  --color-border: oklch(36.455% 0.06662 293.419);
 
   --color-selector-active: oklch(33.197% 0.05031 266.74);
   --color-selector-text: oklch(97.015% 0 89.88);
   --color-selector-background: oklch(33.699% 0.02228 267.385);
+
+  /* Badge/epithet color for ranked user cards */
+  --color-badge: oklch(52.86% 0.22851 282.074);
+  --color-streak: var(--color-primary);
 }

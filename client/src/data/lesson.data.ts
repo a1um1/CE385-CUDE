@@ -71,3 +71,19 @@ export const enrollmentAvailabilityQueryOptions = (lessonId?: string | null) =>
 
 export const useEnrollmentAvailability = (lessonId?: string | null) =>
   useQuery(enrollmentAvailabilityQueryOptions(lessonId));
+
+export const useLessonStatistic = (lessonId: string) =>
+  useQuery({
+    queryKey: ["lesson_statistic", lessonId],
+    queryFn: async () => {
+      const { data, error } = await APIclient.GET(`/lesson/{lessonId}/stats`, {
+        params: {
+          path: {
+            lessonId,
+          },
+        },
+      });
+      if (error) throw error;
+      return data;
+    },
+  });

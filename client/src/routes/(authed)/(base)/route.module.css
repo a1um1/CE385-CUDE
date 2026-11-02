@@ -1,0 +1,11 @@
+@reference "#/styles/main.css";
+
+.mainContent {
+  max-width: var(--container-size);
+  margin: 0 auto;
+  width: 100%;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 6);
+}

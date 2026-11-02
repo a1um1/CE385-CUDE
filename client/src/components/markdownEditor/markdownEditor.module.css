@@ -65,7 +65,7 @@
 
   &.active {
     background-color: var(--color-primary);
-    color: var(--color-primary-foreground, #fff);
+    color: var(--color-background-text);
   }
 }
 
@@ -136,7 +136,7 @@
 
 .write-pane {
   position: relative;
-  background-color: #1e1e1e;
+  background-color: var(--color-panel);
   height: 100%;
   width: 100%;
 }
@@ -158,7 +158,7 @@
 }
 
 .preview-empty {
-  color: var(--color-placeholder, #888);
+  color: var(--color-placeholder);
   font-style: italic;
   font-size: 0.875rem;
 }

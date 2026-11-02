@@ -12,10 +12,10 @@ import Calendar from "#/components/calendar";
 import type { CSSProperties } from "react";
 
 const activityStatusColor = {
-  PENDING: "#3B82F6",
-  SUBMITTED: "#F59E0B",
-  GRADED: "#10B981",
-  CANCELLED: "#6B7280",
+  PENDING: "var(--color-primary)",
+  SUBMITTED: "var(--color-warning)",
+  GRADED: "var(--color-success)",
+  CANCELLED: "var(--color-neutral)",
 } satisfies Record<string, string>;
 
 export const Route = createFileRoute("/(authed)/(base)/profile/$username")({
@@ -72,7 +72,11 @@ function RouteComponent() {
       </div>
       <div className={styles["profile-content"]}>
         <section className={styles["profile-calendar"]}>
-          <Calendar month={new Date().getMonth() + 1} year={new Date().getFullYear()} />
+          <Calendar
+            month={new Date().getMonth() + 1}
+            year={new Date().getFullYear()}
+            activityData={data.activityCalendar}
+          />
         </section>
         <section className={styles["activity"]}>
           <h2 className={styles["activity-title"]}>Recent activity</h2>

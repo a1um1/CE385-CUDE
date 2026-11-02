@@ -11,11 +11,11 @@ export function CoursesSection() {
 
   return (
     <>
-      <h1 className="text-3xl font-bold">คอร์สเรียน</h1>
+      <h1 className={styles.heading}>คอร์สเรียน</h1>
       {courses.isLoading ? (
         <div className={styles["course-grid"]}>
-          <Skeleton className="h-40" />
-          <Skeleton className="h-40" />
+          <Skeleton className={styles.skeletonLoader} />
+          <Skeleton className={styles.skeletonLoader} />
         </div>
       ) : (
         <div className={styles["course-grid"]}>
@@ -33,8 +33,8 @@ export function CoursesSection() {
         </div>
       )}
       {(courses.data?.data ?? []).length === 0 && !courses.isLoading && (
-        <div className="flex flex-col items-center justify-center gap-2">
-          <FaceSlightlyFrowning className="size-24" />
+        <div className={styles.emptyState}>
+          <FaceSlightlyFrowning className={styles.frowningFace} />
           <p>No courses available.</p>
         </div>
       )}

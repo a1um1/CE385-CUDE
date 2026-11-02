@@ -2,6 +2,7 @@ import * as React from "react";
 import ButtonLink from "#/components/buttonLink";
 import DataTable from "#/components/table";
 import { createTableColumnHelper } from "#/components/table/features";
+import styles from "./course.module.css";
 import { useAdminCourseListQuery } from "#/data/admin/course.data";
 import { basicPaginationSchema } from "#/lib/pagination.schema";
 import SearchField from "#/components/searchField/searchField";
@@ -63,6 +64,14 @@ const typedColumns = columnHelper.columns([
           }}
         >
           Units
+        </ButtonLink>
+        <ButtonLink
+          size="xs"
+          variant="secondary"
+          to="/admin/statistic"
+          search={{ courseId: _info.row.original.id }}
+        >
+          Stats
         </ButtonLink>
         <ButtonLink
           size="xs"
@@ -146,7 +155,7 @@ function RouteComponent() {
 
   return (
     <>
-      <div className="flex justify-between items-center">
+      <div className={styles.headerRow}>
         <SearchField
           placeholder="Search courses"
           initialValue={search.search}

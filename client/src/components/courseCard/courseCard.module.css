@@ -34,7 +34,7 @@
     transparent 1%,
     color-mix(in srgb, var(--course-color) 20%, transparent)
   );
-  box-shadow: 0 1px 3px rgb(0 0 0 / 0.12);
+  box-shadow: 0 1px 3px color-mix(in oklch, var(--color-shadow) 12%, transparent);
   transition:
     transform 150ms,
     box-shadow 150ms;

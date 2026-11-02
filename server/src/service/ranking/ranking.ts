@@ -1,5 +1,6 @@
 import { rankingRepository } from "#/repository/ranking.repository";
 import type { RankingQuery, XpRanking } from "#/service/ranking/ranking.schema";
+import UserStatService from "#/service/userStat";
 
 // oxlint-disable typescript/no-extraneous-class
 export default class RankingService {
@@ -14,11 +15,31 @@ export default class RankingService {
     }
 
     const rows = await rankingRepository.findXpRanking(periodStart, now, limit);
-    return rows.map(({ rank, id, username, profileImage, backgroundImage, xpEarned, totalXP }) => ({
-      rank,
-      user: { id, username, profileImage, backgroundImage },
-      xpEarned,
-      totalXP,
-    }));
+    return rows.map(
+      ({
+        rank,
+        id,
+        username,
+        name,
+        epithet,
+        profileImage,
+        backgroundImage,
+        xpEarned,
+        totalXP,
+      }) => ({
+        rank,
+        user: {
+          id,
+          username,
+          profileImage,
+          backgroundImage,
+          name,
+          epithet,
+          level: UserStatService.levelByXp(totalXP),
+        },
+        xpEarned,
+        totalXP,
+      }),
+    );
   }
 }

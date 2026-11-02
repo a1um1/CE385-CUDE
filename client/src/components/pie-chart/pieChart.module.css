@@ -4,7 +4,8 @@
   padding: 0;
   display: flex;
   justify-content: center;
-  gap: 1.5rem;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
 }
 
 .item {
@@ -27,4 +28,11 @@
 
 .percent {
   font-variant-numeric: tabular-nums;
+}
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-secondary-text);
 }

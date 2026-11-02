@@ -8,7 +8,6 @@ import { resolveSession, useUser } from "#/data/user.data";
 import { createFileRoute, Navigate, Outlet, redirect, useMatches } from "@tanstack/react-router";
 import style from "./layout.module.css";
 import UserMenu from "#/components/userMenu";
-import clsx from "clsx";
 export const Route = createFileRoute("/admin")({
   ssr: false,
   beforeLoad: async ({ context }) => {
@@ -35,14 +34,14 @@ function RouteComponent() {
         <Sidebar />
         <div className={style["admin-content"]}>
           <div className={style["admin-navbar"]}>
-            <div className="flex items-center gap-2">
+            <div className={style.breadcrumbContainer}>
               <CollapsibleSidebarToggle iconOnly label="Toggle sidebar" />
               <AdminBreadcrumbs />
             </div>
             <UserMenu />
           </div>
-          <div className={clsx(style["admin-container"], fullWidth && style["full-width"])}>
-            {!hideTitle && <h1 className="text-3xl font-bold">{pageTitle || "Unknown Page"}</h1>}
+          <div className={`${style["admin-container"]} ${fullWidth ? style["full-width"] : ""}`}>
+            {!hideTitle && <h1 className={style.pageTitle}>{pageTitle || "Unknown Page"}</h1>}
             <Outlet />
           </div>
         </div>

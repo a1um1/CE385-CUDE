@@ -1,6 +1,7 @@
 import { handleFormMutationError, useAppForm } from "#/components/form";
 import { useUpdatePassword } from "#/data/user.data";
 import { getPasswordError } from "#/lib/passwordRules";
+import styles from "../passwordForm.module.css";
 
 export default function UpdatePasswordForm() {
   const updateMutation = useUpdatePassword();
@@ -20,14 +21,14 @@ export default function UpdatePasswordForm() {
 
   return (
     <>
-      <h2 className="text-xl font-bold mb-4">Update Password</h2>
+      <h2 className={styles.heading}>Update Password</h2>
       <form
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
           form.handleSubmit();
         }}
-        className="flex flex-col gap-4 flex-1"
+        className={styles.form}
       >
         <form.AppForm>
           <form.FormError />
@@ -50,7 +51,7 @@ export default function UpdatePasswordForm() {
               />
             )}
           </form.AppField>
-          <div className="flex justify-end">
+          <div className={styles.submitContainer}>
             <form.SubmitButton label="Update Password" />
           </div>
         </form.AppForm>

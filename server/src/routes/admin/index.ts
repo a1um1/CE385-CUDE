@@ -8,6 +8,8 @@ import { adminExerciseRoute } from "./exercise.admin";
 import { adminTransactionRoute } from "./transaction.admin";
 import { adminSessionRoute } from "./session.admin";
 import { adminEventRoute } from "./event.admin";
+import { adminStatsRoute } from "#/routes/admin/stats.admin";
+
 const adminRouter = new CustomRouter({
   prefix: "/admin",
   tags: ["Admin"],
@@ -36,6 +38,7 @@ const adminRouter = new CustomRouter({
   .use(adminLessonRoute)
   .use(adminTransactionRoute)
   .use(adminUserStatsRoute)
+  .use(adminStatsRoute)
   .use(adminSessionRoute)
   .use(adminEventRoute);
 

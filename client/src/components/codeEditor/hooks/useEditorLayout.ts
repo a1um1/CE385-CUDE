@@ -5,7 +5,7 @@ import { LS_LAYOUT_KEY } from "../codeEditor.schema";
 
 function getInitialLayout(): PanelLayout {
   const stored = localStorage.getItem(LS_LAYOUT_KEY);
-  return stored === "bottom" ? "bottom" : "side";
+  return stored === "side" ? "side" : "bottom";
 }
 
 export function useEditorLayout() {

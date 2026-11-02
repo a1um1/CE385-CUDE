@@ -42,7 +42,14 @@ const icons: { name: string; Icon: Icon }[] = [
 
 function Gallery({ size }: { size: number }) {
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "1.5rem", color: "#e5e7eb" }}>
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        gap: "1.5rem",
+        color: "var(--color-secondary-text)",
+      }}
+    >
       {icons.map(({ name, Icon }) => (
         <div
           key={name}
@@ -69,8 +76,8 @@ const meta = {
     backgrounds: {
       default: "toolbar",
       values: [
-        { name: "toolbar", value: "#1e2430" },
-        { name: "white", value: "#ffffff" },
+        { name: "toolbar", value: "var(--color-panel)" },
+        { name: "white", value: "var(--color-background)" },
       ],
     },
   },

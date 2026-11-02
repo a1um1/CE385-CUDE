@@ -1,6 +1,7 @@
 import Badge from "#/components/badge";
 import Skeleton from "#/components/skeleton";
 import { Link } from "@tanstack/react-router";
+import styles from "./exerciseList.module.css";
 
 export interface ExerciseListItem {
   id: string;
@@ -28,41 +29,37 @@ export default function ExerciseList({
   isError,
   errorMessage,
 }: ExerciseListProps & ExerciseListErrorProps) {
-  if (isLoading) return <Skeleton className="h-14" />;
+  if (isLoading) return <Skeleton className={styles.skeletonLoader} />;
   if (isError) {
-    return (
-      <div className="flex items-center gap-2 p-4 text-sm text-red-500">
-        {errorMessage ?? "Failed to load exercises."}
-      </div>
-    );
+    return <div className={styles.errorMessage}>{errorMessage ?? "Failed to load exercises."}</div>;
   }
   if (!items || items.length === 0) {
-    return <div className="p-4 text-sm text-muted-foreground">No exercises found.</div>;
+    return <div className={styles.emptyMessage}>No exercises found.</div>;
   }
 
   return (
-    <ol className="flex flex-col">
+    <ol className={styles.list}>
       {items.map((item, index) => {
         const row = (
           <>
-            <span className="opacity-50">{index + 1}.</span>
-            <span className="flex-1">{item.name}</span>
+            <span className={styles.indexNumber}>{index + 1}.</span>
+            <span className={styles.itemName}>{item.name}</span>
             {item.badge && <Badge color={item.badge.color}>{item.badge.label}</Badge>}
           </>
         );
 
         return (
-          <li key={item.id} className="border-b border-border">
+          <li key={item.id} className={styles.item}>
             {sessionId ? (
               <Link
-                className="flex items-center gap-4 p-4 hover:bg-gray-500/10"
+                className={styles.row}
                 to="/session/$id/$exerciseId"
                 params={{ id: sessionId, exerciseId: item.id }}
               >
                 {row}
               </Link>
             ) : (
-              <div className="flex items-center gap-4 p-4">{row}</div>
+              <div className={styles.row}>{row}</div>
             )}
           </li>
         );

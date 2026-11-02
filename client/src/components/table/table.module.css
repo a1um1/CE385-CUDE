@@ -60,7 +60,7 @@
 
 .header {
   border-bottom: 1px solid var(--color-border);
-  background-color: color-mix(in oklch, var(--color-background) 80%, white 20%);
+  background-color: color-mix(in oklch, var(--color-background), white 5%);
 }
 
 .headerCell {

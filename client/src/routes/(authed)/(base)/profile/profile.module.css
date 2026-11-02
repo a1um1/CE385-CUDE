@@ -40,7 +40,7 @@
 }
 
 .epihet {
-  --badge-color: oklch(52.86% 0.22851 282.074);
+  --badge-color: var(--color-badge);
   --badge-color-outline: color-mix(in oklch, var(--badge-color), black 20%);
   font-size: 1.25rem;
   font-weight: 500;

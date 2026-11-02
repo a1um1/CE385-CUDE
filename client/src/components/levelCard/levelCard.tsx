@@ -1,6 +1,7 @@
 import { ProgressBar } from "#/components/progress-bar";
 import { Ranked } from "#/components/ranked";
 import UserBackground from "#/components/userBackground";
+import styles from "./levelCard.module.css";
 import { useUser, useUserStats } from "#/data/user.data";
 
 export default function LevelCard() {
@@ -11,17 +12,17 @@ export default function LevelCard() {
   const xpToNextLevel = stats?.xpToNextLevel ?? 0;
 
   return (
-    <div className="flex flex-col mb-1">
-      <div className="relative">
+    <div className={styles.cardContainer}>
+      <div className={styles.backgroundWrapper}>
         <UserBackground backgroundUrl={user?.backgroundImage} name={user?.name} />
-        <div className="bg-linear-to-t from-background/80 to-background/50 absolute inset-0" />
+        <div className={styles.backgroundOverlay} />
       </div>
 
-      <div className="flex items-center gap-4 -mt-14 px-2 z-0">
+      <div className={styles.contentRow}>
         <Ranked rank={level} size="80px" />
-        <div className="flex flex-col flex-1 gap-3">
-          <div className="flex justify-between">
-            <span className="text-lg font-semibold">Level {level}</span>
+        <div className={styles.infoColumn}>
+          <div className={styles.headerRow}>
+            <span className={styles.levelTitle}>Level {level}</span>
             <span>
               {xpIntoLevel} / {xpIntoLevel + xpToNextLevel} XP
             </span>

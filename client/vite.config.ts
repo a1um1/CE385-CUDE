@@ -29,5 +29,6 @@ const config = defineConfig({
   css: {
     devSourcemap: process.env.NODE_ENV === "development",
   },
+  publicDir: "src/public",
 });
 export default config;

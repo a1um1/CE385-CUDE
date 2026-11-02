@@ -1,7 +1,8 @@
 import { useAppForm, handleFormMutationError } from "#/components/form";
 import { useSignUp } from "#/data/user.data";
 import { getPasswordError } from "#/lib/passwordRules";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import styles from "./auth.module.css";
 
 export const Route = createFileRoute("/auth/signup")({
   component: RouteComponent,
@@ -29,15 +30,15 @@ function RouteComponent() {
   });
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <h1 className="text-3xl font-semibold mb-6">Sign Up</h1>
+    <>
+      <h1 className={styles.heading}>Sign Up</h1>
       <form
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
           form.handleSubmit();
         }}
-        className="flex flex-col gap-4 w-full max-w-sm px-4"
+        className={styles.form}
       >
         <form.AppForm>
           <form.FormError />
@@ -48,6 +49,7 @@ function RouteComponent() {
                 required
                 type="text"
                 disabled={signUpMutation.isPending}
+                size="lg"
               />
             )}
           </form.AppField>
@@ -58,6 +60,7 @@ function RouteComponent() {
                 required
                 type="text"
                 disabled={signUpMutation.isPending}
+                size="lg"
               />
             )}
           </form.AppField>
@@ -78,6 +81,7 @@ function RouteComponent() {
                 required
                 type="email"
                 disabled={signUpMutation.isPending}
+                size="lg"
               />
             )}
           </form.AppField>
@@ -96,13 +100,15 @@ function RouteComponent() {
                 showStrength
                 showRequirements
                 disabled={signUpMutation.isPending}
+                size="lg"
               />
             )}
           </form.AppField>
 
-          <form.SubmitButton label="Sign Up" block className="mt-2" />
+          <form.SubmitButton label="Sign Up" size="lg" block className={styles.submitButton} />
         </form.AppForm>
+        <Link to="/auth/signin">Already have an account? Sign In</Link>
       </form>
-    </div>
+    </>
   );
 }

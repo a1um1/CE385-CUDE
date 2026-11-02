@@ -20,6 +20,8 @@ describe("RankingService", () => {
         backgroundImage: "alice-background.jpg",
         xpEarned: 150,
         totalXP: 700,
+        name: "Alice",
+        epithet: "The Brave",
       },
     ]);
 
@@ -31,6 +33,9 @@ describe("RankingService", () => {
           username: "alice",
           profileImage: "alice.jpg",
           backgroundImage: "alice-background.jpg",
+          name: "Alice",
+          epithet: "The Brave",
+          level: 5,
         },
         xpEarned: 150,
         totalXP: 700,
@@ -40,6 +45,8 @@ describe("RankingService", () => {
     const [query, periodStart, now, limit] = mockDB.$queryRaw.mock.calls[0] ?? [];
     expect(String(query)).toContain('SUM(t.amount)::int AS "xpEarned"');
     expect(String(query)).toContain("ROW_NUMBER() OVER");
+    expect(String(query)).toContain('LEFT JOIN xp_totals xp ON xp."userID" = u.id');
+    expect(String(query)).toContain('u."isActive" = true');
     expect(periodStart).toEqual(new Date(2026, 9, 19));
     expect(now).toEqual(new Date("2026-10-23T16:00:00.000Z"));
     expect(limit).toBe(1);

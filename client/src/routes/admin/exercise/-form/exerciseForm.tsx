@@ -399,7 +399,7 @@ export function ExerciseForm({
                 <div
                   style={{
                     height: 200,
-                    border: "1px solid var(--color-border, #444)",
+                    border: "1px solid var(--color-border)",
                     borderRadius: "0.25rem",
                     overflow: "hidden",
                   }}
@@ -513,7 +513,7 @@ export function ExerciseForm({
                                     {result.ok ? (
                                       <span
                                         style={{
-                                          color: "#4ade80",
+                                          color: "var(--color-success)",
                                           display: "inline-flex",
                                           alignItems: "center",
                                           gap: "0.2rem",
@@ -524,7 +524,7 @@ export function ExerciseForm({
                                     ) : (
                                       <span
                                         style={{
-                                          color: "#f87171",
+                                          color: "var(--color-danger)",
                                           display: "inline-flex",
                                           alignItems: "center",
                                           gap: "0.2rem",
@@ -548,9 +548,9 @@ export function ExerciseForm({
                         <div
                           style={{
                             fontSize: "0.825rem",
-                            color: "#888",
+                            color: "var(--color-muted-text)",
                             padding: "1.5rem",
-                            border: "1px dashed var(--color-border, #444)",
+                            border: "1px dashed var(--color-border)",
                             borderRadius: "0.25rem",
                             textAlign: "center",
                           }}
@@ -582,7 +582,7 @@ export function ExerciseForm({
                                   onClick={() => removeCase(index)}
                                   disabled={pending}
                                   style={{
-                                    color: "var(--color-danger, #ff5555)",
+                                    color: "var(--color-danger)",
                                     padding: "0.2rem",
                                   }}
                                 >

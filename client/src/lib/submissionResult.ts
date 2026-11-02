@@ -30,9 +30,9 @@ export const sessionResult = (session: {
 };
 
 export const submissionResultColor: Record<SubmissionResult, string> = {
-  PASSED: "#10B981",
-  FAILED: "#EF4444",
-  GRADING: "#F59E0B",
-  ONGOING: "#3B82F6",
-  GIVEUP: "#6B7280",
+  PASSED: "var(--color-success)",
+  FAILED: "var(--color-danger)",
+  GRADING: "var(--color-warning)",
+  ONGOING: "var(--color-primary)",
+  GIVEUP: "var(--color-neutral)",
 };

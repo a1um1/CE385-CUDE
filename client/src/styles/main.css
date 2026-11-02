@@ -16,16 +16,15 @@
   --size-md-padding-x: 1.5rem;
   --size-md-font-size: 1rem;
 
-  --size-lg-padding-y: 1rem;
-  --size-lg-padding-x: 3rem;
-
-  --size-lg-font-size: 1.25rem;
+  --size-lg-padding-y: 0.75rem;
+  --size-lg-padding-x: 2rem;
+  --size-lg-font-size: 1.15rem;
   --size-xs-square-padding: 0.1rem;
 
   --size-xs-height: 1.5rem;
   --size-sm-height: 2rem;
   --size-md-height: 2.5rem;
-  --size-lg-height: 3.75rem;
+  --size-lg-height: 3rem;
 
   --container-size: 1280px;
 }

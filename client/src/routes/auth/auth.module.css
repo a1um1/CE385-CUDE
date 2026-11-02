@@ -1,0 +1,50 @@
+@reference "#/styles/main.css";
+
+.hex-bg {
+  min-height: 100vh;
+  display: flex;
+  justify-content: end;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  max-width: max(50%, 40rem);
+  width: 100%;
+  padding: 3rem;
+  background-color: var(--color-background);
+  border-left: 1px solid var(--color-border);
+}
+.subContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+  width: 100%;
+  max-width: 40rem;
+}
+
+.heading {
+  font-size: 1.875rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  line-height: 2.25rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.submitButton {
+  margin-top: 0.5rem;
+}
+
+.logo {
+  margin-bottom: 1.5rem;
+}

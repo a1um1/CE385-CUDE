@@ -1,0 +1,42 @@
+@reference "#/styles/main.css";
+
+.rewardContainer {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+}
+
+.xpReward {
+  color: var(--color-success);
+  background-image: linear-gradient(
+    to top,
+    color-mix(in oklch, var(--color-success) 40%, transparent),
+    transparent
+  );
+  border-radius: 9999px;
+  border: 2px solid var(--color-border);
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.375rem;
+  padding-bottom: 0.375rem;
+  font-weight: 700;
+  font-style: italic;
+}
+
+.gemReward {
+  color: var(--color-gem);
+  background-image: linear-gradient(
+    to top,
+    color-mix(in oklch, var(--color-gem) 40%, transparent),
+    transparent
+  );
+  border-radius: 9999px;
+  border: 2px solid var(--color-border);
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.375rem;
+  padding-bottom: 0.375rem;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+}

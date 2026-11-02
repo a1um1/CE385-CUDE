@@ -27,7 +27,7 @@ export function CodeField({
         style={{
           height,
           minHeight,
-          border: "1px solid var(--color-border, #444)",
+          border: "1px solid var(--color-border)",
           borderRadius: "0.25rem",
           overflow: "hidden",
         }}

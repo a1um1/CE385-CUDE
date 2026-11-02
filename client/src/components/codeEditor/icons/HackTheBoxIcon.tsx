@@ -1,5 +1,6 @@
 import type { SVGProps } from "react";
 
+/* brand: keep */
 /** Source: https://svgl.app/library/hack-the-box.svg */
 export default function HackTheBoxIcon({
   className,
