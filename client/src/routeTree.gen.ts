@@ -26,6 +26,9 @@ import { Route as authedSessionIdRouteRouteImport } from './routes/(authed)/sess
 import { Route as AdminCourseIndexRouteImport } from './routes/admin/course/index'
 import { Route as AdminCourseIdRouteImport } from './routes/admin/course/$id'
 import { Route as AdminCourseCreateRouteImport } from './routes/admin/course/create'
+import { Route as AdminEventIndexRouteImport } from './routes/admin/event/index'
+import { Route as AdminEventIdRouteImport } from './routes/admin/event/$id'
+import { Route as AdminEventCreateRouteImport } from './routes/admin/event/create'
 import { Route as AdminExerciseIndexRouteImport } from './routes/admin/exercise/index'
 import { Route as AdminExerciseIdRouteImport } from './routes/admin/exercise/$id'
 import { Route as AdminExerciseCreateRouteImport } from './routes/admin/exercise/create'
@@ -44,6 +47,7 @@ import { Route as AdminUserIdRouteImport } from './routes/admin/user/$id'
 import { Route as authedbaseAccountIndexRouteImport } from './routes/(authed)/(base)/account/index'
 import { Route as authedbaseAccountSecurityRouteImport } from './routes/(authed)/(base)/account/security'
 import { Route as authedbaseAccountTransactionsRouteImport } from './routes/(authed)/(base)/account/transactions'
+import { Route as authedbaseEventEventIdRouteImport } from './routes/(authed)/(base)/event/$eventId'
 import { Route as authedbaseLessonLessonIdRouteRouteImport } from './routes/(authed)/(base)/lesson/$lessonId/route'
 import { Route as authedbaseProfileUsernameRouteImport } from './routes/(authed)/(base)/profile/$username'
 import { Route as authedSessionIdIndexRouteImport } from './routes/(authed)/session/$id/index'
@@ -133,6 +137,21 @@ const AdminCourseIdRoute = AdminCourseIdRouteImport.update({
 const AdminCourseCreateRoute = AdminCourseCreateRouteImport.update({
   id: '/course/create',
   path: '/course/create',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminEventIndexRoute = AdminEventIndexRouteImport.update({
+  id: '/event/',
+  path: '/event/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminEventIdRoute = AdminEventIdRouteImport.update({
+  id: '/event/$id',
+  path: '/event/$id',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminEventCreateRoute = AdminEventCreateRouteImport.update({
+  id: '/event/create',
+  path: '/event/create',
   getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminExerciseIndexRoute = AdminExerciseIndexRouteImport.update({
@@ -227,6 +246,11 @@ const authedbaseAccountTransactionsRoute =
     path: '/transactions',
     getParentRoute: () => authedbaseAccountRouteRoute,
   } as any)
+const authedbaseEventEventIdRoute = authedbaseEventEventIdRouteImport.update({
+  id: '/event/$eventId',
+  path: '/event/$eventId',
+  getParentRoute: () => authedbaseRouteRoute,
+} as any)
 const authedbaseLessonLessonIdRouteRoute =
   authedbaseLessonLessonIdRouteRouteImport.update({
     id: '/lesson/$lessonId',
@@ -282,6 +306,8 @@ export interface FileRoutesByFullPath {
   '/ranking': typeof authedbaseRankingRoute
   '/admin/course/$id': typeof AdminCourseIdRoute
   '/admin/course/create': typeof AdminCourseCreateRoute
+  '/admin/event/$id': typeof AdminEventIdRoute
+  '/admin/event/create': typeof AdminEventCreateRoute
   '/admin/exercise/$id': typeof AdminExerciseIdRoute
   '/admin/exercise/create': typeof AdminExerciseCreateRoute
   '/admin/lesson/$id': typeof AdminLessonIdRoute
@@ -292,6 +318,7 @@ export interface FileRoutesByFullPath {
   '/admin/user/$id': typeof AdminUserIdRoute
   '/': typeof authedbaseIndexRoute
   '/admin/course/': typeof AdminCourseIndexRoute
+  '/admin/event/': typeof AdminEventIndexRoute
   '/admin/exercise/': typeof AdminExerciseIndexRoute
   '/admin/lesson/': typeof AdminLessonIndexRoute
   '/admin/statistic/': typeof AdminStatisticIndexRoute
@@ -302,6 +329,7 @@ export interface FileRoutesByFullPath {
   '/lesson/$lessonId': typeof authedbaseLessonLessonIdRouteRouteWithChildren
   '/account/security': typeof authedbaseAccountSecurityRoute
   '/account/transactions': typeof authedbaseAccountTransactionsRoute
+  '/event/$eventId': typeof authedbaseEventEventIdRoute
   '/profile/$username': typeof authedbaseProfileUsernameRoute
   '/session/$id/$exerciseId': typeof authedSessionIdExerciseIdRoute
   '/session/$id/summary': typeof authedSessionIdSummaryRoute
@@ -320,6 +348,8 @@ export interface FileRoutesByTo {
   '/ranking': typeof authedbaseRankingRoute
   '/admin/course/$id': typeof AdminCourseIdRoute
   '/admin/course/create': typeof AdminCourseCreateRoute
+  '/admin/event/$id': typeof AdminEventIdRoute
+  '/admin/event/create': typeof AdminEventCreateRoute
   '/admin/exercise/$id': typeof AdminExerciseIdRoute
   '/admin/exercise/create': typeof AdminExerciseCreateRoute
   '/admin/lesson/$id': typeof AdminLessonIdRoute
@@ -330,6 +360,7 @@ export interface FileRoutesByTo {
   '/admin/user/$id': typeof AdminUserIdRoute
   '/': typeof authedbaseIndexRoute
   '/admin/course': typeof AdminCourseIndexRoute
+  '/admin/event': typeof AdminEventIndexRoute
   '/admin/exercise': typeof AdminExerciseIndexRoute
   '/admin/lesson': typeof AdminLessonIndexRoute
   '/admin/statistic': typeof AdminStatisticIndexRoute
@@ -339,6 +370,7 @@ export interface FileRoutesByTo {
   '/admin/user': typeof AdminUserIndexRoute
   '/account/security': typeof authedbaseAccountSecurityRoute
   '/account/transactions': typeof authedbaseAccountTransactionsRoute
+  '/event/$eventId': typeof authedbaseEventEventIdRoute
   '/profile/$username': typeof authedbaseProfileUsernameRoute
   '/session/$id/$exerciseId': typeof authedSessionIdExerciseIdRoute
   '/session/$id/summary': typeof authedSessionIdSummaryRoute
@@ -364,6 +396,8 @@ export interface FileRoutesById {
   '/(authed)/(base)/ranking': typeof authedbaseRankingRoute
   '/admin/course/$id': typeof AdminCourseIdRoute
   '/admin/course/create': typeof AdminCourseCreateRoute
+  '/admin/event/$id': typeof AdminEventIdRoute
+  '/admin/event/create': typeof AdminEventCreateRoute
   '/admin/exercise/$id': typeof AdminExerciseIdRoute
   '/admin/exercise/create': typeof AdminExerciseCreateRoute
   '/admin/lesson/$id': typeof AdminLessonIdRoute
@@ -374,6 +408,7 @@ export interface FileRoutesById {
   '/admin/user/$id': typeof AdminUserIdRoute
   '/(authed)/(base)/': typeof authedbaseIndexRoute
   '/admin/course/': typeof AdminCourseIndexRoute
+  '/admin/event/': typeof AdminEventIndexRoute
   '/admin/exercise/': typeof AdminExerciseIndexRoute
   '/admin/lesson/': typeof AdminLessonIndexRoute
   '/admin/statistic/': typeof AdminStatisticIndexRoute
@@ -384,6 +419,7 @@ export interface FileRoutesById {
   '/(authed)/(base)/lesson/$lessonId': typeof authedbaseLessonLessonIdRouteRouteWithChildren
   '/(authed)/(base)/account/security': typeof authedbaseAccountSecurityRoute
   '/(authed)/(base)/account/transactions': typeof authedbaseAccountTransactionsRoute
+  '/(authed)/(base)/event/$eventId': typeof authedbaseEventEventIdRoute
   '/(authed)/(base)/profile/$username': typeof authedbaseProfileUsernameRoute
   '/(authed)/session/$id/$exerciseId': typeof authedSessionIdExerciseIdRoute
   '/(authed)/session/$id/summary': typeof authedSessionIdSummaryRoute
@@ -408,6 +444,8 @@ export interface FileRouteTypes {
     | '/ranking'
     | '/admin/course/$id'
     | '/admin/course/create'
+    | '/admin/event/$id'
+    | '/admin/event/create'
     | '/admin/exercise/$id'
     | '/admin/exercise/create'
     | '/admin/lesson/$id'
@@ -418,6 +456,7 @@ export interface FileRouteTypes {
     | '/admin/user/$id'
     | '/'
     | '/admin/course/'
+    | '/admin/event/'
     | '/admin/exercise/'
     | '/admin/lesson/'
     | '/admin/statistic/'
@@ -428,6 +467,7 @@ export interface FileRouteTypes {
     | '/lesson/$lessonId'
     | '/account/security'
     | '/account/transactions'
+    | '/event/$eventId'
     | '/profile/$username'
     | '/session/$id/$exerciseId'
     | '/session/$id/summary'
@@ -446,6 +486,8 @@ export interface FileRouteTypes {
     | '/ranking'
     | '/admin/course/$id'
     | '/admin/course/create'
+    | '/admin/event/$id'
+    | '/admin/event/create'
     | '/admin/exercise/$id'
     | '/admin/exercise/create'
     | '/admin/lesson/$id'
@@ -456,6 +498,7 @@ export interface FileRouteTypes {
     | '/admin/user/$id'
     | '/'
     | '/admin/course'
+    | '/admin/event'
     | '/admin/exercise'
     | '/admin/lesson'
     | '/admin/statistic'
@@ -465,6 +508,7 @@ export interface FileRouteTypes {
     | '/admin/user'
     | '/account/security'
     | '/account/transactions'
+    | '/event/$eventId'
     | '/profile/$username'
     | '/session/$id/$exerciseId'
     | '/session/$id/summary'
@@ -489,6 +533,8 @@ export interface FileRouteTypes {
     | '/(authed)/(base)/ranking'
     | '/admin/course/$id'
     | '/admin/course/create'
+    | '/admin/event/$id'
+    | '/admin/event/create'
     | '/admin/exercise/$id'
     | '/admin/exercise/create'
     | '/admin/lesson/$id'
@@ -499,6 +545,7 @@ export interface FileRouteTypes {
     | '/admin/user/$id'
     | '/(authed)/(base)/'
     | '/admin/course/'
+    | '/admin/event/'
     | '/admin/exercise/'
     | '/admin/lesson/'
     | '/admin/statistic/'
@@ -509,6 +556,7 @@ export interface FileRouteTypes {
     | '/(authed)/(base)/lesson/$lessonId'
     | '/(authed)/(base)/account/security'
     | '/(authed)/(base)/account/transactions'
+    | '/(authed)/(base)/event/$eventId'
     | '/(authed)/(base)/profile/$username'
     | '/(authed)/session/$id/$exerciseId'
     | '/(authed)/session/$id/summary'
@@ -645,6 +693,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCourseCreateRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/event/': {
+      id: '/admin/event/'
+      path: '/event'
+      fullPath: '/admin/event/'
+      preLoaderRoute: typeof AdminEventIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/event/$id': {
+      id: '/admin/event/$id'
+      path: '/event/$id'
+      fullPath: '/admin/event/$id'
+      preLoaderRoute: typeof AdminEventIdRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/event/create': {
+      id: '/admin/event/create'
+      path: '/event/create'
+      fullPath: '/admin/event/create'
+      preLoaderRoute: typeof AdminEventCreateRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/exercise/': {
       id: '/admin/exercise/'
       path: '/exercise'
@@ -771,6 +840,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authedbaseAccountTransactionsRouteImport
       parentRoute: typeof authedbaseAccountRouteRoute
     }
+    '/(authed)/(base)/event/$eventId': {
+      id: '/(authed)/(base)/event/$eventId'
+      path: '/event/$eventId'
+      fullPath: '/event/$eventId'
+      preLoaderRoute: typeof authedbaseEventEventIdRouteImport
+      parentRoute: typeof authedbaseRouteRoute
+    }
     '/(authed)/(base)/lesson/$lessonId': {
       id: '/(authed)/(base)/lesson/$lessonId'
       path: '/lesson/$lessonId'
@@ -865,6 +941,7 @@ interface authedbaseRouteRouteChildren {
   authedbaseRankingRoute: typeof authedbaseRankingRoute
   authedbaseIndexRoute: typeof authedbaseIndexRoute
   authedbaseLessonLessonIdRouteRoute: typeof authedbaseLessonLessonIdRouteRouteWithChildren
+  authedbaseEventEventIdRoute: typeof authedbaseEventEventIdRoute
   authedbaseProfileUsernameRoute: typeof authedbaseProfileUsernameRoute
 }
 
@@ -876,6 +953,7 @@ const authedbaseRouteRouteChildren: authedbaseRouteRouteChildren = {
   authedbaseIndexRoute: authedbaseIndexRoute,
   authedbaseLessonLessonIdRouteRoute:
     authedbaseLessonLessonIdRouteRouteWithChildren,
+  authedbaseEventEventIdRoute: authedbaseEventEventIdRoute,
   authedbaseProfileUsernameRoute: authedbaseProfileUsernameRoute,
 }
 
@@ -916,6 +994,8 @@ interface AdminRouteRouteChildren {
   AdminIndexRoute: typeof AdminIndexRoute
   AdminCourseIdRoute: typeof AdminCourseIdRoute
   AdminCourseCreateRoute: typeof AdminCourseCreateRoute
+  AdminEventIdRoute: typeof AdminEventIdRoute
+  AdminEventCreateRoute: typeof AdminEventCreateRoute
   AdminExerciseIdRoute: typeof AdminExerciseIdRoute
   AdminExerciseCreateRoute: typeof AdminExerciseCreateRoute
   AdminLessonIdRoute: typeof AdminLessonIdRoute
@@ -925,6 +1005,7 @@ interface AdminRouteRouteChildren {
   AdminUnitCreateRoute: typeof AdminUnitCreateRoute
   AdminUserIdRoute: typeof AdminUserIdRoute
   AdminCourseIndexRoute: typeof AdminCourseIndexRoute
+  AdminEventIndexRoute: typeof AdminEventIndexRoute
   AdminExerciseIndexRoute: typeof AdminExerciseIndexRoute
   AdminLessonIndexRoute: typeof AdminLessonIndexRoute
   AdminStatisticIndexRoute: typeof AdminStatisticIndexRoute
@@ -938,6 +1019,8 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminIndexRoute: AdminIndexRoute,
   AdminCourseIdRoute: AdminCourseIdRoute,
   AdminCourseCreateRoute: AdminCourseCreateRoute,
+  AdminEventIdRoute: AdminEventIdRoute,
+  AdminEventCreateRoute: AdminEventCreateRoute,
   AdminExerciseIdRoute: AdminExerciseIdRoute,
   AdminExerciseCreateRoute: AdminExerciseCreateRoute,
   AdminLessonIdRoute: AdminLessonIdRoute,
@@ -947,6 +1030,7 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminUnitCreateRoute: AdminUnitCreateRoute,
   AdminUserIdRoute: AdminUserIdRoute,
   AdminCourseIndexRoute: AdminCourseIndexRoute,
+  AdminEventIndexRoute: AdminEventIndexRoute,
   AdminExerciseIndexRoute: AdminExerciseIndexRoute,
   AdminLessonIndexRoute: AdminLessonIndexRoute,
   AdminStatisticIndexRoute: AdminStatisticIndexRoute,

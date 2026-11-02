@@ -6,7 +6,7 @@
   display: inline-block;
   width: var(--skeleton-width);
   height: var(--skeleton-height);
-  background-color: var(--color-gray-600);
+  background-color: var(--color-border);
   border-radius: var(--radius);
   animation: skeleton-pulse 1.5s ease-in-out infinite;
 }

@@ -69,18 +69,17 @@
 }
 
 .title {
-  font-family: var(--font-mono);
   font-size: 1.25rem;
   font-weight: 700;
   color: var(--color-background-text);
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 }
 
 .location {
-  font-family: var(--font-mono);
-  font-size: 1rem;
   color: color-mix(in srgb, var(--color-background-text) 80%, transparent);
   overflow: hidden;
   text-overflow: ellipsis;
