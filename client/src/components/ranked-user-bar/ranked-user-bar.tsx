@@ -36,7 +36,10 @@ export const RankedUserBar = ({
     style={{ "--bg-image": `url(${backgroundUrl})` } as React.CSSProperties}
   >
     <div className={styles.leftSection}>
-      <span className={styles.rankNumber}>#{rank}</span>
+      <span className={styles.rankNumber}>
+        <small>#</small>
+        {rank}
+      </span>
       <div className={styles.avatarContainer}>
         <div className={styles.levelRanked}>
           <Ranked rank={level} size="3rem" />
