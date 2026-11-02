@@ -8,6 +8,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  cursor: pointer;
 }
 
 .header {
@@ -19,14 +20,19 @@
 }
 
 .courseName {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 2rem;
+  font-weight: 600;
   line-height: 2rem;
 }
 
 .skeletonLoader {
   height: 1.5rem;
   width: 8rem;
+}
+
+.skeletonMainLoader {
+  height: 40rem;
+  width: 100%;
 }
 
 .emptyState {
