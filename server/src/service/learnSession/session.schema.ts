@@ -1,6 +1,7 @@
 import type { Course, Lesson, Prisma, Sessions, Unit } from "#/generated/prisma/client";
 import { createIncludeQuerySchema } from "#/lib/include";
 import { z } from "#/lib/extendZod";
+import { GradeStatusSchema } from "#/service/grade";
 import type { z as zod } from "zod";
 
 export const SessionStatusEnum = z
@@ -42,6 +43,7 @@ export const SubmissionSchema = z
     content: SubmissionContentSchema,
     isGraded: z.boolean().openapi({ example: true }),
     ok: z.boolean().openapi({ example: false }),
+    gradeStatus: GradeStatusSchema,
   })
   .openapi("Submission");
 
@@ -55,6 +57,7 @@ export const SubmissionResultSchema = z
     content: SubmissionContentSchema,
     isGraded: z.boolean().openapi({ example: true }),
     ok: z.boolean().openapi({ example: false }),
+    gradeStatus: GradeStatusSchema,
   })
   .openapi("SubmissionResult");
 
@@ -65,6 +68,9 @@ export const SessionObjectSchema = z.object({
   LessonID: z.string().openapi({ example: "lesson_id" }),
   userID: z.string().openapi({ example: "user_id" }),
   status: SessionStatusEnum,
+  gradeStatus: GradeStatusSchema,
+  /** Percentage 0–100, calculated on the backend. */
+  score: z.number().openapi({ example: 75 }),
   // True on the one attempt of this lesson that paid the reward. Combined with the lesson's
   // `XPgiven`/`gemsGiven` it is what the score page shows.
   rewarded: z.boolean().openapi({ example: true }),
@@ -85,6 +91,7 @@ export const SubmittedExerciseSchema = z.object({
   total: z.number().openapi({ example: 3 }),
   passed: z.number().openapi({ example: 2 }),
   ok: z.boolean().openapi({ example: false }),
+  gradeStatus: GradeStatusSchema,
 });
 
 /** XP and gems paid out for the lesson, present only when this submit earned them. */

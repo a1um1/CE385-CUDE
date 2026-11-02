@@ -1,4 +1,5 @@
 import GoJudge from "#/service/go-judge";
+import { calculateScore } from "#/service/grade";
 import type { codeGradingSummary, testResult } from "#/service/grader/codeGrader.schema";
 import GraderComparator from "#/service/grader/grader.compartor";
 import type { gradeConfig, runTestCaseProps } from "#/service/grader/grader.schema";
@@ -63,7 +64,7 @@ export default class CodeGrader {
       total,
       passed: passed.length,
       failed,
-      percentage: (passed.length / total) * 100,
+      percentage: calculateScore(passed.length, total),
       averageMemory,
       averageTime,
       testResults: results,

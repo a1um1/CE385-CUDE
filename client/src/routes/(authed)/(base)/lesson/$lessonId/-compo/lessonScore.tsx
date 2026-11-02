@@ -1,18 +1,19 @@
 import { Scoring } from "#/components/scoring";
-import { formatPercent } from "#/lib/formatNumber";
+import formatNumber from "#/lib/formatNumber";
+import { gradeScoringStatus } from "#/lib/gradeStatus";
 import { LessonAvailability } from "#/routes/(authed)/(base)/lesson/$lessonId/-compo/lessonAvailability";
 import { useLessonResults } from "#/routes/(authed)/(base)/lesson/$lessonId/-compo/lessonResults";
 
 export const LessonScore = () => {
-  const { total, attempts } = useLessonResults();
-  const latest = attempts.find((attempt) => !attempt.cancelled);
+  const { attempts } = useLessonResults();
+  const [latest] = attempts;
 
   if (!latest) return <LessonAvailability />;
 
   return (
     <Scoring
-      status={total > 0 && latest.passed === total ? "success" : "fail"}
-      label={formatPercent(latest.passed, total)}
+      status={gradeScoringStatus[latest.gradeStatus]}
+      label={`${formatNumber(latest.score, 0)}%`}
     />
   );
 };

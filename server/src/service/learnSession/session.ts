@@ -1,10 +1,12 @@
 import type { SessionData, SessionObject } from "#/service/learnSession/session.schema";
+import { evaluateGrade, submissionGradeStatus } from "#/service/grade";
 import UserError from "#/lib/router/http/userError";
 import lessonService from "#/service/lesson";
 import UserStatService from "#/service/userStat";
 import { Prisma } from "#/generated/prisma/client";
 import { z } from "#/lib/extendZod";
 import type { z as zod } from "zod";
+import { exerciseRepository } from "#/repository/exercise.repository";
 import { sessionRepository } from "#/repository/session.repository";
 import { client } from "#/repository/client";
 type enrollmentStatus = "AVAILABLE" | "PENDING" | "NOT_AVAILABLE";
@@ -26,13 +28,32 @@ export const enrollmentAvailabilitySchema = z
 
 export default class SessionService {
   private data: SessionData;
+  /** CODE exercises of the lesson, so skipped ones lower the score. */
+  private total?: number;
 
   constructor(data: SessionData) {
     this.data = data;
   }
 
-  get JSON() {
-    return this.data;
+  get JSON(): SessionObject {
+    const submissions = this.data.submissions?.map((submission) => ({
+      ...submission,
+      gradeStatus: submissionGradeStatus({
+        sessionStatus: this.data.status,
+        isGraded: submission.isGraded,
+        ok: submission.ok,
+      }),
+    }));
+
+    return {
+      ...this.data,
+      submissions,
+      ...evaluateGrade({
+        status: this.data.status,
+        submissions: submissions ?? [],
+        total: this.total,
+      }),
+    };
   }
 
   static async findUserPendingSession(props: { UserID: string }) {
@@ -80,7 +101,10 @@ export default class SessionService {
           reason: `Start lesson session (${lesson.JSON.name}, Attempt #${attemptNumber})`,
         });
 
-        return created;
+        return {
+          ...created,
+          ...evaluateGrade({ status: created.status, submissions: [] }),
+        };
       } catch (error) {
         if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
           throw new UserError(400, "Lesson is not available to start.");
@@ -98,8 +122,9 @@ export default class SessionService {
   static async getByUserId(
     props: { UserID: string },
     include?: string | string[],
-  ): Promise<SessionData[]> {
-    return await sessionRepository.findAllByUserID(props.UserID, include);
+  ): Promise<SessionObject[]> {
+    const sessions = await sessionRepository.findAllByUserID(props.UserID, include);
+    return sessions.map((session) => new SessionService(session).JSON);
   }
 
   static async getById(
@@ -108,6 +133,10 @@ export default class SessionService {
   ): Promise<SessionService> {
     const session = await sessionRepository.findById(props.SessionID, props.userId, include);
     if (!session) throw new UserError(404, "Session not found.");
-    return new SessionService(session);
+    const service = new SessionService(session);
+    if (session.submissions) {
+      service.total = await exerciseRepository.countCodeByLessonID(session.LessonID);
+    }
+    return service;
   }
 }

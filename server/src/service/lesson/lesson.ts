@@ -1,4 +1,5 @@
 import ExerciseService from "#/service/exercise";
+import { calculateScore, isPassedScore } from "#/service/grade";
 import type { LessonData, LessonStatus } from "#/service/lesson/lesson.schema";
 import UnitService from "#/service/unit";
 import UserError from "#/lib/router/http/userError";
@@ -150,15 +151,11 @@ export default class LessonService {
     };
   }
 
-  /**
-   * The single definition of "passed" for a lesson attempt: nothing to grade counts as passed,
-   * otherwise the fraction of CODE exercises passed must reach the lesson's own pass threshold.
-   */
   static isPassed(attempt: LessonAttempt | undefined, passThreshold: number): boolean {
     if (attempt === undefined) return false;
-    // A lesson with no CODE exercise has nothing to gate on, so it counts as passed.
+
     if (attempt.total === 0) return true;
-    return attempt.passed / attempt.total >= passThreshold;
+    return isPassedScore(calculateScore(attempt.passed, attempt.total), passThreshold);
   }
 
   private static isLocked(

@@ -4,6 +4,7 @@ import ExerciseList from "#/components/exerciseList";
 import Skeleton from "#/components/skeleton";
 import { useExerciseFromLessonQuery } from "#/data/exercise.data";
 import { useSubmitLearnSessionMutation } from "#/data/learnSession.data";
+import { gradeStatusColor } from "#/lib/gradeStatus";
 import { createFileRoute, Link, useLoaderData, useNavigate } from "@tanstack/react-router";
 import styles from "./summary.module.css";
 
@@ -67,7 +68,7 @@ function RouteComponent() {
                   badge: result
                     ? {
                         label: `${result.passed}/${result.total}`,
-                        color: result.ok ? "var(--color-success)" : "var(--color-danger)",
+                        color: gradeStatusColor[result.gradeStatus],
                       }
                     : undefined,
                 };

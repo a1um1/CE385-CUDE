@@ -6,7 +6,8 @@ import styles from "./sessionScore.module.css";
 import type { components } from "#/data/base/openapi";
 import { useExerciseFromLessonQuery } from "#/data/exercise.data";
 import { sessionByIdQuery } from "#/data/learnSession.data";
-import { formatPercent } from "#/lib/formatNumber";
+import formatNumber from "#/lib/formatNumber";
+import { gradeStatusColor, gradeScoringStatus, type GradeStatus } from "#/lib/gradeStatus";
 import { createFileRoute } from "@tanstack/react-router";
 import { ChevronLeft } from "lucide-react";
 
@@ -28,14 +29,19 @@ export const Route = createFileRoute("/(authed)/(base)/lesson/$lessonId/$session
 type Exercise = components["schemas"]["Exercise"];
 type SubmissionResult = components["schemas"]["SubmissionResult"];
 
+const badgeOf: Record<GradeStatus, { label: string; color?: string }> = {
+  INPROGRESS: { label: "รอตรวจ" },
+  GRADING: { label: "รอตรวจ" },
+  PASS: { label: "ผ่าน", color: gradeStatusColor["PASS"] },
+  FAILED: { label: "ไม่ผ่าน", color: gradeStatusColor["FAILED"] },
+  CANCELLED: { label: "ยกเลิก", color: gradeStatusColor["CANCELLED"] },
+};
+
 /** Reading exercises are never graded, so they carry no result. */
 const resultOf = (exercise: Exercise, submission?: SubmissionResult) => {
   if (exercise.type !== "CODE") return null;
   if (!submission) return { label: "ไม่ได้ส่ง", color: undefined };
-  if (!submission.isGraded) return { label: "รอตรวจ", color: undefined };
-  return submission.ok
-    ? { label: "ผ่าน", color: "var(--color-success)" }
-    : { label: "ไม่ผ่าน", color: "var(--color-danger)" };
+  return badgeOf[submission.gradeStatus];
 };
 
 function RouteComponent() {
@@ -43,14 +49,7 @@ function RouteComponent() {
   const lesson = session?.lesson;
   const exercises = useExerciseFromLessonQuery(lesson?.id);
 
-  const cancelled = session?.status === "PENDING" ? false : session?.status === "CANCELLED";
-
-  const codeExercises = exercises.data?.filter((exercise) => exercise.type === "CODE") ?? [];
-  const passed = codeExercises.filter((exercise) =>
-    session?.submissions?.some(
-      (submission) => submission.exerciseID === exercise.id && submission.ok,
-    ),
-  ).length;
+  const cancelled = session?.gradeStatus === "CANCELLED";
 
   return (
     <>
@@ -66,14 +65,8 @@ function RouteComponent() {
       </div>
       <div className={styles.scoreContainer}>
         <Scoring
-          status={
-            cancelled
-              ? "giveUp"
-              : codeExercises.length > 0 && passed === codeExercises.length
-                ? "success"
-                : "fail"
-          }
-          label={cancelled ? undefined : formatPercent(passed, codeExercises.length)}
+          status={session ? gradeScoringStatus[session.gradeStatus] : "inProgress"}
+          label={cancelled || !session ? undefined : `${formatNumber(session.score, 0)}%`}
         />
         <div className={styles.scoreContent}>
           <p>

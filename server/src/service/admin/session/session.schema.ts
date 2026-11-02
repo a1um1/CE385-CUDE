@@ -1,6 +1,7 @@
 import { z } from "#/lib/extendZod";
 import type { z as zod } from "zod";
 import type { Prisma } from "#/generated/prisma/client";
+import { GradeStatusSchema } from "#/service/grade";
 import { SubmissionContentSchema } from "#/service/learnSession/session.schema";
 import {
   BaseCursorPaginationQuerySchema,
@@ -65,6 +66,7 @@ export const AdminSessionSubmissionSchema = z
     content: SubmissionContentSchema,
     isGraded: z.boolean(),
     ok: z.boolean(),
+    gradeStatus: GradeStatusSchema,
     createdAt: z.date(),
     updatedAt: z.date(),
     exercise: z.object({
@@ -84,6 +86,9 @@ export const AdminSessionListItemSchema = z
     userID: z.uuidv7(),
     LessonID: z.uuidv7(),
     status: SessionStatus,
+    gradeStatus: GradeStatusSchema,
+    /** Percentage 0–100, calculated on the backend. */
+    score: z.number(),
     rewarded: z.boolean(),
     createdAt: z.date(),
     updatedAt: z.date(),
@@ -128,7 +133,7 @@ export const AdminSessionQuerySchema = BaseCursorPaginationQuerySchema.extend({
   courseID: z.uuid().optional(),
   unitID: z.uuid().optional(),
   lessonID: z.uuid().optional(),
-  result: z.enum(["PASSED", "FAILED", "GRADING", "ONGOING", "GIVEUP"]).optional(),
+  result: GradeStatusSchema.optional(),
 }).openapi("AdminSessionQuery");
 
 export type AdminSessionQuery = zod.infer<typeof AdminSessionQuerySchema>;

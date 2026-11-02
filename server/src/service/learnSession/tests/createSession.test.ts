@@ -95,7 +95,7 @@ describe("SessionService.createSession", () => {
 
     const result = await SessionService.createSession({ UserID: USER, LessonID: LESSON });
 
-    expect(result).toEqual(session);
+    expect(result).toEqual({ ...session, gradeStatus: "InProgress", score: 0 });
     expect(mockDB.userStat.update).toHaveBeenCalledWith(
       expect.objectContaining({
         where: { userID: USER, energy: { gte: 1 } },
