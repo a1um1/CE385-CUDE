@@ -7,7 +7,6 @@ import {
   useQueryClient,
   type QueryClient,
 } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
 
 const UNAUTHENTICATED_STATUSES = new Set([401, 403]);
 
