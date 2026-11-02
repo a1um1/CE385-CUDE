@@ -1,6 +1,6 @@
-import { createFormHookContexts, createFormHook, type AnyFormApi } from "@tanstack/react-form";
+import { createFormHookContexts, createFormHook } from "@tanstack/react-form";
 import { useIsMutating } from "@tanstack/react-query";
-import { applyApiErrorsToForm, getApiErrorMessage } from "./apiErrors";
+import { applyApiErrorsToForm } from "./apiErrors";
 import { TextField } from "./input/textInput";
 import { ColorField } from "./input/colorInput";
 import { PasswordField } from "./input/passwordInput";
@@ -70,17 +70,14 @@ export const useAppForm: typeof useAppFormBase = (options) => {
     },
     onSubmit: async (ctx) => {
       ctx.formApi.setErrorMap({ onSubmit: undefined });
-      await options.onSubmit?.(ctx);
-      // ctx.formApi.reset(ctx.formApi.state.values);
+      try {
+        await options.onSubmit?.(ctx);
+      } catch (error) {
+        // Non-validation errors are already surfaced by the global MutationCache toast.
+        applyApiErrorsToForm(ctx.formApi, error);
+      }
     },
   });
 
   return form;
 };
-
-/** Kept for forms that handle submit errors in `onSubmit` instead of the mutation hook. */
-export function handleFormMutationError(form: AnyFormApi, error: unknown) {
-  if (!applyApiErrorsToForm(form, error)) {
-    form.setErrorMap({ onServer: getApiErrorMessage(error) });
-  }
-}

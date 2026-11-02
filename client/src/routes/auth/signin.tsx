@@ -1,8 +1,6 @@
-import { useEffect, useRef } from "react";
-import { useAppForm, useFormMutationErrors } from "#/components/form";
+import { useAppForm } from "#/components/form";
 import { useSignIn } from "#/data/user.data";
 import type { ExtractRequestBody } from "#/data/base/apiUtils.type";
-import type { AnyFormApi } from "@tanstack/react-form";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import styles from "./auth.module.css";
 
@@ -13,9 +11,7 @@ export const Route = createFileRoute("/auth/signin")({
 });
 
 function RouteComponent() {
-  const formRef = useRef<AnyFormApi | null>(null);
-  const { onError } = useFormMutationErrors(() => formRef.current);
-  const signInMutation = useSignIn({ onError });
+  const signInMutation = useSignIn();
   const navigate = Route.useNavigate();
 
   const form = useAppForm({
@@ -24,14 +20,11 @@ function RouteComponent() {
       password: "",
     } satisfies SignInValues,
     onSubmit: async ({ value }) => {
-      const user = await signInMutation.mutateAsync(value).catch(() => null);
-      if (user) await navigate({ to: "/" });
+      // Validation errors are mapped by useAppForm; other errors are toasted by the global MutationCache.
+      await signInMutation.mutateAsync(value);
+      await navigate({ to: "/" });
     },
   });
-
-  useEffect(() => {
-    formRef.current = form;
-  }, [form]);
 
   return (
     <>

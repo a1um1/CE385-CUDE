@@ -1,4 +1,4 @@
-import { handleFormMutationError, useAppForm } from "#/components/form";
+import { useAppForm } from "#/components/form";
 import { useUpdatePassword } from "#/data/user.data";
 import { getPasswordError } from "#/lib/passwordRules";
 import styles from "../passwordForm.module.css";
@@ -11,11 +11,7 @@ export default function UpdatePasswordForm() {
       newPassword: "",
     } as Parameters<typeof updateMutation.mutateAsync>[0],
     onSubmit: async ({ value }) => {
-      try {
-        await updateMutation.mutateAsync(value);
-      } catch (error) {
-        handleFormMutationError(form, error);
-      }
+      await updateMutation.mutateAsync(value);
     },
   });
 

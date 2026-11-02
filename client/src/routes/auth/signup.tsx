@@ -1,4 +1,4 @@
-import { useAppForm, handleFormMutationError } from "#/components/form";
+import { useAppForm } from "#/components/form";
 import { useSignUp } from "#/data/user.data";
 import { getPasswordError } from "#/lib/passwordRules";
 import { createFileRoute, Link } from "@tanstack/react-router";
@@ -20,12 +20,8 @@ function RouteComponent() {
       password: "",
     },
     onSubmit: async ({ value }) => {
-      try {
-        await signUpMutation.mutateAsync(value);
-        navigate({ to: "/auth/signin" });
-      } catch (error) {
-        handleFormMutationError(form, error);
-      }
+      await signUpMutation.mutateAsync(value);
+      await navigate({ to: "/auth/signin" });
     },
   });
 

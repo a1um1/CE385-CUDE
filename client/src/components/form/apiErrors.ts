@@ -60,13 +60,6 @@ export function normalizeApiValidationErrors(error: unknown): NormalizedApiError
   return { fields, form: formMessages.length > 0 ? formMessages : undefined };
 }
 
-export function getApiErrorMessage(error: unknown): string {
-  if (typeof error === "object" && error !== null && "message" in error) {
-    if (typeof error.message === "string") return error.message;
-  }
-  return typeof error === "string" ? error : "An unexpected error occurred. Please try again.";
-}
-
 function clearServerFieldErrors(form: AnyFormApi) {
   for (const name of Object.keys(form.state.fieldMeta)) {
     if (form.state.fieldMeta[name]?.errorMap.onServer) {
