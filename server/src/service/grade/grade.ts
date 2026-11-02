@@ -29,6 +29,7 @@ export function isPassedScore(score: number, passThreshold: number): boolean {
 export function isExercisePassed(summary: { total: number; failed: number }): boolean {
   return summary.total > 0 && summary.failed === 0;
 }
+
 export function evaluateGrade(props: {
   status: Sessions["status"];
   submissions: GradedSubmission[];
@@ -38,12 +39,14 @@ export function evaluateGrade(props: {
   if (props.status === "PENDING") return { gradeStatus: "INPROGRESS", score: 0 };
   if (props.status === "CANCELLED") return { gradeStatus: "CANCELLED", score: 0 };
 
+  const total = props.total ?? props.submissions.length;
   const passed = props.submissions.filter((submission) => submission.ok).length;
-  const score = calculateScore(passed, props.total ?? props.submissions.length);
-
-  const finished =
-    props.submissions.length > 0 && props.submissions.every((submission) => submission.isGraded);
-  if (!finished) return { gradeStatus: "GRADING", score };
+  const score = calculateScore(passed, total);
+  if (total === 0) return { gradeStatus: "PASS", score: 0 };
+  if (props.submissions.length === 0) return { gradeStatus: "GRADING", score: 0 };
+  if (!props.submissions.every((submission) => submission.isGraded)) {
+    return { gradeStatus: "GRADING", score };
+  }
 
   return {
     gradeStatus: isPassedScore(score, props.passThreshold ?? 1) ? "PASS" : "FAILED",
@@ -51,7 +54,6 @@ export function evaluateGrade(props: {
   };
 }
 
-/** Grade of one submission; the session status covers answers that were never graded. */
 export function submissionGradeStatus(props: {
   sessionStatus: Sessions["status"];
   isGraded: boolean;

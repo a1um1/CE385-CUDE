@@ -1,4 +1,5 @@
 import { cursorArgs, isBackward, paginate } from "#/lib/pagination";
+import { exerciseRepository } from "#/repository/exercise.repository";
 import { sessionRepository } from "#/repository/session.repository";
 import UserError from "#/lib/router/http/userError";
 import { SubmissionStatus, type Prisma } from "#/generated/prisma/client";
@@ -60,8 +61,16 @@ export const querySession = async (query: AdminSessionQuery) => {
     orderBy: { createdAt: isBackward(query) ? "asc" : "desc" },
   });
 
+  const totals = await exerciseRepository.codeTotalsByLessonIDs(rows.map((row) => row.LessonID));
   const graded = rows.map((row) =>
-    Object.assign(row, evaluateGrade({ status: row.status, submissions: row.submissions })),
+    Object.assign(
+      row,
+      evaluateGrade({
+        status: row.status,
+        submissions: row.submissions,
+        total: totals.get(row.LessonID) ?? 0,
+      }),
+    ),
   );
 
   return paginate(graded, query);
@@ -95,6 +104,10 @@ export const getSessionById = async (id: string): Promise<AdminSessionDetail> =>
   return {
     ...row,
     submissions,
-    ...evaluateGrade({ status: row.status, submissions: row.submissions }),
+    ...evaluateGrade({
+      status: row.status,
+      submissions: row.submissions,
+      total: await exerciseRepository.countCodeByLessonID(row.LessonID),
+    }),
   };
 };

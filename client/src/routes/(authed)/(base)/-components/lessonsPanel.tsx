@@ -6,6 +6,7 @@ import { useCourses } from "#/data/course.data";
 import { useLessonFromUnitQuery } from "#/data/lesson.data";
 import { useUnitFromCourseQuery } from "#/data/unit.data";
 import { useHomeSelection } from "#/store/homeSelection";
+import { type GradeStatus } from "#/lib/gradeStatus";
 import { Link } from "@tanstack/react-router";
 import { ChevronLeft, FaceSlightlyFrowning } from "lucide-react";
 import { useEffect } from "react";
@@ -20,6 +21,14 @@ const courseStatus: Record<components["schemas"]["LessonStatus"], CourseStatus> 
   FAILED: "failed",
   GIVE_UP: "giveUp",
   NOT_AVAILABLE: "unavailable",
+};
+
+const gradeCourseStatus: Record<GradeStatus, CourseStatus> = {
+  INPROGRESS: "ongoing",
+  GRADING: "ongoing",
+  PASS: "passed",
+  FAILED: "failed",
+  CANCELLED: "giveUp",
 };
 
 interface LessonsPanelProps {
@@ -94,7 +103,14 @@ export function LessonsPanel({ courseId }: LessonsPanelProps) {
                 transform: `translateX(${pathOffsets[index % pathOffsets.length] ?? 0}px)`,
               }}
             >
-              <Course status={courseStatus[lesson.status]} label={lesson.name} />
+              <Course
+                status={
+                  lesson.gradeStatus
+                    ? gradeCourseStatus[lesson.gradeStatus]
+                    : courseStatus[lesson.status]
+                }
+                label={lesson.name}
+              />
             </Link>
           ))}
         </div>

@@ -66,10 +66,7 @@ export function resolveInclude<T>(
 ): T | undefined {
   if (raw === undefined) return undefined;
 
-  const keys = (Array.isArray(raw) ? raw : [raw])
-    .flatMap((value) => value.split(","))
-    .map((value) => value.trim())
-    .filter((value) => value.length > 0);
+  const keys = includeKeys(raw);
 
   if (keys.length === 0) return undefined;
 
@@ -78,4 +75,18 @@ export function resolveInclude<T>(
   }
 
   return buildInclude(keys) as T;
+}
+
+/** Normalized `?include=` values, split on commas. */
+function includeKeys(raw: string | string[]): string[] {
+  return (Array.isArray(raw) ? raw : [raw])
+    .flatMap((value) => value.split(","))
+    .map((value) => value.trim())
+    .filter((value) => value.length > 0);
+}
+
+/** True when the raw `?include=` asks for `path` (comma-separated or repeated). */
+export function hasInclude(raw: string | string[] | undefined, path: string): boolean {
+  if (raw === undefined) return false;
+  return includeKeys(raw).includes(path);
 }

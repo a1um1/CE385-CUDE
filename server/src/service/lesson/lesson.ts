@@ -1,5 +1,5 @@
 import ExerciseService from "#/service/exercise";
-import { calculateScore, isPassedScore } from "#/service/grade";
+import { calculateScore, isPassedScore, type GradeStatus } from "#/service/grade";
 import type { LessonData, LessonStatus } from "#/service/lesson/lesson.schema";
 import UnitService from "#/service/unit";
 import UserError from "#/lib/router/http/userError";
@@ -45,7 +45,9 @@ export default class LessonService {
     unitID: string,
     userID: string,
     include?: string | string[],
-  ): Promise<(LessonData & { status: LessonStatus })[]> {
+  ): Promise<
+    (LessonData & { status: LessonStatus; gradeStatus?: GradeStatus; score: number | null })[]
+  > {
     const lessons = await LessonService.getByUnitIdRaw(unitID, include);
     if (lessons.length === 0) return [];
     const lessonIDs = lessons.map((lesson) => lesson.id);
@@ -59,15 +61,42 @@ export default class LessonService {
 
     return lessons.map((lesson) => {
       const required = prerequisites.get(lesson.id) ?? [];
+      const attempt = attempts.get(lesson.id);
       const status = LessonService.statusOf({
         lessonID: lesson.id,
         pendingLessonID: pending?.LessonID,
-        attempt: attempts.get(lesson.id),
+        attempt,
         locked: LessonService.isLocked(lesson, required, attempts, now),
         passThreshold: Number(lesson.passThreshold),
       });
-      return Object.assign(lesson, { status });
+      const gradeStatus = LessonService.gradeStatusOf(status);
+      return Object.assign(lesson, {
+        status,
+        ...(gradeStatus && { gradeStatus }),
+        score: attempt ? calculateScore(attempt.passed, attempt.total) : null,
+      });
     });
+  }
+
+  /** Lesson availability maps to a grade only once an attempt exists. */
+  private static gradeStatusOf(status: LessonStatus): GradeStatus | null {
+    switch (status) {
+      case "PENDING": {
+        return "INPROGRESS";
+      }
+      case "PASSED": {
+        return "PASS";
+      }
+      case "FAILED": {
+        return "FAILED";
+      }
+      case "GIVE_UP": {
+        return "CANCELLED";
+      }
+      default: {
+        return null;
+      }
+    }
   }
 
   static async getPrerequisites(

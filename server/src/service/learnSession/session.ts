@@ -1,5 +1,6 @@
 import type { SessionData, SessionObject } from "#/service/learnSession/session.schema";
 import { evaluateGrade, submissionGradeStatus } from "#/service/grade";
+import { hasInclude } from "#/lib/include";
 import UserError from "#/lib/router/http/userError";
 import lessonService from "#/service/lesson";
 import UserStatService from "#/service/userStat";
@@ -28,30 +29,32 @@ export const enrollmentAvailabilitySchema = z
 
 export default class SessionService {
   private data: SessionData;
-  /** CODE exercises of the lesson, so skipped ones lower the score. */
-  private total?: number;
+  private options: { includeSubmissions?: boolean; total?: number };
 
-  constructor(data: SessionData) {
+  constructor(data: SessionData, options: { includeSubmissions?: boolean; total?: number } = {}) {
     this.data = data;
+    this.options = options;
   }
 
   get JSON(): SessionObject {
-    const submissions = this.data.submissions?.map((submission) => ({
-      ...submission,
-      gradeStatus: submissionGradeStatus({
-        sessionStatus: this.data.status,
-        isGraded: submission.isGraded,
-        ok: submission.ok,
+    const { submissions: rawSubmissions, ...rest } = this.data;
+    const submissions = rawSubmissions?.map((submission) =>
+      Object.assign(submission, {
+        gradeStatus: submissionGradeStatus({
+          sessionStatus: this.data.status,
+          isGraded: submission.isGraded,
+          ok: submission.ok,
+        }),
       }),
-    }));
+    );
 
     return {
-      ...this.data,
-      submissions,
+      ...rest,
+      ...(this.options.includeSubmissions !== false && submissions ? { submissions } : {}),
       ...evaluateGrade({
         status: this.data.status,
         submissions: submissions ?? [],
-        total: this.total,
+        total: this.options.total,
       }),
     };
   }
@@ -124,7 +127,18 @@ export default class SessionService {
     include?: string | string[],
   ): Promise<SessionObject[]> {
     const sessions = await sessionRepository.findAllByUserID(props.UserID, include);
-    return sessions.map((session) => new SessionService(session).JSON);
+    const totals = await exerciseRepository.codeTotalsByLessonIDs(
+      sessions.map((session) => session.LessonID),
+    );
+    const includeSubmissions = hasInclude(include, "submissions");
+
+    return sessions.map(
+      (session) =>
+        new SessionService(session, {
+          includeSubmissions,
+          total: totals.get(session.LessonID) ?? 0,
+        }).JSON,
+    );
   }
 
   static async getById(
@@ -133,10 +147,10 @@ export default class SessionService {
   ): Promise<SessionService> {
     const session = await sessionRepository.findById(props.SessionID, props.userId, include);
     if (!session) throw new UserError(404, "Session not found.");
-    const service = new SessionService(session);
-    if (session.submissions) {
-      service.total = await exerciseRepository.countCodeByLessonID(session.LessonID);
-    }
-    return service;
+    const total =
+      session.status === "PENDING" || session.status === "CANCELLED"
+        ? undefined
+        : await exerciseRepository.countCodeByLessonID(session.LessonID);
+    return new SessionService(session, { total });
   }
 }

@@ -1,6 +1,7 @@
 import type { Course, Lesson, Unit } from "#/generated/prisma/client";
 import { createIncludeQuerySchema } from "#/lib/include";
 import { z } from "#/lib/extendZod";
+import { GradeStatusSchema } from "#/service/grade";
 import type zod from "zod";
 
 export const LessonSchema = z
@@ -40,6 +41,10 @@ export type LessonStatus = zod.infer<typeof LessonStatusSchema>;
 
 export const LessonWithStatusSchema = LessonSchema.extend({
   status: LessonStatusSchema.openapi({ example: "AVAILABLE" }),
+  /** Normalized grade; absent when the lesson was never attempted. */
+  gradeStatus: GradeStatusSchema.optional(),
+  /** Percentage 0–100 of the best attempt; `null` when never attempted. */
+  score: z.number().nullable(),
 }).openapi("LessonWithStatus");
 
 export type LessonData = Lesson & {

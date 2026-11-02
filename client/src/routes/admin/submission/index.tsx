@@ -47,11 +47,11 @@ const columnHelper = createTableColumnHelper<AdminSession>();
 
 const resultOptions = [
   { value: "ALL", label: "All Results" },
-  { value: "Pass", label: "Passed" },
-  { value: "Failed", label: "Failed" },
-  { value: "Grading", label: "Grading" },
-  { value: "InProgress", label: "In progress" },
-  { value: "Cancelled/Giveup", label: "Give up" },
+  { value: "PASS", label: "Passed" },
+  { value: "FAILED", label: "Failed" },
+  { value: "GRADING", label: "Grading" },
+  { value: "INPROGRESS", label: "In progress" },
+  { value: "CANCELLED", label: "Give up" },
 ];
 
 const typedColumns = columnHelper.columns([

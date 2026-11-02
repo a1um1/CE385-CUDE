@@ -3398,7 +3398,7 @@ export interface paths {
          * List lesson sessions
          * @description Cursor-paginated list of every lesson session, newest first. Requires an ADMIN token.
          *
-         *     Filter by `result` (`InProgress`, `Grading`, `Pass`, `Failed`, `Cancelled/Giveup`) and by `userSearch`, which matches the owner's name or email (case-insensitive substring). Narrow to a lesson with `courseID`, `unitID` or `lessonID`.
+         *     Filter by `result` (`INPROGRESS`, `GRADING`, `PASS`, `FAILED`, `CANCELLED`) and by `userSearch`, which matches the owner's name or email (case-insensitive substring). Narrow to a lesson with `courseID`, `unitID` or `lessonID`.
          */
         get: {
             parameters: {
@@ -7827,12 +7827,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-11-02T10:44:04.767Z
+             * @example 2026-11-02T10:51:54.988Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-11-02T10:44:04.768Z
+             * @example 2026-11-02T10:51:54.989Z
              */
             updatedAt: string;
         };
@@ -8778,6 +8778,8 @@ export interface components {
         };
         LessonWithStatus: components["schemas"]["Lesson"] & {
             status: components["schemas"]["LessonStatus"];
+            gradeStatus?: components["schemas"]["GradeStatus"];
+            score: number | null;
         };
         /**
          * @example AVAILABLE

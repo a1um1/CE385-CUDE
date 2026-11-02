@@ -24,8 +24,12 @@ export const sessionRepository = {
     (await client().sessions.findMany({
       where: { userID },
       orderBy: { createdAt: "desc" },
-      include: resolveInclude<Prisma.SessionsInclude>(include, sessionIncludes),
-    })) as SessionData[],
+      // Submissions are always read so the grade is right even when the caller hides them.
+      include: {
+        ...resolveInclude<Prisma.SessionsInclude>(include, sessionIncludes),
+        submissions: true,
+      },
+    })) as unknown as SessionData[],
 
   findRecentByUserID: (userID: string, take: number): Promise<RecentSessionData[]> =>
     client().sessions.findMany({

@@ -62,6 +62,21 @@ export const exerciseRepository = {
       select: { lessonID: true },
     }),
 
+  codeTotalsByLessonIDs: async (lessonIDs: string[]): Promise<Map<string, number>> => {
+    const unique = [...new Set(lessonIDs)];
+    if (unique.length === 0) return new Map();
+
+    const rows = await client().exercise.findMany({
+      where: { lessonID: { in: unique }, type: "CODE" },
+      select: { lessonID: true },
+    });
+    const totals = new Map<string, number>();
+    for (const row of rows) {
+      totals.set(row.lessonID, (totals.get(row.lessonID) ?? 0) + 1);
+    }
+    return totals;
+  },
+
   create: (data: Prisma.ExerciseUncheckedCreateInput, tx?: Db) =>
     client(tx).exercise.create({ data }),
 
