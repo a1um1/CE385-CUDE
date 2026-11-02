@@ -7,7 +7,6 @@ import {
   useQueryClient,
   type QueryClient,
 } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
 
 const UNAUTHENTICATED_STATUSES = new Set([401, 403]);
 
@@ -70,10 +69,8 @@ export const useSignIn = () => {
   });
 };
 
-export const useSignOut = () => {
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
-  return useMutation({
+export const useSignOut = () =>
+  useMutation({
     mutationKey: ["signout"],
     mutationFn: async () => {
       const { error } = await APIclient.POST("/auth/logout");
@@ -81,11 +78,9 @@ export const useSignOut = () => {
       return { message: "Signed out successfully" };
     },
     onSuccess: () => {
-      queryClient.setQueryData(["session"], null);
-      navigate({ to: "/auth/signin" });
+      globalThis.location.href = "/auth/signin";
     },
   });
-};
 
 export const useUpdateAvatar = () =>
   useMutation({
