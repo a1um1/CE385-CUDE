@@ -21,11 +21,35 @@
   min-height: 2.5rem;
 }
 
-.collapsed :global(a),
-.collapsed :global(button) {
-  justify-content: center !important;
-  padding-left: 0 !important;
-  padding-right: 0 !important;
+/* rows that carry a label slide their icon to the rail's center when collapsed.
+   Fixed rem, not %, so the icon does not drift while the rail width animates.
+   shortcut: 1.25rem assumes 4rem rail + 0.25rem nav padding + 1rem icon; update if those change. */
+.sidebar :global(a:has(> [data-sidebar-label])),
+.sidebar :global(button:has(> [data-sidebar-label])) {
+  transition: padding-left 0.2s ease-in-out;
+}
+
+.collapsed :global(a:has(> [data-sidebar-label])),
+.collapsed :global(button:has(> [data-sidebar-label])) {
+  padding-left: 1.25rem !important;
+  padding-right: 1.25rem !important;
+}
+
+/* label collapses into the icon instead of vanishing, so icons never jump */
+.label {
+  min-width: 0;
+  max-width: 20rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  transition:
+    max-width 0.2s ease-in-out,
+    opacity 0.15s ease-in-out;
+}
+
+.labelCollapsed {
+  max-width: 0;
+  opacity: 0;
 }
 
 .section {

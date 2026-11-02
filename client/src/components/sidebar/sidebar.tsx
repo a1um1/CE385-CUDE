@@ -151,7 +151,7 @@ export default function Sidebar() {
                 key={item.key}
                 to={item.link.to}
                 block
-                align={collapsed ? "center" : "start"}
+                align="start"
                 radius="square"
                 title={item.label}
                 variant={pageKey === item.key ? "secondary" : "ghost"}
