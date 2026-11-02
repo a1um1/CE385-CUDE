@@ -72,7 +72,6 @@ export const useSignIn = () => {
 
 export const useSignOut = () => {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
   return useMutation({
     mutationKey: ["signout"],
     mutationFn: async () => {
@@ -82,7 +81,7 @@ export const useSignOut = () => {
     },
     onSuccess: () => {
       queryClient.setQueryData(["session"], null);
-      navigate({ to: "/auth/signin" });
+      globalThis.location.href = "/auth/signin";
     },
   });
 };
