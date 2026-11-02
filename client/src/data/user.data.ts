@@ -71,7 +71,6 @@ export const useSignIn = () => {
 };
 
 export const useSignOut = () => {
-  const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ["signout"],
     mutationFn: async () => {
