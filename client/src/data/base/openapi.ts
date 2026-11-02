@@ -3398,7 +3398,7 @@ export interface paths {
          * List lesson sessions
          * @description Cursor-paginated list of every lesson session, newest first. Requires an ADMIN token.
          *
-         *     Filter by `result` (`PASSED`, `FAILED`, `GRADING`, `ONGOING`, `GIVEUP`) and by `userSearch`, which matches the owner's name or email (case-insensitive substring). Narrow to a lesson with `courseID`, `unitID` or `lessonID`.
+         *     Filter by `result` (`INPROGRESS`, `GRADING`, `PASS`, `FAILED`, `CANCELLED`) and by `userSearch`, which matches the owner's name or email (case-insensitive substring). Narrow to a lesson with `courseID`, `unitID` or `lessonID`.
          */
         get: {
             parameters: {
@@ -3410,7 +3410,7 @@ export interface paths {
                     courseID?: string;
                     unitID?: string;
                     lessonID?: string;
-                    result?: "PASSED" | "FAILED" | "GRADING" | "ONGOING" | "GIVEUP";
+                    result?: components["schemas"]["GradeStatus"];
                 };
                 header?: never;
                 path?: never;
@@ -6444,6 +6444,9 @@ export interface paths {
                              * @enum {string}
                              */
                             status: "PENDING" | "SUBMITTED" | "GRADED" | "CANCELLED";
+                            gradeStatus: components["schemas"]["GradeStatus"];
+                            /** @example 75 */
+                            score: number;
                             /** @example true */
                             rewarded: boolean;
                             /**
@@ -6607,6 +6610,9 @@ export interface paths {
                              * @enum {string}
                              */
                             status: "PENDING" | "SUBMITTED" | "GRADED" | "CANCELLED";
+                            gradeStatus: components["schemas"]["GradeStatus"];
+                            /** @example 75 */
+                            score: number;
                             /** @example true */
                             rewarded: boolean;
                             /**
@@ -6770,6 +6776,9 @@ export interface paths {
                              * @enum {string}
                              */
                             status: "PENDING" | "SUBMITTED" | "GRADED" | "CANCELLED";
+                            gradeStatus: components["schemas"]["GradeStatus"];
+                            /** @example 75 */
+                            score: number;
                             /** @example true */
                             rewarded: boolean;
                             /**
@@ -6940,6 +6949,9 @@ export interface paths {
                              * @enum {string}
                              */
                             status: "PENDING" | "SUBMITTED" | "GRADED" | "CANCELLED";
+                            gradeStatus: components["schemas"]["GradeStatus"];
+                            /** @example 75 */
+                            score: number;
                             /** @example true */
                             rewarded: boolean;
                             /**
@@ -7815,12 +7827,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-11-02T04:34:14.494Z
+             * @example 2026-11-02T10:51:54.988Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-11-02T04:34:14.495Z
+             * @example 2026-11-02T10:51:54.989Z
              */
             updatedAt: string;
         };
@@ -8264,6 +8276,8 @@ export interface components {
             LessonID: string;
             /** @enum {string} */
             status: "PENDING" | "SUBMITTED" | "GRADED" | "CANCELLED";
+            gradeStatus: components["schemas"]["GradeStatus"];
+            score: number;
             rewarded: boolean;
             /** Format: date-time */
             createdAt: string;
@@ -8296,6 +8310,8 @@ export interface components {
                 ok: boolean;
             }[];
         };
+        /** @enum {string} */
+        GradeStatus: "INPROGRESS" | "GRADING" | "PASS" | "FAILED" | "CANCELLED";
         AdminSessionDetail: components["schemas"]["AdminSessionObject"] & {
             submissions?: components["schemas"]["AdminSessionSubmission"][];
         };
@@ -8310,6 +8326,7 @@ export interface components {
             };
             isGraded: boolean;
             ok: boolean;
+            gradeStatus: components["schemas"]["GradeStatus"];
             /** Format: date-time */
             createdAt: string;
             /** Format: date-time */
@@ -8761,6 +8778,8 @@ export interface components {
         };
         LessonWithStatus: components["schemas"]["Lesson"] & {
             status: components["schemas"]["LessonStatus"];
+            gradeStatus?: components["schemas"]["GradeStatus"];
+            score: number | null;
         };
         /**
          * @example AVAILABLE
@@ -8824,6 +8843,7 @@ export interface components {
             isGraded: boolean;
             /** @example false */
             ok: boolean;
+            gradeStatus: components["schemas"]["GradeStatus"];
         };
         Submission: {
             /**
@@ -8844,6 +8864,7 @@ export interface components {
             isGraded: boolean;
             /** @example false */
             ok: boolean;
+            gradeStatus: components["schemas"]["GradeStatus"];
         } | null;
         SubmitSessionResponse: {
             /** @example Submitted 5 exercise(s), 4 passed. */
@@ -8860,6 +8881,7 @@ export interface components {
                 passed: number;
                 /** @example false */
                 ok: boolean;
+                gradeStatus: components["schemas"]["GradeStatus"];
             }[];
             reward?: components["schemas"]["LessonReward"];
         };

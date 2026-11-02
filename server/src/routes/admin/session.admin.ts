@@ -18,7 +18,7 @@ const adminSessionRouter = new CustomRouter({
       summary: "List lesson sessions",
       description:
         "Cursor-paginated list of every lesson session, newest first. Requires an ADMIN token.\n\n" +
-        "Filter by `result` (`PASSED`, `FAILED`, `GRADING`, `ONGOING`, `GIVEUP`) and by " +
+        "Filter by `result` (`INPROGRESS`, `GRADING`, `PASS`, `FAILED`, `CANCELLED`) and by " +
         "`userSearch`, which matches the owner's name or email (case-insensitive substring). " +
         "Narrow to a lesson with `courseID`, `unitID` or `lessonID`.",
       query: AdminSessionQuerySchema,

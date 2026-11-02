@@ -1,7 +1,9 @@
 import { cursorArgs, isBackward, paginate } from "#/lib/pagination";
+import { exerciseRepository } from "#/repository/exercise.repository";
 import { sessionRepository } from "#/repository/session.repository";
 import UserError from "#/lib/router/http/userError";
 import { SubmissionStatus, type Prisma } from "#/generated/prisma/client";
+import { evaluateGrade, submissionGradeStatus } from "#/service/grade";
 import { SubmissionContentSchema } from "#/service/learnSession/session.schema";
 import type { AdminSessionDetail, AdminSessionQuery } from "./session.schema";
 
@@ -10,9 +12,9 @@ export const querySession = async (query: AdminSessionQuery) => {
 
   const resultFilter: Prisma.SessionsWhereInput = query.result
     ? {
-        ONGOING: { status: SubmissionStatus.PENDING },
-        GIVEUP: { status: SubmissionStatus.CANCELLED },
-        PASSED: {
+        INPROGRESS: { status: SubmissionStatus.PENDING },
+        CANCELLED: { status: SubmissionStatus.CANCELLED },
+        PASS: {
           status: { in: [SubmissionStatus.SUBMITTED, SubmissionStatus.GRADED] },
           submissions: { some: {}, every: { isGraded: true, ok: true } },
         },
@@ -59,7 +61,19 @@ export const querySession = async (query: AdminSessionQuery) => {
     orderBy: { createdAt: isBackward(query) ? "asc" : "desc" },
   });
 
-  return paginate(rows, query);
+  const totals = await exerciseRepository.codeTotalsByLessonIDs(rows.map((row) => row.LessonID));
+  const graded = rows.map((row) =>
+    Object.assign(
+      row,
+      evaluateGrade({
+        status: row.status,
+        submissions: row.submissions,
+        total: totals.get(row.LessonID) ?? 0,
+      }),
+    ),
+  );
+
+  return paginate(graded, query);
 };
 
 export const getSessionById = async (id: string): Promise<AdminSessionDetail> => {
@@ -72,6 +86,11 @@ export const getSessionById = async (id: string): Promise<AdminSessionDetail> =>
     content: SubmissionContentSchema.parse(submission.content),
     isGraded: submission.isGraded,
     ok: submission.ok,
+    gradeStatus: submissionGradeStatus({
+      sessionStatus: row.status,
+      isGraded: submission.isGraded,
+      ok: submission.ok,
+    }),
     createdAt: submission.createdAt,
     updatedAt: submission.updatedAt,
     exercise: {
@@ -82,5 +101,13 @@ export const getSessionById = async (id: string): Promise<AdminSessionDetail> =>
     },
   }));
 
-  return { ...row, submissions };
+  return {
+    ...row,
+    submissions,
+    ...evaluateGrade({
+      status: row.status,
+      submissions: row.submissions,
+      total: await exerciseRepository.countCodeByLessonID(row.LessonID),
+    }),
+  };
 };

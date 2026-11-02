@@ -1,4 +1,5 @@
 import ExerciseService, { CodeExerciseService } from "#/service/exercise";
+import { isExercisePassed, submissionGradeStatus } from "#/service/grade";
 import LessonService from "#/service/lesson";
 import SessionService from "#/service/learnSession/session";
 import {
@@ -30,6 +31,11 @@ export default class SubmissionService {
       content: SubmissionContentSchema.parse(this.data.content),
       isGraded: this.data.isGraded,
       ok: this.data.ok,
+      gradeStatus: submissionGradeStatus({
+        sessionStatus: "SUBMITTED",
+        isGraded: this.data.isGraded,
+        ok: this.data.ok,
+      }),
     };
   }
 
@@ -104,7 +110,7 @@ export default class SubmissionService {
             );
             if (!grade) return null;
 
-            const ok = grade.total > 0 && grade.failed === 0;
+            const ok = isExercisePassed(grade);
             await submissionRepository.setGrade(submission.id, ok, tx);
 
             return {
@@ -112,6 +118,7 @@ export default class SubmissionService {
               total: grade.total,
               passed: grade.passed,
               ok,
+              gradeStatus: ok ? ("PASS" as const) : ("FAILED" as const),
             };
           }),
         );

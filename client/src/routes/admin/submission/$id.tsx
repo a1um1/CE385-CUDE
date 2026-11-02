@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { getAdminSessionQueryOptions, useGetAdminSession } from "#/data/admin/session.data";
 import Button from "#/components/button";
 import Markdown, { CodeBlock } from "#/components/markdown";
-import { sessionResult, submissionResult, submissionResultColor } from "#/lib/submissionResult";
+import { gradeStatusColor } from "#/lib/gradeStatus";
 import styles from "./submissionDetail.module.css";
 
 export const Route = createFileRoute("/admin/submission/$id")({
@@ -29,16 +29,14 @@ function RouteComponent() {
   const initialData = Route.useLoaderData();
   const { data: session = initialData } = useGetAdminSession(id);
 
-  const result = sessionResult(session);
+  const result = session.gradeStatus;
   const { submissions } = session;
 
   const [selectedID, setSelectedID] = React.useState<string>();
   const [contentExpanded, setContentExpanded] = React.useState(false);
 
   const selected = submissions.find((submission) => submission.id === selectedID) ?? submissions[0];
-  const selectedResult = selected
-    ? submissionResult({ ...selected, session: { status: session.status } })
-    : undefined;
+  const selectedResult = selected?.gradeStatus;
 
   const selectSubmission = (submissionID: string) => {
     setSelectedID(submissionID);
@@ -54,7 +52,7 @@ function RouteComponent() {
         <Field
           label="Status"
           value={
-            <span className={styles.result} style={{ color: submissionResultColor[result] }}>
+            <span className={styles.result} style={{ color: gradeStatusColor[result] }}>
               {session.status} ({result})
             </span>
           }
@@ -76,10 +74,7 @@ function RouteComponent() {
             <p>No submissions in this session.</p>
           ) : (
             submissions.map((submission) => {
-              const submissionResultValue = submissionResult({
-                ...submission,
-                session: { status: session.status },
-              });
+              const submissionResultValue = submission.gradeStatus;
               const isSelected = submission.id === selected?.id;
 
               return (
@@ -96,7 +91,7 @@ function RouteComponent() {
                   <span className={styles.submissionName}>{submission.exercise.name}</span>
                   <span
                     className={styles.submissionResult}
-                    style={{ color: submissionResultColor[submissionResultValue] }}
+                    style={{ color: gradeStatusColor[submissionResultValue] }}
                   >
                     {submissionResultValue}
                   </span>
@@ -114,7 +109,7 @@ function RouteComponent() {
                 {selectedResult && (
                   <span
                     className={styles.result}
-                    style={{ color: submissionResultColor[selectedResult] }}
+                    style={{ color: gradeStatusColor[selectedResult] }}
                   >
                     {selectedResult}
                   </span>

@@ -16,7 +16,7 @@ import {
   SelectValue,
 } from "#/components/select";
 import { basicPaginationSchema } from "#/lib/pagination.schema";
-import { sessionResult, submissionResultColor } from "#/lib/submissionResult";
+import { gradeStatusColor } from "#/lib/gradeStatus";
 import { z } from "zod";
 import styles from "./submissionList.module.css";
 
@@ -25,7 +25,7 @@ const sessionSearchSchema = basicPaginationSchema.extend({
   courseID: z.string().optional(),
   unitID: z.string().optional(),
   lessonID: z.string().optional(),
-  result: z.enum(["PASSED", "FAILED", "GRADING", "ONGOING", "GIVEUP"]).optional(),
+  result: z.enum(["INPROGRESS", "GRADING", "PASS", "FAILED", "CANCELLED"]).optional(),
 });
 
 type ResultValue = NonNullable<z.infer<typeof sessionSearchSchema>["result"]>;
@@ -47,11 +47,11 @@ const columnHelper = createTableColumnHelper<AdminSession>();
 
 const resultOptions = [
   { value: "ALL", label: "All Results" },
-  { value: "PASSED", label: "Passed" },
+  { value: "PASS", label: "Passed" },
   { value: "FAILED", label: "Failed" },
   { value: "GRADING", label: "Grading" },
-  { value: "ONGOING", label: "Ongoing" },
-  { value: "GIVEUP", label: "Give up" },
+  { value: "INPROGRESS", label: "In progress" },
+  { value: "CANCELLED", label: "Give up" },
 ];
 
 const typedColumns = columnHelper.columns([
@@ -69,9 +69,9 @@ const typedColumns = columnHelper.columns([
     id: "result",
     header: "Result",
     cell: (info) => {
-      const result = sessionResult(info.row.original);
+      const result = info.row.original.gradeStatus;
       return (
-        <span className={styles.resultSpan} style={{ color: submissionResultColor[result] }}>
+        <span className={styles.resultSpan} style={{ color: gradeStatusColor[result] }}>
           {result}
         </span>
       );

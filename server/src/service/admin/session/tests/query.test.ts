@@ -25,7 +25,7 @@ describe("querySession", () => {
 
   it("maps PASSED to fully graded, fully passing sessions", async () => {
     mockDB.sessions.findMany.mockResolvedValue([]);
-    await querySession({ perPage: 10, direction: "forward", result: "PASSED" });
+    await querySession({ perPage: 10, direction: "forward", result: "PASS" });
     expect(mockDB.sessions.findMany).toHaveBeenCalledWith(
       baseArgs({
         status: { in: ["SUBMITTED", "GRADED"] },

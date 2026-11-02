@@ -1,6 +1,6 @@
 import Badge from "#/components/badge";
 import formatElapsedTime from "#/lib/elapsedTime";
-import { formatPercent } from "#/lib/formatNumber";
+import formatNumber from "#/lib/formatNumber";
 import formatRelativeTime from "#/lib/relativeTime";
 import {
   lessonRouteId,
@@ -11,7 +11,7 @@ import styles from "#/routes/(authed)/(base)/lesson/$lessonId/lessonHistory.modu
 
 export const LessonHistory = () => {
   const lesson = useLoaderData({ from: lessonRouteId });
-  const { total, attempts } = useLessonResults();
+  const { attempts } = useLessonResults();
 
   return (
     <div className={styles.container}>
@@ -33,7 +33,11 @@ export const LessonHistory = () => {
                     {`${formatRelativeTime(attempt.createdAt)} · ใช้เวลา ${formatElapsedTime(attempt.createdAt, attempt.updatedAt)}`}
                   </span>
                 </span>
-                <Badge>{attempt.cancelled ? "ยอมแพ้" : formatPercent(attempt.passed, total)}</Badge>
+                <Badge>
+                  {attempt.gradeStatus === "CANCELLED"
+                    ? "ยอมแพ้"
+                    : `${formatNumber(attempt.score, 0)}%`}
+                </Badge>
               </Link>
             </li>
           ))}

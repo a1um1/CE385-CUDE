@@ -1,5 +1,6 @@
 import type { ExtractRequestBody, ExtractRequestQuery } from "#/data/base/apiUtils.type";
 import { APIclient } from "#/data/base/baseAPI";
+import { useHomeSelection } from "#/store/homeSelection";
 import {
   queryOptions,
   useMutation,
@@ -69,8 +70,9 @@ export const useSignIn = () => {
   });
 };
 
-export const useSignOut = () =>
-  useMutation({
+export const useSignOut = () => {
+  const { setCourse } = useHomeSelection();
+  return useMutation({
     mutationKey: ["signout"],
     mutationFn: async () => {
       const { error } = await APIclient.POST("/auth/logout");
@@ -78,9 +80,11 @@ export const useSignOut = () =>
       return { message: "Signed out successfully" };
     },
     onSuccess: () => {
+      setCourse(undefined);
       globalThis.location.href = "/auth/signin";
     },
   });
+};
 
 export const useUpdateAvatar = () =>
   useMutation({
