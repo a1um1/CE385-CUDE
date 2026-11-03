@@ -17,17 +17,15 @@ import { useEffect, useRef, useState } from "react";
 
 type Exercise = components["schemas"]["Exercise"];
 
-/** Most exercises open with a `#` heading; fall back to the exercise name when one is missing. */
 const withHeading = (exercise: Exercise) =>
   /^#\s/.test(exercise.content.trimStart())
     ? exercise.content
     : `# ${exercise.name}\n\n${exercise.content}`;
 
-export const Route = createFileRoute("/(authed)/session/$id/$exerciseId")({
+export const Route = createFileRoute("/(authed)/session/$id/$exerciseId/")({
   component: RouteComponent,
   loader: async ({ params, context }) => {
     const exercise = await context.queryClient.query(exerciseQueryOptions(params.exerciseId));
-    // Prefetch the draft so the editor opens on the saved code, not on the starter code.
     await context.queryClient.query(exerciseSubmissionQuery(params.id, params.exerciseId));
     return exercise;
   },
@@ -63,8 +61,6 @@ function CodeEditorPane({
     runExercise.mutate({ code });
   };
 
-  // The draft is saved when the student leaves the exercise: continue, sidebar or tab close.
-  // Runs on unmount only, hence the empty dependency list.
   useEffect(
     () => () => {
       if (canSave && edited.current) saveSubmission.mutate({ code: latestCode.current });

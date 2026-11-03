@@ -1,7 +1,6 @@
 import { exerciseFromLessonQuery } from "#/data/exercise.data";
 import { sessionByIdQuery } from "#/data/learnSession.data";
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import styles from "./sessionIndex.module.css";
 
 export const Route = createFileRoute("/(authed)/session/$id/")({
   loader: async ({ params, context }) => {
@@ -20,5 +19,5 @@ export const Route = createFileRoute("/(authed)/session/$id/")({
       params: { id: params.id, exerciseId: first.id },
     });
   },
-  component: () => <p className={styles.emptyMessage}>บทเรียนนี้ยังไม่มีแบบฝึกหัด</p>,
+  component: () => <p>บทเรียนนี้ยังไม่มีแบบฝึกหัด</p>,
 });

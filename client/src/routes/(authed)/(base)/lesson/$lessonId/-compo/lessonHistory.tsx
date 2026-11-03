@@ -8,6 +8,7 @@ import {
 } from "#/routes/(authed)/(base)/lesson/$lessonId/-compo/lessonResults";
 import { Link, useLoaderData } from "@tanstack/react-router";
 import styles from "#/routes/(authed)/(base)/lesson/$lessonId/lessonHistory.module.css";
+import { gradeStatusColor } from "#/lib/gradeStatus";
 
 export const LessonHistory = () => {
   const lesson = useLoaderData({ from: lessonRouteId });
@@ -28,16 +29,18 @@ export const LessonHistory = () => {
                 params={{ lessonId: lesson.id, sessionId: attempt.id }}
               >
                 <span className={styles.content}>
-                  <span>ครั้งที่ {attempts.length - index}</span>
+                  <div className={styles.attemptHeader}>
+                    <span>ครั้งที่ {attempts.length - index}</span>
+                    <Badge color={gradeStatusColor[attempt.gradeStatus] || "var(--color-gray-500)"}>
+                      {attempt.gradeStatus === "CANCELLED"
+                        ? "ยอมแพ้"
+                        : `${formatNumber(attempt.score, 0)}%`}
+                    </Badge>
+                  </div>
                   <span className={styles.timestamp}>
-                    {`${formatRelativeTime(attempt.createdAt)} · ใช้เวลา ${formatElapsedTime(attempt.createdAt, attempt.updatedAt)}`}
+                    {`${formatRelativeTime(attempt.createdAt)} ใช้เวลา ${formatElapsedTime(attempt.createdAt, attempt.updatedAt)}`}
                   </span>
                 </span>
-                <Badge>
-                  {attempt.gradeStatus === "CANCELLED"
-                    ? "ยอมแพ้"
-                    : `${formatNumber(attempt.score, 0)}%`}
-                </Badge>
               </Link>
             </li>
           ))}
