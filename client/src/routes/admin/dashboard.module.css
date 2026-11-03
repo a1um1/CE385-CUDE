@@ -1,0 +1,117 @@
+@reference "#/styles/main.css";
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+@media (min-width: 48rem) {
+  .kpiGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.75rem 1.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: calc(var(--radius) * 2);
+  background-color: var(--color-panel);
+}
+
+.kpiLabel {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-muted-text);
+}
+
+.kpiValue {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.kpiDetail {
+  font-size: 0.75rem;
+  color: var(--color-secondary-text);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: calc(var(--radius) * 2);
+  background-color: var(--color-panel);
+}
+
+.sectionHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.sectionHeading {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.sectionTitle {
+  font-size: 1.0625rem;
+  font-weight: 700;
+}
+
+.sectionHint {
+  font-size: 0.75rem;
+  color: var(--color-muted-text);
+}
+
+.legend {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.75rem;
+  color: var(--color-secondary-text);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.legendDot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+}
+
+.chartEmpty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 21.25rem;
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius);
+  color: var(--color-muted-text);
+  font-size: 0.875rem;
+}
+
+.infoMessage {
+  color: var(--color-muted-text);
+  font-size: 0.875rem;
+}

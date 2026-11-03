@@ -1533,6 +1533,99 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/dashboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get the admin dashboard summary
+         * @description Return the numbers the dashboard page needs in one request: KPI counts for the last 7 days (users, active learners, attempts, pass rate, granted XP and gems) and a zero-filled daily sessions/submissions series for the last 30 days. Requires an `ADMIN` token.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminDashboard"];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/lesson": {
         parameters: {
             query?: never;
@@ -8648,12 +8741,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-11-03T06:44:07.582Z
+             * @example 2026-11-03T07:38:58.794Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-11-03T06:44:07.583Z
+             * @example 2026-11-03T07:38:58.796Z
              */
             updatedAt: string;
         };
@@ -8747,6 +8840,68 @@ export interface components {
             shortDescription: string;
             /** @example This is a badge for the course. */
             badge: string;
+        };
+        AdminDashboard: {
+            /**
+             * Format: date-time
+             * @example 2026-11-03T09:00:00.000Z
+             */
+            generatedAt: string;
+            /**
+             * Format: date-time
+             * @description จุดเริ่มต้นของช่วง 7 วันล่าสุด
+             * @example 2026-10-27T09:00:00.000Z
+             */
+            since: string;
+            kpis: {
+                /**
+                 * @description ผู้ใช้ทั้งหมด
+                 * @example 128
+                 */
+                totalUsers: number;
+                /**
+                 * @description ผู้ใช้ใหม่ในช่วง 7 วัน
+                 * @example 9
+                 */
+                newUsers: number;
+                /**
+                 * @description ผู้ใช้ที่ไม่ซ้ำกันและเริ่มเรียนในช่วง 7 วัน
+                 * @example 34
+                 */
+                activeLearners: number;
+                /**
+                 * @description จำนวนครั้งที่เริ่มเรียน
+                 * @example 76
+                 */
+                attempts: number;
+                /**
+                 * @description อัตราการผ่านของ session ที่จบแล้วในช่วง 7 วัน (0-100)
+                 * @example 62.5
+                 */
+                passRate: number;
+                /**
+                 * @description XP ที่แจกในช่วง 7 วัน
+                 * @example 1840
+                 */
+                xpGranted: number;
+                /**
+                 * @description Gems ที่แจกในช่วง 7 วัน
+                 * @example 320
+                 */
+                gemsGranted: number;
+            };
+            /** @description จำนวนรายวันย้อนหลัง 30 วัน เรียงจากเก่าไปใหม่ */
+            activity: {
+                /**
+                 * @description รูปแบบ YYYY-MM-DD
+                 * @example 2026-11-01
+                 */
+                date: string;
+                /** @example 12 */
+                sessions: number;
+                /** @example 31 */
+                submissions: number;
+            }[];
         };
         PaginatedLesson: {
             items: components["schemas"]["Lesson"][];
