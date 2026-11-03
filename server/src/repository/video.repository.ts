@@ -15,7 +15,19 @@ export const videoRepository = {
 
   delete: (id: string) => client().video.deleteMany({ where: { id } }),
 
-  findAllTags: () => client().videoTag.findMany({ orderBy: { name: "asc" } }),
+  findTagsWithCount: () =>
+    client().videoTag.findMany({
+      orderBy: { name: "asc" },
+      include: { _count: { select: { videos: true } } },
+    }),
+
+  findAuthors: () =>
+    client().video.groupBy({
+      by: ["author"],
+      where: { author: { not: null } },
+      _count: { _all: true },
+      orderBy: { author: "asc" },
+    }),
 
   upsertTag: (name: string, tx?: Db) =>
     client(tx).videoTag.upsert({ where: { name }, create: { name }, update: {} }),

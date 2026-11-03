@@ -19,6 +19,7 @@ import { Route as AuthSigninRouteImport } from './routes/auth/signin'
 import { Route as AuthSignupRouteImport } from './routes/auth/signup'
 import { Route as authedbaseIndexRouteImport } from './routes/(authed)/(base)/index'
 import { Route as authedbaseAccountRouteRouteImport } from './routes/(authed)/(base)/account/route'
+import { Route as authedbaseVideosRouteImport } from './routes/(authed)/(base)/videos'
 import { Route as authedSessionIdRouteRouteImport } from './routes/(authed)/session/$id/route'
 import { Route as AdminCourseIndexRouteImport } from './routes/admin/course/index'
 import { Route as AdminCourseIdRouteImport } from './routes/admin/course/$id'
@@ -103,6 +104,11 @@ const authedbaseIndexRoute = authedbaseIndexRouteImport.update({
 const authedbaseAccountRouteRoute = authedbaseAccountRouteRouteImport.update({
   id: '/account',
   path: '/account',
+  getParentRoute: () => authedbaseRouteRoute,
+} as any)
+const authedbaseVideosRoute = authedbaseVideosRouteImport.update({
+  id: '/videos',
+  path: '/videos',
   getParentRoute: () => authedbaseRouteRoute,
 } as any)
 const authedSessionIdRouteRoute = authedSessionIdRouteRouteImport.update({
@@ -308,6 +314,7 @@ export interface FileRoutesByFullPath {
   '/auth/': typeof AuthIndexRoute
   '/account': typeof authedbaseAccountRouteRouteWithChildren
   '/session/$id': typeof authedSessionIdRouteRouteWithChildren
+  '/videos': typeof authedbaseVideosRoute
   '/admin/course/$id': typeof AdminCourseIdRoute
   '/admin/course/create': typeof AdminCourseCreateRoute
   '/admin/event/$id': typeof AdminEventIdRoute
@@ -351,6 +358,7 @@ export interface FileRoutesByTo {
   '/auth/signup': typeof AuthSignupRoute
   '/admin': typeof AdminIndexRoute
   '/auth': typeof AuthIndexRoute
+  '/videos': typeof authedbaseVideosRoute
   '/admin/course/$id': typeof AdminCourseIdRoute
   '/admin/course/create': typeof AdminCourseCreateRoute
   '/admin/event/$id': typeof AdminEventIdRoute
@@ -400,6 +408,7 @@ export interface FileRoutesById {
   '/auth/': typeof AuthIndexRoute
   '/(authed)/(base)/account': typeof authedbaseAccountRouteRouteWithChildren
   '/(authed)/session/$id': typeof authedSessionIdRouteRouteWithChildren
+  '/(authed)/(base)/videos': typeof authedbaseVideosRoute
   '/admin/course/$id': typeof AdminCourseIdRoute
   '/admin/course/create': typeof AdminCourseCreateRoute
   '/admin/event/$id': typeof AdminEventIdRoute
@@ -449,6 +458,7 @@ export interface FileRouteTypes {
     | '/auth/'
     | '/account'
     | '/session/$id'
+    | '/videos'
     | '/admin/course/$id'
     | '/admin/course/create'
     | '/admin/event/$id'
@@ -492,6 +502,7 @@ export interface FileRouteTypes {
     | '/auth/signup'
     | '/admin'
     | '/auth'
+    | '/videos'
     | '/admin/course/$id'
     | '/admin/course/create'
     | '/admin/event/$id'
@@ -540,6 +551,7 @@ export interface FileRouteTypes {
     | '/auth/'
     | '/(authed)/(base)/account'
     | '/(authed)/session/$id'
+    | '/(authed)/(base)/videos'
     | '/admin/course/$id'
     | '/admin/course/create'
     | '/admin/event/$id'
@@ -655,6 +667,13 @@ declare module '@tanstack/react-router' {
       path: '/account'
       fullPath: '/account'
       preLoaderRoute: typeof authedbaseAccountRouteRouteImport
+      parentRoute: typeof authedbaseRouteRoute
+    }
+    '/(authed)/(base)/videos': {
+      id: '/(authed)/(base)/videos'
+      path: '/videos'
+      fullPath: '/videos'
+      preLoaderRoute: typeof authedbaseVideosRouteImport
       parentRoute: typeof authedbaseRouteRoute
     }
     '/(authed)/session/$id': {
@@ -956,6 +975,7 @@ const authedbaseLessonLessonIdRouteRouteWithChildren =
 
 interface authedbaseRouteRouteChildren {
   authedbaseAccountRouteRoute: typeof authedbaseAccountRouteRouteWithChildren
+  authedbaseVideosRoute: typeof authedbaseVideosRoute
   authedbaseIndexRoute: typeof authedbaseIndexRoute
   authedbaseLessonLessonIdRouteRoute: typeof authedbaseLessonLessonIdRouteRouteWithChildren
   authedbaseEventEventIdRoute: typeof authedbaseEventEventIdRoute
@@ -965,6 +985,7 @@ interface authedbaseRouteRouteChildren {
 
 const authedbaseRouteRouteChildren: authedbaseRouteRouteChildren = {
   authedbaseAccountRouteRoute: authedbaseAccountRouteRouteWithChildren,
+  authedbaseVideosRoute: authedbaseVideosRoute,
   authedbaseIndexRoute: authedbaseIndexRoute,
   authedbaseLessonLessonIdRouteRoute:
     authedbaseLessonLessonIdRouteRouteWithChildren,

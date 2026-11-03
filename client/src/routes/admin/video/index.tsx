@@ -173,7 +173,6 @@ function RouteComponent() {
 
   return (
     <>
-      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "1rem" }}></div>
       <DataTable
         data={data?.data ?? []}
         columns={columns}

@@ -35,6 +35,21 @@ export const VideoTagSchema = z
 
 export type VideoTagSchema = zod.infer<typeof VideoTagSchema>;
 
+export const VideoTagWithCountSchema = z
+  .object({
+    id: z.uuid(),
+    name: z.string(),
+    videoCount: z.number().int(),
+  })
+  .openapi("VideoTagWithCount");
+
+export const VideoAuthorSchema = z
+  .object({
+    name: z.string(),
+    videoCount: z.number().int(),
+  })
+  .openapi("VideoAuthor");
+
 const VideoTagsSchema = z
   .array(VideoTagNameSchema)
   .max(20)
@@ -79,6 +94,7 @@ export const VideoQuerySchema = createCursorPaginationQuerySchema(
     .max(50)
     .transform((value) => value.toLowerCase())
     .optional(),
+  author: z.string().trim().min(1).max(200).optional(),
 });
 
 export type VideoQuery = zod.infer<typeof VideoQuerySchema>;

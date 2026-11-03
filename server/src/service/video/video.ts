@@ -26,6 +26,10 @@ const VideoService = {
 
     if (query.tag) conditions.push({ tags: { some: { name: query.tag } } });
 
+    if (query.author) {
+      conditions.push({ author: { equals: query.author, mode: "insensitive" } });
+    }
+
     const where: Prisma.VideoWhereInput | undefined =
       conditions.length === 0
         ? undefined
@@ -43,8 +47,16 @@ const VideoService = {
     return paginate(data, query);
   },
 
-  getAllTags() {
-    return videoRepository.findAllTags();
+  async getAllTags() {
+    const tags = await videoRepository.findTagsWithCount();
+    return tags.map((tag) => ({ id: tag.id, name: tag.name, videoCount: tag._count.videos }));
+  },
+
+  async getAllAuthors() {
+    const authors = await videoRepository.findAuthors();
+    return authors.flatMap((row) =>
+      row.author ? [{ name: row.author, videoCount: row._count._all }] : [],
+    );
   },
 
   async getById(id: string) {

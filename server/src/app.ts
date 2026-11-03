@@ -25,6 +25,7 @@ const limiter = rateLimit({
 import { lessonRouter } from "./routes/lesson";
 import { learnSessionRoute } from "#/routes/session";
 import { eventRoute } from "#/routes/event";
+import { videoRoute } from "#/routes/video";
 
 const app = express()
   .use(limiter)
@@ -47,6 +48,7 @@ const app = express()
   .use(unitRoute)
   .use(exerciseRoute)
   .use(eventRoute)
+  .use(videoRoute)
   .use(adminRoute)
   .use(learnSessionRoute);
 

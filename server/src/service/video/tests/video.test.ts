@@ -59,6 +59,36 @@ describe("VideoService", () => {
     });
   });
 
+  it("filters by author", async () => {
+    mockDB.video.findMany.mockResolvedValueOnce([]);
+
+    await VideoService.getAll({
+      author: "Khan Academy",
+      perPage: 20,
+      direction: "forward",
+      sortOrder: "desc",
+    });
+
+    expect(mockDB.video.findMany).toHaveBeenCalledWith({
+      take: 21,
+      skip: 0,
+      cursor: undefined,
+      where: { author: { equals: "Khan Academy", mode: "insensitive" } },
+      include: { tags: true },
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+    });
+  });
+
+  it("lists tags with their video counts", async () => {
+    mockDB.videoTag.findMany.mockResolvedValueOnce([
+      { id: TAG_ID, name: "programming", createdAt: new Date(), _count: { videos: 3 } },
+    ] as never);
+
+    await expect(VideoService.getAllTags()).resolves.toEqual([
+      { id: TAG_ID, name: "programming", videoCount: 3 },
+    ]);
+  });
+
   it("validates YouTube URLs and normalizes tags", () => {
     const parsed = VideoCreateSchema.parse(videoInput);
     expect(parsed.tags).toEqual(["programming", "basics"]);
