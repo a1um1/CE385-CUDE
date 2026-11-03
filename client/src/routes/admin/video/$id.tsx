@@ -26,8 +26,8 @@ function RouteComponent() {
       defaultValues={{
         title: data.title,
         youtubeUrl: data.youtubeUrl,
-        description: data.description ?? "",
-        tags: data.tags.join(", "),
+        author: data.author ?? "",
+        tags: data.tags.map((tag) => tag.name),
       }}
       submitLabel="Save Changes"
       onSubmit={async (value) => {

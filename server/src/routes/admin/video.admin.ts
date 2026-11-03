@@ -6,6 +6,7 @@ import {
   VideoCreateSchema,
   VideoQuerySchema,
   VideoSchema,
+  VideoTagSchema,
   VideoUpdateSchema,
 } from "#/service/video/video.schema";
 
@@ -24,6 +25,15 @@ const adminVideoRouter = new CustomRouter({
       response: z.array(VideoSchema),
     },
     ({ query }) => VideoService.getAll(query),
+  )
+  .get(
+    "/tags",
+    {
+      summary: "List video tags",
+      description: "List every video tag, sorted by name. Requires an ADMIN token.",
+      response: z.array(VideoTagSchema),
+    },
+    () => VideoService.getAllTags(),
   )
   .get(
     "/:videoId",

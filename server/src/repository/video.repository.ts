@@ -1,19 +1,27 @@
 import type { Prisma } from "#/generated/prisma/client";
-import { client } from "#/repository/client";
-import type { VideoInput } from "#/service/video/video.schema";
+import { client, type Db } from "#/repository/client";
+
+const include = { tags: true } satisfies Prisma.VideoInclude;
 
 export const videoRepository = {
   findAll: (where?: Prisma.VideoWhereInput) =>
     client().video.findMany({
       where,
+      include,
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
     }),
 
-  findById: (id: string) => client().video.findUnique({ where: { id } }),
+  findById: (id: string) => client().video.findUnique({ where: { id }, include }),
 
-  create: (data: VideoInput) => client().video.create({ data }),
+  create: (data: Prisma.VideoCreateInput, tx?: Db) => client(tx).video.create({ data, include }),
 
-  update: (id: string, data: VideoInput) => client().video.update({ where: { id }, data }),
+  update: (id: string, data: Prisma.VideoUpdateInput, tx?: Db) =>
+    client(tx).video.update({ where: { id }, data, include }),
 
   delete: (id: string) => client().video.deleteMany({ where: { id } }),
+
+  findAllTags: () => client().videoTag.findMany({ orderBy: { name: "asc" } }),
+
+  upsertTag: (name: string, tx?: Db) =>
+    client(tx).videoTag.upsert({ where: { name }, create: { name }, update: {} }),
 };

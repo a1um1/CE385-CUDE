@@ -4,11 +4,12 @@ import { VideoCreateSchema } from "#/service/video/video.schema";
 import { mockDB } from "#/test/setup";
 
 const VIDEO_ID = "01a168fe-3f19-74cf-87be-aa358b64ea10";
+const TAG_ID = "01a168fe-3f19-74cf-87be-aa358b64ea11";
 
 const videoInput = {
   title: "Introduction to Computer Science",
   youtubeUrl: "https://www.youtube.com/watch?v=5LeZflr8Zfs",
-  description: "An introduction to computer science",
+  author: "Khan Academy",
   tags: ["Programming", "basics"],
 };
 
@@ -22,9 +23,10 @@ describe("VideoService", () => {
       where: {
         OR: [
           { title: { contains: "programming", mode: "insensitive" } },
-          { tags: { has: "programming" } },
+          { tags: { some: { name: "programming" } } },
         ],
       },
+      include: { tags: true },
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
     });
   });
@@ -35,7 +37,8 @@ describe("VideoService", () => {
     await VideoService.getAll({ tag: "programming" });
 
     expect(mockDB.video.findMany).toHaveBeenCalledWith({
-      where: { tags: { has: "programming" } },
+      where: { tags: { some: { name: "programming" } } },
+      include: { tags: true },
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
     });
   });
@@ -68,37 +71,44 @@ describe("VideoService", () => {
     });
   });
 
-  it("creates a video resource", async () => {
-    mockDB.video.create.mockResolvedValueOnce({
-      id: VIDEO_ID,
-      ...videoInput,
-      tags: ["programming", "basics"],
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    } as never);
+  it("creates a video resource and connects its tags", async () => {
+    mockDB.$transaction.mockImplementation(((callback: (tx: typeof mockDB) => unknown) =>
+      callback(mockDB)) as never);
+    mockDB.videoTag.upsert.mockResolvedValue({ id: TAG_ID } as never);
+    mockDB.video.create.mockResolvedValueOnce({ id: VIDEO_ID } as never);
 
     await VideoService.create({ ...videoInput, tags: ["programming", "basics"] });
 
+    expect(mockDB.videoTag.upsert).toHaveBeenCalledTimes(2);
     expect(mockDB.video.create).toHaveBeenCalledWith({
-      data: { ...videoInput, tags: ["programming", "basics"] },
+      data: {
+        title: videoInput.title,
+        youtubeUrl: videoInput.youtubeUrl,
+        author: videoInput.author,
+        tags: { connect: [{ id: TAG_ID }, { id: TAG_ID }] },
+      },
+      include: { tags: true },
     });
   });
 
-  it("updates an existing video resource", async () => {
+  it("updates an existing video resource and replaces its tags", async () => {
+    mockDB.$transaction.mockImplementation(((callback: (tx: typeof mockDB) => unknown) =>
+      callback(mockDB)) as never);
     mockDB.video.findUnique.mockResolvedValueOnce({ id: VIDEO_ID } as never);
-    mockDB.video.update.mockResolvedValueOnce({
-      id: VIDEO_ID,
-      ...videoInput,
-      tags: ["programming", "basics"],
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    } as never);
+    mockDB.videoTag.upsert.mockResolvedValue({ id: TAG_ID } as never);
+    mockDB.video.update.mockResolvedValueOnce({ id: VIDEO_ID } as never);
 
     await VideoService.update(VIDEO_ID, { ...videoInput, tags: ["programming", "basics"] });
 
     expect(mockDB.video.update).toHaveBeenCalledWith({
       where: { id: VIDEO_ID },
-      data: { ...videoInput, tags: ["programming", "basics"] },
+      data: {
+        title: videoInput.title,
+        youtubeUrl: videoInput.youtubeUrl,
+        author: videoInput.author,
+        tags: { set: [{ id: TAG_ID }, { id: TAG_ID }] },
+      },
+      include: { tags: true },
     });
   });
 

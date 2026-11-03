@@ -4689,6 +4689,99 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/video/tags": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List video tags
+         * @description List every video tag, sorted by name. Requires an ADMIN token.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["VideoTag"][];
+                    };
+                };
+                /** @description Validation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/video/{videoId}": {
         parameters: {
             query?: never;
@@ -8261,12 +8354,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-11-03T00:17:58.058Z
+             * @example 2026-11-03T06:28:22.682Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-11-03T00:17:58.074Z
+             * @example 2026-11-03T06:28:22.683Z
              */
             updatedAt: string;
         };
@@ -9039,19 +9132,24 @@ export interface components {
             title: string;
             /** Format: uri */
             youtubeUrl: string;
-            description: string | null;
-            tags: string[];
+            author: string | null;
+            tags: components["schemas"]["VideoTag"][];
             /** Format: date-time */
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
+        };
+        VideoTag: {
+            /** Format: uuid */
+            id: string;
+            name: string;
         };
         VideoCreate: {
             title: string;
             /** Format: uri */
             youtubeUrl: string;
             /** @default null */
-            description: string | null;
+            author: string | null;
             /** @default [] */
             tags: string[];
         };
@@ -9060,7 +9158,7 @@ export interface components {
             /** Format: uri */
             youtubeUrl: string;
             /** @default null */
-            description: string | null;
+            author: string | null;
             /** @default [] */
             tags: string[];
         };

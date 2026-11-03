@@ -16,6 +16,16 @@ export const useAdminVideoListQuery = (props: ExtractRequestQuery<"/admin/video"
     },
   });
 
+export const useAdminVideoTagListQuery = () =>
+  useQuery({
+    queryKey: ["admin", "video", "tags"],
+    queryFn: async () => {
+      const { data, error } = await APIclient.GET("/admin/video/tags");
+      if (error) throw error;
+      return data;
+    },
+  });
+
 export const getAdminVideoQueryOptions = (videoId: string) =>
   queryOptions({
     queryKey: ["admin", "video", "info", { id: videoId }],

@@ -1,4 +1,3 @@
-import type { Video } from "#/generated/prisma/client";
 import { z } from "#/lib/extendZod";
 import type zod from "zod";
 
@@ -16,15 +15,24 @@ const YouTubeUrlSchema = z.url().refine((value) => {
   );
 }, "A valid HTTPS YouTube URL is required");
 
+const VideoTagNameSchema = z
+  .string()
+  .trim()
+  .min(1)
+  .max(50)
+  .transform((tag) => tag.toLowerCase());
+
+export const VideoTagSchema = z
+  .object({
+    id: z.uuid(),
+    name: z.string(),
+  })
+  .openapi("VideoTag");
+
+export type VideoTagSchema = zod.infer<typeof VideoTagSchema>;
+
 const VideoTagsSchema = z
-  .array(
-    z
-      .string()
-      .trim()
-      .min(1)
-      .max(50)
-      .transform((tag) => tag.toLowerCase()),
-  )
+  .array(VideoTagNameSchema)
   .max(20)
   .default([])
   .refine((tags) => new Set(tags).size === tags.length, "Tags must be unique");
@@ -34,20 +42,19 @@ export const VideoSchema = z
     id: z.uuidv7(),
     title: z.string(),
     youtubeUrl: z.url(),
-    description: z.string().nullable(),
-    tags: z.array(z.string()),
+    author: z.string().nullable(),
+    tags: z.array(VideoTagSchema),
     createdAt: z.date(),
     updatedAt: z.date(),
   })
   .openapi("Video");
 
 export type VideoSchema = zod.infer<typeof VideoSchema>;
-export type VideoData = Video;
 
 const VideoInputSchema = z.object({
   title: z.string().trim().min(1).max(200),
   youtubeUrl: YouTubeUrlSchema,
-  description: z.string().trim().max(2000).nullable().optional().default(null),
+  author: z.string().trim().max(200).nullable().optional().default(null),
   tags: VideoTagsSchema,
 });
 
@@ -70,3 +77,4 @@ export const VideoQuerySchema = z
   .openapi("VideoQuery");
 
 export type VideoQuery = zod.infer<typeof VideoQuerySchema>;
+export { default } from "./video";

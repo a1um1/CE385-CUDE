@@ -43,10 +43,14 @@ const typedColumns = (onDelete: (video: AdminVideo) => void) =>
         </a>
       ),
     }),
+    columnHelper.text("author", {
+      header: "Author",
+      sortable: false,
+    }),
     columnHelper.display({
       id: "tags",
       header: "Tags",
-      cell: (info) => info.row.original.tags.join(", "),
+      cell: (info) => info.row.original.tags.map((tag) => tag.name).join(", "),
     }),
     columnHelper.datetime("createdAt", {
       header: "Created At",

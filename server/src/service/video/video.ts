@@ -1,7 +1,13 @@
 import UserError from "#/lib/router/http/userError";
 import { videoRepository } from "#/repository/video.repository";
+import { transaction, type Db } from "#/repository/client";
 import type { Prisma } from "#/generated/prisma/client";
 import type { VideoInput, VideoQuery } from "#/service/video/video.schema";
+
+const resolveTagIds = async (names: string[], tx: Db) => {
+  const tags = await Promise.all(names.map((name) => videoRepository.upsertTag(name, tx)));
+  return tags.map((tag) => ({ id: tag.id }));
+};
 
 const VideoService = {
   getAll(query: VideoQuery) {
@@ -11,12 +17,12 @@ const VideoService = {
       conditions.push({
         OR: [
           { title: { contains: query.search, mode: "insensitive" } },
-          { tags: { has: query.search.toLowerCase() } },
+          { tags: { some: { name: query.search.toLowerCase() } } },
         ],
       });
     }
 
-    if (query.tag) conditions.push({ tags: { has: query.tag } });
+    if (query.tag) conditions.push({ tags: { some: { name: query.tag } } });
 
     const where: Prisma.VideoWhereInput | undefined =
       conditions.length === 0
@@ -28,6 +34,10 @@ const VideoService = {
     return videoRepository.findAll(where);
   },
 
+  getAllTags() {
+    return videoRepository.findAllTags();
+  },
+
   async getById(id: string) {
     const video = await videoRepository.findById(id);
     if (!video) throw new UserError(404, "Video not found");
@@ -35,12 +45,35 @@ const VideoService = {
   },
 
   create(data: VideoInput) {
-    return videoRepository.create(data);
+    return transaction(async (tx) => {
+      const tags = await resolveTagIds(data.tags, tx);
+      return videoRepository.create(
+        {
+          title: data.title,
+          youtubeUrl: data.youtubeUrl,
+          author: data.author,
+          tags: { connect: tags },
+        },
+        tx,
+      );
+    });
   },
 
   async update(id: string, data: VideoInput) {
     await this.getById(id);
-    return videoRepository.update(id, data);
+    return transaction(async (tx) => {
+      const tags = await resolveTagIds(data.tags, tx);
+      return videoRepository.update(
+        id,
+        {
+          title: data.title,
+          youtubeUrl: data.youtubeUrl,
+          author: data.author,
+          tags: { set: tags },
+        },
+        tx,
+      );
+    });
   },
 
   async delete(id: string) {

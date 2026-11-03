@@ -211,10 +211,22 @@ Table Video {
   id String [pk]
   title String [not null]
   youtubeUrl String [not null]
-  description String
-  tags String[] [not null]
+  author String
+  tags VideoTag [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
+}
+
+Table VideoTag {
+  id String [pk]
+  name String [unique, not null]
+  createdAt DateTime [default: `now()`, not null]
+  videos Video [not null]
+}
+
+Table VideoToVideoTag {
+  tagsId String [ref: > VideoTag.id]
+  videosId String [ref: > Video.id]
 }
 
 Enum TransactionType {
