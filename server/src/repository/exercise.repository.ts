@@ -49,6 +49,13 @@ export const exerciseRepository = {
   countCodeByLessonID: (lessonID: string, tx?: Db) =>
     client(tx).exercise.count({ where: { lessonID, type: "CODE" } }),
 
+  findCodeByLessonID: (lessonID: string, tx?: Db) =>
+    client(tx).exercise.findMany({
+      where: { lessonID, type: "CODE" },
+      select: { id: true },
+      orderBy: { position: "asc" },
+    }),
+
   maxPosition: (lessonID: string) =>
     client().exercise.aggregate({
       _max: { position: true },

@@ -64,6 +64,49 @@ describe("querySession", () => {
       }),
     );
   });
+  it("filters out rows that do not match the requested grade status", async () => {
+    mockDB.sessions.findMany.mockResolvedValueOnce([
+      {
+        id: "019488a0-7212-789a-bcde-fe1234567890",
+        userID: "019488a0-7212-789a-bcde-fe1234567891",
+        LessonID: "019488a0-7212-789a-bcde-fe1234567892",
+        status: "SUBMITTED",
+        rewarded: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        user: { name: "User", email: "user@test.com", profileImage: null },
+        lesson: {
+          id: "019488a0-7212-789a-bcde-fe1234567892",
+          name: "Lesson",
+          unit: {
+            id: "019488a0-7212-789a-bcde-fe1234567893",
+            name: "Unit",
+            course: {
+              id: "019488a0-7212-789a-bcde-fe1234567894",
+              name: "Course",
+              color: "red",
+              icon: "book",
+            },
+          },
+        },
+        // Only 2 passing submissions, but lesson has 5 code exercises
+        submissions: [
+          { isGraded: true, ok: true },
+          { isGraded: true, ok: true },
+        ],
+      },
+    ] as never);
+    mockDB.exercise.findMany.mockResolvedValueOnce([
+      { lessonID: "019488a0-7212-789a-bcde-fe1234567892" },
+      { lessonID: "019488a0-7212-789a-bcde-fe1234567892" },
+      { lessonID: "019488a0-7212-789a-bcde-fe1234567892" },
+      { lessonID: "019488a0-7212-789a-bcde-fe1234567892" },
+      { lessonID: "019488a0-7212-789a-bcde-fe1234567892" },
+    ] as never);
+
+    const result = await querySession({ perPage: 10, direction: "forward", result: "PASS" });
+    expect(result.data).toHaveLength(0);
+  });
 });
 
 describe("getSessionById", () => {
