@@ -4521,11 +4521,16 @@ export interface paths {
         };
         /**
          * Search and list video resources
-         * @description List videos, optionally searching by title or tag. `search` matches title text or an exact tag; `tag` filters by an exact tag. Requires an ADMIN token.
+         * @description Cursor-paginated list of videos, optionally searching by title or tag. `search` matches title text or an exact tag; `tag` filters by an exact tag. Sort by `title`, `author`, `createdAt`, `updatedAt` or `id`. Requires an ADMIN token.
          */
         get: {
             parameters: {
                 query?: {
+                    perPage?: number;
+                    cursor?: string;
+                    direction?: "forward" | "backward";
+                    sortBy?: "title" | "author" | "createdAt" | "updatedAt" | "id";
+                    sortOrder?: "asc" | "desc";
                     search?: string;
                     tag?: string;
                 };
@@ -4541,7 +4546,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["Video"][];
+                        "application/json": components["schemas"]["VideoListResponse"];
                     };
                 };
                 /** @description Validation error */
@@ -8354,12 +8359,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-11-03T06:28:22.682Z
+             * @example 2026-11-03T06:38:31.235Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-11-03T06:28:22.683Z
+             * @example 2026-11-03T06:38:31.235Z
              */
             updatedAt: string;
         };
@@ -9125,6 +9130,14 @@ export interface components {
                 /** @example 3 */
                 count: number;
             }[];
+        };
+        VideoListResponse: {
+            /** @example [] */
+            data: components["schemas"]["Video"][];
+            /** @example next_cursor_id */
+            nextCursor?: string;
+            /** @example prev_cursor_id */
+            prevCursor?: string;
         };
         Video: {
             /** Format: uuid */

@@ -35,7 +35,10 @@ function RouteComponent() {
           id,
           body: toVideoBody(value),
         });
-        navigate({ to: "/admin/video", search: {} });
+        navigate({
+          to: "/admin/video",
+          search: { cursor: undefined, perPage: 20, direction: "forward" },
+        });
       }}
     />
   );

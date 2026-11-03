@@ -1,4 +1,6 @@
 import UserError from "#/lib/router/http/userError";
+import { cursorArgs, isBackward, paginate } from "#/lib/pagination";
+import { buildCursorOrderBy } from "#/lib/pagination.schema";
 import { videoRepository } from "#/repository/video.repository";
 import { transaction, type Db } from "#/repository/client";
 import type { Prisma } from "#/generated/prisma/client";
@@ -10,7 +12,7 @@ const resolveTagIds = async (names: string[], tx: Db) => {
 };
 
 const VideoService = {
-  getAll(query: VideoQuery) {
+  async getAll(query: VideoQuery) {
     const conditions: Prisma.VideoWhereInput[] = [];
 
     if (query.search) {
@@ -31,7 +33,14 @@ const VideoService = {
           ? conditions[0]
           : { AND: conditions };
 
-    return videoRepository.findAll(where);
+    const orderBy = buildCursorOrderBy(
+      query.sortBy ?? "createdAt",
+      query.sortOrder,
+      isBackward(query),
+    );
+    const data = await videoRepository.findPage({ ...cursorArgs(query), orderBy, where });
+
+    return paginate(data, query);
   },
 
   getAllTags() {

@@ -19,7 +19,10 @@ function RouteComponent() {
       submitLabel="Create"
       onSubmit={async (value) => {
         await createMutation.mutateAsync(toVideoBody(value));
-        navigate({ to: "/admin/video", search: {} });
+        navigate({
+          to: "/admin/video",
+          search: { cursor: undefined, perPage: 20, direction: "forward" },
+        });
       }}
     />
   );

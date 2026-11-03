@@ -4,6 +4,7 @@ import { GenericResponseSchema } from "#/lib/router/http/genericResponse";
 import VideoService from "#/service/video";
 import {
   VideoCreateSchema,
+  VideoListResponseSchema,
   VideoQuerySchema,
   VideoSchema,
   VideoTagSchema,
@@ -20,9 +21,9 @@ const adminVideoRouter = new CustomRouter({
     {
       summary: "Search and list video resources",
       description:
-        "List videos, optionally searching by title or tag. `search` matches title text or an exact tag; `tag` filters by an exact tag. Requires an ADMIN token.",
+        "Cursor-paginated list of videos, optionally searching by title or tag. `search` matches title text or an exact tag; `tag` filters by an exact tag. Sort by `title`, `author`, `createdAt`, `updatedAt` or `id`. Requires an ADMIN token.",
       query: VideoQuerySchema,
-      response: z.array(VideoSchema),
+      response: VideoListResponseSchema,
     },
     ({ query }) => VideoService.getAll(query),
   )

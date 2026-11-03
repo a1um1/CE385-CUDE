@@ -1,4 +1,8 @@
 import { z } from "#/lib/extendZod";
+import {
+  createCursorPaginationQuerySchema,
+  createCursorPaginationResponseSchema,
+} from "#/lib/pagination.schema";
 import type zod from "zod";
 
 const YouTubeUrlSchema = z.url().refine((value) => {
@@ -63,18 +67,27 @@ export const VideoUpdateSchema = VideoInputSchema.openapi("VideoUpdate");
 
 export type VideoInput = zod.infer<typeof VideoCreateSchema>;
 
-export const VideoQuerySchema = z
-  .object({
-    search: z.string().trim().min(1).optional(),
-    tag: z
-      .string()
-      .trim()
-      .min(1)
-      .max(50)
-      .transform((value) => value.toLowerCase())
-      .optional(),
-  })
-  .openapi("VideoQuery");
+export const VideoQuerySchema = createCursorPaginationQuerySchema(
+  ["title", "author", "createdAt", "updatedAt", "id"],
+  "VideoQuery",
+).extend({
+  search: z.string().trim().min(1).optional(),
+  tag: z
+    .string()
+    .trim()
+    .min(1)
+    .max(50)
+    .transform((value) => value.toLowerCase())
+    .optional(),
+});
 
 export type VideoQuery = zod.infer<typeof VideoQuerySchema>;
+
+export const VideoListResponseSchema = createCursorPaginationResponseSchema(
+  VideoSchema,
+  "VideoListResponse",
+);
+
+export type VideoListResponse = zod.infer<typeof VideoListResponseSchema>;
+
 export { default } from "./video";

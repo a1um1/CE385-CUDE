@@ -6,11 +6,13 @@ import SearchField from "#/components/searchField/searchField";
 import DataTable from "#/components/table";
 import { createTableColumnHelper } from "#/components/table/features";
 import { useAdminDeleteVideo, useAdminVideoListQuery } from "#/data/admin/video.data";
+import { basicPaginationSchema } from "#/lib/pagination.schema";
 import { createFileRoute } from "@tanstack/react-router";
+import type { OnChangeFn, SortingState } from "@tanstack/react-table";
 import { toast } from "sonner";
 import { z } from "zod";
 
-const videoSearchSchema = z.object({
+const videoSearchSchema = basicPaginationSchema.extend({
   search: z.string().optional(),
 });
 
@@ -23,7 +25,7 @@ export const Route = createFileRoute("/admin/video/")({
   },
 });
 
-type AdminVideo = NonNullable<ReturnType<typeof useAdminVideoListQuery>["data"]>[number];
+type AdminVideo = NonNullable<ReturnType<typeof useAdminVideoListQuery>["data"]>["data"][number];
 
 const columnHelper = createTableColumnHelper<AdminVideo>();
 
@@ -32,7 +34,6 @@ const typedColumns = (onDelete: (video: AdminVideo) => void) =>
     columnHelper.text("title", {
       header: "Title",
       strong: true,
-      sortable: false,
     }),
     columnHelper.display({
       id: "youtubeUrl",
@@ -45,7 +46,6 @@ const typedColumns = (onDelete: (video: AdminVideo) => void) =>
     }),
     columnHelper.text("author", {
       header: "Author",
-      sortable: false,
     }),
     columnHelper.display({
       id: "tags",
@@ -54,7 +54,6 @@ const typedColumns = (onDelete: (video: AdminVideo) => void) =>
     }),
     columnHelper.datetime("createdAt", {
       header: "Created At",
-      sortable: false,
     }),
     columnHelper.display({
       id: "actions",
@@ -84,10 +83,79 @@ function RouteComponent() {
   const [deleting, setDeleting] = React.useState<AdminVideo | null>(null);
 
   const columns = React.useMemo(() => typedColumns(setDeleting), []);
-  const { data, isLoading } = useAdminVideoListQuery({ search: search.search });
+
+  const sorting: SortingState = React.useMemo(() => {
+    const sortBy = search.sortBy ?? "createdAt";
+    const sortOrder = search.sortOrder ?? "desc";
+    return [{ id: sortBy, desc: sortOrder === "desc" }];
+  }, [search.sortBy, search.sortOrder]);
+
+  const handleSortingChange: OnChangeFn<SortingState> = (updaterOrValue) => {
+    const nextSorting =
+      typeof updaterOrValue === "function" ? updaterOrValue(sorting) : updaterOrValue;
+    const [firstSort] = nextSorting;
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        sortBy: firstSort?.id,
+        sortOrder: firstSort ? (firstSort.desc ? "desc" : "asc") : undefined,
+        cursor: undefined,
+        direction: "forward",
+      }),
+    });
+  };
+
+  const { data, isLoading } = useAdminVideoListQuery({
+    perPage: search.perPage,
+    cursor: search.cursor,
+    direction: search.direction,
+    sortBy: (search.sortBy ?? "createdAt") as any,
+    sortOrder: search.sortOrder ?? "desc",
+    search: search.search,
+  });
 
   const handleSearch = (value: string | undefined) => {
-    navigate({ search: { search: value } });
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        search: value,
+        cursor: undefined,
+        direction: "forward",
+      }),
+    });
+  };
+
+  const handleNextPage = () => {
+    if (!data?.nextCursor) return;
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        cursor: data.nextCursor,
+        direction: "forward",
+      }),
+    });
+  };
+
+  const handlePreviousPage = () => {
+    if (!data?.prevCursor) return;
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        cursor: data.prevCursor,
+        direction: "backward",
+      }),
+    });
+  };
+
+  const handlePageSizeChange = (newSize: number) => {
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        perPage: newSize,
+        cursor: undefined,
+        direction: "forward",
+      }),
+    });
   };
 
   const handleDelete = () => {
@@ -105,19 +173,22 @@ function RouteComponent() {
 
   return (
     <>
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "1rem" }}></div>
       <DataTable
-        data={data ?? []}
+        data={data?.data ?? []}
         columns={columns}
         isLoading={isLoading}
-        showPagination={false}
+        sorting={sorting}
+        onSortingChange={handleSortingChange}
+        manualSorting
         toolbarActions={
           <div
             style={{
               display: "flex",
-              flex: "1",
               gap: "0.5rem",
-              justifyContent: "space-between",
               alignItems: "center",
+              justifyContent: "space-between",
+              flex: "1",
             }}
           >
             <SearchField
@@ -130,6 +201,15 @@ function RouteComponent() {
             </ButtonLink>
           </div>
         }
+        cursorPagination={{
+          hasNextPage: Boolean(data?.nextCursor),
+          hasPreviousPage: Boolean(data?.prevCursor),
+          onNextPage: handleNextPage,
+          onPreviousPage: handlePreviousPage,
+          pageSize: search.perPage,
+          onPageSizeChange: handlePageSizeChange,
+          pageSizeOptions: [10, 20, 50],
+        }}
       />
       <ConfirmDialog
         open={Boolean(deleting)}

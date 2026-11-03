@@ -4,12 +4,7 @@ import { client, type Db } from "#/repository/client";
 const include = { tags: true } satisfies Prisma.VideoInclude;
 
 export const videoRepository = {
-  findAll: (where?: Prisma.VideoWhereInput) =>
-    client().video.findMany({
-      where,
-      include,
-      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-    }),
+  findPage: (args: Prisma.VideoFindManyArgs) => client().video.findMany({ ...args, include }),
 
   findById: (id: string) => client().video.findUnique({ where: { id }, include }),
 

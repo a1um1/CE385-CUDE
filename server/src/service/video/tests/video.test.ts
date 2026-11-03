@@ -17,9 +17,17 @@ describe("VideoService", () => {
   it("searches title text or an exact normalized tag", async () => {
     mockDB.video.findMany.mockResolvedValueOnce([]);
 
-    await VideoService.getAll({ search: "programming" });
+    await VideoService.getAll({
+      search: "programming",
+      perPage: 20,
+      direction: "forward",
+      sortOrder: "desc",
+    });
 
     expect(mockDB.video.findMany).toHaveBeenCalledWith({
+      take: 21,
+      skip: 0,
+      cursor: undefined,
       where: {
         OR: [
           { title: { contains: "programming", mode: "insensitive" } },
@@ -34,9 +42,17 @@ describe("VideoService", () => {
   it("filters by tag", async () => {
     mockDB.video.findMany.mockResolvedValueOnce([]);
 
-    await VideoService.getAll({ tag: "programming" });
+    await VideoService.getAll({
+      tag: "programming",
+      perPage: 20,
+      direction: "forward",
+      sortOrder: "desc",
+    });
 
     expect(mockDB.video.findMany).toHaveBeenCalledWith({
+      take: 21,
+      skip: 0,
+      cursor: undefined,
       where: { tags: { some: { name: "programming" } } },
       include: { tags: true },
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
