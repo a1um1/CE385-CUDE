@@ -1,3 +1,4 @@
+// oxlint-disable no-underscore-dangle
 import UserError from "#/lib/router/http/userError";
 import { cursorArgs, isBackward, paginate } from "#/lib/pagination";
 import { buildCursorOrderBy } from "#/lib/pagination.schema";
