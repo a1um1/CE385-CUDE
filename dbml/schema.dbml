@@ -207,6 +207,16 @@ Table refreshToken {
   updatedAt DateTime [not null]
 }
 
+Table Video {
+  id String [pk]
+  title String [not null]
+  youtubeUrl String [not null]
+  description String
+  tags String[] [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
 Enum TransactionType {
   ENERGY
   GEM
