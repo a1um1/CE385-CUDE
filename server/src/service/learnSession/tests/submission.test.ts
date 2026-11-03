@@ -54,7 +54,9 @@ const mockPendingSession = () =>
     status: "PENDING",
   } as never);
 
-const mockLesson = (overrides: { XPgiven?: number; gemsGiven?: number } = {}) =>
+const mockLesson = (
+  overrides: { XPgiven?: number; gemsGiven?: number; passThreshold?: number } = {},
+) =>
   mockDB.lesson.findUnique.mockResolvedValueOnce({
     id: LESSON,
     name: "Lesson 1",
@@ -64,9 +66,16 @@ const mockLesson = (overrides: { XPgiven?: number; gemsGiven?: number } = {}) =>
     ...overrides,
   } as never);
 
-/** Number of CODE exercises the lesson defines, which is what the pass rate is measured against. */
-const mockCodeExerciseCount = (count: number) =>
-  mockDB.exercise.count.mockResolvedValueOnce(count as never);
+/** CODE exercises the lesson defines, which is what the pass rate is measured against. */
+const mockCodeExerciseCount = (count: number, exerciseIDs: string[] = []) => {
+  const ids =
+    exerciseIDs.length > 0
+      ? exerciseIDs
+      : count === 1
+        ? [EXERCISE]
+        : Array.from({ length: count }, (_, i) => `exercise-${i}`);
+  mockDB.exercise.findMany.mockResolvedValueOnce(ids.map((id) => ({ id })) as never);
+};
 
 /** One submission graded against a single failing test case. */
 const mockFailedSubmission = () => {
@@ -189,5 +198,55 @@ describe("SubmissionService.submitSession", () => {
       SubmissionService.submitSession({ SessionID: SESSION, userID: USER }),
     ).resolves.toMatchObject({ reward: undefined });
     expect(mockDB.transactions.create).not.toHaveBeenCalled();
+  });
+
+  it("marks unsubmitted exercises as failed when only some exercises are answered", async () => {
+    mockPendingSession();
+    mockDB.sessions.updateMany.mockResolvedValueOnce({ count: 1 } as never);
+    mockDB.submission.findMany.mockResolvedValueOnce([
+      { id: "sub-0", exerciseID: "ex-0", content: { code: 'print("0")' } },
+      { id: "sub-1", exerciseID: "ex-1", content: { code: 'print("1")' } },
+    ] as never);
+    mockCodeExerciseCount(6, ["ex-0", "ex-1", "ex-2", "ex-3", "ex-4", "ex-5"]);
+    mockLesson({ passThreshold: 1 });
+
+    mockDB.exercise.findUnique
+      .mockResolvedValueOnce({
+        id: "ex-0",
+        lessonID: LESSON,
+        type: "CODE",
+        codeExercises: { id: "code-0", language: "python", testerCode: null },
+      } as never)
+      .mockResolvedValueOnce({
+        id: "ex-1",
+        lessonID: LESSON,
+        type: "CODE",
+        codeExercises: { id: "code-1", language: "python", testerCode: null },
+      } as never);
+    mockDB.testCase.findMany
+      .mockResolvedValueOnce([{ input: "0" }] as never)
+      .mockResolvedValueOnce([{ input: "1" }] as never);
+    grade.mockResolvedValueOnce([result(true)]).mockResolvedValueOnce([result(true)]);
+
+    const response = await SubmissionService.submitSession({ SessionID: SESSION, userID: USER });
+
+    expect(response.message).toBe("Submitted 6 exercise(s), 2 passed.");
+    expect(response.reward).toBeUndefined();
+    expect(response.exercises).toHaveLength(6);
+    expect(response.exercises.filter((e) => e.ok)).toHaveLength(2);
+    expect(response.exercises.filter((e) => !e.ok)).toHaveLength(4);
+
+    expect(mockDB.submission.upsert).toHaveBeenCalledTimes(4);
+    expect(mockDB.submission.upsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        create: expect.objectContaining({
+          SessionID: SESSION,
+          userID: USER,
+          exerciseID: "ex-2",
+          isGraded: true,
+          ok: false,
+        }),
+      }),
+    );
   });
 });

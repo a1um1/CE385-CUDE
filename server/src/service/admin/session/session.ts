@@ -73,7 +73,9 @@ export const querySession = async (query: AdminSessionQuery) => {
     ),
   );
 
-  return paginate(graded, query);
+  const filtered = query.result ? graded.filter((row) => row.gradeStatus === query.result) : graded;
+
+  return paginate(filtered, query);
 };
 
 export const getSessionById = async (id: string): Promise<AdminSessionDetail> => {

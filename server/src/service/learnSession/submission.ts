@@ -98,10 +98,35 @@ export default class SubmissionService {
           throw new UserError(400, "Session are not available for submission.");
         }
 
+        const codeExercises =
+          (await exerciseRepository.findCodeByLessonID(session.JSON.LessonID, tx)) ?? [];
         const submissions = await submissionRepository.findAllBySession(props.SessionID, tx);
+        const submissionMap = new Map(submissions.map((s) => [s.exerciseID, s]));
 
         const graded = await Promise.all(
-          submissions.map(async (submission) => {
+          codeExercises.map(async (codeExercise) => {
+            const submission = submissionMap.get(codeExercise.id);
+            if (!submission) {
+              await submissionRepository.upsert(
+                {
+                  SessionID: props.SessionID,
+                  userID: props.userID,
+                  exerciseID: codeExercise.id,
+                  content: { code: "" },
+                  isGraded: true,
+                  ok: false,
+                },
+                tx,
+              );
+              return {
+                exerciseID: codeExercise.id,
+                total: 0,
+                passed: 0,
+                ok: false,
+                gradeStatus: "FAILED" as const,
+              };
+            }
+
             const exercise = await ExerciseService.getById(submission.exerciseID);
             if (!(exercise instanceof CodeExerciseService)) return null;
 
@@ -125,10 +150,7 @@ export default class SubmissionService {
 
         const exercises = graded.filter((entry) => entry !== null);
         const passed = exercises.filter((entry) => entry.ok).length;
-        const totalCodeExercises = await exerciseRepository.countCodeByLessonID(
-          session.JSON.LessonID,
-          tx,
-        );
+        const totalCodeExercises = codeExercises.length;
         const reward = await this.grantLessonReward(tx, {
           SessionID: props.SessionID,
           userID: props.userID,
