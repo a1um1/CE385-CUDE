@@ -19,6 +19,7 @@ import {
   LayoutDashboardIcon,
   ListClockIcon,
   UsersIcon,
+  VideoIcon,
   type LucideIcon,
 } from "lucide-react";
 import styles from "./sidebar.module.css";
@@ -118,6 +119,12 @@ const navSections: NavSection[] = [
         label: "Events",
         link: { to: "/admin/event" },
         icon: CalendarDaysIcon,
+      },
+      {
+        key: "admin-video-list",
+        label: "Videos",
+        link: { to: "/admin/video" },
+        icon: VideoIcon,
       },
       {
         key: "admin-user-list",

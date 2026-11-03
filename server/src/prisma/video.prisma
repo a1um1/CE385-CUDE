@@ -1,0 +1,18 @@
+model Video {
+  id         String   @id @default(uuid(7)) @db.Uuid
+  title      String
+  youtubeUrl String
+  author     String?
+  tags       VideoTag[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([createdAt, id])
+}
+
+model VideoTag {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  name      String   @unique
+  createdAt DateTime @default(now())
+  videos    Video[]
+}

@@ -1,34 +1,30 @@
-// oxlint-disable no-await-in-loop
 import { pathToFileURL } from "node:url";
-import { readContent } from "./content";
 import { CONTENT_ROOT, db } from "./db";
+import { seedLessons } from "./lessons";
 import { seedPrerequisites } from "./prerequisites";
-import { addCounts, EMPTY_COUNTS, ensureAdmin, seedCourse, type Counts } from "./upsert";
+import type { Counts } from "./upsert";
+import { seedVideos } from "./videos";
 
 export interface SeedResult extends Counts {
   prerequisites: number;
+  videos: number;
 }
 
 /**
- * Load every markdown course under the content root into the database.
- * Upsert-by-name within each parent, so re-running is safe.
+ * Seed the whole database: course content (courses, units, lessons, exercises),
+ * its prerequisites, and the sample video resources. Every step upserts, so
+ * re-running is safe.
  * shortcut: rows removed from the files are not pruned, remove manually if content is deleted.
  */
 export async function seed(contentRoot: string = CONTENT_ROOT): Promise<SeedResult> {
-  const admin = await ensureAdmin();
-  const courses = readContent(contentRoot);
+  const lessons = await seedLessons(contentRoot);
+  const videos = await db.$transaction((tx) => seedVideos(tx), { timeout: 60_000 });
 
-  let counts: Counts = EMPTY_COUNTS;
-  await db.$transaction(
-    async (tx) => {
-      for (const [position, course] of courses.entries()) {
-        counts = addCounts(counts, await seedCourse(tx, course, position, admin.id));
-      }
-    },
-    { timeout: 60_000 },
-  );
-
-  return { ...counts, prerequisites: await seedPrerequisites(courses) };
+  return {
+    ...lessons.counts,
+    prerequisites: await seedPrerequisites(lessons.courses),
+    videos,
+  };
 }
 
 const isMain =

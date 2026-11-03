@@ -9,6 +9,7 @@ import { adminTransactionRoute } from "./transaction.admin";
 import { adminSessionRoute } from "./session.admin";
 import { adminEventRoute } from "./event.admin";
 import { adminStatsRoute } from "#/routes/admin/stats.admin";
+import { adminVideoRoute } from "#/routes/admin/video.admin";
 
 const adminRouter = new CustomRouter({
   prefix: "/admin",
@@ -40,6 +41,7 @@ const adminRouter = new CustomRouter({
   .use(adminUserStatsRoute)
   .use(adminStatsRoute)
   .use(adminSessionRoute)
-  .use(adminEventRoute);
+  .use(adminEventRoute)
+  .use(adminVideoRoute);
 
 export const adminRoute = adminRouter.route;

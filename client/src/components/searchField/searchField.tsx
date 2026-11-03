@@ -9,6 +9,7 @@ export interface SearchFieldProps {
   placeholder: string;
   initialValue?: string;
   className?: string;
+  size?: "sm" | "md" | "lg";
   onSearch: (value: string | undefined) => void;
 }
 
@@ -21,6 +22,7 @@ export default function SearchField({
   placeholder,
   initialValue,
   className,
+  size = "sm",
   onSearch,
 }: SearchFieldProps) {
   const [value, setValue] = React.useState(initialValue ?? "");
@@ -32,7 +34,7 @@ export default function SearchField({
       <span className={styles.label}>Search</span>
       <div className={styles.inputRow}>
         <Input
-          size="sm"
+          size={size}
           placeholder={placeholder}
           value={value}
           onChange={(event) => setValue(event.target.value)}
@@ -40,7 +42,7 @@ export default function SearchField({
             if (event.key === "Enter") submit();
           }}
         />
-        <Button size="sm" onClick={submit}>
+        <Button size={size} onClick={submit}>
           Search
         </Button>
       </div>
