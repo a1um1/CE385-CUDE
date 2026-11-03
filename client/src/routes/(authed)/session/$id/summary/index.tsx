@@ -8,7 +8,7 @@ import { gradeStatusColor } from "#/lib/gradeStatus";
 import { createFileRoute, Link, useLoaderData, useNavigate } from "@tanstack/react-router";
 import styles from "./summary.module.css";
 
-export const Route = createFileRoute("/(authed)/session/$id/summary")({
+export const Route = createFileRoute("/(authed)/session/$id/summary/")({
   component: RouteComponent,
 });
 

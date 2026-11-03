@@ -85,7 +85,7 @@ export function LessonsPanel({ courseId }: LessonsPanelProps) {
           </Select.Root>
         )}
       </div>
-      {!lessons.isLoading && (lessons.data || []).length === 0 && (
+      {!lessons.isLoading && !units.isLoading && (lessons.data || []).length === 0 && (
         <div className={styles.emptyState}>
           <FaceSlightlyFrowning className={styles.frowningFace} />
           <p>No lessons found for the selected unit.</p>
