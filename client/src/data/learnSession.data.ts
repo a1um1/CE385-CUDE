@@ -32,17 +32,17 @@ export const useStartLearnSessionMutation = () => {
       return data;
     },
     onSuccess: async (data) => {
-      await queryClient.invalidateQueries({ queryKey: ["pending_learn_session"] });
-      await queryClient.invalidateQueries({ queryKey: ["learn_sessions"] });
-      await queryClient.invalidateQueries({ queryKey: ["session"] });
-      await queryClient.invalidateQueries({ queryKey: ["lesson_enrollment_availability"] });
-      await queryClient.invalidateQueries({ queryKey: ["exercises_from_lesson"] });
-      navigate({
+      await navigate({
         to: "/session/$id",
         params: {
           id: data.id,
         },
       });
+      await queryClient.invalidateQueries({ queryKey: ["pending_learn_session"] });
+      await queryClient.invalidateQueries({ queryKey: ["learn_sessions"] });
+      await queryClient.invalidateQueries({ queryKey: ["session"] });
+      await queryClient.invalidateQueries({ queryKey: ["lesson_enrollment_availability"] });
+      await queryClient.invalidateQueries({ queryKey: ["exercises_from_lesson"] });
     },
   });
 };
@@ -77,7 +77,6 @@ export const useAbortLearnSessionMutation = () => {
   });
 };
 
-/** Every session of the student; used for their score history of a lesson. */
 export const useLearnSessionsQuery = (include?: SessionInclude) =>
   useQuery({
     queryKey: ["learn_sessions", include],
@@ -111,7 +110,6 @@ export const sessionByIdQuery = (sessionId?: string | null, include?: SessionInc
     enabled: Boolean(sessionId),
   });
 
-/** The student's saved answer for one exercise of a session (`null` when never saved). */
 export const exerciseSubmissionQuery = (sessionId?: string | null, exerciseId?: string | null) =>
   queryOptions({
     queryKey: ["session_submission", sessionId, exerciseId],
@@ -176,7 +174,6 @@ export const useSubmitLearnSessionMutation = (sessionId: string) => {
       await queryClient.invalidateQueries({ queryKey: ["session", sessionId] });
       await queryClient.invalidateQueries({ queryKey: ["pending_learn_session"] });
       await queryClient.invalidateQueries({ queryKey: ["learn_sessions"] });
-      // A first pass pays XP and gems, which the navbar reads from the user's stats.
       await queryClient.invalidateQueries({ queryKey: ["userStats"] });
     },
   });
