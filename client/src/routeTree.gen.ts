@@ -41,6 +41,9 @@ import { Route as AdminUnitIdRouteImport } from './routes/admin/unit/$id'
 import { Route as AdminUnitCreateRouteImport } from './routes/admin/unit/create'
 import { Route as AdminUserIndexRouteImport } from './routes/admin/user/index'
 import { Route as AdminUserIdRouteImport } from './routes/admin/user/$id'
+import { Route as AdminVideoIndexRouteImport } from './routes/admin/video/index'
+import { Route as AdminVideoIdRouteImport } from './routes/admin/video/$id'
+import { Route as AdminVideoCreateRouteImport } from './routes/admin/video/create'
 import { Route as authedbaseAccountIndexRouteImport } from './routes/(authed)/(base)/account/index'
 import { Route as authedbaseAccountSecurityRouteImport } from './routes/(authed)/(base)/account/security'
 import { Route as authedbaseAccountTransactionsRouteImport } from './routes/(authed)/(base)/account/transactions'
@@ -212,6 +215,21 @@ const AdminUserIdRoute = AdminUserIdRouteImport.update({
   path: '/user/$id',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminVideoIndexRoute = AdminVideoIndexRouteImport.update({
+  id: '/video/',
+  path: '/video/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminVideoIdRoute = AdminVideoIdRouteImport.update({
+  id: '/video/$id',
+  path: '/video/$id',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminVideoCreateRoute = AdminVideoCreateRouteImport.update({
+  id: '/video/create',
+  path: '/video/create',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const authedbaseAccountIndexRoute = authedbaseAccountIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -302,6 +320,8 @@ export interface FileRoutesByFullPath {
   '/admin/unit/$id': typeof AdminUnitIdRoute
   '/admin/unit/create': typeof AdminUnitCreateRoute
   '/admin/user/$id': typeof AdminUserIdRoute
+  '/admin/video/$id': typeof AdminVideoIdRoute
+  '/admin/video/create': typeof AdminVideoCreateRoute
   '/': typeof authedbaseIndexRoute
   '/admin/course/': typeof AdminCourseIndexRoute
   '/admin/event/': typeof AdminEventIndexRoute
@@ -312,6 +332,7 @@ export interface FileRoutesByFullPath {
   '/admin/transaction/': typeof AdminTransactionIndexRoute
   '/admin/unit/': typeof AdminUnitIndexRoute
   '/admin/user/': typeof AdminUserIndexRoute
+  '/admin/video/': typeof AdminVideoIndexRoute
   '/lesson/$lessonId': typeof authedbaseLessonLessonIdRouteRouteWithChildren
   '/account/security': typeof authedbaseAccountSecurityRoute
   '/account/transactions': typeof authedbaseAccountTransactionsRoute
@@ -342,6 +363,8 @@ export interface FileRoutesByTo {
   '/admin/unit/$id': typeof AdminUnitIdRoute
   '/admin/unit/create': typeof AdminUnitCreateRoute
   '/admin/user/$id': typeof AdminUserIdRoute
+  '/admin/video/$id': typeof AdminVideoIdRoute
+  '/admin/video/create': typeof AdminVideoCreateRoute
   '/': typeof authedbaseIndexRoute
   '/admin/course': typeof AdminCourseIndexRoute
   '/admin/event': typeof AdminEventIndexRoute
@@ -352,6 +375,7 @@ export interface FileRoutesByTo {
   '/admin/transaction': typeof AdminTransactionIndexRoute
   '/admin/unit': typeof AdminUnitIndexRoute
   '/admin/user': typeof AdminUserIndexRoute
+  '/admin/video': typeof AdminVideoIndexRoute
   '/account/security': typeof authedbaseAccountSecurityRoute
   '/account/transactions': typeof authedbaseAccountTransactionsRoute
   '/event/$eventId': typeof authedbaseEventEventIdRoute
@@ -388,6 +412,8 @@ export interface FileRoutesById {
   '/admin/unit/$id': typeof AdminUnitIdRoute
   '/admin/unit/create': typeof AdminUnitCreateRoute
   '/admin/user/$id': typeof AdminUserIdRoute
+  '/admin/video/$id': typeof AdminVideoIdRoute
+  '/admin/video/create': typeof AdminVideoCreateRoute
   '/(authed)/(base)/': typeof authedbaseIndexRoute
   '/admin/course/': typeof AdminCourseIndexRoute
   '/admin/event/': typeof AdminEventIndexRoute
@@ -398,6 +424,7 @@ export interface FileRoutesById {
   '/admin/transaction/': typeof AdminTransactionIndexRoute
   '/admin/unit/': typeof AdminUnitIndexRoute
   '/admin/user/': typeof AdminUserIndexRoute
+  '/admin/video/': typeof AdminVideoIndexRoute
   '/(authed)/(base)/lesson/$lessonId': typeof authedbaseLessonLessonIdRouteRouteWithChildren
   '/(authed)/(base)/account/security': typeof authedbaseAccountSecurityRoute
   '/(authed)/(base)/account/transactions': typeof authedbaseAccountTransactionsRoute
@@ -434,6 +461,8 @@ export interface FileRouteTypes {
     | '/admin/unit/$id'
     | '/admin/unit/create'
     | '/admin/user/$id'
+    | '/admin/video/$id'
+    | '/admin/video/create'
     | '/'
     | '/admin/course/'
     | '/admin/event/'
@@ -444,6 +473,7 @@ export interface FileRouteTypes {
     | '/admin/transaction/'
     | '/admin/unit/'
     | '/admin/user/'
+    | '/admin/video/'
     | '/lesson/$lessonId'
     | '/account/security'
     | '/account/transactions'
@@ -474,6 +504,8 @@ export interface FileRouteTypes {
     | '/admin/unit/$id'
     | '/admin/unit/create'
     | '/admin/user/$id'
+    | '/admin/video/$id'
+    | '/admin/video/create'
     | '/'
     | '/admin/course'
     | '/admin/event'
@@ -484,6 +516,7 @@ export interface FileRouteTypes {
     | '/admin/transaction'
     | '/admin/unit'
     | '/admin/user'
+    | '/admin/video'
     | '/account/security'
     | '/account/transactions'
     | '/event/$eventId'
@@ -519,6 +552,8 @@ export interface FileRouteTypes {
     | '/admin/unit/$id'
     | '/admin/unit/create'
     | '/admin/user/$id'
+    | '/admin/video/$id'
+    | '/admin/video/create'
     | '/(authed)/(base)/'
     | '/admin/course/'
     | '/admin/event/'
@@ -529,6 +564,7 @@ export interface FileRouteTypes {
     | '/admin/transaction/'
     | '/admin/unit/'
     | '/admin/user/'
+    | '/admin/video/'
     | '/(authed)/(base)/lesson/$lessonId'
     | '/(authed)/(base)/account/security'
     | '/(authed)/(base)/account/transactions'
@@ -775,6 +811,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminUserIdRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/video/': {
+      id: '/admin/video/'
+      path: '/video'
+      fullPath: '/admin/video/'
+      preLoaderRoute: typeof AdminVideoIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/video/$id': {
+      id: '/admin/video/$id'
+      path: '/video/$id'
+      fullPath: '/admin/video/$id'
+      preLoaderRoute: typeof AdminVideoIdRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/video/create': {
+      id: '/admin/video/create'
+      path: '/video/create'
+      fullPath: '/admin/video/create'
+      preLoaderRoute: typeof AdminVideoCreateRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/(authed)/(base)/account/': {
       id: '/(authed)/(base)/account/'
       path: '/'
@@ -963,6 +1020,8 @@ interface AdminRouteRouteChildren {
   AdminUnitIdRoute: typeof AdminUnitIdRoute
   AdminUnitCreateRoute: typeof AdminUnitCreateRoute
   AdminUserIdRoute: typeof AdminUserIdRoute
+  AdminVideoIdRoute: typeof AdminVideoIdRoute
+  AdminVideoCreateRoute: typeof AdminVideoCreateRoute
   AdminCourseIndexRoute: typeof AdminCourseIndexRoute
   AdminEventIndexRoute: typeof AdminEventIndexRoute
   AdminExerciseIndexRoute: typeof AdminExerciseIndexRoute
@@ -972,6 +1031,7 @@ interface AdminRouteRouteChildren {
   AdminTransactionIndexRoute: typeof AdminTransactionIndexRoute
   AdminUnitIndexRoute: typeof AdminUnitIndexRoute
   AdminUserIndexRoute: typeof AdminUserIndexRoute
+  AdminVideoIndexRoute: typeof AdminVideoIndexRoute
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
@@ -988,6 +1048,8 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminUnitIdRoute: AdminUnitIdRoute,
   AdminUnitCreateRoute: AdminUnitCreateRoute,
   AdminUserIdRoute: AdminUserIdRoute,
+  AdminVideoIdRoute: AdminVideoIdRoute,
+  AdminVideoCreateRoute: AdminVideoCreateRoute,
   AdminCourseIndexRoute: AdminCourseIndexRoute,
   AdminEventIndexRoute: AdminEventIndexRoute,
   AdminExerciseIndexRoute: AdminExerciseIndexRoute,
@@ -997,6 +1059,7 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminTransactionIndexRoute: AdminTransactionIndexRoute,
   AdminUnitIndexRoute: AdminUnitIndexRoute,
   AdminUserIndexRoute: AdminUserIndexRoute,
+  AdminVideoIndexRoute: AdminVideoIndexRoute,
 }
 
 const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
