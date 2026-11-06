@@ -9,6 +9,7 @@ export type PresignPurpose = ExtractRequestBody<"/storage/presign", "post">["pur
 export const usePresignUpload = () =>
   useMutation({
     mutationKey: ["presignUpload"],
+    meta: { silent: true },
     mutationFn: async ({ purpose, blob }: { purpose: PresignPurpose; blob: Blob }) => {
       const { data, error } = await APIclient.POST("/storage/presign", {
         body: { purpose, contentType: blob.type, size: blob.size },

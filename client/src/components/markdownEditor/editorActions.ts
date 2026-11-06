@@ -210,9 +210,20 @@ export function executeInsertBlock(
   blockContent: string,
 ) {
   const selection = editor.getSelection();
-  if (!selection) return;
+  const pos = editor.getPosition();
+  const range =
+    selection ??
+    (pos
+      ? {
+          startLineNumber: pos.lineNumber,
+          startColumn: pos.column,
+          endLineNumber: pos.lineNumber,
+          endColumn: pos.column,
+        }
+      : null);
+  if (!range) return;
 
   editor.executeEdits("markdown-editor", [
-    { range: selection, text: `\n${blockContent}\n`, forceMoveMarkers: true },
+    { range, text: `\n${blockContent}\n`, forceMoveMarkers: true },
   ]);
 }

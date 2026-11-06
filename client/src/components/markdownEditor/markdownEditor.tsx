@@ -112,10 +112,11 @@ export function MarkdownEditor({
       const editor = editorRef.current;
       if (!editor) return;
       fn(editor);
+      onChange(editor.getValue());
       editor.focus();
       updateActiveStates();
     },
-    [updateActiveStates],
+    [onChange, updateActiveStates],
   );
 
   const contextValue = React.useMemo(
