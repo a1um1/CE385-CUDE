@@ -21,7 +21,8 @@ export { FormRoot } from "./formLayout";
  * `disabled` to this, so a form never has to thread `isPending` through every field.
  */
 export function useFormPending(): boolean {
-  return useIsMutating() > 0;
+  // Silent mutations are background work (image upload, code run) and must not lock the form.
+  return useIsMutating({ predicate: (mutation) => mutation.meta?.silent !== true }) > 0;
 }
 
 export const { fieldContext, formContext, useFieldContext, useFormContext } =
