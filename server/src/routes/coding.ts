@@ -6,7 +6,7 @@ import CodeGrader from "#/service/grader/codeGrader";
 import { codeGradingSummary } from "#/service/grader/codeGrader.schema";
 
 const CodingRouter = new CustomRouter({
-  prefix: "/coding",
+  prefix: "/v1/coding",
   tags: ["Coding"],
 })
   .get(

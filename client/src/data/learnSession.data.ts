@@ -5,14 +5,14 @@ import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/r
 import { useNavigate } from "@tanstack/react-router";
 
 type SessionInclude = NonNullable<
-  paths["/session/{SessionID}"]["get"]["parameters"]["query"]
+  paths["/v1/session/{SessionID}"]["get"]["parameters"]["query"]
 >["include"];
 
 export const usePendingLearnSessionQuery = () =>
   useQuery({
     queryKey: ["pending_learn_session"],
     queryFn: async () => {
-      const { data, error } = await APIclient.GET("/session/pending-session");
+      const { data, error } = await APIclient.GET("/v1/session/pending-session");
       if (error) throw error;
       return data;
     },
@@ -23,7 +23,7 @@ export const useStartLearnSessionMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (lessonId: string) => {
-      const { data, error } = await APIclient.POST("/session", {
+      const { data, error } = await APIclient.POST("/v1/session", {
         body: {
           LessonID: lessonId,
         },
@@ -52,7 +52,7 @@ export const useAbortLearnSessionMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (props: { sessionId: string; lessonId: string }) => {
-      const { data, error } = await APIclient.DELETE("/session/{SessionID}", {
+      const { data, error } = await APIclient.DELETE("/v1/session/{SessionID}", {
         params: {
           path: {
             SessionID: props.sessionId,
@@ -81,7 +81,7 @@ export const useLearnSessionsQuery = (include?: SessionInclude) =>
   useQuery({
     queryKey: ["learn_sessions", include],
     queryFn: async () => {
-      const { data, error } = await APIclient.GET("/session", {
+      const { data, error } = await APIclient.GET("/v1/session", {
         params: { query: { include } },
       });
       if (error) throw error;
@@ -94,7 +94,7 @@ export const sessionByIdQuery = (sessionId?: string | null, include?: SessionInc
     queryKey: ["session", sessionId, include],
     queryFn: async () => {
       if (!sessionId) throw new Error("Session ID is required to fetch session.");
-      const { data, error } = await APIclient.GET("/session/{SessionID}", {
+      const { data, error } = await APIclient.GET("/v1/session/{SessionID}", {
         params: {
           path: {
             SessionID: sessionId,
@@ -115,7 +115,7 @@ export const exerciseSubmissionQuery = (sessionId?: string | null, exerciseId?: 
     queryKey: ["session_submission", sessionId, exerciseId],
     queryFn: async () => {
       if (!sessionId || !exerciseId) throw new Error("Session and exercise IDs are required.");
-      const { data, error } = await APIclient.GET("/session/{SessionID}/exercise/{exerciseId}", {
+      const { data, error } = await APIclient.GET("/v1/session/{SessionID}/exercise/{exerciseId}", {
         params: {
           path: {
             SessionID: sessionId,
@@ -135,9 +135,9 @@ export const useSaveExerciseSubmission = (sessionId: string, exerciseId: string)
     mutationKey: ["save_submission", sessionId, exerciseId],
     meta: { silent: true },
     mutationFn: async (
-      body: ExtractRequestBody<"/session/{SessionID}/exercise/{exerciseId}", "put">,
+      body: ExtractRequestBody<"/v1/session/{SessionID}/exercise/{exerciseId}", "put">,
     ) => {
-      const { data, error } = await APIclient.PUT("/session/{SessionID}/exercise/{exerciseId}", {
+      const { data, error } = await APIclient.PUT("/v1/session/{SessionID}/exercise/{exerciseId}", {
         params: {
           path: {
             SessionID: sessionId,
@@ -160,7 +160,7 @@ export const useSubmitLearnSessionMutation = (sessionId: string) => {
   return useMutation({
     mutationKey: ["submit_learn_session", sessionId],
     mutationFn: async () => {
-      const { data, error } = await APIclient.POST("/session/{SessionID}/submit", {
+      const { data, error } = await APIclient.POST("/v1/session/{SessionID}/submit", {
         params: {
           path: {
             SessionID: sessionId,

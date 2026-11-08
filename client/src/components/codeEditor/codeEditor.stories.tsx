@@ -43,7 +43,7 @@ const withLanguageCache: Decorator = (Story) => {
         version: "11",
       },
     },
-  } satisfies paths["/coding/language"]["get"]["responses"]["200"]["content"]["application/json"]);
+  } satisfies paths["/v1/coding/language"]["get"]["responses"]["200"]["content"]["application/json"]);
   return (
     <QueryClientProvider client={queryClient}>
       <Story />

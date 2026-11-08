@@ -13,7 +13,7 @@ import { adminStatsRoute } from "#/routes/admin/stats.admin";
 import { adminVideoRoute } from "#/routes/admin/video.admin";
 
 const adminRouter = new CustomRouter({
-  prefix: "/admin",
+  prefix: "/v1/admin",
   tags: ["Admin"],
   authentication: ["ADMIN"],
 })

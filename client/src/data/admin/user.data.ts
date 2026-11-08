@@ -3,14 +3,14 @@ import { APIclient } from "#/data/base/baseAPI";
 import { queryOptions, useMutation, useQuery } from "@tanstack/react-query";
 
 export const useAdminUserListQuery = (
-  props: ExtractRequestQuery<"/admin/user", "get">,
+  props: ExtractRequestQuery<"/v1/admin/user", "get">,
   options?: { enabled?: boolean },
 ) =>
   useQuery({
     queryKey: ["admin", "user", "list", props],
     enabled: options?.enabled ?? true,
     queryFn: async () => {
-      const { data, error } = await APIclient.GET("/admin/user", {
+      const { data, error } = await APIclient.GET("/v1/admin/user", {
         params: {
           query: props,
         },
@@ -24,7 +24,7 @@ export const getAdminUserQueryOptions = (userId: string) =>
   queryOptions({
     queryKey: ["admin", "user", "info", userId],
     queryFn: async () => {
-      const { data, error } = await APIclient.GET("/admin/user/{id}", {
+      const { data, error } = await APIclient.GET("/v1/admin/user/{id}", {
         params: {
           path: {
             id: userId,
@@ -41,8 +41,8 @@ export const useGetAdminUser = (userId: string) => useQuery(getAdminUserQueryOpt
 export const useAdminChangeUserPassword = () =>
   useMutation({
     mutationKey: ["admin", "user", "change-password"],
-    mutationFn: async (body: ExtractRequestBody<"/admin/user/change-password", "post">) => {
-      const { data, error } = await APIclient.POST("/admin/user/change-password", {
+    mutationFn: async (body: ExtractRequestBody<"/v1/admin/user/change-password", "post">) => {
+      const { data, error } = await APIclient.POST("/v1/admin/user/change-password", {
         body,
       });
       if (error) throw error;
@@ -53,8 +53,8 @@ export const useAdminChangeUserPassword = () =>
 export const useAdminDeactivateUser = () =>
   useMutation({
     mutationKey: ["admin", "user", "deactivate"],
-    mutationFn: async (body: ExtractRequestBody<"/admin/user/deactivate", "post">) => {
-      const { data, error } = await APIclient.POST("/admin/user/deactivate", {
+    mutationFn: async (body: ExtractRequestBody<"/v1/admin/user/deactivate", "post">) => {
+      const { data, error } = await APIclient.POST("/v1/admin/user/deactivate", {
         body,
       });
       if (error) throw error;
@@ -65,8 +65,8 @@ export const useAdminDeactivateUser = () =>
 export const useAdminActivateUser = () =>
   useMutation({
     mutationKey: ["admin", "user", "activate"],
-    mutationFn: async (body: ExtractRequestBody<"/admin/user/activate", "post">) => {
-      const { data, error } = await APIclient.POST("/admin/user/activate", {
+    mutationFn: async (body: ExtractRequestBody<"/v1/admin/user/activate", "post">) => {
+      const { data, error } = await APIclient.POST("/v1/admin/user/activate", {
         body,
       });
       if (error) throw error;
@@ -77,8 +77,8 @@ export const useAdminActivateUser = () =>
 export const useAdminUpdateUser = () =>
   useMutation({
     mutationKey: ["admin", "user", "update"],
-    mutationFn: async (body: ExtractRequestBody<"/admin/user", "patch">) => {
-      const { data, error } = await APIclient.PATCH("/admin/user", {
+    mutationFn: async (body: ExtractRequestBody<"/v1/admin/user", "patch">) => {
+      const { data, error } = await APIclient.PATCH("/v1/admin/user", {
         body,
       });
       if (error) throw error;
@@ -90,7 +90,7 @@ export const useAdminViewUserActivity = (userId: string, monthWindow = 3) =>
   useQuery({
     queryKey: ["admin", "user", "activity", userId],
     queryFn: async () => {
-      const { data, error } = await APIclient.GET("/admin/user/{userId}/submission-calendar", {
+      const { data, error } = await APIclient.GET("/v1/admin/user/{userId}/submission-calendar", {
         params: {
           path: { userId },
           query: { months: monthWindow },

@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-    "/user": {
+    "/v1/user": {
         parameters: {
             query?: never;
             header?: never;
@@ -97,7 +97,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/user/avatar": {
+    "/v1/user/avatar": {
         parameters: {
             query?: never;
             header?: never;
@@ -194,7 +194,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/user/background": {
+    "/v1/user/background": {
         parameters: {
             query?: never;
             header?: never;
@@ -291,7 +291,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/user/password": {
+    "/v1/user/password": {
         parameters: {
             query?: never;
             header?: never;
@@ -388,7 +388,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/user/get-profile/{username}": {
+    "/v1/user/get-profile/{username}": {
         parameters: {
             query?: never;
             header?: never;
@@ -485,7 +485,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/user/current-stat": {
+    "/v1/user/current-stat": {
         parameters: {
             query?: never;
             header?: never;
@@ -578,7 +578,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/user/ranking": {
+    "/v1/user/ranking": {
         parameters: {
             query?: never;
             header?: never;
@@ -696,7 +696,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/user/transactions": {
+    "/v1/user/transactions": {
         parameters: {
             query?: never;
             header?: never;
@@ -793,7 +793,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/storage/presign": {
+    "/v1/storage/presign": {
         parameters: {
             query?: never;
             header?: never;
@@ -892,7 +892,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/test": {
+    "/v1/test": {
         parameters: {
             query?: never;
             header?: never;
@@ -987,7 +987,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/test/error": {
+    "/v1/test/error": {
         parameters: {
             query?: never;
             header?: never;
@@ -1080,7 +1080,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/test/unhandled-error": {
+    "/v1/test/unhandled-error": {
         parameters: {
             query?: never;
             header?: never;
@@ -1173,7 +1173,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin/course": {
+    "/v1/admin/course": {
         parameters: {
             query?: never;
             header?: never;
@@ -1355,7 +1355,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin/course/{id}": {
+    "/v1/admin/course/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -1533,7 +1533,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin/dashboard": {
+    "/v1/admin/dashboard": {
         parameters: {
             query?: never;
             header?: never;
@@ -1626,7 +1626,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin/lesson": {
+    "/v1/admin/lesson": {
         parameters: {
             query?: never;
             header?: never;
@@ -1813,7 +1813,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin/lesson/{lessonId}": {
+    "/v1/admin/lesson/{lessonId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -1996,7 +1996,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin/user": {
+    "/v1/admin/user": {
         parameters: {
             query?: never;
             header?: never;
@@ -2180,7 +2180,7 @@ export interface paths {
         };
         trace?: never;
     };
-    "/admin/user/{id}": {
+    "/v1/admin/user/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -2275,7 +2275,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin/user/change-password": {
+    "/v1/admin/user/change-password": {
         parameters: {
             query?: never;
             header?: never;
@@ -2372,7 +2372,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin/user/deactivate": {
+    "/v1/admin/user/deactivate": {
         parameters: {
             query?: never;
             header?: never;
@@ -2469,7 +2469,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin/user/activate": {
+    "/v1/admin/user/activate": {
         parameters: {
             query?: never;
             header?: never;
@@ -2566,7 +2566,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin/unit": {
+    "/v1/admin/unit": {
         parameters: {
             query?: never;
             header?: never;
@@ -2751,7 +2751,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin/unit/{id}": {
+    "/v1/admin/unit/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -2929,7 +2929,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin/user/{userId}/submission-calendar": {
+    "/v1/admin/user/{userId}/submission-calendar": {
         parameters: {
             query?: never;
             header?: never;
@@ -3029,7 +3029,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin/exercise": {
+    "/v1/admin/exercise": {
         parameters: {
             query?: never;
             header?: never;
@@ -3207,7 +3207,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin/exercise/{id}": {
+    "/v1/admin/exercise/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -3379,7 +3379,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin/transaction": {
+    "/v1/admin/transaction": {
         parameters: {
             query?: never;
             header?: never;
@@ -3480,7 +3480,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin/submission": {
+    "/v1/admin/submission": {
         parameters: {
             query?: never;
             header?: never;
@@ -3584,7 +3584,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin/submission/{id}": {
+    "/v1/admin/submission/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -3679,7 +3679,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin/event": {
+    "/v1/admin/event": {
         parameters: {
             query?: never;
             header?: never;
@@ -3859,7 +3859,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin/event/{eventId}": {
+    "/v1/admin/event/{eventId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -4037,7 +4037,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin/stats": {
+    "/v1/admin/stats": {
         parameters: {
             query?: never;
             header?: never;
@@ -4130,7 +4130,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin/stats/{courseId}": {
+    "/v1/admin/stats/{courseId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -4225,7 +4225,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin/stats/{courseId}/units": {
+    "/v1/admin/stats/{courseId}/units": {
         parameters: {
             query?: never;
             header?: never;
@@ -4320,7 +4320,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin/stats/units/{unitId}": {
+    "/v1/admin/stats/units/{unitId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -4415,7 +4415,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin/stats/units/{unitId}/lessons": {
+    "/v1/admin/stats/units/{unitId}/lessons": {
         parameters: {
             query?: never;
             header?: never;
@@ -4510,7 +4510,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin/stats/lessons/{lessonId}": {
+    "/v1/admin/stats/lessons/{lessonId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -4605,7 +4605,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin/video": {
+    "/v1/admin/video": {
         parameters: {
             query?: never;
             header?: never;
@@ -4788,7 +4788,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin/video/tags": {
+    "/v1/admin/video/tags": {
         parameters: {
             query?: never;
             header?: never;
@@ -4881,7 +4881,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin/video/{videoId}": {
+    "/v1/admin/video/{videoId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -5138,7 +5138,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin": {
+    "/v1/admin": {
         parameters: {
             query?: never;
             header?: never;
@@ -5231,7 +5231,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/auth/signup": {
+    "/v1/auth/signup": {
         parameters: {
             query?: never;
             header?: never;
@@ -5332,7 +5332,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/auth/signin": {
+    "/v1/auth/signin": {
         parameters: {
             query?: never;
             header?: never;
@@ -5431,7 +5431,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/auth/refresh": {
+    "/v1/auth/refresh": {
         parameters: {
             query?: never;
             header?: never;
@@ -5528,7 +5528,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/auth/logout": {
+    "/v1/auth/logout": {
         parameters: {
             query?: never;
             header?: never;
@@ -5621,7 +5621,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/coding/language": {
+    "/v1/coding/language": {
         parameters: {
             query?: never;
             header?: never;
@@ -5714,7 +5714,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/coding/run": {
+    "/v1/coding/run": {
         parameters: {
             query?: never;
             header?: never;
@@ -5819,7 +5819,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/coding/judge": {
+    "/v1/coding/judge": {
         parameters: {
             query?: never;
             header?: never;
@@ -5923,7 +5923,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/course": {
+    "/v1/course": {
         parameters: {
             query?: never;
             header?: never;
@@ -6024,7 +6024,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/course/{courseId}": {
+    "/v1/course/{courseId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -6122,7 +6122,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/course/{courseId}/unit": {
+    "/v1/course/{courseId}/unit": {
         parameters: {
             query?: never;
             header?: never;
@@ -6220,7 +6220,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/unit/{unitId}": {
+    "/v1/unit/{unitId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -6318,7 +6318,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/unit/{unitId}/lesson": {
+    "/v1/unit/{unitId}/lesson": {
         parameters: {
             query?: never;
             header?: never;
@@ -6424,7 +6424,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/exercise/{exerciseId}": {
+    "/v1/exercise/{exerciseId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -6521,7 +6521,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/exercise/{exerciseId}/run": {
+    "/v1/exercise/{exerciseId}/run": {
         parameters: {
             query?: never;
             header?: never;
@@ -6625,7 +6625,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/lesson/{lessonId}": {
+    "/v1/lesson/{lessonId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -6730,7 +6730,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/lesson/{lessonId}/stats": {
+    "/v1/lesson/{lessonId}/stats": {
         parameters: {
             query?: never;
             header?: never;
@@ -6825,7 +6825,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/lesson/{lessonId}/enrollment-availability": {
+    "/v1/lesson/{lessonId}/enrollment-availability": {
         parameters: {
             query?: never;
             header?: never;
@@ -6928,7 +6928,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/lesson/{lessonId}/exercise": {
+    "/v1/lesson/{lessonId}/exercise": {
         parameters: {
             query?: never;
             header?: never;
@@ -7027,7 +7027,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/session": {
+    "/v1/session": {
         parameters: {
             query?: never;
             header?: never;
@@ -7362,7 +7362,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/session/pending-session": {
+    "/v1/session/pending-session": {
         parameters: {
             query?: never;
             header?: never;
@@ -7530,7 +7530,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/session/{SessionID}": {
+    "/v1/session/{SessionID}": {
         parameters: {
             query?: never;
             header?: never;
@@ -7784,7 +7784,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/session/{SessionID}/exercise/{exerciseId}": {
+    "/v1/session/{SessionID}/exercise/{exerciseId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -7971,7 +7971,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/session/{SessionID}/submit": {
+    "/v1/session/{SessionID}/submit": {
         parameters: {
             query?: never;
             header?: never;
@@ -8072,7 +8072,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/event": {
+    "/v1/event": {
         parameters: {
             query?: never;
             header?: never;
@@ -8165,7 +8165,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/event/{eventId}": {
+    "/v1/event/{eventId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -8260,7 +8260,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/video": {
+    "/v1/video": {
         parameters: {
             query?: never;
             header?: never;
@@ -8362,7 +8362,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/video/tags": {
+    "/v1/video/tags": {
         parameters: {
             query?: never;
             header?: never;
@@ -8455,7 +8455,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/video/authors": {
+    "/v1/video/authors": {
         parameters: {
             query?: never;
             header?: never;
@@ -8741,12 +8741,12 @@ export interface components {
             reason: string;
             /**
              * Format: date-time
-             * @example 2026-11-03T07:38:58.794Z
+             * @example 2026-11-08T05:58:16.849Z
              */
             createdAt: string;
             /**
              * Format: date-time
-             * @example 2026-11-03T07:38:58.796Z
+             * @example 2026-11-08T05:58:16.850Z
              */
             updatedAt: string;
         };

@@ -18,7 +18,7 @@ import CustomRouter from "#/lib/router/customRouter";
 import { GenericResponseSchema } from "#/lib/router/http/genericResponse";
 
 const userRoute = new CustomRouter({
-  prefix: "/user",
+  prefix: "/v1/user",
   tags: ["User"],
   authentication: true,
 })
@@ -112,7 +112,7 @@ const userRoute = new CustomRouter({
   .get(
     "/current-stat",
     {
-      prefix: "/user",
+      prefix: "/v1/user",
       tags: ["User"],
       summary: "Get current user stat",
       description:

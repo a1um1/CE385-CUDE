@@ -2,11 +2,11 @@ import type { ExtractRequestQuery, ExtractRequestBody } from "#/data/base/apiUti
 import { APIclient } from "#/data/base/baseAPI";
 import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-export const useAdminCourseListQuery = (props: ExtractRequestQuery<"/admin/course", "get">) =>
+export const useAdminCourseListQuery = (props: ExtractRequestQuery<"/v1/admin/course", "get">) =>
   useQuery({
     queryKey: ["admin", "course", "list", props],
     queryFn: async () => {
-      const { data, error } = await APIclient.GET("/admin/course", {
+      const { data, error } = await APIclient.GET("/v1/admin/course", {
         params: {
           query: props,
         },
@@ -20,7 +20,7 @@ export const getAdminCourseQueryOptions = (courseId: string) =>
   queryOptions({
     queryKey: ["admin", "course", "info", { id: courseId }],
     queryFn: async () => {
-      const { data, error } = await APIclient.GET("/admin/course/{id}", {
+      const { data, error } = await APIclient.GET("/v1/admin/course/{id}", {
         params: {
           path: {
             id: courseId,
@@ -38,8 +38,8 @@ export const useAdminCreateCourse = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ["admin", "course", "create"],
-    mutationFn: async (body: ExtractRequestBody<"/admin/course", "post">) => {
-      const { data, error } = await APIclient.POST("/admin/course", {
+    mutationFn: async (body: ExtractRequestBody<"/v1/admin/course", "post">) => {
+      const { data, error } = await APIclient.POST("/v1/admin/course", {
         body,
       });
       if (error) throw error;
@@ -57,9 +57,9 @@ export const useAdminUpdateCourse = () => {
     mutationKey: ["admin", "course", "update"],
     mutationFn: async (props: {
       id: string;
-      body: ExtractRequestBody<"/admin/course/{id}", "put">;
+      body: ExtractRequestBody<"/v1/admin/course/{id}", "put">;
     }) => {
-      const { data, error } = await APIclient.PUT("/admin/course/{id}", {
+      const { data, error } = await APIclient.PUT("/v1/admin/course/{id}", {
         params: {
           path: {
             id: props.id,

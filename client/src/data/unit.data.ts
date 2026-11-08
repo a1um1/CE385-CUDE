@@ -6,7 +6,7 @@ const fetchUnitFromCourseQuery = (courseId?: string | null) =>
     queryKey: ["unit_from_course", courseId],
     queryFn: async () => {
       if (!courseId) throw new Error("Course ID is required to fetch units.");
-      const { data, error } = await APIclient.GET(`/course/{courseId}/unit`, {
+      const { data, error } = await APIclient.GET(`/v1/course/{courseId}/unit`, {
         params: {
           path: {
             courseId,

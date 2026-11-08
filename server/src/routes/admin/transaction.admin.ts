@@ -6,7 +6,7 @@ import { queryTransaction } from "#/service/admin/transactions";
 import CustomRouter from "#/lib/router/customRouter";
 
 const adminTransactionRouter = new CustomRouter({
-  prefix: "/admin/transaction",
+  prefix: "/v1/admin/transaction",
   tags: ["Admin Transaction Management"],
   authentication: ["ADMIN"],
 }).get(

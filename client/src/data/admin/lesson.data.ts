@@ -3,12 +3,12 @@ import { APIclient } from "#/data/base/baseAPI";
 import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const getAdminLessonListQueryOptions = (
-  props: ExtractRequestQuery<"/admin/lesson", "get">,
+  props: ExtractRequestQuery<"/v1/admin/lesson", "get">,
 ) =>
   queryOptions({
     queryKey: ["admin", "lesson", "list", props],
     queryFn: async () => {
-      const { data, error } = await APIclient.GET("/admin/lesson", {
+      const { data, error } = await APIclient.GET("/v1/admin/lesson", {
         params: {
           query: props,
         },
@@ -18,14 +18,14 @@ export const getAdminLessonListQueryOptions = (
     },
   });
 
-export const useAdminLessonListQuery = (props: ExtractRequestQuery<"/admin/lesson", "get">) =>
+export const useAdminLessonListQuery = (props: ExtractRequestQuery<"/v1/admin/lesson", "get">) =>
   useQuery(getAdminLessonListQueryOptions(props));
 
 export const getAdminLessonQueryOptions = (lessonId: string) =>
   queryOptions({
     queryKey: ["admin", "lesson", "info", { id: lessonId }],
     queryFn: async () => {
-      const { data, error } = await APIclient.GET("/admin/lesson/{lessonId}", {
+      const { data, error } = await APIclient.GET("/v1/admin/lesson/{lessonId}", {
         params: {
           path: {
             lessonId,
@@ -43,8 +43,8 @@ export const useAdminCreateLesson = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ["admin", "lesson", "create"],
-    mutationFn: async (body: ExtractRequestBody<"/admin/lesson", "post">) => {
-      const { data, error } = await APIclient.POST("/admin/lesson", {
+    mutationFn: async (body: ExtractRequestBody<"/v1/admin/lesson", "post">) => {
+      const { data, error } = await APIclient.POST("/v1/admin/lesson", {
         body,
       });
       if (error) throw error;
@@ -62,9 +62,9 @@ export const useAdminUpdateLesson = () => {
     mutationKey: ["admin", "lesson", "update"],
     mutationFn: async (props: {
       lessonId: string;
-      body: ExtractRequestBody<"/admin/lesson/{lessonId}", "put">;
+      body: ExtractRequestBody<"/v1/admin/lesson/{lessonId}", "put">;
     }) => {
-      const { data, error } = await APIclient.PUT("/admin/lesson/{lessonId}", {
+      const { data, error } = await APIclient.PUT("/v1/admin/lesson/{lessonId}", {
         params: {
           path: {
             lessonId: props.lessonId,

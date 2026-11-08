@@ -18,7 +18,7 @@ export default async function refreshToken(): Promise<void> {
   }
 
   refreshPromise = (async () => {
-    const response = await fetch(`${BASE_URL}/auth/refresh`, {
+    const response = await fetch(`${BASE_URL}/v1/auth/refresh`, {
       method: "POST",
       credentials: "include",
       headers: {

@@ -10,7 +10,7 @@ import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 
 const adminCourseRouter = new CustomRouter({
-  prefix: "/admin/course",
+  prefix: "/v1/admin/course",
   tags: ["Admin Course Management"],
   authentication: ["ADMIN"],
 })

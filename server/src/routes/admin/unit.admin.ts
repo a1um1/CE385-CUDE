@@ -10,7 +10,7 @@ import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 
 const adminUnitRouter = new CustomRouter({
-  prefix: "/admin/unit",
+  prefix: "/v1/admin/unit",
   tags: ["Admin Unit Management"],
   authentication: ["ADMIN"],
 })

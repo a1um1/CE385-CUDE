@@ -7,7 +7,7 @@ export const exerciseFromLessonQuery = (lessonId?: string | null) =>
     queryKey: ["exercises_from_lesson", lessonId],
     queryFn: async () => {
       if (!lessonId) throw new Error("Lesson ID is required to fetch exercises.");
-      const { data, error } = await APIclient.GET("/lesson/{lessonId}/exercise", {
+      const { data, error } = await APIclient.GET("/v1/lesson/{lessonId}/exercise", {
         params: {
           path: {
             lessonId,
@@ -28,7 +28,7 @@ export const exerciseQueryOptions = (exerciseId?: string | null) =>
     queryKey: ["exercise", exerciseId],
     queryFn: async () => {
       if (!exerciseId) throw new Error("Exercise ID is required to fetch exercise.");
-      const { data, error } = await APIclient.GET("/exercise/{exerciseId}", {
+      const { data, error } = await APIclient.GET("/v1/exercise/{exerciseId}", {
         params: {
           path: {
             exerciseId,
@@ -49,8 +49,8 @@ export const useRunExercise = (exerciseId: string) =>
   useMutation({
     mutationKey: ["run_exercise", exerciseId],
     meta: { silent: true },
-    mutationFn: async (body: ExtractRequestBody<"/exercise/{exerciseId}/run", "post">) => {
-      const { data, error } = await APIclient.POST("/exercise/{exerciseId}/run", {
+    mutationFn: async (body: ExtractRequestBody<"/v1/exercise/{exerciseId}/run", "post">) => {
+      const { data, error } = await APIclient.POST("/v1/exercise/{exerciseId}/run", {
         params: {
           path: {
             exerciseId,

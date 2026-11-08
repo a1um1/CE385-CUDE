@@ -11,7 +11,7 @@ import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 
 const adminStatsRouter = new CustomRouter({
-  prefix: "/admin/stats",
+  prefix: "/v1/admin/stats",
   tags: ["Admin Stats"],
   authentication: ["ADMIN"],
 })

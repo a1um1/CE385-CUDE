@@ -11,7 +11,7 @@ import CustomRouter from "#/lib/router/customRouter";
 import { GenericResponseSchema } from "#/lib/router/http/genericResponse";
 
 const adminEventRouter = new CustomRouter({
-  prefix: "/admin/event",
+  prefix: "/v1/admin/event",
   tags: ["Admin Event Management"],
   authentication: ["ADMIN"],
 })

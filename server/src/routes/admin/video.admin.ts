@@ -12,7 +12,7 @@ import {
 } from "#/service/video/video.schema";
 
 const adminVideoRouter = new CustomRouter({
-  prefix: "/admin/video",
+  prefix: "/v1/admin/video",
   tags: ["Admin Video Management"],
   authentication: ["ADMIN"],
 })

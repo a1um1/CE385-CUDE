@@ -127,7 +127,7 @@ export function ExerciseForm({
       language: components["schemas"]["GoJudgeLanguage"];
       testCases: { input: string; output: string }[];
     }) => {
-      const { data, error } = await APIclient.POST("/coding/judge", {
+      const { data, error } = await APIclient.POST("/v1/coding/judge", {
         body: payload,
       });
       if (error) throw error;

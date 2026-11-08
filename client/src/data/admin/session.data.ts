@@ -2,11 +2,13 @@ import type { ExtractRequestQuery } from "#/data/base/apiUtils.type";
 import { APIclient } from "#/data/base/baseAPI";
 import { useQuery } from "@tanstack/react-query";
 
-export const useAdminSessionListQuery = (props: ExtractRequestQuery<"/admin/submission", "get">) =>
+export const useAdminSessionListQuery = (
+  props: ExtractRequestQuery<"/v1/admin/submission", "get">,
+) =>
   useQuery({
     queryKey: ["admin", "session", "list", props],
     queryFn: async () => {
-      const { data, error } = await APIclient.GET("/admin/submission", {
+      const { data, error } = await APIclient.GET("/v1/admin/submission", {
         params: { query: props },
       });
       if (error) throw error;
@@ -17,7 +19,7 @@ export const useAdminSessionListQuery = (props: ExtractRequestQuery<"/admin/subm
 export const getAdminSessionQueryOptions = (sessionId: string) => ({
   queryKey: ["admin", "session", "info", { id: sessionId }],
   queryFn: async () => {
-    const { data, error } = await APIclient.GET("/admin/submission/{id}", {
+    const { data, error } = await APIclient.GET("/v1/admin/submission/{id}", {
       params: { path: { id: sessionId } },
     });
     if (error) throw error;

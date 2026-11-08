@@ -5,7 +5,7 @@ export const useEventsQuery = () =>
   useQuery({
     queryKey: ["events"],
     queryFn: async () => {
-      const { data, error } = await APIclient.GET("/event");
+      const { data, error } = await APIclient.GET("/v1/event");
       if (error) throw error;
       return data;
     },
@@ -15,7 +15,7 @@ export const getEventQueryOptions = (eventId: string) =>
   queryOptions({
     queryKey: ["event", "info", { id: eventId }],
     queryFn: async () => {
-      const { data, error } = await APIclient.GET("/event/{eventId}", {
+      const { data, error } = await APIclient.GET("/v1/event/{eventId}", {
         params: {
           path: {
             eventId,

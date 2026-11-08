@@ -3,12 +3,12 @@ import { APIclient } from "#/data/base/baseAPI";
 import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const getAdminExerciseListQueryOptions = (
-  props: ExtractRequestQuery<"/admin/exercise", "get">,
+  props: ExtractRequestQuery<"/v1/admin/exercise", "get">,
 ) =>
   queryOptions({
     queryKey: ["admin", "exercise", "list", props],
     queryFn: async () => {
-      const { data, error } = await APIclient.GET("/admin/exercise", {
+      const { data, error } = await APIclient.GET("/v1/admin/exercise", {
         params: {
           query: props,
         },
@@ -18,14 +18,15 @@ export const getAdminExerciseListQueryOptions = (
     },
   });
 
-export const useAdminExerciseListQuery = (props: ExtractRequestQuery<"/admin/exercise", "get">) =>
-  useQuery(getAdminExerciseListQueryOptions(props));
+export const useAdminExerciseListQuery = (
+  props: ExtractRequestQuery<"/v1/admin/exercise", "get">,
+) => useQuery(getAdminExerciseListQueryOptions(props));
 
 export const getAdminExerciseQueryOptions = (exerciseId: string) =>
   queryOptions({
     queryKey: ["admin", "exercise", "info", { id: exerciseId }],
     queryFn: async () => {
-      const { data, error } = await APIclient.GET("/admin/exercise/{id}", {
+      const { data, error } = await APIclient.GET("/v1/admin/exercise/{id}", {
         params: {
           path: {
             id: exerciseId,
@@ -43,8 +44,8 @@ export const useAdminCreateExercise = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ["admin", "exercise", "create"],
-    mutationFn: async (body: ExtractRequestBody<"/admin/exercise", "post">) => {
-      const { data, error } = await APIclient.POST("/admin/exercise", {
+    mutationFn: async (body: ExtractRequestBody<"/v1/admin/exercise", "post">) => {
+      const { data, error } = await APIclient.POST("/v1/admin/exercise", {
         body,
       });
       if (error) throw error;
@@ -62,9 +63,9 @@ export const useAdminUpdateExercise = () => {
     mutationKey: ["admin", "exercise", "update"],
     mutationFn: async (props: {
       id: string;
-      body: ExtractRequestBody<"/admin/exercise/{id}", "put">;
+      body: ExtractRequestBody<"/v1/admin/exercise/{id}", "put">;
     }) => {
-      const { data, error } = await APIclient.PUT("/admin/exercise/{id}", {
+      const { data, error } = await APIclient.PUT("/v1/admin/exercise/{id}", {
         params: {
           path: {
             id: props.id,

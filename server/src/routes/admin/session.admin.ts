@@ -8,7 +8,7 @@ import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 
 const adminSessionRouter = new CustomRouter({
-  prefix: "/admin/submission",
+  prefix: "/v1/admin/submission",
   tags: ["Admin Session Management"],
   authentication: ["ADMIN"],
 })

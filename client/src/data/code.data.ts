@@ -6,7 +6,7 @@ export const useCodeAvailableLanguage = () =>
   useQuery({
     queryKey: ["editor-code"],
     queryFn: async () => {
-      const { data, error } = await APIclient.GET("/coding/language");
+      const { data, error } = await APIclient.GET("/v1/coding/language");
       if (error) throw error;
       return data;
     },

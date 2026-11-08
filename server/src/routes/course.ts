@@ -13,7 +13,7 @@ const CourseListSchema = z
 const UnitListSchema = z.array(UnitSchema);
 
 const courseRouter = new CustomRouter({
-  prefix: "/course",
+  prefix: "/v1/course",
   tags: ["Course"],
   authentication: true,
 })
