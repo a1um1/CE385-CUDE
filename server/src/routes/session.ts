@@ -10,7 +10,7 @@ import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 
 const learnSessionRouter = new CustomRouter({
-  prefix: "/session",
+  prefix: "/v1/session",
   tags: ["Learn Session"],
   authentication: true,
 })

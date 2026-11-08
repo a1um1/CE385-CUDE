@@ -6,7 +6,7 @@ export const useTestData = () =>
     queryKey: ["todos"],
     queryFn: async () => {
       const randomNumber = Math.floor(Math.random() * 1_000_000),
-        { data, error } = await APIclient.GET("/test", {
+        { data, error } = await APIclient.GET("/v1/test", {
           params: {
             query: {
               randomNumber,

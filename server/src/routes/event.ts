@@ -4,7 +4,7 @@ import { z } from "#/lib/extendZod";
 import CustomRouter from "#/lib/router/customRouter";
 
 const eventRouter = new CustomRouter({
-  prefix: "/event",
+  prefix: "/v1/event",
   tags: ["Event"],
   authentication: true,
 })

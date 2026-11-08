@@ -5,7 +5,7 @@ export const profileQueryOptions = (username: string) =>
   queryOptions({
     queryKey: ["profile", username],
     queryFn: async () => {
-      const { data, error } = await APIclient.GET(`/user/get-profile/{username}`, {
+      const { data, error } = await APIclient.GET(`/v1/user/get-profile/{username}`, {
         params: {
           path: {
             username,
@@ -22,7 +22,7 @@ export const useQueryProfile = (username: string) =>
   useQuery({
     queryKey: ["profile", username],
     queryFn: async () => {
-      const { data, error } = await APIclient.GET(`/user/get-profile/{username}`, {
+      const { data, error } = await APIclient.GET(`/v1/user/get-profile/{username}`, {
         params: {
           path: {
             username,

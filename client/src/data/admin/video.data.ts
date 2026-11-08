@@ -2,11 +2,11 @@ import type { ExtractRequestBody, ExtractRequestQuery } from "#/data/base/apiUti
 import { APIclient } from "#/data/base/baseAPI";
 import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-export const useAdminVideoListQuery = (props: ExtractRequestQuery<"/admin/video", "get">) =>
+export const useAdminVideoListQuery = (props: ExtractRequestQuery<"/v1/admin/video", "get">) =>
   useQuery({
     queryKey: ["admin", "video", "list", props],
     queryFn: async () => {
-      const { data, error } = await APIclient.GET("/admin/video", {
+      const { data, error } = await APIclient.GET("/v1/admin/video", {
         params: {
           query: props,
         },
@@ -20,7 +20,7 @@ export const useAdminVideoTagListQuery = () =>
   useQuery({
     queryKey: ["admin", "video", "tags"],
     queryFn: async () => {
-      const { data, error } = await APIclient.GET("/admin/video/tags");
+      const { data, error } = await APIclient.GET("/v1/admin/video/tags");
       if (error) throw error;
       return data;
     },
@@ -30,7 +30,7 @@ export const getAdminVideoQueryOptions = (videoId: string) =>
   queryOptions({
     queryKey: ["admin", "video", "info", { id: videoId }],
     queryFn: async () => {
-      const { data, error } = await APIclient.GET("/admin/video/{videoId}", {
+      const { data, error } = await APIclient.GET("/v1/admin/video/{videoId}", {
         params: {
           path: {
             videoId,
@@ -46,8 +46,8 @@ export const useAdminCreateVideo = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ["admin", "video", "create"],
-    mutationFn: async (body: ExtractRequestBody<"/admin/video", "post">) => {
-      const { data, error } = await APIclient.POST("/admin/video", {
+    mutationFn: async (body: ExtractRequestBody<"/v1/admin/video", "post">) => {
+      const { data, error } = await APIclient.POST("/v1/admin/video", {
         body,
       });
       if (error) throw error;
@@ -65,9 +65,9 @@ export const useAdminUpdateVideo = () => {
     mutationKey: ["admin", "video", "update"],
     mutationFn: async (props: {
       id: string;
-      body: ExtractRequestBody<"/admin/video/{videoId}", "put">;
+      body: ExtractRequestBody<"/v1/admin/video/{videoId}", "put">;
     }) => {
-      const { data, error } = await APIclient.PUT("/admin/video/{videoId}", {
+      const { data, error } = await APIclient.PUT("/v1/admin/video/{videoId}", {
         params: {
           path: {
             videoId: props.id,
@@ -92,7 +92,7 @@ export const useAdminDeleteVideo = () => {
   return useMutation({
     mutationKey: ["admin", "video", "delete"],
     mutationFn: async (videoId: string) => {
-      const { data, error } = await APIclient.DELETE("/admin/video/{videoId}", {
+      const { data, error } = await APIclient.DELETE("/v1/admin/video/{videoId}", {
         params: {
           path: {
             videoId,

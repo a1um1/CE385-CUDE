@@ -5,7 +5,7 @@ export const getAdminDashboardQueryOptions = () =>
   queryOptions({
     queryKey: ["admin", "dashboard"],
     queryFn: async () => {
-      const { data, error } = await APIclient.GET("/admin/dashboard");
+      const { data, error } = await APIclient.GET("/v1/admin/dashboard");
       if (error) throw error;
       return data;
     },

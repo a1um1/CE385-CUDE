@@ -9,7 +9,7 @@ import {
 } from "#/service/video/video.schema";
 
 const videoRouter = new CustomRouter({
-  prefix: "/video",
+  prefix: "/v1/video",
   tags: ["Video"],
   authentication: true,
 })

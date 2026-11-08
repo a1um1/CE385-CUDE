@@ -36,7 +36,7 @@ function setAuthCookies(cookie: RouteCookieOps, accessToken: string, refreshToke
 }
 
 const authRouter = new CustomRouter({
-  prefix: "/auth",
+  prefix: "/v1/auth",
   tags: ["Authentication"],
 })
   .post(

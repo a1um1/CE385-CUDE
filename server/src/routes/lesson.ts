@@ -11,7 +11,7 @@ import CustomRouter from "#/lib/router/customRouter";
 const ExerciseListSchema = z.array(ExerciseSchema);
 
 const lessonRouterInstance = new CustomRouter({
-  prefix: "/lesson",
+  prefix: "/v1/lesson",
   tags: ["Lesson"],
   authentication: true,
 })

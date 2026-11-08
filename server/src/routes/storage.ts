@@ -6,7 +6,7 @@ import {
 import CustomRouter from "#/lib/router/customRouter";
 
 const storageRoute = new CustomRouter({
-  prefix: "/storage",
+  prefix: "/v1/storage",
   tags: ["Storage"],
   authentication: true,
 }).post(

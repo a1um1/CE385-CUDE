@@ -11,7 +11,7 @@ const submissionCalendarQuerySchema = z.object({
 });
 
 const adminUserStatsRouter = new CustomRouter({
-  prefix: "/admin/user",
+  prefix: "/v1/admin/user",
   tags: ["Admin User Stats"],
   authentication: ["ADMIN"],
 }).get(

@@ -39,7 +39,7 @@ export const Playground: Story = {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         passwordChangedAt: new Date().toISOString(),
-      } satisfies paths["/user"]["get"]["responses"]["200"]["content"]["application/json"]);
+      } satisfies paths["/v1/user"]["get"]["responses"]["200"]["content"]["application/json"]);
       return (
         <QueryClientProvider client={queryClient}>
           <Story />

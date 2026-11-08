@@ -2,11 +2,11 @@ import type { ExtractRequestQuery, ExtractRequestBody } from "#/data/base/apiUti
 import { APIclient } from "#/data/base/baseAPI";
 import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-export const useAdminEventListQuery = (props: ExtractRequestQuery<"/admin/event", "get">) =>
+export const useAdminEventListQuery = (props: ExtractRequestQuery<"/v1/admin/event", "get">) =>
   useQuery({
     queryKey: ["admin", "event", "list", props],
     queryFn: async () => {
-      const { data, error } = await APIclient.GET("/admin/event", {
+      const { data, error } = await APIclient.GET("/v1/admin/event", {
         params: {
           query: props,
         },
@@ -20,7 +20,7 @@ export const getAdminEventQueryOptions = (eventId: string) =>
   queryOptions({
     queryKey: ["admin", "event", "info", { id: eventId }],
     queryFn: async () => {
-      const { data, error } = await APIclient.GET("/event/{eventId}", {
+      const { data, error } = await APIclient.GET("/v1/event/{eventId}", {
         params: {
           path: {
             eventId,
@@ -36,8 +36,8 @@ export const useAdminCreateEvent = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ["admin", "event", "create"],
-    mutationFn: async (body: ExtractRequestBody<"/admin/event", "post">) => {
-      const { data, error } = await APIclient.POST("/admin/event", {
+    mutationFn: async (body: ExtractRequestBody<"/v1/admin/event", "post">) => {
+      const { data, error } = await APIclient.POST("/v1/admin/event", {
         body,
       });
       if (error) throw error;
@@ -55,9 +55,9 @@ export const useAdminUpdateEvent = () => {
     mutationKey: ["admin", "event", "update"],
     mutationFn: async (props: {
       id: string;
-      body: ExtractRequestBody<"/admin/event/{eventId}", "put">;
+      body: ExtractRequestBody<"/v1/admin/event/{eventId}", "put">;
     }) => {
-      const { data, error } = await APIclient.PUT("/admin/event/{eventId}", {
+      const { data, error } = await APIclient.PUT("/v1/admin/event/{eventId}", {
         params: {
           path: {
             eventId: props.id,
@@ -82,7 +82,7 @@ export const useAdminDeleteEvent = () => {
   return useMutation({
     mutationKey: ["admin", "event", "delete"],
     mutationFn: async (eventId: string) => {
-      const { data, error } = await APIclient.DELETE("/admin/event/{eventId}", {
+      const { data, error } = await APIclient.DELETE("/v1/admin/event/{eventId}", {
         params: {
           path: {
             eventId,

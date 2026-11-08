@@ -5,7 +5,7 @@ import CustomRouter from "#/lib/router/customRouter";
 import UserError from "#/lib/router/http/userError";
 
 const exerciseRouter = new CustomRouter({
-  prefix: "/exercise",
+  prefix: "/v1/exercise",
   tags: ["Exercise"],
   authentication: true,
 })

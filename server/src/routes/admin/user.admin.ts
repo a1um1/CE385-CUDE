@@ -13,7 +13,7 @@ import AdminUserService from "#/service/admin/user";
 import { UserSafeSchema } from "#/service/user/user.schema";
 
 const adminUserRouter = new CustomRouter({
-  prefix: "/admin/user",
+  prefix: "/v1/admin/user",
   tags: ["Admin User Management"],
   authentication: ["ADMIN"],
 })

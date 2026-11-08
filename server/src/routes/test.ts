@@ -11,7 +11,7 @@ export const TestSchema = z
 export const TestSendSchema = TestSchema;
 
 const testRoute = new CustomRouter({
-  prefix: "/test",
+  prefix: "/v1/test",
   tags: ["Test"],
 })
   .get(

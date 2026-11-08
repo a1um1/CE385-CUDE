@@ -4,7 +4,7 @@ import { queryOptions, useQuery } from "@tanstack/react-query";
 const userCourseQuery = queryOptions({
   queryKey: ["courses"],
   queryFn: async () => {
-    const { data, error } = await APIclient.GET(`/course`);
+    const { data, error } = await APIclient.GET(`/v1/course`);
     if (error) throw error;
 
     return data;

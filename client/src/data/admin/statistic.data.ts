@@ -5,7 +5,7 @@ export const getAdminCourseStatsQueryOptions = (courseId?: string) =>
   queryOptions({
     queryKey: ["admin", "stats", "course", courseId],
     queryFn: async () => {
-      const { data, error } = await APIclient.GET("/admin/stats/{courseId}", {
+      const { data, error } = await APIclient.GET("/v1/admin/stats/{courseId}", {
         params: {
           path: {
             courseId: courseId as string,
@@ -25,7 +25,7 @@ export const getAdminUnitStatsQueryOptions = (unitId?: string) =>
   queryOptions({
     queryKey: ["admin", "stats", "unit", unitId],
     queryFn: async () => {
-      const { data, error } = await APIclient.GET("/admin/stats/units/{unitId}", {
+      const { data, error } = await APIclient.GET("/v1/admin/stats/units/{unitId}", {
         params: {
           path: {
             unitId: unitId as string,
@@ -45,7 +45,7 @@ export const getAdminLessonStatsQueryOptions = (lessonId?: string) =>
   queryOptions({
     queryKey: ["admin", "stats", "lesson", lessonId],
     queryFn: async () => {
-      const { data, error } = await APIclient.GET("/admin/stats/lessons/{lessonId}", {
+      const { data, error } = await APIclient.GET("/v1/admin/stats/lessons/{lessonId}", {
         params: {
           path: {
             lessonId: lessonId as string,

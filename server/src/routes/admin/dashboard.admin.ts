@@ -3,7 +3,7 @@ import { getAdminDashboard } from "#/service/admin/dashboard";
 import CustomRouter from "#/lib/router/customRouter";
 
 const adminDashboardRouter = new CustomRouter({
-  prefix: "/admin/dashboard",
+  prefix: "/v1/admin/dashboard",
   tags: ["Admin Dashboard"],
   authentication: ["ADMIN"],
 }).get(

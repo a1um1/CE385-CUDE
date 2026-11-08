@@ -3,7 +3,7 @@ import type { paths } from "#/data/base/openapi";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 
 type LessonInclude = NonNullable<
-  paths["/lesson/{lessonId}"]["get"]["parameters"]["query"]
+  paths["/v1/lesson/{lessonId}"]["get"]["parameters"]["query"]
 >["include"];
 
 export const fetchLessonFromUnitQuery = (unitId?: string | null) =>
@@ -11,7 +11,7 @@ export const fetchLessonFromUnitQuery = (unitId?: string | null) =>
     queryKey: ["lessons_from_unit", unitId],
     queryFn: async () => {
       if (!unitId) throw new Error("Unit ID is required to fetch lessons.");
-      const { data, error } = await APIclient.GET(`/unit/{unitId}/lesson`, {
+      const { data, error } = await APIclient.GET(`/v1/unit/{unitId}/lesson`, {
         params: {
           path: {
             unitId,
@@ -32,7 +32,7 @@ export const lessonQueryOptions = (lessonId?: string | null, include?: LessonInc
     queryKey: ["lesson", lessonId, include],
     queryFn: async () => {
       if (!lessonId) throw new Error("Lesson ID is required to fetch lesson.");
-      const { data, error } = await APIclient.GET(`/lesson/{lessonId}`, {
+      const { data, error } = await APIclient.GET(`/v1/lesson/{lessonId}`, {
         params: {
           path: {
             lessonId,
@@ -56,7 +56,7 @@ export const enrollmentAvailabilityQueryOptions = (lessonId?: string | null) =>
     queryKey: ["lesson_enrollment_availability", lessonId],
     queryFn: async () => {
       if (!lessonId) throw new Error("Lesson ID is required to check enrollment availability.");
-      const { data, error } = await APIclient.GET(`/lesson/{lessonId}/enrollment-availability`, {
+      const { data, error } = await APIclient.GET(`/v1/lesson/{lessonId}/enrollment-availability`, {
         params: {
           path: {
             lessonId,
@@ -76,7 +76,7 @@ export const useLessonStatistic = (lessonId: string) =>
   useQuery({
     queryKey: ["lesson_statistic", lessonId],
     queryFn: async () => {
-      const { data, error } = await APIclient.GET(`/lesson/{lessonId}/stats`, {
+      const { data, error } = await APIclient.GET(`/v1/lesson/{lessonId}/stats`, {
         params: {
           path: {
             lessonId,

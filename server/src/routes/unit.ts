@@ -8,7 +8,7 @@ import CustomRouter from "#/lib/router/customRouter";
 const LessonListSchema = z.array(LessonWithStatusSchema);
 
 const unitRouter = new CustomRouter({
-  prefix: "/unit",
+  prefix: "/v1/unit",
   tags: ["Unit"],
   authentication: true,
 })

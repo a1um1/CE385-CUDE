@@ -4,7 +4,7 @@ import type { ExtractRequestBody } from "#/data/base/apiUtils.type";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import styles from "./auth.module.css";
 
-type SignInValues = ExtractRequestBody<"/auth/signin", "post">;
+type SignInValues = ExtractRequestBody<"/v1/auth/signin", "post">;
 
 export const Route = createFileRoute("/auth/signin")({
   component: RouteComponent,
